@@ -1,8 +1,8 @@
 import { Table, Column, Model, DataType, PrimaryKey } from 'sequelize-typescript';
 
-import { SHARED_ACTIONS } from '../games/consts/global';
-import { TOWER_ACTIONS } from '../games/tower/const';
-import { ARENA_ACTIONS } from '../games/arena/consts';
+import type { ARENA_ACTIONS } from '../games/arena/consts';
+import type { SHARED_ACTIONS } from '../games/consts/global';
+import type { TOWER_ACTIONS } from '../games/tower/const';
 
 type GAME_ACTIONS = (typeof SHARED_ACTIONS) & (typeof TOWER_ACTIONS) & (typeof ARENA_ACTIONS);
 

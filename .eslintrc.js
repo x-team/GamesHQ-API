@@ -1,0 +1,57 @@
+module.exports = {
+  env: {
+    es6: true,
+    node: true,
+  },
+  extends: [
+    'eslint:recommended',
+    'plugin:@typescript-eslint/eslint-recommended',
+    'plugin:@typescript-eslint/recommended',
+    'plugin:import/errors',
+    'plugin:import/typescript',
+  ],
+  parser: '@typescript-eslint/parser',
+  parserOptions: {
+    project: 'tsconfig.json',
+    sourceType: 'module',
+  },
+  plugins: ['@typescript-eslint', 'functional'],
+  rules: {
+    'prefer-const': 'error',
+    'no-magic-numbers': 'warn',
+    '@typescript-eslint/no-non-null-assertion': 'warn',
+    '@typescript-eslint/no-non-null-asserted-optional-chain': 'warn',
+    'import/no-cycle': 'warn',
+    '@typescript-eslint/ban-types': 'warn',
+    'import/no-default-export': 'warn',
+    '@typescript-eslint/prefer-optional-chain': 'warn',
+    'no-empty-pattern': 'warn',
+    '@typescript-eslint/no-empty-function': 'warn',
+    'no-constant-condition': 'warn',
+    '@typescript-eslint/prefer-optional-chain': 'warn',
+    '@typescript-eslint/ban-ts-comment': 'warn',
+    'no-case-declarations': 'off',
+    '@typescript-eslint/consistent-type-imports': ['error', { disallowTypeAnnotations: false }],
+    '@typescript-eslint/explicit-module-boundary-types': 'off',
+    '@typescript-eslint/no-empty-interface': 'off',
+    '@typescript-eslint/no-floating-promises': ['error', { ignoreVoid: true }],
+    'no-unused-vars': 'off',
+    '@typescript-eslint/no-unused-vars': [
+      'error',
+      { argsIgnorePattern: '^_', ignoreRestSiblings: true },
+    ],
+    'import/no-duplicates': 'error',
+    'import/order': [
+      'error',
+      {
+        'newlines-between': 'always',
+        alphabetize: {
+          order: 'asc',
+        },
+      },
+    ],
+    'import/no-unresolved': 'off',
+    'functional/no-let': ['error', { allowLocalMutation: true, ignorePattern: '^mutable' }],
+  },
+  ignorePatterns: ['*.test.ts', '*.js'],
+};

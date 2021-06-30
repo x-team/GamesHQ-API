@@ -1,6 +1,8 @@
 import type { Transaction } from 'sequelize';
 import { Table, Column, Model, DataType, ForeignKey, BelongsTo, PrimaryKey, AutoIncrement } from 'sequelize-typescript';
 
+import { ZERO } from '../games/consts/global';
+
 import { ArenaPlayer, Item } from '.';
 
 interface ArenaItemInventoryAttributes {
@@ -76,7 +78,7 @@ export async function removePlayerItem(
 // Only use this function if weapon has usageLimit != null
 export function addAmmoToInventory({ player, item, ammo }: ArenaPlayerItemInventoryInstances, transaction: Transaction) {
   return ArenaItemInventory.update(
-    { remainingUses: item.ArenaItemInventory.remainingUses! + (ammo ?? item.usageLimit!) },
+    { remainingUses: item.ArenaItemInventory.remainingUses??ZERO + (ammo ?? item.usageLimit??ZERO) },
     {
       where: {
         _arenaPlayerId: player.id,

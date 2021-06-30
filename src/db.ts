@@ -1,8 +1,11 @@
-import { Sequelize, Model } from 'sequelize-typescript';
+import type { Model } from 'sequelize-typescript';
+import { Sequelize } from 'sequelize-typescript';
 import { prettify } from 'sql-log-prettifier';
+
 import { getConfig, prettifyConfig } from './config';
 import * as models from './models';
-// tslint:disable-next-line:no-var-requires
+
+// eslint-disable-next-line @typescript-eslint/no-var-requires
 const config = require('./config/database.js');
 
 export interface AnyModel extends Model<AnyModel> {}

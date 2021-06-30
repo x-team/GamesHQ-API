@@ -13,12 +13,14 @@ import {
   AutoIncrement,
 } from 'sequelize-typescript';
 
+import { GAME_TYPE, ONE, ZERO } from '../games/consts/global';
+
 import { createGameRound } from './ArenaRound';
+import { pickRingSystemAlgorithm } from './ArenaZone';
+import type { GameCreationAttributes} from './Game';
+import { startGame } from './Game';
 
 import { ArenaPlayer, Game, ArenaRound, User } from './';
-import { pickRingSystemAlgorithm } from './ArenaZone';
-import { GameCreationAttributes, startGame } from './Game';
-import { GAME_TYPE } from '../games/consts/global';
 
 interface ArenaGameAttributes {
   id: number;
@@ -67,11 +69,11 @@ implements ArenaGameAttributes {
   @Column(DataType.TEXT)
   ringSystemAlgorithm!: string;
 
-  @Default(1)
+  @Default(ONE)
   @Column(DataType.INTEGER)
   currentRingDeactivation!: number;
 
-  @Default(0)
+  @Default(ZERO)
   @Column(DataType.INTEGER)
   inactiveZonePenaltyPower!: number;
   
@@ -131,8 +133,8 @@ implements ArenaGameAttributes {
       transaction,
     });
     const reduceTotalAlive = (acc: number, player: ArenaPlayer) =>
-      player.health > 0 ? acc + 1 : acc;
-    return this!._players!.reduce(reduceTotalAlive, 0);
+      player.health > ZERO ? acc + ONE : acc;
+    return this._players? this._players.reduce(reduceTotalAlive, ZERO) : ZERO;
   }
 }
 

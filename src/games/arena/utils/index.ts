@@ -1,6 +1,7 @@
+import { ONE, ZERO } from '../../consts/global';
 import { MAX_PLAYERS_PER_ARENA_ZONE } from "../consts";
 
-export function arenaZoneCapacity(activeZonezAmount = 1, deactivatedZonesAmount = 0) {
+export function arenaZoneCapacity(activeZonezAmount = ONE, deactivatedZonesAmount = ZERO) {
   const extraCapacity = Math.ceil(
     (deactivatedZonesAmount * MAX_PLAYERS_PER_ARENA_ZONE) / activeZonezAmount
   );

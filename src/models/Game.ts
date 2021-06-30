@@ -12,9 +12,10 @@ import {
   AutoIncrement,
 } from 'sequelize-typescript';
 
-import { User } from './';
 import { GAME_TYPE } from '../games/consts/global';
 import { generateRandomNameForGame } from '../games/utils';
+
+import { User } from './';
 
 interface GameAttributes {
   id: number;

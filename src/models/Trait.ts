@@ -1,4 +1,5 @@
 import { Column, DataType, Model, PrimaryKey, Table } from 'sequelize-typescript';
+
 import { TRAITS } from '../games/consts/global';
 
 interface TraitAttributes {

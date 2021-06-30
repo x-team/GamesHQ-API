@@ -8,11 +8,17 @@ import {
   ForeignKey,
   BelongsTo,
 } from 'sequelize-typescript';
-import { GAME_TYPE, ITEM_RARITY, ITEM_TYPE } from '../games/consts/global';
-import { Item } from '.';
+
+import type { GAME_TYPE, ITEM_RARITY} from '../games/consts/global';
+import { ITEM_TYPE } from '../games/consts/global';
+
 import { Game } from './Game';
-import { GameItemAvailability, GameItemAvailabilityCreationAttributes } from './GameItemAvailability';
-import { createOrUpdateItem, findItemById, findItemByName, findItemsByRarityAndType, ItemCreationAttributes } from './Item';
+import type { GameItemAvailabilityCreationAttributes } from './GameItemAvailability';
+import { GameItemAvailability } from './GameItemAvailability';
+import type { ItemCreationAttributes } from './Item';
+import { createOrUpdateItem, findItemById, findItemByName, findItemsByRarityAndType } from './Item';
+
+import { Item } from '.';
 
 interface ItemHealthKitAttributes {
   healingPower: number;

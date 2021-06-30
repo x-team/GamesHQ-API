@@ -1,10 +1,10 @@
-import { Table, Column, Model, DataType, ForeignKey, BelongsTo, PrimaryKey } from 'sequelize-typescript';
 import { Op } from 'sequelize';
-
 import type { Transaction } from 'sequelize';
+import { Table, Column, Model, DataType, ForeignKey, BelongsTo, PrimaryKey } from 'sequelize-typescript';
+
+import { TRAITS } from '../games/consts/global';
 
 import { Item, Trait } from './';
-import { TRAITS } from '../games/consts/global';
 
 interface TraitAttributes {
   _itemId: number;

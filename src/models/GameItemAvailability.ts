@@ -1,6 +1,7 @@
-import { Association, Op } from 'sequelize';
-import type { Transaction } from 'sequelize';
+import { Op } from 'sequelize';
+import type { Transaction , Association} from 'sequelize';
 import { Table, Column, Model, DataType, PrimaryKey, Default, ForeignKey, BelongsTo } from 'sequelize-typescript';
+
 import { Item, Game } from './';
 
 interface GameItemAvailabilityAttributes {

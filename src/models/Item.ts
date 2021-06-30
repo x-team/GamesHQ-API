@@ -13,10 +13,14 @@ import {
   AutoIncrement,
   PrimaryKey,
 } from 'sequelize-typescript';
-import { GAME_TYPE, ITEM_RARITY, ITEM_TYPE, TRAITS } from '../games/consts/global';
+
+import type { GAME_TYPE, TRAITS } from '../games/consts/global';
+import { ITEM_RARITY, ITEM_TYPE } from '../games/consts/global';
+
+import type { GameItemAvailabilityCreationAttributes } from './GameItemAvailability';
+import { createOrUpdateItemAvailability } from './GameItemAvailability';
 
 import { ArenaPlayer, ItemRarity, ItemArmor, ItemWeapon, ItemHealthKit, Trait, ItemTrait, /*TowerRaider,*/ ArenaItemInventory, /*TowerItemInventory,*/ GameItemAvailability, Game } from './';
-import { createOrUpdateItemAvailability, GameItemAvailabilityCreationAttributes } from './GameItemAvailability';
 
 interface ItemAttributes {
   id: number;

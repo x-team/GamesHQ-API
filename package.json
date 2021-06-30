@@ -5,7 +5,13 @@
   "main": "index.js",
   "scripts": {
     "start": "npm run prepare-db && node dist/src/index.js",
-    "clean": "rm -rf dist",
+    "test": "cross-env NODE_ENV=test ENV=test npx test:all",
+    "test:integration": "cross-env NODE_ENV=test ENV=test npx test:_integration",
+    "test:integration:single": "cross-env NODE_ENV=test ENV=test npx test:prepare:integration && npx mocha",
+    "test:unit": "cross-env NODE_ENV=test ENV=test npx mocha \"src/**/*.test.ts\" --exclude \"src/**/*.integration.test.ts\"",
+    "test:unit:single": "cross-env NODE_ENV=test ENV=test npx mocha",
+    "mocha": "cross-env ENV=test mocha --unhandled-rejections=strict",
+    "eslint": "eslint src --fix",
     "build": "npm run clean && tsc && rsync -av --exclude='*.ts' src/ dist/src",
     "build:start": "npm run build && npm run start",
     "db:seed:up": "ts-node --transpile-only -e 'require(`./migrate.ts`).seedUp()'",
@@ -15,7 +21,14 @@
     "//1": "/*****************************************************************************",
     "//2": "* Rest of those commands are used internally and should not be used directly!",
     "//3": "*****************************************************************************/",
-    "prepare-db": "npm run db:seed:up && npm run db:migrate:up"
+    "prepare-db": "npm run db:seed:up && npm run db:migrate:up",
+    "clean": "rm -rf dist",
+    "db:test:create": "cross-env NODE_ENV=test ENV=test sequelize --config='src/config/database.ci.js' db:create || true",
+    "db:test:drop": "cross-env NODE_ENV=test ENV=test sequelize --config='src/config/database.ci.js' db:drop || true",
+    "test:all": "concurrently --kill-others-on-fail --names *typescript,*****eslint,*tests:unit,integration --prefix-colors blue.inverse,blue,yellow,green 'npx tsc' 'npx eslint --quiet' 'npx test:unit' 'npx test:integration'",
+    "test:prepare:integration": "npx wait && npx db:test:drop && npx db:test:create && npx prepare-db",
+    "test:_integration": "npx test:prepare:integration && npx mocha \"src/**/*.integration.test.ts\"",
+    "wait": "ts-node ./wait.ts"
   },
   "author": "X-Team Community",
   "license": "ISC",
@@ -29,11 +42,32 @@
     "sql-log-prettifier": "^0.1.2"
   },
   "devDependencies": {
-    "@types/node": "15.12.5",
+    "@types/chai": "4.2.19",
     "@types/lodash": "4.14.170",
+    "@types/mocha": "8.2.2",
+    "@types/node": "15.12.5",
+    "@types/sinon": "10.0.2",
+    "@types/sinon-chai": "3.2.5",
     "@types/validator": "13.1.4",
+    "@typescript-eslint/eslint-plugin": "4.28.1",
+    "@typescript-eslint/parser": "4.28.1",
+    "chai": "4.3.4",
+    "cross-env": "7.0.3",
+    "eslint": "7.29.0",
+    "eslint-plugin-functional": "3.2.1",
+    "eslint-plugin-import": "2.23.4",
+    "husky": "6.0.0",
+    "mocha": "9.0.1",
+    "pretty-quick": "3.1.1",
+    "sinon": "11.1.1",
+    "sinon-chai": "3.7.0",
     "ts-node": "10.0.0",
     "typescript": "4.3.4",
     "umzug": "3.0.0-beta.16"
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "./scripts/pre-commit.sh && pretty-quick --staged"
+    }
   }
 }

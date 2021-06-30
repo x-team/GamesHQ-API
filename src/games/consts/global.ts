@@ -1,5 +1,5 @@
 export const ZERO = 0;
-export const ONEO = 1;
+export const ONE = 1;
 export const TWO = 2;
 export const HUNDRED = 100;
 

@@ -1,5 +1,5 @@
-import type { Transaction, Association } from 'sequelize';
 import { sampleSize } from 'lodash';
+import type { Transaction, Association } from 'sequelize';
 import { Op } from 'sequelize';
 import {
   Table,
@@ -18,10 +18,11 @@ import {
   ARENA_ZONE_RING,
   RING_SYSTEM_MAX_PENALTY_NUMBER,
 } from '../games/arena/consts';
-import { SORT_ACTION_ARRAY_RATE } from '../games/consts/global';
 import { arenaZoneCapacity } from '../games/arena/utils';
+import { SORT_ACTION_ARRAY_RATE } from '../games/consts/global';
 
-import { ArenaPlayer, ArenaGame } from '.';
+import type { ArenaGame } from '.';
+import { ArenaPlayer } from '.';
 
 interface ArenaZoneAttributes {
   id: number;
@@ -32,7 +33,7 @@ interface ArenaZoneAttributes {
   isActive: boolean;
 }
 
-interface ArenaZoneCreationAttributes {
+export interface ArenaZoneCreationAttributes {
   name: string;
   emoji: string;
   ring: ARENA_ZONE_RING;
