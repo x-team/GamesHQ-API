@@ -1,9 +1,9 @@
-export { prettifyConfig } from "./sqlPrettifyConfig";
+export { prettifyConfig } from './sqlPrettifyConfig';
 
 interface NameToType {
   // PROCESS
-  ENV: "production" | "staging" | "development" | "test";
-  NODE_ENV: "production" | "development";
+  ENV: 'production' | 'staging' | 'development' | 'test';
+  NODE_ENV: 'production' | 'development';
   // DATABASE
   DB_USERNAME: string;
   DB_PASSWORD: string;
@@ -20,10 +20,10 @@ export function getConfig(name: string): string | number | boolean {
   const val = process.env[name];
 
   switch (name) {
-    case "NODE_ENV":
-      return val || "development";
-    case "ENV":
-      return val || "development";
+    case 'NODE_ENV':
+      return val || 'development';
+    case 'ENV':
+      return val || 'development';
   }
 
   if (!val) {
@@ -33,6 +33,8 @@ export function getConfig(name: string): string | number | boolean {
   return val;
 }
 
-export const isProd = () => getConfig("ENV") === "production";
+export const isProd = () => getConfig('ENV') === 'production';
 
-export const isStaging = () => getConfig("ENV") === "staging";
+export const isStaging = () => getConfig('ENV') === 'staging';
+
+export * from './logger';

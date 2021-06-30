@@ -35,11 +35,13 @@
   "dependencies": {
     "@hapi/boom": "9.1.2",
     "dotenv": "10.0.0",
+    "fast-safe-stringify": "2.0.7",
     "pg": "8.6.0",
     "reflect-metadata": "0.1.13",
     "sequelize": "6.6.4",
     "sequelize-typescript": "2.1.0",
-    "sql-log-prettifier": "^0.1.2"
+    "sql-log-prettifier": "^0.1.2",
+    "winston": "3.3.3"
   },
   "devDependencies": {
     "@types/chai": "4.2.19",
