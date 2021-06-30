@@ -26,9 +26,9 @@
     "db:test:create": "cross-env NODE_ENV=test ENV=test sequelize --config='src/config/database.ci.js' db:create || true",
     "db:test:drop": "cross-env NODE_ENV=test ENV=test sequelize --config='src/config/database.ci.js' db:drop || true",
     "test:all": "concurrently --kill-others-on-fail --names *typescript,*****eslint,*tests:unit,integration --prefix-colors blue.inverse,blue,yellow,green 'npx tsc' 'npx eslint --quiet' 'npx test:unit' 'npx test:integration'",
-    "test:prepare:integration": "npx wait && npx db:test:drop && npx db:test:create && npx prepare-db",
+    "test:prepare:integration": "npx db:test:drop && npx db:test:create && npx prepare-db",
     "test:_integration": "npx test:prepare:integration && npx mocha \"src/**/*.integration.test.ts\"",
-    "wait": "ts-node ./wait.ts"
+    "prepare": "husky install"
   },
   "author": "X-Team Community",
   "license": "ISC",
@@ -64,10 +64,5 @@
     "ts-node": "10.0.0",
     "typescript": "4.3.4",
     "umzug": "3.0.0-beta.16"
-  },
-  "husky": {
-    "hooks": {
-      "pre-commit": "./scripts/pre-commit.sh && pretty-quick --staged"
-    }
   }
 }
