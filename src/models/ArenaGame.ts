@@ -17,7 +17,7 @@ import { GAME_TYPE, ONE, ZERO } from '../games/consts/global';
 
 import { createGameRound } from './ArenaRound';
 import { pickRingSystemAlgorithm } from './ArenaZone';
-import type { GameCreationAttributes} from './Game';
+import type { GameCreationAttributes } from './Game';
 import { startGame } from './Game';
 
 import { ArenaPlayer, Game, ArenaRound, User } from './';
@@ -49,8 +49,10 @@ interface ArenaGameCreationAttributes {
     },
   ],
 })
-export class ArenaGame extends Model<ArenaGameAttributes, ArenaGameCreationAttributes>
-implements ArenaGameAttributes {
+export class ArenaGame
+  extends Model<ArenaGameAttributes, ArenaGameCreationAttributes>
+  implements ArenaGameAttributes
+{
   @PrimaryKey
   @AutoIncrement
   @Column(DataType.INTEGER)
@@ -76,7 +78,7 @@ implements ArenaGameAttributes {
   @Default(ZERO)
   @Column(DataType.INTEGER)
   inactiveZonePenaltyPower!: number;
-  
+
   @Unique
   @ForeignKey(() => Game)
   @Column(DataType.INTEGER)
@@ -95,7 +97,7 @@ implements ArenaGameAttributes {
     _players: Association<ArenaGame, ArenaPlayer>;
     _rounds: Association<ArenaGame, ArenaRound>;
     _game: Association<ArenaGame, Game>;
-  }
+  };
 
   toggleZoneDeactivation(hasZoneDeactivation: boolean, transaction: Transaction) {
     return this.update(
@@ -134,13 +136,17 @@ implements ArenaGameAttributes {
     });
     const reduceTotalAlive = (acc: number, player: ArenaPlayer) =>
       player.health > ZERO ? acc + ONE : acc;
-    return this._players? this._players.reduce(reduceTotalAlive, ZERO) : ZERO;
+    return this._players ? this._players.reduce(reduceTotalAlive, ZERO) : ZERO;
   }
 }
 
 const basicUserInfo = ['id', 'displayName', 'slackId', 'email'];
 
-export async function createArenaGame(game: Game, { teamBased, hasZoneDeactivation }: ArenaGameCreationAttributes, transaction: Transaction) {
+export async function createArenaGame(
+  game: Game,
+  { teamBased, hasZoneDeactivation }: ArenaGameCreationAttributes,
+  transaction: Transaction
+) {
   const ringSystemAlgorithmPicked = await pickRingSystemAlgorithm(transaction);
   const newArenaGameBuild: ArenaGame = ArenaGame.build({
     teamBased,
@@ -174,8 +180,15 @@ export async function startArenaGame(
   }: GameCreationAttributes & ArenaGameCreationAttributes,
   transaction: Transaction
 ) {
-  const newGame = await startGame({ name, _createdById, type: GAME_TYPE.ARENA, startedAt: new Date() }, transaction);
-  return createArenaGame(newGame, { teamBased, hasZoneDeactivation, _gameId: newGame.id }, transaction);
+  const newGame = await startGame(
+    { name, _createdById, type: GAME_TYPE.ARENA, startedAt: new Date() },
+    transaction
+  );
+  return createArenaGame(
+    newGame,
+    { teamBased, hasZoneDeactivation, _gameId: newGame.id },
+    transaction
+  );
 }
 
 export async function findActiveArenaGame(transaction?: Transaction) {

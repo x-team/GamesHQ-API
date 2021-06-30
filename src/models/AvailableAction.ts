@@ -4,7 +4,7 @@ import type { ARENA_ACTIONS } from '../games/arena/consts';
 import type { SHARED_ACTIONS } from '../games/consts/global';
 import type { TOWER_ACTIONS } from '../games/tower/const';
 
-type GAME_ACTIONS = (typeof SHARED_ACTIONS) & (typeof TOWER_ACTIONS) & (typeof ARENA_ACTIONS);
+type GAME_ACTIONS = typeof SHARED_ACTIONS & typeof TOWER_ACTIONS & typeof ARENA_ACTIONS;
 
 interface AvailableActionAttributes {
   id: GAME_ACTIONS;
@@ -15,8 +15,10 @@ interface AvailableActionCreationAttributes {
 }
 
 @Table
-export class AvailableAction extends Model<AvailableActionAttributes, AvailableActionCreationAttributes>
-implements AvailableActionAttributes {
+export class AvailableAction
+  extends Model<AvailableActionAttributes, AvailableActionCreationAttributes>
+  implements AvailableActionAttributes
+{
   @PrimaryKey
   @Column(DataType.TEXT)
   id!: GAME_ACTIONS;

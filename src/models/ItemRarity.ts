@@ -13,8 +13,10 @@ interface ItemRarityCreationAttributes {
 }
 
 @Table
-export class ItemRarity extends Model<ItemRarityAttributes, ItemRarityCreationAttributes>
-implements ItemRarityAttributes {
+export class ItemRarity
+  extends Model<ItemRarityAttributes, ItemRarityCreationAttributes>
+  implements ItemRarityAttributes
+{
   @PrimaryKey
   @Column(DataType.TEXT)
   id!: ITEM_RARITY;

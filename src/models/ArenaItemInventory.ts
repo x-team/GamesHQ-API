@@ -1,5 +1,14 @@
 import type { Transaction } from 'sequelize';
-import { Table, Column, Model, DataType, ForeignKey, BelongsTo, PrimaryKey, AutoIncrement } from 'sequelize-typescript';
+import {
+  Table,
+  Column,
+  Model,
+  DataType,
+  ForeignKey,
+  BelongsTo,
+  PrimaryKey,
+  AutoIncrement,
+} from 'sequelize-typescript';
 
 import { ZERO } from '../games/consts/global';
 
@@ -26,8 +35,10 @@ interface ArenaItemInventoryCreationAttributes {
     },
   ],
 })
-export class ArenaItemInventory extends Model<ArenaItemInventoryAttributes, ArenaItemInventoryCreationAttributes>
-implements ArenaItemInventoryAttributes {
+export class ArenaItemInventory
+  extends Model<ArenaItemInventoryAttributes, ArenaItemInventoryCreationAttributes>
+  implements ArenaItemInventoryAttributes
+{
   @PrimaryKey
   @AutoIncrement
   @Column(DataType.INTEGER)
@@ -76,9 +87,15 @@ export async function removePlayerItem(
 }
 
 // Only use this function if weapon has usageLimit != null
-export function addAmmoToInventory({ player, item, ammo }: ArenaPlayerItemInventoryInstances, transaction: Transaction) {
+export function addAmmoToInventory(
+  { player, item, ammo }: ArenaPlayerItemInventoryInstances,
+  transaction: Transaction
+) {
   return ArenaItemInventory.update(
-    { remainingUses: item.ArenaItemInventory.remainingUses??ZERO + (ammo ?? item.usageLimit??ZERO) },
+    {
+      remainingUses:
+        item.ArenaItemInventory.remainingUses ?? ZERO + (ammo ?? item.usageLimit ?? ZERO),
+    },
     {
       where: {
         _arenaPlayerId: player.id,

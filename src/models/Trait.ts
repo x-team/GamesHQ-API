@@ -16,12 +16,14 @@ interface TraitCreationAttributes {
 @Table({
   indexes: [
     {
-      fields: ['displayName']
+      fields: ['displayName'],
     },
   ],
 })
-export class Trait extends Model<TraitAttributes, TraitCreationAttributes>
-implements TraitAttributes {
+export class Trait
+  extends Model<TraitAttributes, TraitCreationAttributes>
+  implements TraitAttributes
+{
   @PrimaryKey
   @Column(DataType.TEXT)
   id!: TRAITS;

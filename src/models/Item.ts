@@ -20,7 +20,18 @@ import { ITEM_RARITY, ITEM_TYPE } from '../games/consts/global';
 import type { GameItemAvailabilityCreationAttributes } from './GameItemAvailability';
 import { createOrUpdateItemAvailability } from './GameItemAvailability';
 
-import { ArenaPlayer, ItemRarity, ItemArmor, ItemWeapon, ItemHealthKit, Trait, ItemTrait, /*TowerRaider,*/ ArenaItemInventory, /*TowerItemInventory,*/ GameItemAvailability, Game } from './';
+import {
+  ArenaPlayer,
+  ItemRarity,
+  ItemArmor,
+  ItemWeapon,
+  ItemHealthKit,
+  Trait,
+  ItemTrait,
+  /*TowerRaider,*/ ArenaItemInventory,
+  /*TowerItemInventory,*/ GameItemAvailability,
+  Game,
+} from './';
 
 interface ItemAttributes {
   id: number;
@@ -40,7 +51,7 @@ export interface ItemCreationAttributes {
 }
 
 function itemTypeToClass(itemType: ITEM_TYPE) {
-  switch(itemType) {
+  switch (itemType) {
     case ITEM_TYPE.ARMOR:
       return ItemArmor;
     case ITEM_TYPE.WEAPON:
@@ -60,10 +71,9 @@ function itemTypeToClass(itemType: ITEM_TYPE) {
     {
       fields: ['_ItemRarity'],
     },
-  ]
+  ],
 })
-export class Item extends Model<ItemAttributes, ItemCreationAttributes>
-implements ItemAttributes {
+export class Item extends Model<ItemAttributes, ItemCreationAttributes> implements ItemAttributes {
   @PrimaryKey
   @AutoIncrement
   @Column(DataType.INTEGER)
@@ -132,7 +142,7 @@ implements ItemAttributes {
     _gameItemAvailability: Association<Item, GameItemAvailability>;
     _rarity: Association<Item, ItemRarity>;
     _traits: Association<Item, Trait>;
-  }
+  };
 
   isLegendayItem(): boolean {
     return this._itemRarityId === ITEM_RARITY.LEGENDARY;
@@ -148,15 +158,9 @@ implements ItemAttributes {
 }
 
 export async function createOrUpdateItem(
-  {
-    name,
-    emoji,
-    usageLimit,
-    _itemRarityId,
-    type,
-  }: ItemCreationAttributes,
+  { name, emoji, usageLimit, _itemRarityId, type }: ItemCreationAttributes,
   itemsAvailability: GameItemAvailabilityCreationAttributes[],
-  transaction: Transaction,
+  transaction: Transaction
 ) {
   const [item] = await Item.upsert(
     {
@@ -169,22 +173,21 @@ export async function createOrUpdateItem(
     { transaction }
   );
   await Promise.all(
-    itemsAvailability
-      .map(({ _gameId, isArchived }) => 
-        createOrUpdateItemAvailability({ _gameId, _itemId: item.id, isArchived, isActive: !isArchived, }, transaction)
+    itemsAvailability.map(({ _gameId, isArchived }) =>
+      createOrUpdateItemAvailability(
+        { _gameId, _itemId: item.id, isArchived, isActive: !isArchived },
+        transaction
       )
+    )
   );
   return item;
 }
 
 export async function findItemById(itemId: number, itemType: ITEM_TYPE, transaction?: Transaction) {
-  return Item.findByPk(
-    itemId,
-    {
-      include: [itemTypeToClass(itemType)],
-      transaction
-    }
-  );
+  return Item.findByPk(itemId, {
+    include: [itemTypeToClass(itemType)],
+    transaction,
+  });
 }
 
 export async function findItemsByRarity(rarityId: ITEM_RARITY, transaction?: Transaction) {
@@ -194,19 +197,27 @@ export async function findItemsByRarity(rarityId: ITEM_RARITY, transaction?: Tra
   });
 }
 
-export async function findItemsByRarityAndType(rarityId: ITEM_RARITY, itemType: ITEM_TYPE, transaction?: Transaction) {
+export async function findItemsByRarityAndType(
+  rarityId: ITEM_RARITY,
+  itemType: ITEM_TYPE,
+  transaction?: Transaction
+) {
   return Item.findAll({
-    where: { type: itemType , _itemRarityId: rarityId },
+    where: { type: itemType, _itemRarityId: rarityId },
     include: [itemTypeToClass(itemType)],
     transaction,
   });
 }
 
-export async function findItemByName(itemName: string, itemType: ITEM_TYPE, transaction?: Transaction) {
+export async function findItemByName(
+  itemName: string,
+  itemType: ITEM_TYPE,
+  transaction?: Transaction
+) {
   return Item.findOne({
     where: { name: itemName },
     include: [itemTypeToClass(itemType)],
-    transaction
+    transaction,
   });
 }
 
@@ -220,7 +231,7 @@ export function listActiveItemsByGameType(gameType: GAME_TYPE, transaction?: Tra
           {
             model: Game,
             where: { type: gameType },
-          }
+          },
         ],
       },
     ],

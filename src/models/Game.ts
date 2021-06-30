@@ -46,8 +46,7 @@ export interface GameCreationAttributes {
     },
   ],
 })
-export class Game extends Model<GameAttributes, GameCreationAttributes>
-implements GameAttributes {
+export class Game extends Model<GameAttributes, GameCreationAttributes> implements GameAttributes {
   @PrimaryKey
   @AutoIncrement
   @Column(DataType.INTEGER)
@@ -80,7 +79,7 @@ implements GameAttributes {
 
   static associations: {
     _createdBy: Association<Game, User>;
-  }
+  };
 
   async endGame(transaction: Transaction) {
     await this.update(
@@ -96,7 +95,10 @@ implements GameAttributes {
 
 const basicUserInfo = ['id', 'displayName', 'slackId', 'email'];
 
-export async function createGame({ name, _createdById, startedAt, type }: GameCreationAttributes, transaction: Transaction) {
+export async function createGame(
+  { name, _createdById, startedAt, type }: GameCreationAttributes,
+  transaction: Transaction
+) {
   const newGame = Game.build({
     name,
     isActive: true,
@@ -143,13 +145,16 @@ export async function findLastActiveGame(type: GAME_TYPE, transaction?: Transact
   });
 }
 
-export async function startGame({ name, _createdById, type, startedAt }: GameCreationAttributes, transaction: Transaction) {
+export async function startGame(
+  { name, _createdById, type, startedAt }: GameCreationAttributes,
+  transaction: Transaction
+) {
   if (!name || !name.trim()) {
     name = generateRandomNameForGame(type);
   }
   const activeGame = await findActiveGame(type, transaction);
   if (activeGame) {
-    throw Error('There is an active game. End it first, then try to create a new one')
+    throw Error('There is an active game. End it first, then try to create a new one');
   }
   return createGame({ name, _createdById, type, startedAt }, transaction);
 }

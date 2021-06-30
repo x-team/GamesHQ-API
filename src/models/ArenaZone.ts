@@ -14,10 +14,7 @@ import {
   AutoIncrement,
 } from 'sequelize-typescript';
 
-import {
-  ARENA_ZONE_RING,
-  RING_SYSTEM_MAX_PENALTY_NUMBER,
-} from '../games/arena/consts';
+import { ARENA_ZONE_RING, RING_SYSTEM_MAX_PENALTY_NUMBER } from '../games/arena/consts';
 import { arenaZoneCapacity } from '../games/arena/utils';
 import { SORT_ACTION_ARRAY_RATE } from '../games/consts/global';
 
@@ -51,8 +48,10 @@ export interface ArenaZoneCreationAttributes {
     },
   ],
 })
-export class ArenaZone extends Model<ArenaZoneAttributes, ArenaZoneCreationAttributes>
-implements ArenaZoneAttributes {
+export class ArenaZone
+  extends Model<ArenaZoneAttributes, ArenaZoneCreationAttributes>
+  implements ArenaZoneAttributes
+{
   @PrimaryKey
   @AutoIncrement
   @Column(DataType.INTEGER)
@@ -82,7 +81,7 @@ implements ArenaZoneAttributes {
 
   static associations: {
     _players: Association<ArenaZone, ArenaPlayer>;
-  }
+  };
 }
 
 export function findAllArenaZones(transaction?: Transaction) {

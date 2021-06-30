@@ -9,7 +9,7 @@ import {
   BelongsTo,
 } from 'sequelize-typescript';
 
-import type { GAME_TYPE, ITEM_RARITY} from '../games/consts/global';
+import type { GAME_TYPE, ITEM_RARITY } from '../games/consts/global';
 import { ITEM_TYPE } from '../games/consts/global';
 
 import { Game } from './Game';
@@ -31,8 +31,10 @@ interface ItemHealthKitCreationAttributes {
 }
 
 @Table
-export class ItemHealthKit extends Model<ItemHealthKitAttributes, ItemHealthKitCreationAttributes>
-implements ItemHealthKitAttributes {
+export class ItemHealthKit
+  extends Model<ItemHealthKitAttributes, ItemHealthKitCreationAttributes>
+  implements ItemHealthKitAttributes
+{
   @Column(DataType.INTEGER)
   healingPower!: number;
 
@@ -46,24 +48,16 @@ implements ItemHealthKitAttributes {
 
   static associations: {
     _item: Association<ItemHealthKit, Item>;
-  }
+  };
 }
 
 export async function createOrUpdateHealthkit(
-  {
-    name,
-    emoji,
-    usageLimit,
-    _itemRarityId,
-    type,
-  }: ItemCreationAttributes,
-  {
-    healingPower,
-  }: ItemHealthKitCreationAttributes,
+  { name, emoji, usageLimit, _itemRarityId, type }: ItemCreationAttributes,
+  { healingPower }: ItemHealthKitCreationAttributes,
   itemsAvailability: GameItemAvailabilityCreationAttributes[],
   transaction: Transaction
-  ) {
-    const item = await createOrUpdateItem(
+) {
+  const item = await createOrUpdateItem(
     {
       name,
       emoji,
@@ -72,7 +66,7 @@ export async function createOrUpdateHealthkit(
       type,
     },
     itemsAvailability,
-    transaction,
+    transaction
   );
 
   return ItemHealthKit.upsert(
@@ -84,7 +78,10 @@ export async function createOrUpdateHealthkit(
   );
 }
 
-export async function listActivehealthkitsByGameType(gameType: GAME_TYPE, transaction?: Transaction) {
+export async function listActivehealthkitsByGameType(
+  gameType: GAME_TYPE,
+  transaction?: Transaction
+) {
   return Item.findAll({
     where: { type: ITEM_TYPE.HEALTH_KIT },
     include: [
@@ -95,7 +92,7 @@ export async function listActivehealthkitsByGameType(gameType: GAME_TYPE, transa
           {
             model: Game,
             where: { type: gameType },
-          }
+          },
         ],
       },
       ItemHealthKit,

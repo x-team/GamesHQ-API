@@ -9,7 +9,7 @@ import {
   BelongsTo,
 } from 'sequelize-typescript';
 
-import type { GAME_TYPE, ITEM_RARITY} from '../games/consts/global';
+import type { GAME_TYPE, ITEM_RARITY } from '../games/consts/global';
 import { ITEM_TYPE } from '../games/consts/global';
 
 import { Game } from './Game';
@@ -33,8 +33,10 @@ interface ItemWeaponCreationAttributes {
 }
 
 @Table
-export class ItemWeapon extends Model<ItemWeaponAttributes, ItemWeaponCreationAttributes>
-implements ItemWeaponAttributes {
+export class ItemWeapon
+  extends Model<ItemWeaponAttributes, ItemWeaponCreationAttributes>
+  implements ItemWeaponAttributes
+{
   @Column(DataType.INTEGER)
   minorDamageRate!: number;
 
@@ -51,25 +53,16 @@ implements ItemWeaponAttributes {
 
   static associations: {
     _item: Association<ItemWeapon, Item>;
-  }
+  };
 }
 
 export async function createOrUpdateWeapon(
-  {
-    name,
-    emoji,
-    usageLimit,
-    _itemRarityId,
-    type,
-  }: ItemCreationAttributes,
-  {
-    minorDamageRate,
-    majorDamageRate,
-  }: ItemWeaponCreationAttributes,
+  { name, emoji, usageLimit, _itemRarityId, type }: ItemCreationAttributes,
+  { minorDamageRate, majorDamageRate }: ItemWeaponCreationAttributes,
   itemsAvailability: GameItemAvailabilityCreationAttributes[],
   transaction: Transaction
-  ) {
-    const item = await createOrUpdateItem(
+) {
+  const item = await createOrUpdateItem(
     {
       name,
       emoji,
@@ -78,7 +71,7 @@ export async function createOrUpdateWeapon(
       type,
     },
     itemsAvailability,
-    transaction,
+    transaction
   );
 
   return ItemWeapon.upsert(
@@ -102,7 +95,7 @@ export async function listActiveWeaponsByGameType(gameType: GAME_TYPE, transacti
           {
             model: Game,
             where: { type: gameType },
-          }
+          },
         ],
       },
       ItemWeapon,

@@ -1,6 +1,14 @@
 import { Op } from 'sequelize';
 import type { Transaction } from 'sequelize';
-import { Table, Column, Model, DataType, ForeignKey, BelongsTo, PrimaryKey } from 'sequelize-typescript';
+import {
+  Table,
+  Column,
+  Model,
+  DataType,
+  ForeignKey,
+  BelongsTo,
+  PrimaryKey,
+} from 'sequelize-typescript';
 
 import { TRAITS } from '../games/consts/global';
 
@@ -24,8 +32,10 @@ interface TraitCreationAttributes {
     },
   ],
 })
-export class ItemTrait extends Model<TraitAttributes, TraitCreationAttributes>
-implements TraitAttributes {
+export class ItemTrait
+  extends Model<TraitAttributes, TraitCreationAttributes>
+  implements TraitAttributes
+{
   @PrimaryKey
   @ForeignKey(() => Item)
   @Column(DataType.INTEGER)
@@ -43,11 +53,7 @@ implements TraitAttributes {
   _trait?: Trait;
 }
 
-export async function refreshItemTraits(
-  item: Item,
-  traits: string[],
-  transaction?: Transaction,
-) {
+export async function refreshItemTraits(item: Item, traits: string[], transaction?: Transaction) {
   if (traits.length == 0) {
     return;
   }

@@ -9,7 +9,7 @@ import {
   BelongsTo,
 } from 'sequelize-typescript';
 
-import type { GAME_TYPE, ITEM_RARITY} from '../games/consts/global';
+import type { GAME_TYPE, ITEM_RARITY } from '../games/consts/global';
 import { ITEM_TYPE } from '../games/consts/global';
 
 import { Game } from './Game';
@@ -31,8 +31,10 @@ interface ItemArmorCreationAttributes {
 }
 
 @Table
-export class ItemArmor extends Model<ItemArmorAttributes, ItemArmorCreationAttributes>
-implements ItemArmorAttributes {
+export class ItemArmor
+  extends Model<ItemArmorAttributes, ItemArmorCreationAttributes>
+  implements ItemArmorAttributes
+{
   @Column(DataType.DOUBLE)
   reductionRate!: number;
 
@@ -46,24 +48,16 @@ implements ItemArmorAttributes {
 
   static associations: {
     _item: Association<ItemArmor, Item>;
-  }
+  };
 }
 
 export async function createOrUpdateArmor(
-  {
-    name,
-    emoji,
-    usageLimit,
-    _itemRarityId,
-    type,
-  }: ItemCreationAttributes,
-  {
-    reductionRate,
-  }: ItemArmorCreationAttributes,
+  { name, emoji, usageLimit, _itemRarityId, type }: ItemCreationAttributes,
+  { reductionRate }: ItemArmorCreationAttributes,
   itemsAvailability: GameItemAvailabilityCreationAttributes[],
   transaction: Transaction
-  ) {
-    const item = await createOrUpdateItem(
+) {
+  const item = await createOrUpdateItem(
     {
       name,
       emoji,
@@ -72,7 +66,7 @@ export async function createOrUpdateArmor(
       type,
     },
     itemsAvailability,
-    transaction,
+    transaction
   );
 
   return ItemArmor.upsert(
@@ -95,7 +89,7 @@ export async function listActiveArmorsByGameType(gameType: GAME_TYPE, transactio
           {
             model: Game,
             where: { type: gameType },
-          }
+          },
         ],
       },
       ItemArmor,
