@@ -11,9 +11,9 @@ import { initDb, sequelize } from './db';
   // Setup
   await initDb();
   await sequelize.sync({ force: true });
-  // logger.info({
-  //   yell: true,
-  //   message: '🚀 Helllo from super logger 🚀\n\t⭐️⭐️⭐️⭐️⭐️',
-  // });
+  logger.info({
+    yell: true,
+    message: '🚀 Helllo from super logger 🚀\n\t⭐️⭐️⭐️⭐️⭐️',
+  });
   // logger.info('🚀 Helllo from super logger 🚀\n\t⭐️⭐️⭐️⭐️⭐️');
 })();
