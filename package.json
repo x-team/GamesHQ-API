@@ -1,0 +1,39 @@
+{
+  "name": "gameshq-api",
+  "version": "1.0.0",
+  "description": "Headquarters of all the things XTeam games",
+  "main": "index.js",
+  "scripts": {
+    "start": "npm run prepare-db && node dist/src/index.js",
+    "clean": "rm -rf dist",
+    "build": "npm run clean && tsc && rsync -av --exclude='*.ts' src/ dist/src",
+    "build:start": "npm run build && npm run start",
+    "db:seed:up": "ts-node --transpile-only -e 'require(`./migrate.ts`).seedUp()'",
+    "db:seed:down": "ts-node --transpile-only -e 'require(`./migrate.ts`).seedDown()'",
+    "db:migrate:up": "ts-node --transpile-only -e 'require(`./migrate.ts`).migrateUp()'",
+    "db:migrate:down": "ts-node --transpile-only -e 'require(`./migrate.ts`).migrateDown()'",
+    "//1": "/*****************************************************************************",
+    "//2": "* Rest of those commands are used internally and should not be used directly!",
+    "//3": "*****************************************************************************/",
+    "prepare-db": "npm run db:seed:up && npm run db:migrate:up"
+  },
+  "author": "X-Team Community",
+  "license": "ISC",
+  "dependencies": {
+    "@hapi/boom": "9.1.2",
+    "dotenv": "10.0.0",
+    "pg": "8.6.0",
+    "reflect-metadata": "0.1.13",
+    "sequelize": "6.6.4",
+    "sequelize-typescript": "2.1.0",
+    "sql-log-prettifier": "^0.1.2"
+  },
+  "devDependencies": {
+    "@types/node": "15.12.5",
+    "@types/lodash": "4.14.170",
+    "@types/validator": "13.1.4",
+    "ts-node": "10.0.0",
+    "typescript": "4.3.4",
+    "umzug": "3.0.0-beta.16"
+  }
+}

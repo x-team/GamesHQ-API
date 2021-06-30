@@ -1,0 +1,15 @@
+version: '3.7'
+
+services:
+  gameshq_api_db:
+    image: postgres:10-alpine
+    ports:
+      - '5434:5432'
+    environment:
+      POSTGRES_USER: 'postgres'
+      POSTGRES_DB: 'gameshq_api'
+      POSTGRES_PASSWORD: '*games-2021'
+    volumes:
+      - postgres:/var/lib/postgresql/data
+volumes:
+  postgres:
