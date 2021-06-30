@@ -1,6 +1,6 @@
-import { isNumber } from 'lodash';
-import type { FindOptions, Transaction } from 'sequelize';
-import { Op } from 'sequelize';
+import { isNumber } from "lodash";
+import type { FindOptions, Transaction } from "sequelize";
+import { Op } from "sequelize";
 import {
   AllowNull,
   AutoIncrement,
@@ -15,9 +15,9 @@ import {
   PrimaryKey,
   Scopes,
   Table,
-} from 'sequelize-typescript';
+} from "sequelize-typescript";
 
-import { USER_TYPE } from '../models-consts';
+import { USER_TYPE } from "../models-consts";
 import {
   ARENA_ITEM,
   LUCK_BOOST,
@@ -25,15 +25,15 @@ import {
   MAX_AMOUNT_ItemHealthkitS_ALLOWED,
   MAX_BOSS_HEALTH,
   MAX_PLAYER_HEALTH,
-} from '../plugins/slack-integrations/arena/consts';
-import { randomInt } from '../plugins/slack-integrations/arena/utils';
-import { SLACK_SPACE } from '../plugins/slack-integrations/games/consts';
-import { parseEscapedSlackUserValues } from '../plugins/slack-integrations/utils';
+} from "../plugins/slack-integrations/arena/consts";
+import { randomInt } from "../plugins/slack-integrations/arena/utils";
+import { SLACK_SPACE } from "../plugins/slack-integrations/games/consts";
+import { parseEscapedSlackUserValues } from "../plugins/slack-integrations/utils";
 
-import { addAmmoToInventory, getPlayerItemCount } from './ArenaItemInventory';
-import { findAvailableArenaZonesToLand } from './ArenaZone';
-import { findActiveTeamByName } from './Team';
-import { findArenaUserBySlackId, setTeamToUser } from './User';
+import { addAmmoToInventory, getPlayerItemCount } from "./ArenaItemInventory";
+import { findAvailableArenaZonesToLand } from "./ArenaZone";
+import { findActiveTeamByName } from "./Team";
+import { findArenaUserBySlackId, setTeamToUser } from "./User";
 
 import {
   Item,
@@ -47,18 +47,15 @@ import {
   ArenaRoundAction,
   Team,
   User,
-} from '.';
-import { TRAITS } from '../games/consts/global';
-import { Ability, AbilityProperty } from '../games/model/GameAbilities';
+} from ".";
+import { TRAITS } from "../games/consts/global";
+import { Ability, AbilityProperty } from "../games/classes/GameAbilities";
 
 interface ArenaPlayerAttributes {
   id: number;
-
 }
 
-interface ArenaPlayerCreationAttributes {
-
-}
+interface ArenaPlayerCreationAttributes {}
 
 function withInventory(allInventory?: boolean): FindOptions {
   return {
@@ -83,15 +80,17 @@ function withInventory(allInventory?: boolean): FindOptions {
   indexes: [
     {
       unique: true,
-      fields: ['_arenaGameId', '_userId'],
+      fields: ["_arenaGameId", "_userId"],
     },
     {
-      fields: ['_arenaZoneId'],
+      fields: ["_arenaZoneId"],
     },
   ],
 })
-export class ArenaPlayer extends Model<ArenaPlayerAttributes, ArenaPlayerCreationAttributes>
-implements ArenaPlayerAttributes {
+export class ArenaPlayer
+  extends Model<ArenaPlayerAttributes, ArenaPlayerCreationAttributes>
+  implements ArenaPlayerAttributes
+{
   @PrimaryKey
   @AutoIncrement
   @Column(DataType.INTEGER)
@@ -117,8 +116,8 @@ implements ArenaPlayerAttributes {
   _teamId!: number | null;
 
   @BelongsTo(() => Team, {
-    foreignKey: '_teamId',
-    onUpdate: 'CASCADE',
+    foreignKey: "_teamId",
+    onUpdate: "CASCADE",
   })
   _team?: Team | null;
 
@@ -155,25 +154,25 @@ implements ArenaPlayerAttributes {
 
   @BelongsToMany(() => ItemWeapon, {
     through: () => ArenaItemInventory,
-    foreignKey: '_arenaPlayerId',
-    otherKey: '_ItemId',
-    as: '_ItemWeapons',
+    foreignKey: "_arenaPlayerId",
+    otherKey: "_ItemId",
+    as: "_ItemWeapons",
   })
   _ItemWeapons?: Array<ItemWeapon & { ArenaItemInventory: ArenaItemInventory }>;
 
   @BelongsToMany(() => ItemArmor, {
     through: () => ArenaItemInventory,
-    foreignKey: '_arenaPlayerId',
-    otherKey: '_ItemId',
-    as: '_ItemArmors',
+    foreignKey: "_arenaPlayerId",
+    otherKey: "_ItemId",
+    as: "_ItemArmors",
   })
   _ItemArmors?: Array<ItemArmor & { ArenaItemInventory: ArenaItemInventory }>;
 
   @BelongsToMany(() => ItemHealthKit, {
     through: () => ArenaItemInventory,
-    foreignKey: '_arenaPlayerId',
-    otherKey: '_ItemId',
-    as: '_items',
+    foreignKey: "_arenaPlayerId",
+    otherKey: "_ItemId",
+    as: "_items",
   })
   _items?: Array<Item & { ArenaItemInventory: ArenaItemInventory }>;
 
@@ -205,7 +204,9 @@ export async function findPlayerByUser(
   includeInventories: boolean,
   transaction?: Transaction
 ) {
-  return ArenaPlayer.scope({ method: ['withInventory', includeInventories] }).findOne({
+  return ArenaPlayer.scope({
+    method: ["withInventory", includeInventories],
+  }).findOne({
     where: { _arenaGameId: gameId, _userId: userId },
     transaction,
   });
@@ -216,7 +217,9 @@ export async function findPlayerById(
   includeInventories: boolean,
   transaction?: Transaction
 ) {
-  return ArenaPlayer.scope({ method: ['withInventory', includeInventories] }).findByPk(playerId, {
+  return ArenaPlayer.scope({
+    method: ["withInventory", includeInventories],
+  }).findByPk(playerId, {
     transaction,
   });
 }
@@ -226,7 +229,9 @@ export async function findPlayersByGame(
   includeInventories: boolean,
   transaction?: Transaction
 ) {
-  return ArenaPlayer.scope({ method: ['withInventory', includeInventories] }).findAll({
+  return ArenaPlayer.scope({
+    method: ["withInventory", includeInventories],
+  }).findAll({
     where: { _arenaGameId: gameId },
     transaction,
   });
@@ -237,7 +242,9 @@ export async function findVisiblePlayers(
   includeInventories: boolean,
   transaction?: Transaction
 ) {
-  return ArenaPlayer.scope({ method: ['withInventory', includeInventories] }).findAll({
+  return ArenaPlayer.scope({
+    method: ["withInventory", includeInventories],
+  }).findAll({
     where: { _arenaGameId: gameId, isVisible: true },
     transaction,
   });
@@ -260,7 +267,9 @@ export function addArenaPlayers(
   transaction: Transaction
 ) {
   return Promise.all(
-    users.map((user) => getOrCreatePlayer({ gameId, user, isBoss: areBosses }, transaction))
+    users.map((user) =>
+      getOrCreatePlayer({ gameId, user, isBoss: areBosses }, transaction)
+    )
   );
 }
 
@@ -281,17 +290,21 @@ export async function getOrCreateBossesOrGuests({
   const team = teamName ? await findActiveTeamByName(teamName) : null;
   for (const fullSlackId of fullSlackIds) {
     const slackId = parseEscapedSlackUserValues(fullSlackId);
-    const [slackDisplayedName] = parseEscapedSlackUserValues(fullSlackId, ['username']);
-    const emailAdress = slackDisplayedName?.toLowerCase().replace(`${SLACK_SPACE}`, '');
+    const [slackDisplayedName] = parseEscapedSlackUserValues(fullSlackId, [
+      "username",
+    ]);
+    const emailAdress = slackDisplayedName
+      ?.toLowerCase()
+      .replace(`${SLACK_SPACE}`, "");
     let mutableUser = await findArenaUserBySlackId(slackId as string);
 
     if (!mutableUser) {
       mutableUser = await User.create({
-        email: `${emailAdress}-game-${isBoss ? 'boss' : 'guest'}@x-team.com`,
+        email: `${emailAdress}-game-${isBoss ? "boss" : "guest"}@x-team.com`,
         displayName: slackDisplayedName,
         isActive: true,
         slackId,
-        avatarUrl: 'http://some.url.localhost/avatar.jpg',
+        avatarUrl: "http://some.url.localhost/avatar.jpg",
         _roleId: 1,
         _typeId: USER_TYPE.DEVELOPER,
         _currencyId: 1,
@@ -330,7 +343,9 @@ export async function getOrCreatePlayer(
   });
 
   const activeItemWeapons = await listActiveItemWeapons();
-  const foundItemWeapons = activeItemWeapons.filter((ItemWeapon) => ItemWeapon.hasItemTrait(TRAITS.INITIAL))!;
+  const foundItemWeapons = activeItemWeapons.filter((ItemWeapon) =>
+    ItemWeapon.hasItemTrait(TRAITS.INITIAL)
+  )!;
   for (const ItemWeapon of foundItemWeapons) {
     await addPlayerItemWeapon(player, ItemWeapon, transaction);
   }
@@ -342,7 +357,9 @@ export async function setPlayerVisibility(
   isVisible: boolean,
   transaction: Transaction
 ) {
-  return player.isVisible !== isVisible ? player.update({ isVisible }, { transaction }) : player;
+  return player.isVisible !== isVisible
+    ? player.update({ isVisible }, { transaction })
+    : player;
 }
 
 export async function setAllPlayerVisibility(
@@ -377,8 +394,17 @@ export async function addPlayerItem(
   quantity: number,
   transaction: Transaction
 ) {
-  const currentQuantity = await getPlayerItemQty(player.id, itemId, transaction);
-  return setPlayerItemQuantity(player, itemId, currentQuantity + quantity, transaction);
+  const currentQuantity = await getPlayerItemQty(
+    player.id,
+    itemId,
+    transaction
+  );
+  return setPlayerItemQuantity(
+    player,
+    itemId,
+    currentQuantity + quantity,
+    transaction
+  );
 }
 
 export async function subtractPlayerItem(
@@ -387,8 +413,17 @@ export async function subtractPlayerItem(
   quantity: number,
   transaction: Transaction
 ) {
-  const currentQuantity = await getPlayerItemQty(player.id, itemId, transaction);
-  return setPlayerItemQuantity(player, itemId, currentQuantity - quantity, transaction);
+  const currentQuantity = await getPlayerItemQty(
+    player.id,
+    itemId,
+    transaction
+  );
+  return setPlayerItemQuantity(
+    player,
+    itemId,
+    currentQuantity - quantity,
+    transaction
+  );
 }
 
 export async function setPlayerItemQuantity(
@@ -430,7 +465,10 @@ export function ItemArmorsAvailable(
   });
 }
 
-export async function getPlayerItemArmors(playerId: number, transaction?: Transaction) {
+export async function getPlayerItemArmors(
+  playerId: number,
+  transaction?: Transaction
+) {
   return ArenaItemInventory.findAll({
     where: {
       _arenaPlayerId: playerId,
@@ -521,12 +559,20 @@ export async function addPlayerItemWeapon(
   transaction: Transaction
 ) {
   // check if ItemWeapon already exists
-  const ItemWeaponQty = await getPlayerItemWeaponCount({ player, ItemWeapon }, transaction);
+  const ItemWeaponQty = await getPlayerItemWeaponCount(
+    { player, ItemWeapon },
+    transaction
+  );
 
   if (ItemWeaponQty > 0 && ItemWeapon.usageLimit !== null) {
     // Add ammo to ItemWeapon when it exists
-    const playerItemWeapon = player._ItemWeapons?.find((w) => w.id === ItemWeapon.id)!;
-    await addAmmoToInventory({ ItemWeapon: playerItemWeapon, player }, transaction);
+    const playerItemWeapon = player._ItemWeapons?.find(
+      (w) => w.id === ItemWeapon.id
+    )!;
+    await addAmmoToInventory(
+      { ItemWeapon: playerItemWeapon, player },
+      transaction
+    );
   } else if (!ItemWeaponQty) {
     await ArenaItemInventory.create(
       {
@@ -541,14 +587,20 @@ export async function addPlayerItemWeapon(
   return player.reloadFullInventory(transaction);
 }
 
-export async function getPlayerItemWeaponQty(playerId: number, transaction?: Transaction) {
+export async function getPlayerItemWeaponQty(
+  playerId: number,
+  transaction?: Transaction
+) {
   return ArenaItemInventory.count({
     where: { _arenaPlayerId: playerId },
     transaction,
   });
 }
 
-export async function getPlayerItemWeapons(playerId: number, transaction?: Transaction) {
+export async function getPlayerItemWeapons(
+  playerId: number,
+  transaction?: Transaction
+) {
   return ArenaItemInventory.findAll({
     where: {
       _arenaPlayerId: playerId,
@@ -562,7 +614,9 @@ export async function getPlayerItemWeapons(playerId: number, transaction?: Trans
 }
 
 export function ItemWeaponsAvailable(
-  ItemWeapons: Array<ItemWeapon & { ArenaItemInventory: ArenaItemInventory }> = []
+  ItemWeapons: Array<
+    ItemWeapon & { ArenaItemInventory: ArenaItemInventory }
+  > = []
 ) {
   return ItemWeapons.filter((ItemWeapon) => {
     const remainingUses = ItemWeapon.ArenaItemInventory.remainingUses;
@@ -645,14 +699,19 @@ export async function findLivingPlayersByGame(
   includeInventories: boolean,
   transaction?: Transaction
 ) {
-  return ArenaPlayer.scope({ method: ['withInventory', includeInventories] }).findAll({
+  return ArenaPlayer.scope({
+    method: ["withInventory", includeInventories],
+  }).findAll({
     where: { _arenaGameId: gameId, health: { [Op.gt]: 0 } },
-    order: [['health', 'DESC']],
+    order: [["health", "DESC"]],
     transaction,
   });
 }
 
-export async function findSpectatorsByGame(gameId: number, transaction?: Transaction) {
+export async function findSpectatorsByGame(
+  gameId: number,
+  transaction?: Transaction
+) {
   return ArenaPlayer.findAll({
     where: { _arenaGameId: gameId, isSpectator: true },
     transaction,
@@ -673,7 +732,10 @@ export async function boostLuck(player: ArenaPlayer, transaction: Transaction) {
   await boostCustomLuck(player, LUCK_BOOST, transaction);
 }
 
-export async function boostLuckWithElixir(player: ArenaPlayer, transaction: Transaction) {
+export async function boostLuckWithElixir(
+  player: ArenaPlayer,
+  transaction: Transaction
+) {
   await boostCustomLuck(player, LUCK_ELIXIR_BOOST, transaction);
 }
 
@@ -692,7 +754,8 @@ export function addArenaPlayersToZones(
 ) {
   return Promise.all(
     arenaPlayers.map(async (player) => {
-      const availableZones = zones ?? (await findAvailableArenaZonesToLand(transaction));
+      const availableZones =
+        zones ?? (await findAvailableArenaZonesToLand(transaction));
       const zone = availableZones[randomInt(availableZones.length)];
       await setPlayerZone({ player, zone }, transaction);
     })
@@ -711,7 +774,10 @@ export async function setPlayerZone(
   });
 }
 
-export function removePlayersFromArenaZones(players: ArenaPlayer[], transaction: Transaction) {
+export function removePlayersFromArenaZones(
+  players: ArenaPlayer[],
+  transaction: Transaction
+) {
   return ArenaPlayer.update(
     {
       _arenaZoneId: null,
@@ -733,9 +799,15 @@ export async function getIdlePlayers(
   transaction: Transaction
 ) {
   const playersWithActions = actions.map((action) => action._player!);
-  const playersAlive = await findLivingPlayersByGame(gameId, false, transaction);
+  const playersAlive = await findLivingPlayersByGame(
+    gameId,
+    false,
+    transaction
+  );
 
-  const idlePlayers = playersAlive.filter(compareAndSubtract(playersWithActions));
+  const idlePlayers = playersAlive.filter(
+    compareAndSubtract(playersWithActions)
+  );
   return idlePlayers;
 }
 

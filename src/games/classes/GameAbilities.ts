@@ -1,4 +1,4 @@
-import { roundTwoDecimalPlaces } from '../utils/math';
+import { roundTwoDecimalPlaces } from "../utils/math";
 
 export type AbilityPropertyKeys = keyof AbilityProperty;
 export interface AbilityProperty {
@@ -45,9 +45,9 @@ export class Ability {
   static isFlatValue(abilityKey: AbilityPropertyKeys): boolean {
     const stringAbilityKey = abilityKey as string;
     return (
-      stringAbilityKey === 'flatAttackBonus' ||
-      stringAbilityKey === 'flatDefenseBonus' ||
-      stringAbilityKey === 'flatHealingBoost'
+      stringAbilityKey === "flatAttackBonus" ||
+      stringAbilityKey === "flatDefenseBonus" ||
+      stringAbilityKey === "flatHealingBoost"
     );
   }
 
@@ -64,15 +64,20 @@ export class Ability {
     this.properties = { ...Ability.defaultProps(), ...assignProps };
   }
 
-  calculateAbilities(abilities: AbilityProperty, flatValuesMultiplier?: number) {
+  calculateAbilities(
+    abilities: AbilityProperty,
+    flatValuesMultiplier?: number
+  ) {
     // Multipliers will only affect flat values
     const newAbilitiesJSON = this.toJSON();
-    (Object.keys(newAbilitiesJSON) as AbilityPropertyKeys[]).forEach((key: AbilityPropertyKeys) => {
-      newAbilitiesJSON[key] +=
-        flatValuesMultiplier && Ability.isFlatValue(key)
-          ? abilities[key] * flatValuesMultiplier
-          : abilities[key];
-    });
+    (Object.keys(newAbilitiesJSON) as AbilityPropertyKeys[]).forEach(
+      (key: AbilityPropertyKeys) => {
+        newAbilitiesJSON[key] +=
+          flatValuesMultiplier && Ability.isFlatValue(key)
+            ? abilities[key] * flatValuesMultiplier
+            : abilities[key];
+      }
+    );
     this.properties = newAbilitiesJSON;
   }
 
@@ -88,7 +93,10 @@ export class Ability {
     return val;
   }
 
-  set<T extends keyof AbilityProperty>(name: T, value: AbilityProperty[T]): void {
+  set<T extends keyof AbilityProperty>(
+    name: T,
+    value: AbilityProperty[T]
+  ): void {
     if (!this.properties[name] === undefined) {
       throw new Error(`Cannot find Ability's property: ${name}`);
     }
