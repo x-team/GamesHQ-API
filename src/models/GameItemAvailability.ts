@@ -1,6 +1,15 @@
 import { Op } from 'sequelize';
-import type { Transaction , Association} from 'sequelize';
-import { Table, Column, Model, DataType, PrimaryKey, Default, ForeignKey, BelongsTo } from 'sequelize-typescript';
+import type { Transaction, Association } from 'sequelize';
+import {
+  Table,
+  Column,
+  Model,
+  DataType,
+  PrimaryKey,
+  Default,
+  ForeignKey,
+  BelongsTo,
+} from 'sequelize-typescript';
 
 import { Item, Game } from './';
 
@@ -21,15 +30,17 @@ export interface GameItemAvailabilityCreationAttributes {
 @Table({
   indexes: [
     {
-      fields: ['isArchived']
+      fields: ['isArchived'],
     },
     {
-      fields: ['isActive']
+      fields: ['isActive'],
     },
   ],
 })
-export class GameItemAvailability extends Model<GameItemAvailabilityAttributes, GameItemAvailabilityCreationAttributes>
-implements GameItemAvailabilityAttributes {
+export class GameItemAvailability
+  extends Model<GameItemAvailabilityAttributes, GameItemAvailabilityCreationAttributes>
+  implements GameItemAvailabilityAttributes
+{
   @PrimaryKey
   @ForeignKey(() => Game)
   @Column(DataType.INTEGER)
@@ -57,16 +68,12 @@ implements GameItemAvailabilityAttributes {
   static associations: {
     _game: Association<Item, Item>;
     _item: Association<Item, Item>;
-  }
+  };
 }
 
 export function createOrUpdateItemAvailability(
-  {
-    _gameId,
-    _itemId,
-    isArchived,
-  }: GameItemAvailabilityCreationAttributes,
-  transaction: Transaction,
+  { _gameId, _itemId, isArchived }: GameItemAvailabilityCreationAttributes,
+  transaction: Transaction
 ) {
   return GameItemAvailability.upsert(
     {
@@ -80,7 +87,6 @@ export function createOrUpdateItemAvailability(
     }
   );
 }
-
 
 export async function enableAllItems(gameId: number, transaction: Transaction) {
   return GameItemAvailability.update(
