@@ -1,3 +1,4 @@
+import { isNumber } from 'lodash';
 import type { QueryInterface, Sequelize } from 'sequelize';
 import { Op } from 'sequelize';
 
@@ -185,10 +186,10 @@ module.exports = {
       await queryInterface.bulkDelete(
         'UserRole',
         {
-          where: {
-            id: {
-              [Op.in]: Object.values(USER_ROLE_LEVEL).map((t) => t),
-            },
+          id: {
+            [Op.in]: Object.values(USER_ROLE_LEVEL)
+              .map((t) => t)
+              .filter((t) => isNumber(t)),
           },
         },
         { transaction }
