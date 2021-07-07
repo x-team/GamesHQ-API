@@ -15,9 +15,9 @@ import {
 
 import { GAME_TYPE, ONE, ZERO } from '../games/consts/global';
 
-import { createGameRound } from './ArenaRound';
+import { createArenaRound } from './ArenaRound';
 import { pickRingSystemAlgorithm } from './ArenaZone';
-import type { GameCreationAttributes } from './Game';
+import { findActiveGame, findLastActiveGame, GameCreationAttributes } from './Game';
 import { startGame } from './Game';
 
 import { ArenaPlayer, Game, ArenaRound, User } from './';
@@ -84,7 +84,11 @@ export class ArenaGame
   @Column(DataType.INTEGER)
   _gameId!: number;
 
-  @BelongsTo(() => Game, '_gameId')
+  @BelongsTo(() => Game, {
+    foreignKey: '_gameId',
+    onUpdate: 'CASCADE',
+    onDelete: 'CASCADE',
+  })
   _game?: Game;
 
   @HasMany(() => ArenaRound, '_arenaGameId')
@@ -155,17 +159,27 @@ export async function createArenaGame(
     _gameId: game.id,
   });
   const newArenaGame = await newArenaGameBuild.save({ transaction });
-  await createGameRound(newArenaGame.id, game._createdById, false, transaction);
-  return newArenaGame.reload({
+  await createArenaRound(
+    {
+      _createdById: game._createdById,
+      _gameId: newArenaGame.id,
+      isEveryoneVisible: false,
+      isActive: true,
+      startedAt: new Date(),
+      endedAt: null,
+    },
+    transaction
+  );
+  return game.reload({
     include: [
       {
-        model: Game,
-        include: {
-          model: User.unscoped(),
-          attributes: basicUserInfo,
-        },
+        model: User.unscoped(),
+        attributes: basicUserInfo,
       },
-      ArenaRound,
+      {
+        model: ArenaGame,
+        include: [ArenaRound],
+      },
     ],
     transaction,
   });
@@ -192,39 +206,9 @@ export async function startArenaGame(
 }
 
 export async function findActiveArenaGame(transaction?: Transaction) {
-  return ArenaGame.findOne({
-    include: [
-      {
-        model: Game,
-        where: { isActive: true, type: GAME_TYPE.ARENA },
-        include: {
-          model: User.unscoped(),
-          attributes: basicUserInfo,
-        },
-        order: [['startedAt', 'DESC']],
-      },
-      ArenaRound,
-    ],
-    where: {},
-    transaction,
-  });
+  return findActiveGame(GAME_TYPE.ARENA, transaction);
 }
 
 export async function findLastActiveArenaGame(transaction?: Transaction) {
-  return ArenaGame.findOne({
-    include: [
-      {
-        model: Game,
-        where: { isActive: false, type: GAME_TYPE.ARENA },
-        include: {
-          model: User.unscoped(),
-          attributes: basicUserInfo,
-        },
-        order: [['endedAt', 'DESC']],
-      },
-      ArenaRound,
-    ],
-    where: {},
-    transaction,
-  });
+  return findLastActiveGame(GAME_TYPE.ARENA, transaction);
 }

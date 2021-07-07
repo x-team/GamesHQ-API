@@ -5,12 +5,12 @@ if (getConfig('NODE_ENV') !== 'production') {
   dotenv.config({ path: '.env.dev' });
 }
 
-import { initDb, sequelize } from './db';
+import { initDb } from './db';
 
 (async () => {
   // Setup
   await initDb();
-  await sequelize.sync({ force: true });
+  // await sequelize.sync({ force: true });
   logger.info({
     yell: true,
     message: '🚀 Helllo from super logger 🚀\n\t⭐️⭐️⭐️⭐️⭐️',

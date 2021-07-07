@@ -1,17 +1,14 @@
 /* eslint-disable */
 import sinon from 'sinon';
 import { performance } from 'perf_hooks';
-import { identity as defaultTransformer } from 'lodash';
-import { ModelAttributes, BulkCreateOptions, Model, ModelType, ModelStatic } from 'sequelize';
 import { ArenaZone } from '../models';
 import { ARENA_ZONE_RING } from '../games/arena/consts';
 import { ArenaZoneCreationAttributes } from '../models/ArenaZone';
-import { initDb, sequelize, getAllModels, RawModel } from '../db';
-
+import { initDb, sequelize, getAllModels } from '../db';
 
 declare module 'mocha' {
   interface Suite {
-    xhqDontClearDBAfterEach?: boolean;
+    gameshqDontClearDBAfterEach?: boolean;
   }
 }
 
@@ -25,7 +22,7 @@ before(async function () {
     return;
   }
   this.test?.parent?.suites.forEach((suite) => {
-    if (suite.xhqDontClearDBAfterEach) {
+    if (suite.gameshqDontClearDBAfterEach) {
       // this means after each "describe"
       // much faster!
       suite.afterAll(clearDB);
@@ -61,9 +58,7 @@ after(() => {
 });
 
 async function clearDB() {
-  const TRUNCATE_BLACKLIST = [
-    'sequelize',
-  ];
+  const TRUNCATE_BLACKLIST = ['sequelize'];
 
   const keys = Object.keys(getAllModels()).filter((key) => !TRUNCATE_BLACKLIST.includes(key));
   const query = keys.map((key) => `TRUNCATE TABLE "${key}" RESTART IDENTITY CASCADE;`).join('\n');
@@ -95,7 +90,6 @@ const testArenaZoneData: ArenaZoneCreationAttributes = {
   isArchived: false,
 };
 
-
 // export function seedTestTeam(options = {}) {
 //   return Team.create({
 //     ...testTeamData,
@@ -115,13 +109,4 @@ export function seedTestArenaZone(options: Partial<ArenaZoneCreationAttributes>)
     ...testArenaZoneData,
     ...options,
   });
-}
-
-interface CreateEntitiesOptions<T> {
-  num?: number;
-  transform?: (
-    rawModel: Partial<RawModel<T>>,
-    i: number
-  ) => Partial<RawModel<T>> | Promise<Partial<RawModel<T>>>;
-  initialState?: Partial<RawModel<T>>;
 }

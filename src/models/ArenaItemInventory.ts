@@ -1,4 +1,4 @@
-import type { Transaction } from 'sequelize';
+import type { Association, Transaction } from 'sequelize';
 import {
   Table,
   Column,
@@ -55,11 +55,20 @@ export class ArenaItemInventory
   @Column(DataType.INTEGER)
   _itemId!: number;
 
-  @BelongsTo(() => Item, '_itemId')
+  @BelongsTo(() => Item, {
+    foreignKey: '_itemId',
+    onUpdate: 'CASCADE',
+    onDelete: 'CASCADE',
+  })
   _item?: Item;
 
   @Column(DataType.INTEGER)
   remainingUses!: number | null;
+
+  static associations: {
+    _player: Association<ArenaItemInventory, ArenaPlayer>;
+    _item: Association<ArenaItemInventory, Item>;
+  };
 }
 
 interface ArenaPlayerItemInventoryInstances {
@@ -94,7 +103,7 @@ export function addAmmoToInventory(
   return ArenaItemInventory.update(
     {
       remainingUses:
-        item.ArenaItemInventory.remainingUses ?? ZERO + (ammo ?? item.usageLimit ?? ZERO),
+        (item.ArenaItemInventory.remainingUses ?? ZERO) + (ammo ?? item.usageLimit ?? ZERO),
     },
     {
       where: {

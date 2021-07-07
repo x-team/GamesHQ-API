@@ -1,9 +1,9 @@
 import { Column, DataType, Model, PrimaryKey, Table } from 'sequelize-typescript';
 
-import { TRAITS } from '../games/consts/global';
+import { TRAIT } from '../games/consts/global';
 
 interface TraitAttributes {
-  id: TRAITS;
+  id: TRAIT;
   displayName: string;
   shortDescription: string;
 }
@@ -26,7 +26,7 @@ export class Trait
 {
   @PrimaryKey
   @Column(DataType.TEXT)
-  id!: TRAITS;
+  id!: TRAIT;
 
   @Column(DataType.TEXT)
   displayName!: string;

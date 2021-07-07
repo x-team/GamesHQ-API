@@ -2,13 +2,14 @@ export const ZERO = 0;
 export const ONE = 1;
 export const TWO = 2;
 export const HUNDRED = 100;
+export const SLACK_SPACE = '\u0020';
 
 export enum GAME_TYPE {
   TOWER = 'The Tower',
   ARENA = 'The Arena',
 }
 
-export enum TRAITS {
+export enum TRAIT {
   ARMORBREAK = 'armorbreak',
   BLAST_2 = 'blast_2',
   BLAST_3 = 'blast_3',
@@ -42,6 +43,6 @@ export const SHARED_ACTIONS = {
   HUNT: 'hunt',
   REVIVE: 'revive',
   HIDE: 'hide',
-}
+};
 
 export const SORT_ACTION_ARRAY_RATE = 0.5;

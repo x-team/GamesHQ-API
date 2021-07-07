@@ -10,18 +10,18 @@ import {
   PrimaryKey,
 } from 'sequelize-typescript';
 
-import { TRAITS } from '../games/consts/global';
+import { TRAIT } from '../games/consts/global';
 
 import { Item, Trait } from './';
 
 interface TraitAttributes {
   _itemId: number;
-  _traitId: TRAITS;
+  _traitId: TRAIT;
 }
 
 interface TraitCreationAttributes {
   _itemId: number;
-  _traitId: TRAITS;
+  _traitId: TRAIT;
 }
 
 @Table({
@@ -47,7 +47,7 @@ export class ItemTrait
   @PrimaryKey
   @ForeignKey(() => Trait)
   @Column(DataType.TEXT)
-  _traitId!: TRAITS;
+  _traitId!: TRAIT;
 
   @BelongsTo(() => Trait)
   _trait?: Trait;

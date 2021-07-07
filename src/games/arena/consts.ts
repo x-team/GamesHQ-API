@@ -1,10 +1,10 @@
-import { SHARED_ACTIONS } from "../consts/global";
+import { SHARED_ACTIONS } from '../consts/global';
 
 export const ARENA_ACTIONS = {
   ...SHARED_ACTIONS,
   CHEER: 'cheer',
   STAY_ON_LOCATION: 'idleStayOnLocation',
-}
+};
 
 export enum ARENA_ZONE_RING {
   ONE_A = '1A',
@@ -26,7 +26,21 @@ export enum ARENA_ZONE_RING {
   FIVE = '5',
 }
 
+export enum ARENA_PLAYER_PERFORMANCE {
+  DAMAGE_DEALT = 'damageDealt',
+  HEALED = 'healed',
+  KILLS = 'kills',
+  WEAPONS_FOUND = 'weaponsFound',
+  CHEERS_GIVEN = 'cheersGiven',
+  CHEERS_RECEIVED = 'cheersReceived',
+}
+
 // GAME
+export const MAX_TOP_OUTSTANDING_PERFORMANCE = 3;
+export const MAX_AMOUNT_HEALTHKITS_ALLOWED = 1;
+
+// PLAYER
+export const MAX_PLAYER_HEALTH = 100;
 
 // ZONES
 export const MAX_PLAYERS_PER_ARENA_ZONE = 50;

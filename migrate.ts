@@ -1,7 +1,6 @@
 #!/usr/bin/env ts-node-script
 
 import { Sequelize } from 'sequelize';
-// tslint:disable-next-line: no-implicit-dependencies
 import { Umzug, SequelizeStorage, MigrationMeta } from 'umzug';
 import { sequelizeConfig } from './src/db';
 
@@ -16,7 +15,7 @@ const getUmzug = (type: keyof typeof storageTableName) => {
   return new Umzug({
     logger: console,
     migrations: {
-      glob: storageTableName[type].path
+      glob: storageTableName[type].path,
     },
     context: { queryInterface: sequelize.getQueryInterface(), Sequelize },
     storage: new SequelizeStorage({

@@ -10,12 +10,31 @@ import {
   AllowNull,
   PrimaryKey,
   AutoIncrement,
+  HasOne,
 } from 'sequelize-typescript';
 
 import { GAME_TYPE } from '../games/consts/global';
 import { generateRandomNameForGame } from '../games/utils';
 
-import { User } from './';
+import { User, ArenaRound, ArenaGame } from './';
+
+function includeArrayByGameType(type: GAME_TYPE) {
+  return type === GAME_TYPE.ARENA
+    ? [
+        {
+          model: ArenaGame,
+          include: [ArenaRound],
+        },
+      ]
+    : [
+        /*
+        {
+          model: TowerGame,
+          include: [TowerRound],
+        },
+    */
+      ];
+}
 
 interface GameAttributes {
   id: number;
@@ -77,6 +96,12 @@ export class Game extends Model<GameAttributes, GameCreationAttributes> implemen
   @BelongsTo(() => User)
   _createdBy?: User;
 
+  @HasOne(() => ArenaGame)
+  _arena?: ArenaGame;
+
+  // @HasOne(() => TowerGame)
+  // _tower?: TowerGame;
+
   static associations: {
     _createdBy: Association<Game, User>;
   };
@@ -125,8 +150,10 @@ export async function findActiveGame(type: GAME_TYPE, transaction?: Transaction)
         model: User.unscoped(),
         attributes: basicUserInfo,
       },
+      ...includeArrayByGameType(type),
     ],
     where: { isActive: true, type },
+    order: [['startedAt', 'DESC']],
     transaction,
   });
 }
@@ -138,6 +165,7 @@ export async function findLastActiveGame(type: GAME_TYPE, transaction?: Transact
         model: User.unscoped(),
         attributes: basicUserInfo,
       },
+      ...includeArrayByGameType(type),
     ],
     where: { isActive: false, type },
     order: [['endedAt', 'DESC']],

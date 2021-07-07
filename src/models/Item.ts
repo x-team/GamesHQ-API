@@ -12,9 +12,10 @@ import {
   HasMany,
   AutoIncrement,
   PrimaryKey,
+  HasOne,
 } from 'sequelize-typescript';
 
-import type { GAME_TYPE, TRAITS } from '../games/consts/global';
+import type { GAME_TYPE, TRAIT } from '../games/consts/global';
 import { ITEM_RARITY, ITEM_TYPE } from '../games/consts/global';
 
 import type { GameItemAvailabilityCreationAttributes } from './GameItemAvailability';
@@ -28,8 +29,10 @@ import {
   ItemHealthKit,
   Trait,
   ItemTrait,
-  /*TowerRaider,*/ ArenaItemInventory,
-  /*TowerItemInventory,*/ GameItemAvailability,
+  /*TowerRaider,*/
+  /*TowerItemInventory,*/
+  ArenaItemInventory,
+  GameItemAvailability,
   Game,
 } from './';
 
@@ -69,7 +72,7 @@ function itemTypeToClass(itemType: ITEM_TYPE) {
       fields: ['name'],
     },
     {
-      fields: ['_ItemRarity'],
+      fields: ['_itemRarityId'],
     },
   ],
 })
@@ -102,8 +105,8 @@ export class Item extends Model<ItemAttributes, ItemCreationAttributes> implemen
 
   @BelongsToMany(() => ArenaPlayer, {
     through: () => ArenaItemInventory,
-    foreignKey: '_ItemId',
-    otherKey: '_ownedById',
+    foreignKey: '_itemId',
+    otherKey: '_arenaPlayerId',
     as: '_arenaPlayers',
   })
   _arenaPlayers?: ArenaPlayer[];
@@ -118,8 +121,8 @@ export class Item extends Model<ItemAttributes, ItemCreationAttributes> implemen
 
   // @BelongsToMany(() => TowerRaider, {
   //   through: () => TowerItemInventory,
-  //   foreignKey: '_ItemId',
-  //   otherKey: '_ownedById',
+  //   foreignKey: '_itemId',
+  //   otherKey: '_towerRaiderId',
   //   as: '_towerRaiders',
   // })
   // _towerRaiders?: TowerRaider[];
@@ -127,13 +130,13 @@ export class Item extends Model<ItemAttributes, ItemCreationAttributes> implemen
   @HasMany(() => GameItemAvailability, '_itemId')
   _gameItemAvailability?: GameItemAvailability[];
 
-  @BelongsTo(() => ItemArmor, '_itemId')
+  @HasOne(() => ItemArmor, '_itemId')
   _armor?: ItemArmor;
 
-  @BelongsTo(() => ItemWeapon, '_itemId')
+  @HasOne(() => ItemWeapon, '_itemId')
   _weapon?: ItemWeapon;
 
-  @BelongsTo(() => ItemHealthKit, '_itemId')
+  @HasOne(() => ItemHealthKit, '_itemId')
   _healthkit?: ItemHealthKit;
 
   static associations: {
@@ -148,7 +151,7 @@ export class Item extends Model<ItemAttributes, ItemCreationAttributes> implemen
     return this._itemRarityId === ITEM_RARITY.LEGENDARY;
   }
 
-  hasTrait(trait: TRAITS) {
+  hasTrait(trait: TRAIT) {
     if (!this._traits) {
       console.error("An Item without the Traits relationship called 'hasTrait()'.");
       return false;

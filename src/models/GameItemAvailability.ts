@@ -54,7 +54,7 @@ export class GameItemAvailability
   @Column(DataType.INTEGER)
   _itemId!: number;
 
-  @BelongsTo(() => Item, '_ItemId')
+  @BelongsTo(() => Item, '_itemId')
   _item?: Item;
 
   @Default(true)

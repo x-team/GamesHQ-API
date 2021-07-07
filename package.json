@@ -12,7 +12,7 @@
     "test:unit:single": "cross-env NODE_ENV=test ENV=test npx mocha",
     "mocha": "cross-env ENV=test mocha --unhandled-rejections=strict",
     "eslint": "eslint src --fix",
-    "build": "npm run clean && tsc && rsync -av --exclude='*.ts' src/ dist/src",
+    "build": "npm run clean && npx tsc && rsync -av --exclude='*.ts' src/ dist/src",
     "build:start": "npm run build && npm run start",
     "db:seed:up": "ts-node --transpile-only -e 'require(`./migrate.ts`).seedUp()'",
     "db:seed:down": "ts-node --transpile-only -e 'require(`./migrate.ts`).seedDown()'",
@@ -64,7 +64,7 @@
     "sinon": "11.1.1",
     "sinon-chai": "3.7.0",
     "ts-node": "10.0.0",
-    "typescript": "4.3.4",
+    "typescript": "4.3.5",
     "umzug": "3.0.0-beta.16"
   }
 }

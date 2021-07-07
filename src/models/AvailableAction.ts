@@ -26,15 +26,15 @@ export class AvailableAction
 
 export interface GameAction {
   id: GAME_ACTIONS;
-  weaponid: number;
+  weaponId: number;
 }
 
 export interface ArenaAction extends GameAction {
-  locationid: number;
-  targetPlayerid: number;
+  locationId: number;
+  targetPlayerId: number;
 }
 
 export interface TowerAction extends GameAction {
-  targetFloorBattlefieldEnemyid: number;
-  targetRaiderid: number;
+  targetFloorBattlefieldEnemyId: number;
+  targetRaiderId: number;
 }
