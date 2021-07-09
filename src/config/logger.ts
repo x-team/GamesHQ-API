@@ -1,5 +1,6 @@
 import { createLogger, format, transports, addColors } from 'winston';
 import safeStringify from 'fast-safe-stringify';
+// import { parseInt } from 'lodash';
 
 const { combine, timestamp, printf, colorize, errors } = format;
 
@@ -20,7 +21,7 @@ const replacer = (_key: string, value: any) => {
 };
 
 const prettyJSONFormat = format((info) => {
-  if (info.message.constructor === Object) {
+  if (info.message && info.message.constructor === Object) {
     const spacer = info.spacer || 2;
     info.message = `\n${safeStringify(info.message, replacer, spacer)}`;
   }
@@ -43,6 +44,16 @@ const yellFormat = format((info) => {
   return info;
 });
 
+// const breakLineFormat = format((info) => {
+//   if (info.brAmount) {
+//     const radix = 10;
+//     const spacerNumber = parseInt(info.brAmount, radix);
+//     const breakLines = Array(spacerNumber).fill(`\n`).join('');
+//     info.message = `${breakLines}${info.message}${breakLines}`;
+//   }
+//   return info;
+// });
+
 export const logger = createLogger({
   level: process.env.NODE_ENV === 'production' ? 'info' : 'debug',
   format: combine(
@@ -52,9 +63,10 @@ export const logger = createLogger({
     timestamp({ format: 'YYYY-MM-DD HH:mm:ss' }),
     yellFormat(),
     prettyJSONFormat(),
+    // breakLineFormat(),
     debugFormat
   ),
-  defaultMeta: { api: 'contract-app' },
+  defaultMeta: { api: 'gameshq-api' },
   transports: [
     new transports.Console({
       handleExceptions: true,

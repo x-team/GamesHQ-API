@@ -1,4 +1,5 @@
 export { prettifyConfig } from './sqlPrettifyConfig';
+import { version } from '../../package.json';
 
 interface NameToType {
   // PROCESS
@@ -12,7 +13,8 @@ interface NameToType {
   DB_PORT: string;
   // API
   PORT: string;
-  HOSTNAME: string;
+  HOST: string;
+  BUILD_VERSION: string;
 }
 
 export function getConfig<T extends keyof NameToType>(name: T): NameToType[T];
@@ -24,6 +26,8 @@ export function getConfig(name: string): string | number | boolean {
       return val || 'development';
     case 'ENV':
       return val || 'development';
+    case 'BUILD_VERSION':
+      return getConfig('ENV') + '-' + version + '_BUILD_' /*+ versionFile*/;
   }
 
   if (!val) {
