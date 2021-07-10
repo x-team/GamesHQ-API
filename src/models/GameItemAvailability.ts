@@ -103,7 +103,7 @@ export async function enableAllItems(gameId: number, transaction: Transaction) {
   );
 }
 
-export async function disableWeapons(gameId: number, itemIds: number[], transaction: Transaction) {
+export async function disableItems(gameId: number, itemIds: number[], transaction: Transaction) {
   await enableAllItems(gameId, transaction);
   return GameItemAvailability.update(
     {

@@ -1,3 +1,4 @@
+import { ArenaPlayer, ArenaZone } from '../../models';
 import { SHARED_ACTIONS } from '../consts/global';
 
 export const ARENA_ACTIONS = {
@@ -5,6 +6,14 @@ export const ARENA_ACTIONS = {
   CHEER: 'cheer',
   STAY_ON_LOCATION: 'idleStayOnLocation',
 };
+
+export enum ARENA_PERK {
+  ATTACK_PERK,
+  DEFENSE_PERK,
+  STUN_RESISTANCE_PERK,
+  ACCURACY_PERK,
+  ADRENALINE_PERK,
+}
 
 export enum ARENA_ZONE_RING {
   ONE_A = '1A',
@@ -35,12 +44,66 @@ export enum ARENA_PLAYER_PERFORMANCE {
   CHEERS_RECEIVED = 'cheersReceived',
 }
 
+export enum ARENA_SLACK_COMMANDS {
+  // ADMIN COMMANDS
+  NEW_GAME = '/arena-newgame',
+  END_GAME = '/arena-endgame',
+  MAKE_ALL_VISIBLE = '/arena-makeallvisible',
+  GIVE_EVERYONE_WEAPON = '/arena-giveweapons',
+  ADD_PLAYER = '/arena-addplayer',
+  ADD_SPECTATOR = '/arena-addspectator',
+  START_ROUND = '/arena-startround',
+  LIST_PLAYERS = '/arena-listplayers',
+  LIST_SPECTATORS = '/arena-listspectators',
+  LIST_IDLE = '/arena-listidle',
+  ADD_BOSS = '/arena-addboss',
+  ADD_GUEST = '/arena-addguest',
+  REVIVE_BOSS = '/ta-reviveboss',
+  PERFORMANCE = '/arena-performance',
+  // WEAPONS
+  NARROW_WEAPONS = '/arena-narrowweapons',
+  // ZONES
+  CREATE_ZONE = '/arena-create-zone',
+  UPDATE_ZONE = '/arena-update-zones',
+  NARROW_ZONES = '/arena-narrow-zones',
+  ENABLE_ZONE_DEACTIVATION = '/arena-zonedeactivation-on',
+  DISABLE_ZONE_DEACTIVATION = '/arena-zonedeactivation-off',
+  // PLAYER COMMANDS
+  ACTIONS = '/arena',
+  STATUS = 'arena-status',
+  HIDE = 'arena-hide',
+  SEARCH_HEALTH = 'arena-searchforhealth',
+  SEARCH_WEAPONS = 'arena-searchforweapons',
+  SEARCH_ARMOR = 'arena-searchforarmors',
+  HEAL_OR_REVIVE_OTHER = 'arena-reviveother',
+  HEAL_OR_REVIVE_SELF = 'arena-reviveself',
+  HUNT = 'arena-hunt',
+  CHEER = 'arena-cheer',
+  REPEAT_LAST_CHEER = 'arena-repeatlastcheer',
+  CHANGE_LOCATION = 'arena-change-location',
+}
+
+export enum ARENA_SECONDARY_ACTIONS {
+  HUNT_CHOOSE_WEAPON = 'arena-hunt-choose-weapon',
+  HUNT_CHOOSE_TARGET = 'arena-hunt-choose-target',
+  CHEER_CHOOSE_TARGET = 'arena-cheer-choose-target',
+  HEAL_OR_REVIVE_CHOOSE_TARGET = 'arena-reviveother-choose-target',
+  CONFIRM_END_GAME = 'arena-confirm-endgame',
+  CANCEL_END_GAME = 'arena-cancel-endgame',
+  CHANGE_LOCATION = 'arena-change-location-action',
+  CONFIRM_GIVE_EVERYONE_WEAPONS = 'arena-confirm-give-everyone-weapons',
+  CONFIRM_NARROW_WEAPONS = 'confirm-narrow-weapons',
+  CONFIRM_NARROW_ZONES = 'confirm-narrow-zones',
+  CREATE_OR_UPDATE_ZONE_DATA = 'create_or_update_zone_data',
+}
+
 // GAME
 export const MAX_TOP_OUTSTANDING_PERFORMANCE = 3;
 export const MAX_AMOUNT_HEALTHKITS_ALLOWED = 1;
 
 // PLAYER
 export const MAX_PLAYER_HEALTH = 100;
+export const ADRENALINE_THRESHOLD = 50;
 
 // ZONES
 export const MAX_PLAYERS_PER_ARENA_ZONE = 50;
@@ -67,3 +130,8 @@ export const MAX_BOSS_HEALTH = 2000;
 export const BOSS_MINOR_DAMAGE = 90;
 export const BOSS_MAJOR_DAMAGE = 99;
 export const BOSS_HUNT_SUCCESS_RATE = 1;
+
+export interface ChangeLocationParams {
+  player: ArenaPlayer;
+  arenaZonesAvailable: ArenaZone[];
+}

@@ -5,6 +5,7 @@ import { ArenaZone } from '../models';
 import { ARENA_ZONE_RING } from '../games/arena/consts';
 import { ArenaZoneCreationAttributes } from '../models/ArenaZone';
 import { initDb, sequelize, getAllModels } from '../db';
+import { logger } from '../config';
 
 declare module 'mocha' {
   interface Suite {
@@ -54,7 +55,7 @@ after(() => {
   const now = performance.now();
   // tslint:disable-next-line: no-magic-numbers
   const diffInSeconds = (now - mutableTestsStartTime) / 1000;
-  console.log(`Done! 🎉 Tests took ${diffInSeconds}s.`);
+  logger.info(`Done! 🎉 Tests took ${diffInSeconds}s.`);
 });
 
 async function clearDB() {

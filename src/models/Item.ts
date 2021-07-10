@@ -35,6 +35,7 @@ import {
   GameItemAvailability,
   Game,
 } from './';
+import { logger } from '../config';
 
 interface ItemAttributes {
   id: number;
@@ -153,7 +154,7 @@ export class Item extends Model<ItemAttributes, ItemCreationAttributes> implemen
 
   hasTrait(trait: TRAIT) {
     if (!this._traits) {
-      console.error("An Item without the Traits relationship called 'hasTrait()'.");
+      logger.error("An Item without the Traits relationship called 'hasTrait()'.");
       return false;
     }
     return this._traits.filter((traitInstance) => traitInstance.id === trait).length > 0;

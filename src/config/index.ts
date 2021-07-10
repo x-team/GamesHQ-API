@@ -15,6 +15,12 @@ interface NameToType {
   PORT: string;
   HOST: string;
   BUILD_VERSION: string;
+  // SLACK
+  SLACK_ARENA_TOKEN: string;
+  SLACK_TOWER_TOKEN: string;
+  SLACK_ARENA_SIGNING_SECRET: string;
+  SLACK_TOWER_SIGNING_SECRET: string;
+  SLACK_CAMPAIGN_SIGNING_SECRET: string;
 }
 
 export function getConfig<T extends keyof NameToType>(name: T): NameToType[T];

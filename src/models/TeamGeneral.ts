@@ -9,7 +9,7 @@ import {
   PrimaryKey,
 } from 'sequelize-typescript';
 
-import { Team, User } from '.';
+import { Team, User } from './';
 
 interface TeamGeneralAttributes {
   _teamId: number;
@@ -38,7 +38,11 @@ export class TeamGeneral
   @Column(DataType.INTEGER)
   _teamId!: number;
 
-  @BelongsTo(() => Team, '_teamId')
+  @BelongsTo(() => Team, {
+    foreignKey: '_teamId',
+    onUpdate: 'CASCADE',
+    onDelete: 'CASCADE',
+  })
   _team?: Team;
 
   @PrimaryKey
@@ -46,7 +50,11 @@ export class TeamGeneral
   @Column(DataType.INTEGER)
   _userId!: number;
 
-  @BelongsTo(() => User, '_userId')
+  @BelongsTo(() => User, {
+    foreignKey: '_userId',
+    onUpdate: 'CASCADE',
+    onDelete: 'CASCADE',
+  })
   _user?: User;
 
   static associations: {

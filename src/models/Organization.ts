@@ -19,7 +19,7 @@ import {
 import { USER_ROLE_NAME } from '../consts/model';
 import { isScopeRole } from '../utils/permissions';
 
-import { User } from '.';
+import { User } from './';
 
 interface OrganizationAttributes {
   id: number;

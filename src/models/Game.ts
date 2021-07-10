@@ -46,7 +46,7 @@ interface GameAttributes {
   _createdById: number;
 }
 
-export interface GameCreationAttributes {
+interface GameCreationAttributes {
   name: string;
   isActive?: boolean;
   startedAt: Date;

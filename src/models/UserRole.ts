@@ -1,5 +1,5 @@
 import { Table, Column, Model, DataType, HasMany, Unique, PrimaryKey } from 'sequelize-typescript';
-import { Association } from 'sequelize/types';
+import type { Association } from 'sequelize';
 import { USER_ROLE_LEVEL, USER_ROLE_NAME } from '../consts/model';
 
 import { User } from './';

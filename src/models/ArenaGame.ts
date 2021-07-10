@@ -17,9 +17,7 @@ import { GAME_TYPE, ONE, ZERO } from '../games/consts/global';
 
 import { createArenaRound } from './ArenaRound';
 import { pickRingSystemAlgorithm } from './ArenaZone';
-import { findActiveGame, findLastActiveGame, GameCreationAttributes } from './Game';
-import { startGame } from './Game';
-
+import { findActiveGame, findLastActiveGame, startGame } from './Game';
 import { ArenaPlayer, Game, ArenaRound, User } from './';
 
 interface ArenaGameAttributes {
@@ -191,7 +189,12 @@ export async function startArenaGame(
     _createdById,
     teamBased,
     hasZoneDeactivation = true,
-  }: GameCreationAttributes & ArenaGameCreationAttributes,
+  }: {
+    name: string;
+    _createdById: number;
+    teamBased: boolean;
+    hasZoneDeactivation?: boolean;
+  },
   transaction: Transaction
 ) {
   const newGame = await startGame(

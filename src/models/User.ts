@@ -26,14 +26,6 @@ import {
   // Legend,
 } from './';
 
-/*
-slackId
-email
-DisplayName
-We also need UserRole, and Session tables.
-profilePictureUrl: string;
-*/
-
 interface UserAttributes {
   id: number;
   slackId: string | null;
@@ -60,7 +52,7 @@ interface UserCreationAttributes {
 }
 
 @DefaultScope(() => ({
-  attributes: ['email', 'slackId', 'createdAt', 'displayName', 'profilePictureUrl'],
+  attributes: ['id', 'email', 'slackId', 'createdAt', 'displayName', 'profilePictureUrl'],
   include: [Team],
 }))
 @Scopes(() => ({
@@ -164,7 +156,7 @@ export class User extends Model<UserAttributes, UserCreationAttributes> implemen
 }
 
 export async function getUserBySlackId(slackId: string): Promise<User> {
-  const user = await User.scope(['defaultScope', 'withSensitiveData']).findOne({
+  const user = await User.findOne({
     where: {
       slackId,
     },
