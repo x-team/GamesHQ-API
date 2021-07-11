@@ -49,6 +49,7 @@ function withSensitiveData(): FindOptions {
       {
         association: Team.associations._members,
         as: '_members',
+        required: false,
       },
     ],
   };
@@ -56,12 +57,6 @@ function withSensitiveData(): FindOptions {
 
 @DefaultScope(() => ({
   attributes: ['id', 'name', 'emoji', 'isActive', 'slackWebhook', 'health', 'addedAt'],
-  include: [
-    {
-      association: Team.associations._generals,
-      as: '_generals',
-    },
-  ],
 }))
 @Scopes(() => ({
   withSensitiveData,

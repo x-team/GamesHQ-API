@@ -52,18 +52,25 @@ interface UserCreationAttributes {
 }
 
 @DefaultScope(() => ({
-  attributes: ['id', 'email', 'slackId', 'createdAt', 'displayName', 'profilePictureUrl'],
-  // include: [User.associations._team, User.associations._team],
-  include: [User.associations._role],
+  attributes: [
+    'id',
+    'email',
+    'slackId',
+    'createdAt',
+    'displayName',
+    'profilePictureUrl',
+    '_roleId',
+    '_teamId',
+  ],
+  include: [User.associations._role, User.associations._team],
 }))
 @Scopes(() => ({
   forRole(scope: string[]) {
     const isAdminOrSuperAdmin =
       isScopeRole(scope, USER_ROLE_NAME.ADMIN) || isScopeRole(scope, USER_ROLE_NAME.SUPER_ADMIN);
     const adminParams = {
-      attributes: ['id', 'updatedAt', '_roleId', '_organizationId'],
-      // include: [ User.associations._team, User.associations._role, User.associations._organization],
-      include: [User.associations._role, User.associations._organization],
+      attributes: ['id', 'updatedAt', '_teamId', '_roleId', '_organizationId'],
+      include: [User.associations._team, User.associations._role, User.associations._organization],
     };
 
     return isAdminOrSuperAdmin ? adminParams : {};
@@ -153,7 +160,7 @@ export class User extends Model<UserAttributes, UserCreationAttributes> implemen
   static associations: {
     _role: Association<User, UserRole>;
     _organization: Association<User, Organization>;
-    // _team: Association<User, Team>;
+    _team: Association<User, Team>;
   };
 
   isAdmin(): boolean {
