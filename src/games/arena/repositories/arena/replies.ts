@@ -31,7 +31,7 @@ import { ITEM_TYPE, SELECT_TEAM_URL, SLACK_SPACE, TRAIT } from '../../../consts/
 import {
   basicHealthDisplay,
   generateRarityColorEmoji,
-  generateTeamEmoji,
+  // generateTeamEmoji,
   randomSkinColor,
   zoneStatus,
 } from '../../../helpers';
@@ -54,7 +54,7 @@ function displayPlayers(players: ArenaPlayer[]) {
       const visibilityMessage = player.isVisible
         ? `${PLAYER_VISIBLE_EMOJI} Visible`
         : `${PLAYER_HIDE_EMOJI} Not Visible`;
-      const hunterMessage = `${generateTeamEmoji(player._user?._team?.emoji)} | <@${
+      const hunterMessage = `${/*generateTeamEmoji(player._user?._team?.emoji)*/ ''} | <@${
         player._user?.slackId
       }>`;
       const healthMessage = `${FULL_HEALTH_HEART_EMOJI} ${player.health}`;
@@ -67,7 +67,7 @@ function displayPlayers(players: ArenaPlayer[]) {
 function displaySpectators(spectators: ArenaPlayer[]) {
   const parsedSpectatorsInfo = spectators
     .map((spectator, index) => {
-      const hunterMessage = `${generateTeamEmoji(spectator._user?._team?.emoji)} | <@${
+      const hunterMessage = `${/*generateTeamEmoji(spectator._user?._team?.emoji)*/ ''} | <@${
         spectator._user?.slackId
       }>`;
       return `${index + 1}. ${hunterMessage}`;

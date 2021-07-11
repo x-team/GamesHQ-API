@@ -49,8 +49,8 @@ ArenaSwitchCommandOptions) {
     //   return adminsAndCommunityTeam(userRequesting, async () => {
     //     return getEphemeralText(CommandReply.adminFinishedRound());
     //   });
-    // case ARENA_SLACK_COMMANDS.LIST_PLAYERS:
-    //   return arena.listPlayers(userRequesting);
+    case ARENA_SLACK_COMMANDS.LIST_PLAYERS:
+      return arena.listPlayers(userRequesting);
     // case ARENA_SLACK_COMMANDS.LIST_SPECTATORS:
     //   return arena.listSpectators(userRequesting);
     // case ARENA_SLACK_COMMANDS.LIST_IDLE:

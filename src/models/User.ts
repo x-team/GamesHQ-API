@@ -53,7 +53,8 @@ interface UserCreationAttributes {
 
 @DefaultScope(() => ({
   attributes: ['id', 'email', 'slackId', 'createdAt', 'displayName', 'profilePictureUrl'],
-  include: [Team],
+  // include: [User.associations._team, User.associations._team],
+  include: [User.associations._role],
 }))
 @Scopes(() => ({
   forRole(scope: string[]) {
@@ -61,7 +62,8 @@ interface UserCreationAttributes {
       isScopeRole(scope, USER_ROLE_NAME.ADMIN) || isScopeRole(scope, USER_ROLE_NAME.SUPER_ADMIN);
     const adminParams = {
       attributes: ['id', 'updatedAt', '_roleId', '_organizationId'],
-      include: [Team, UserRole, Organization],
+      // include: [ User.associations._team, User.associations._role, User.associations._organization],
+      include: [User.associations._role, User.associations._organization],
     };
 
     return isAdminOrSuperAdmin ? adminParams : {};
@@ -150,9 +152,26 @@ export class User extends Model<UserAttributes, UserCreationAttributes> implemen
 
   static associations: {
     _role: Association<User, UserRole>;
-    _team: Association<User, Team>;
     _organization: Association<User, Organization>;
+    // _team: Association<User, Team>;
   };
+
+  isAdmin(): boolean {
+    return Boolean(this._role && this._role.name === USER_ROLE_NAME.ADMIN);
+  }
+
+  isSuperAdmin(): boolean {
+    return Boolean(this._role && this._role.name === USER_ROLE_NAME.SUPER_ADMIN);
+  }
+
+  isCommunityTeam(): boolean {
+    return Boolean(this._role && this._role.name === USER_ROLE_NAME.COMMUNITY_TEAM);
+  }
+
+  setTeam(team: Team, transaction: Transaction) {
+    // @ts-ignore
+    return this.$set('_team', team, { save: true, transaction });
+  }
 }
 
 export async function getUserBySlackId(slackId: string): Promise<User> {
@@ -167,7 +186,7 @@ export async function getUserBySlackId(slackId: string): Promise<User> {
   return user;
 }
 
-export async function findArenaUserBySlackId(
+export async function findArenaPlayersByUserSlackId(
   slackId: string,
   transaction?: Transaction
 ): Promise<User | null> {
@@ -190,21 +209,4 @@ export async function findUsersBySlackIds(slackIds: string[]): Promise<User[]> {
   }
 
   return users;
-}
-
-export async function setTeamToUser(user: User, team: Team, transaction: Transaction) {
-  // @ts-ignore
-  return user.$set('_team', team, { save: true, transaction });
-}
-
-export function isUserAdmin(user: User): boolean {
-  return Boolean(user._role && user._role.name === USER_ROLE_NAME.ADMIN);
-}
-
-export function isUserSuperAdmin(user: User): boolean {
-  return Boolean(user._role && user._role.name === USER_ROLE_NAME.SUPER_ADMIN);
-}
-
-export function isUserCommunityTeam(user: User): boolean {
-  return Boolean(user._role && user._role.name === USER_ROLE_NAME.COMMUNITY_TEAM);
 }

@@ -47,7 +47,7 @@ function withSensitiveData(): FindOptions {
   return {
     include: [
       {
-        model: User,
+        association: Team.associations._members,
         as: '_members',
       },
     ],
@@ -58,7 +58,7 @@ function withSensitiveData(): FindOptions {
   attributes: ['id', 'name', 'emoji', 'isActive', 'slackWebhook', 'health', 'addedAt'],
   include: [
     {
-      model: User,
+      association: Team.associations._generals,
       as: '_generals',
     },
   ],
@@ -114,7 +114,10 @@ export class Team extends Model<TeamAttributes, TeamCreationAttributes> implemen
   @Column(DataType.BOOLEAN)
   isActive!: boolean;
 
-  @HasMany(() => User, '_teamId')
+  @HasMany(() => User, {
+    foreignKey: '_teamId',
+    as: '_members',
+  })
   _members?: User[];
 
   @BelongsToMany(() => User, {
@@ -139,14 +142,20 @@ export class Team extends Model<TeamAttributes, TeamCreationAttributes> implemen
 export function findActiveTeams(transaction?: Transaction) {
   return Team.findAll({
     where: { isActive: true },
-    include: [{ association: '_members' }, { association: '_generals' }],
+    include: [
+      { association: Team.associations._members, as: '_members' },
+      { association: Team.associations._generals, as: '_generals' },
+    ],
     transaction,
   });
 }
 
 export function findTeamById(teamId: number, transaction?: Transaction) {
   return Team.findByPk(teamId, {
-    include: [{ association: '_members' }, { association: '_generals' }],
+    include: [
+      { association: Team.associations._members, as: '_members' },
+      { association: Team.associations._generals, as: '_generals' },
+    ],
     transaction,
   });
 }
@@ -154,7 +163,10 @@ export function findTeamById(teamId: number, transaction?: Transaction) {
 export function findTeamByName(teamName: string, transaction?: Transaction) {
   return Team.findOne({
     where: { name: teamName },
-    include: [{ association: '_members' }, { association: '_generals' }],
+    include: [
+      { association: Team.associations._members, as: '_members' },
+      { association: Team.associations._generals, as: '_generals' },
+    ],
     transaction,
   });
 }
@@ -162,7 +174,10 @@ export function findTeamByName(teamName: string, transaction?: Transaction) {
 export function findActiveTeamByName(name: string, transaction?: Transaction) {
   return Team.findOne({
     where: { isActive: true, name },
-    include: [{ association: '_members' }, { association: '_generals' }],
+    include: [
+      { association: Team.associations._members, as: '_members' },
+      { association: Team.associations._generals, as: '_generals' },
+    ],
     transaction,
   });
 }

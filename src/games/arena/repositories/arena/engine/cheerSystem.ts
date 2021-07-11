@@ -1,4 +1,4 @@
-import { ARENA_PERK } from '../consts';
+import { ARENA_PERK } from '../../../consts';
 
 const CHEER_LV_ONE = 6;
 const CHEER_LV_TWO = 13;

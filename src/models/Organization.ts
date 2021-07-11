@@ -43,21 +43,13 @@ interface OrganizationCreationAttributes {
 function withSensitiveData(): FindOptions {
   return {
     attributes: ['id', 'clientSecret', 'signingSecret'],
-    include: [
-      {
-        model: User,
-      },
-    ],
+    include: [Organization.associations._users],
   };
 }
 
 @DefaultScope(() => ({
   attributes: ['id', 'name', 'domain', 'isActive', 'createdAt'],
-  include: [
-    {
-      model: User,
-    },
-  ],
+  include: [Organization.associations._users],
 }))
 @Scopes(() => ({
   withSensitiveData,

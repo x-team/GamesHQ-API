@@ -27,7 +27,7 @@ import { parseEscapedSlackUserValues } from '../utils/slack';
 import { addAmmoToInventory, getPlayerItemCount } from './ArenaItemInventory';
 import { findAvailableArenaZonesToLand } from './ArenaZone';
 import { findActiveTeamByName } from './Team';
-import { findArenaUserBySlackId, setTeamToUser } from './User';
+import { findArenaPlayersByUserSlackId } from './User';
 
 import {
   Item,
@@ -530,7 +530,7 @@ export async function getOrCreateBossesOrGuests({
     const slackId = parseEscapedSlackUserValues(fullSlackId);
     const [slackDisplayedName] = parseEscapedSlackUserValues(fullSlackId, ['username']);
     const emailAdress = slackDisplayedName?.toLowerCase().replace(`${SLACK_SPACE}`, '');
-    let mutableUser = await findArenaUserBySlackId(slackId as string);
+    let mutableUser = await findArenaPlayersByUserSlackId(slackId as string);
 
     const organizationName = 'x-team'; // This will be dynamic in the future
     const organization = await findOrganizationByName(organizationName, transaction);
@@ -551,7 +551,7 @@ export async function getOrCreateBossesOrGuests({
       });
     } else {
       if (!mutableUser._teamId && team) {
-        await setTeamToUser(mutableUser, team, transaction);
+        await mutableUser.setTeam(team, transaction);
         await mutableUser.reload({ transaction });
       }
     }

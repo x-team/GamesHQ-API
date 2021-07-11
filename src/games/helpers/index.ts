@@ -1,7 +1,7 @@
 import { random } from 'lodash';
 import { ArenaItemInventory, ArenaZone, Item } from '../../models';
 import { ARENA_PERK } from '../arena/consts';
-import { hasArenaPerk } from '../arena/engine/cheerSystem';
+import { hasArenaPerk } from '../arena/repositories/arena/engine/cheerSystem';
 import { arenaPerkStats } from '../arena/utils';
 import {
   COMMON_COLOR_EMOJI_BIG,

@@ -1,6 +1,7 @@
 import { logger } from '../../../../config';
 import { User } from '../../../../models';
-import { startArenaGame } from '../../../../models/ArenaGame';
+import { findActiveArenaGame, startArenaGame } from '../../../../models/ArenaGame';
+import { findLivingPlayersByGame } from '../../../../models/ArenaPlayer';
 import { activateAllArenaZones } from '../../../../models/ArenaZone';
 import { enableAllItems } from '../../../../models/GameItemAvailability';
 import { GAME_TYPE } from '../../../consts/global';
@@ -11,7 +12,7 @@ import {
   getGameError,
   getGameResponse,
 } from '../../../utils';
-import { withArenaTransaction } from '../../utils';
+import { publishArenaMessage, withArenaTransaction } from '../../utils';
 import { ArenaEngine } from './engine';
 import { arenaCommandReply } from './replies';
 
@@ -23,13 +24,11 @@ export class ArenaRepository {
   // ADMINS ///////////////////////////////////////////////////////////////////
   async newGame(commandText: string, userRequesting: User): Promise<void | GameResponse> {
     return withArenaTransaction(async (transaction) => {
-      logger.debug('hello here');
       const isAdmin = adminAction(userRequesting);
       if (!isAdmin) {
         return getGameError(arenaCommandReply.adminsOnly());
       }
       try {
-        logger.debug('hello here 2');
         const teamBasedText = 'team based';
         const teamBasedTextNoSpaces = teamBasedText.replace(' ', '');
         const lowerCaseCommandText = commandText.toLowerCase();
@@ -60,6 +59,22 @@ export class ArenaRepository {
         //   repository: ArenaRepository.name,
         // })
       }
+    });
+  }
+
+  async listPlayers(userRequesting: User): Promise<void | GameResponse> {
+    return withArenaTransaction(async (transaction) => {
+      const isAdmin = adminAction(userRequesting);
+      if (!isAdmin) {
+        return getGameError(arenaCommandReply.adminsOnly());
+      }
+      const game = await findActiveArenaGame(transaction);
+      if (!game) {
+        return getGameError(arenaCommandReply.noActiveGame());
+      }
+      const playersAlive = await findLivingPlayersByGame(game.id, false, transaction);
+      await publishArenaMessage(arenaCommandReply.channelDisplayPlayersInfo(playersAlive), true);
+      return getGameResponse(arenaCommandReply.adminPlayersInfoPosted());
     });
   }
 }

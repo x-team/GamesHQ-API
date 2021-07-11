@@ -136,7 +136,6 @@ export const slackCommandSwitcher = async (
   let mutableUserRequesting;
   let mutableResponse: void | GameResponse;
   try {
-    logger.debug(`SLACK ID: ${user_id}`);
     mutableUserRequesting = await getUserBySlackId(user_id);
   } catch (e) {
     // logger.error(e);
@@ -145,9 +144,7 @@ export const slackCommandSwitcher = async (
     // logger.error(errorMessage);
     // return getEphemeralText(errorMessage);
   }
-  logger.debug('BEFORE THE CONDITION');
   if (isArenaCommand(command)) {
-    logger.debug('AFTER THE CONDITION');
     mutableResponse = await arenaSwitchCommand({
       command,
       commandText: text,

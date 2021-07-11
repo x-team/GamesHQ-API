@@ -3,7 +3,6 @@ import type { Transaction } from 'sequelize';
 import { WebClient } from '@slack/client';
 import rp from 'request-promise-native';
 import { User } from '../../models';
-import { isUserAdmin, isUserCommunityTeam, isUserSuperAdmin } from '../../models/User';
 
 import type { GAME_TYPE } from '../consts/global';
 import { HUNDRED } from '../consts/global';
@@ -34,9 +33,9 @@ export function generateRandomNameForGame(gameType: GAME_TYPE) {
 
 export function adminAction(userRequesting: User): boolean {
   return !!(
-    isUserSuperAdmin(userRequesting) ||
-    isUserAdmin(userRequesting) ||
-    isUserCommunityTeam(userRequesting)
+    userRequesting.isSuperAdmin() ||
+    userRequesting.isAdmin() ||
+    userRequesting.isCommunityTeam()
   );
 }
 

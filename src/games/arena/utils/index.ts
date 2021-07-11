@@ -4,7 +4,7 @@ import { getConfig } from '../../../config';
 import { ONE, ZERO } from '../../consts/global';
 import { roundActionMessageBuilder } from '../../helpers';
 import { SlackBlockKitLayoutElement } from '../../model/SlackBlockKit';
-import { notifyEphemeral, withTransaction } from '../../utils';
+import { notifyEphemeral, slackRequest, withTransaction } from '../../utils';
 import {
   ADRENALINE_THRESHOLD,
   ARENA_PERK,
@@ -86,6 +86,9 @@ export function withArenaTransaction<T>(fn: (transaction: Transaction) => Promis
 }
 
 // SLACK REQUESTS
+const ARENA_XHQ_SLACK_CHANNEL = 'SLACK_ARENA_XHQ_CHANNEL';
+const SECONDS_BETWEEN_ACTIONS = 1000;
+
 export function arenaNotifyEphemeral(
   message: string,
   userTo: string,
@@ -93,4 +96,19 @@ export function arenaNotifyEphemeral(
   blocks?: SlackBlockKitLayoutElement[]
 ) {
   return notifyEphemeral(message, userTo, channel, getConfig('SLACK_ARENA_TOKEN'), blocks);
+}
+
+export async function publishArenaMessage(message: string, sendImmediately = false) {
+  const xhqChannel = getConfig(ARENA_XHQ_SLACK_CHANNEL);
+  const requestBody = { response_type: 'in_channel', text: message };
+  if (sendImmediately) {
+    await slackRequest(xhqChannel, requestBody);
+  } else {
+    await new Promise((resolve, reject) => {
+      setTimeout(() => {
+        slackRequest(xhqChannel, requestBody).then(resolve).catch(reject);
+      }, SECONDS_BETWEEN_ACTIONS);
+    });
+  }
+  return { xhqChannel, requestBody };
 }
