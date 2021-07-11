@@ -4,7 +4,6 @@ import { findActiveArenaGame, startArenaGame } from '../../../../models/ArenaGam
 import { findLivingPlayersByGame } from '../../../../models/ArenaPlayer';
 import { activateAllArenaZones } from '../../../../models/ArenaZone';
 import { enableAllItems } from '../../../../models/GameItemAvailability';
-import { findActiveTeams } from '../../../../models/Team';
 import { GAME_TYPE } from '../../../consts/global';
 import {
   adminAction,
@@ -70,12 +69,10 @@ export class ArenaRepository {
         return getGameError(arenaCommandReply.adminsOnly());
       }
       const game = await findActiveArenaGame(transaction);
+
       if (!game) {
         return getGameError(arenaCommandReply.noActiveGame());
       }
-      const team = await findActiveTeams(transaction);
-      logger.debug({ yell: true, message: 'the team' });
-      logger.debug({ team });
 
       const playersAlive = await findLivingPlayersByGame(game.id, false, transaction);
       await publishArenaMessage(arenaCommandReply.channelDisplayPlayersInfo(playersAlive), true);
