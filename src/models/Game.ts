@@ -16,14 +16,14 @@ import {
 import { GAME_TYPE } from '../games/consts/global';
 import { generateRandomNameForGame } from '../games/utils';
 
-import { User, ArenaRound, ArenaGame } from './';
+import { User, ArenaGame, GameType } from './';
 
 function includeArrayByGameType(type: GAME_TYPE) {
   return type === GAME_TYPE.ARENA
     ? [
         {
-          model: ArenaGame,
-          include: [ArenaRound],
+          association: Game.associations._arena,
+          include: [ArenaGame.associations._rounds],
         },
       ]
     : [
@@ -42,7 +42,7 @@ interface GameAttributes {
   isActive: boolean;
   startedAt: Date;
   endedAt: Date | null;
-  type: GAME_TYPE;
+  _gameTypeId: GAME_TYPE;
   _createdById: number;
 }
 
@@ -52,7 +52,7 @@ interface GameCreationAttributes {
   startedAt: Date;
   endedAt?: Date | null;
   _createdById: number;
-  type: GAME_TYPE;
+  _gameTypeId: GAME_TYPE;
 }
 
 @Table({
@@ -86,8 +86,12 @@ export class Game extends Model<GameAttributes, GameCreationAttributes> implemen
   @Column(DataType.DATE)
   endedAt!: Date | null;
 
+  @ForeignKey(() => GameType)
   @Column(DataType.TEXT)
-  type!: GAME_TYPE;
+  _gameTypeId!: GAME_TYPE;
+
+  @BelongsTo(() => GameType, '_gameTypeId')
+  _gameType?: GameType;
 
   @ForeignKey(() => User)
   @Column(DataType.INTEGER)
@@ -103,7 +107,9 @@ export class Game extends Model<GameAttributes, GameCreationAttributes> implemen
   // _tower?: TowerGame;
 
   static associations: {
+    _arena: Association<Game, ArenaGame>;
     _createdBy: Association<Game, User>;
+    _gameType: Association<Game, GameType>;
   };
 
   async endGame(transaction: Transaction) {
@@ -121,7 +127,7 @@ export class Game extends Model<GameAttributes, GameCreationAttributes> implemen
 const basicUserInfo = ['id', 'displayName', 'slackId', 'email'];
 
 export async function createGame(
-  { name, _createdById, startedAt, type }: GameCreationAttributes,
+  { name, _createdById, startedAt, _gameTypeId }: GameCreationAttributes,
   transaction: Transaction
 ) {
   const newGame = Game.build({
@@ -129,7 +135,7 @@ export async function createGame(
     isActive: true,
     startedAt,
     _createdById,
-    type,
+    _gameTypeId,
   });
   const game = await newGame.save({ transaction });
   return game.reload({
@@ -143,46 +149,46 @@ export async function createGame(
   });
 }
 
-export async function findActiveGame(type: GAME_TYPE, transaction?: Transaction) {
+export async function findActiveGame(gameType: GAME_TYPE, transaction?: Transaction) {
   return Game.findOne({
     include: [
       {
         model: User.unscoped(),
         attributes: basicUserInfo,
       },
-      ...includeArrayByGameType(type),
+      ...includeArrayByGameType(gameType),
     ],
-    where: { isActive: true, type },
+    where: { isActive: true, _gameTypeId: gameType },
     order: [['startedAt', 'DESC']],
     transaction,
   });
 }
 
-export async function findLastActiveGame(type: GAME_TYPE, transaction?: Transaction) {
+export async function findLastActiveGame(gameType: GAME_TYPE, transaction?: Transaction) {
   return Game.findOne({
     include: [
       {
         model: User.unscoped(),
         attributes: basicUserInfo,
       },
-      ...includeArrayByGameType(type),
+      ...includeArrayByGameType(gameType),
     ],
-    where: { isActive: false, type },
+    where: { isActive: false, _gameTypeId: gameType },
     order: [['endedAt', 'DESC']],
     transaction,
   });
 }
 
 export async function startGame(
-  { name, _createdById, type, startedAt }: GameCreationAttributes,
+  { name, _createdById, _gameTypeId, startedAt }: GameCreationAttributes,
   transaction: Transaction
 ) {
   if (!name || !name.trim()) {
-    name = generateRandomNameForGame(type);
+    name = generateRandomNameForGame(_gameTypeId);
   }
-  const activeGame = await findActiveGame(type, transaction);
+  const activeGame = await findActiveGame(_gameTypeId, transaction);
   if (activeGame) {
     throw Error('There is an active game. End it first, then try to create a new one');
   }
-  return createGame({ name, _createdById, type, startedAt }, transaction);
+  return createGame({ name, _createdById, _gameTypeId, startedAt }, transaction);
 }

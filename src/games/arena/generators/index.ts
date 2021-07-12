@@ -5,6 +5,7 @@ import {
   SlackBlockKitLayoutElement,
   SlackBlockKitSelectMenuElement,
 } from '../../model/SlackBlockKit';
+import { generateEndGameConfirmationBlockKit } from '../../utils/generators/games';
 import {
   blockKitAction,
   blockKitCompositionOption,
@@ -49,4 +50,14 @@ export function generateChangeZonePickerBlock(
     fullBlockSection.push(...changeLocationSection);
   }
   return fullBlockSection;
+}
+
+export function generateArenaEndGameConfirmationBlockKit(
+  questionText = 'Are you *absolutely sure* you want to *end the game*?'
+) {
+  return generateEndGameConfirmationBlockKit(
+    questionText,
+    ARENA_SECONDARY_ACTIONS.CONFIRM_END_GAME,
+    ARENA_SECONDARY_ACTIONS.CANCEL_END_GAME
+  );
 }

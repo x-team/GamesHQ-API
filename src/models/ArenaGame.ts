@@ -198,7 +198,7 @@ export async function startArenaGame(
   transaction: Transaction
 ) {
   const newGame = await startGame(
-    { name, _createdById, type: GAME_TYPE.ARENA, startedAt: new Date() },
+    { name, _createdById, _gameTypeId: GAME_TYPE.ARENA, startedAt: new Date() },
     transaction
   );
   return createArenaGame(

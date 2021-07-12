@@ -32,8 +32,8 @@ ArenaSwitchCommandOptions) {
         commandText = '';
       }
       return arena.newGame(commandText, userRequesting);
-    // case ARENA_SLACK_COMMANDS.END_GAME:
-    //   return arena.askEndGame(userRequesting);
+    case ARENA_SLACK_COMMANDS.END_GAME:
+      return arena.askEndGame(userRequesting);
     // case ARENA_SLACK_COMMANDS.MAKE_ALL_VISIBLE:
     //   return arena.makeAllVisible(channelId, userRequesting);
     // case ARENA_SLACK_COMMANDS.GIVE_EVERYONE_WEAPON:

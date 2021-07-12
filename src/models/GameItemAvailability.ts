@@ -11,17 +11,18 @@ import {
   BelongsTo,
 } from 'sequelize-typescript';
 
-import { Item, Game } from './';
+import { Item, GameType } from './';
+import { GAME_TYPE } from '../games/consts/global';
 
 interface GameItemAvailabilityAttributes {
-  _gameId: number;
+  _gameTypeId: GAME_TYPE;
   _itemId: number;
   isActive: boolean;
   isArchived: boolean;
 }
 
 export interface GameItemAvailabilityCreationAttributes {
-  _gameId: number;
+  _gameTypeId: GAME_TYPE;
   _itemId: number;
   isActive: boolean;
   isArchived: boolean;
@@ -42,12 +43,12 @@ export class GameItemAvailability
   implements GameItemAvailabilityAttributes
 {
   @PrimaryKey
-  @ForeignKey(() => Game)
-  @Column(DataType.INTEGER)
-  _gameId!: number;
+  @ForeignKey(() => GameType)
+  @Column(DataType.TEXT)
+  _gameTypeId!: GAME_TYPE;
 
-  @BelongsTo(() => Game, '_ownedById')
-  _game?: Game;
+  @BelongsTo(() => GameType, '_gameTypeId')
+  _gameType?: GAME_TYPE;
 
   @PrimaryKey
   @ForeignKey(() => Item)
@@ -66,18 +67,18 @@ export class GameItemAvailability
   isArchived!: boolean;
 
   static associations: {
-    _game: Association<Item, Item>;
-    _item: Association<Item, Item>;
+    _gameType: Association<GameItemAvailability, GameType>;
+    _item: Association<GameItemAvailability, Item>;
   };
 }
 
 export function createOrUpdateItemAvailability(
-  { _gameId, _itemId, isArchived }: GameItemAvailabilityCreationAttributes,
+  { _gameTypeId, _itemId, isArchived }: GameItemAvailabilityCreationAttributes,
   transaction: Transaction
 ) {
   return GameItemAvailability.upsert(
     {
-      _gameId,
+      _gameTypeId,
       _itemId,
       isArchived,
       isActive: !isArchived,
@@ -88,7 +89,7 @@ export function createOrUpdateItemAvailability(
   );
 }
 
-export async function enableAllItems(gameId: number, transaction: Transaction) {
+export async function enableAllItems(gameType: GAME_TYPE, transaction: Transaction) {
   return GameItemAvailability.update(
     {
       isActive: true,
@@ -96,15 +97,19 @@ export async function enableAllItems(gameId: number, transaction: Transaction) {
     {
       where: {
         isArchived: false,
-        _gameId: gameId,
+        _gameTypeId: gameType,
       },
       transaction,
     }
   );
 }
 
-export async function disableItems(gameId: number, itemIds: number[], transaction: Transaction) {
-  await enableAllItems(gameId, transaction);
+export async function disableItems(
+  gameType: GAME_TYPE,
+  itemIds: number[],
+  transaction: Transaction
+) {
+  await enableAllItems(gameType, transaction);
   return GameItemAvailability.update(
     {
       isActive: false,
@@ -115,7 +120,7 @@ export async function disableItems(gameId: number, itemIds: number[], transactio
         _itemId: {
           [Op.notIn]: itemIds,
         },
-        _gameId: gameId,
+        _gameTypeId: gameType,
       },
     }
   );

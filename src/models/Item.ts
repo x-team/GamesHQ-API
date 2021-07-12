@@ -146,6 +146,9 @@ export class Item extends Model<ItemAttributes, ItemCreationAttributes> implemen
     _gameItemAvailability: Association<Item, GameItemAvailability>;
     _rarity: Association<Item, ItemRarity>;
     _traits: Association<Item, Trait>;
+    _armor: Association<Item, ItemArmor>;
+    _weapon: Association<Item, ItemWeapon>;
+    _healthkit: Association<Item, ItemHealthKit>;
   };
 
   isLegendayItem(): boolean {
@@ -177,9 +180,9 @@ export async function createOrUpdateItem(
     { transaction }
   );
   await Promise.all(
-    itemsAvailability.map(({ _gameId, isArchived }) =>
+    itemsAvailability.map(({ _gameTypeId, isArchived }) =>
       createOrUpdateItemAvailability(
-        { _gameId, _itemId: item.id, isArchived, isActive: !isArchived },
+        { _gameTypeId, _itemId: item.id, isArchived, isActive: !isArchived },
         transaction
       )
     )

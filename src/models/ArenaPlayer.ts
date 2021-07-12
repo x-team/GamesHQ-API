@@ -32,9 +32,6 @@ import { findArenaPlayersByUserSlackId } from './User';
 import {
   Item,
   ItemArmor,
-  ItemWeapon,
-  ItemTrait,
-  ItemHealthKit,
   ArenaItemInventory,
   Game,
   ArenaZone,
@@ -79,18 +76,43 @@ function withInventory(allInventory?: boolean): FindOptions {
   return {
     include: allInventory
       ? [
-          User,
-          { model: Item, include: [ItemHealthKit], as: '_healthkits' },
-          { model: Item, include: [ItemWeapon, ItemTrait], as: '_weapons' },
-          { model: Item, include: [ItemArmor], as: '_armors' },
-          ArenaZone,
+          ArenaPlayer.associations._user,
+          {
+            association: ArenaPlayer.associations._healthkits,
+            include: [Item.associations._healthkit],
+            as: '_healthkits',
+          },
+          {
+            association: ArenaPlayer.associations._weapons,
+            include: [Item.associations._weapon, Item.associations._traits],
+            as: '_weapons',
+          },
+          {
+            association: ArenaPlayer.associations._armors,
+            include: [Item.associations._armor],
+            as: '_armors',
+          },
+          ArenaPlayer.associations._zone,
         ]
-      : [User, Team, { model: Item, include: [ItemArmor], as: '_armors' }, ArenaZone],
+      : [
+          ArenaPlayer.associations._user,
+          ArenaPlayer.associations._team,
+          {
+            association: ArenaPlayer.associations._armors,
+            include: [Item.associations._armor],
+            as: '_armors',
+          },
+          ArenaPlayer.associations._zone,
+        ],
   };
 }
 
 @DefaultScope(() => ({
-  include: [User, Team, ArenaZone],
+  include: [
+    ArenaPlayer.associations._user,
+    ArenaPlayer.associations._team,
+    ArenaPlayer.associations._zone,
+  ],
 }))
 @Scopes(() => ({
   withInventory,
@@ -221,9 +243,21 @@ export class ArenaPlayer
     return this.reload({
       include: [
         User,
-        { model: Item, include: [ItemHealthKit], as: '_healthkits' },
-        { model: Item, include: [ItemWeapon, ItemTrait], as: '_weapons' },
-        { model: Item, include: [ItemArmor], as: '_armors' },
+        {
+          association: ArenaPlayer.associations._healthkits,
+          include: [Item.associations._healthkit],
+          as: '_healthkits',
+        },
+        {
+          association: ArenaPlayer.associations._weapons,
+          include: [Item.associations._weapon, Item.associations._traits],
+          as: '_weapons',
+        },
+        {
+          association: ArenaPlayer.associations._armors,
+          include: [Item.associations._armor],
+          as: '_armors',
+        },
       ],
       transaction,
     });
@@ -240,11 +274,23 @@ export class ArenaPlayer
     await this.save({ transaction });
     await this.reload({
       include: [
-        User,
-        { model: Item, include: [ItemHealthKit], as: '_healthkits' },
-        { model: Item, include: [ItemWeapon, ItemTrait], as: '_weapons' },
-        { model: Item, include: [ItemArmor], as: '_armors' },
-        ArenaZone,
+        ArenaPlayer.associations._user,
+        {
+          association: ArenaPlayer.associations._healthkits,
+          include: [Item.associations._healthkit],
+          as: '_healthkits',
+        },
+        {
+          association: ArenaPlayer.associations._weapons,
+          include: [Item.associations._weapon, Item.associations._traits],
+          as: '_weapons',
+        },
+        {
+          association: ArenaPlayer.associations._armors,
+          include: [Item.associations._armor],
+          as: '_armors',
+        },
+        ArenaPlayer.associations._zone,
       ],
       transaction,
     });

@@ -10,12 +10,13 @@ if (getConfig('NODE_ENV') !== 'production') {
 import { initDb } from './db';
 
 (async () => {
-  // Setup
-  const xhqServer = await getServerWithPlugins();
+  // DB Setup
   await initDb();
+  // await sequelize.sync({ force: true });
+  // API Setup
+  const xhqServer = await getServerWithPlugins();
   await xhqServer.start();
 
-  // await sequelize.sync({ force: true });
   logger.info('🚀 Hello from super logger 🚀\n\t⭐️⭐️⭐️⭐️⭐️');
   logger.info(`🚀 Server Running At: ${xhqServer.info.uri} 🚀`);
 })();

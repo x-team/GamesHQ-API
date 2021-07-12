@@ -1,7 +1,7 @@
 import { random } from 'lodash';
 import type { Transaction } from 'sequelize';
 import { WebClient } from '@slack/client';
-import rp from 'request-promise-native';
+import fetch from 'node-fetch';
 import { User } from '../../models';
 
 import type { GAME_TYPE } from '../consts/global';
@@ -46,12 +46,16 @@ export interface GameResponse {
 }
 
 export function getGameResponse(response: string | SlackBlockKitLayoutElement[]): GameResponse {
-  const isText = typeof response === 'string';
-  return {
+  const gameResponse: GameResponse = {
     type: 'response',
-    text: isText ? (response as string) : undefined,
-    blocks: !isText ? (response as SlackBlockKitLayoutElement[]) : undefined,
   };
+  const isText = typeof response === 'string';
+  if (isText) {
+    gameResponse['text'] = response as string;
+  } else {
+    gameResponse['blocks'] = response as SlackBlockKitLayoutElement[];
+  }
+  return gameResponse;
 }
 
 export function getGameError(message: string): GameResponse {
@@ -83,16 +87,22 @@ export function getEphemeralBlock(blocks: SlackBlockKitLayoutElement[]): SlackRe
 }
 
 export async function slackRequest(responseUrl: string, requestBody: SlackResponse) {
-  const options = {
-    method: 'POST',
-    uri: responseUrl,
-    headers: {
-      'Content-type': 'application/json',
-    },
-    body: requestBody,
-    json: true,
-  };
-  return rp(options);
+  try {
+    const url = responseUrl;
+    const options = {
+      method: 'POST',
+      headers: {
+        'Content-type': 'application/json',
+      },
+      body: JSON.stringify(requestBody),
+    };
+    const response = await fetch(url, options);
+    return response;
+  } catch (error) {
+    logger.error('Error in slackRequest()');
+    logger.error(error);
+    throw error;
+  }
 }
 
 export const notifyInPrivate = async (

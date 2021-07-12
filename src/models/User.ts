@@ -181,16 +181,12 @@ export class User extends Model<UserAttributes, UserCreationAttributes> implemen
   }
 }
 
-export async function getUserBySlackId(slackId: string): Promise<User> {
-  const user = await User.findOne({
+export async function getUserBySlackId(slackId: string): Promise<User | null> {
+  return User.findOne({
     where: {
       slackId,
     },
   });
-  if (!user) {
-    throw Error(`User with slack ID: ${slackId} not found`);
-  }
-  return user;
 }
 
 export async function findArenaPlayersByUserSlackId(

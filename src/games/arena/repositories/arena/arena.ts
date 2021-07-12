@@ -12,6 +12,7 @@ import {
   getGameError,
   getGameResponse,
 } from '../../../utils';
+import { generateArenaEndGameConfirmationBlockKit } from '../../generators';
 import { publishArenaMessage, withArenaTransaction } from '../../utils';
 import { ArenaEngine } from './engine';
 import { arenaCommandReply } from './replies';
@@ -48,7 +49,7 @@ export class ArenaRepository {
           transaction
         );
 
-        await enableAllItems(game.id, transaction);
+        await enableAllItems(GAME_TYPE.ARENA, transaction);
         await activateAllArenaZones(transaction);
         return getGameResponse(arenaCommandReply.adminCreatedGame(game));
       } catch (e) {
@@ -59,6 +60,53 @@ export class ArenaRepository {
         //   repository: ArenaRepository.name,
         // })
       }
+    });
+  }
+
+  async askEndGame(userRequesting: User): Promise<void | GameResponse> {
+    return withArenaTransaction(async (transaction) => {
+      const isAdmin = adminAction(userRequesting);
+      if (!isAdmin) {
+        return getGameError(arenaCommandReply.adminsOnly());
+      }
+      const game = await findActiveArenaGame(transaction);
+      if (!game) {
+        return getGameError(arenaCommandReply.noActiveGame());
+      }
+      const endGameConfirmBlock = generateArenaEndGameConfirmationBlockKit();
+      return getGameResponse(endGameConfirmBlock);
+    });
+  }
+
+  async endGame(userRequesting: User): Promise<void | GameResponse> {
+    return withArenaTransaction(async (transaction) => {
+      const isAdmin = adminAction(userRequesting);
+      if (!isAdmin) {
+        return getGameError(arenaCommandReply.adminsOnly());
+      }
+      const game = await findActiveArenaGame(transaction);
+      if (!game) {
+        return getGameError(arenaCommandReply.noActiveGame());
+      }
+      await enableAllItems(GAME_TYPE.ARENA, transaction);
+      await game.endGame(transaction);
+      await activateAllArenaZones(transaction);
+      await publishArenaMessage(arenaCommandReply.channelEndGame(game), true);
+      return getGameResponse(arenaCommandReply.adminEndedGame(game));
+    });
+  }
+
+  async cancelEndGame(userRequesting: User): Promise<void | GameResponse> {
+    return withArenaTransaction(async (transaction) => {
+      const isAdmin = adminAction(userRequesting);
+      if (!isAdmin) {
+        return getGameError(arenaCommandReply.adminsOnly());
+      }
+      const game = await findActiveArenaGame(transaction);
+      if (!game) {
+        return getGameError(arenaCommandReply.noActiveGame());
+      }
+      return getGameResponse(arenaCommandReply.cancelEndGame());
     });
   }
 

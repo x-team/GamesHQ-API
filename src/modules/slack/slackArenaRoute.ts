@@ -1,7 +1,7 @@
 import type { ServerRoute } from '@hapi/hapi';
 
-import { slackCommandHandler } from './slackHandlers';
-import { parseSlashCommandPayload, verifySlackRequest } from './utils';
+import { arenaSlackActionHandler, slackCommandHandler } from './slackHandlers';
+import { parseSlackActionPayload, parseSlashCommandPayload, verifySlackRequest } from './utils';
 
 const routePrefix = '/slack-integrations/';
 
@@ -32,5 +32,32 @@ export const slackArenaRoutes: ServerRoute[] = [
       ],
     },
     handler: slackCommandHandler,
+  },
+  {
+    method: 'POST',
+    path: `${routePrefix}arena-actions`,
+    options: {
+      auth: false,
+      payload: {
+        parse: false,
+        output: 'data',
+      },
+      description: 'The Arena Slack Actions route',
+      tags: ['api', 'slack', 'action commands', 'arena'],
+      response: {
+        emptyStatusCode: 200,
+      },
+      pre: [
+        {
+          method: verifySlackRequest,
+          assign: 'verifySlackRequest',
+        },
+        {
+          method: parseSlackActionPayload,
+          assign: 'slackActionPayload',
+        },
+      ],
+    },
+    handler: arenaSlackActionHandler,
   },
 ];

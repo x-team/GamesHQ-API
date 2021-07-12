@@ -1,0 +1,6 @@
+{
+  "watch": ["dist/src"],
+  "ext": "js",
+  "ignore": [".git", "node_modules", "dist/src/**/*.test.*"],
+  "exec": "node --unhandled-rejections=strict ./dist/src/index.js"
+}

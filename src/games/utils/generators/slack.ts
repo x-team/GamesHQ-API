@@ -6,6 +6,7 @@ import {
   SlackBlockKitCompositionOption,
   SlackBlockKitCompositionTextOnly,
   SlackBlockKitContextLayout,
+  SlackBlockKitDividerLayout,
   SlackBlockKitHeaderLayout,
   SlackBlockKitInputLayout,
   SlackBlockKitInputTextElement,
@@ -21,6 +22,12 @@ export function blockKitCompositionText(displayText: string): SlackBlockKitCompo
     type: 'plain_text',
     text: displayText,
     emoji: true,
+  };
+}
+
+export function blockKitDivider(): SlackBlockKitDividerLayout {
+  return {
+    type: 'divider',
   };
 }
 

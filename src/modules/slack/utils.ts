@@ -14,14 +14,25 @@ import { arenaSwitchCommand } from '../../games/arena/commands';
 import { endsWith } from 'lodash';
 import { SlackConfigKey, validateSlackSignatures } from '../../utils/cryptography';
 import { SlackActionsPayload } from '../../games/model/SlackActionPayload';
-import { SlackDialogsPayload } from '../../games/model/SlackDialogPayload';
+import {
+  SlackDialogsPayload,
+  slackDialogsPayloadSchema,
+} from '../../games/model/SlackDialogPayload';
 import { SlackBlockKitPayload } from '../../games/model/SlackBlockKitPayload';
 import { SlackChallengesPayload } from '../../games/model/SlackChallengePayload';
 import { SlackEventsPayload } from '../../games/model/SlackEventPayload';
-import { SlackDialogSubmissionPayload } from '../../games/model/SlackDialogObject';
-import { SlackShortcutPayload } from '../../games/model/SlackShortcutPayload';
+import {
+  SlackDialogSubmissionPayload,
+  slackSSDialogSubmissionPayloadSchema,
+} from '../../games/model/SlackDialogObject';
+import {
+  SlackShortcutPayload,
+  slackSShortcutPayloadSchema,
+} from '../../games/model/SlackShortcutPayload';
+import { slackActionsPayloadSchema } from '../../games/model/SlackActionPayload';
 import { GameResponse, getEphemeralBlock, getEphemeralText } from '../../games/utils';
 import { logger } from '../../config';
+import { slackBlockPayloadSchema } from '../../games/model/SlackBlockKit';
 
 export const isRequestFresh = (timestamp: number): boolean => {
   const SIXTY_SECONDS = 60;
@@ -117,7 +128,71 @@ export function parseSlashCommandPayload(request: Request): Lifecycle.Method {
   return slashCommandPayload.value;
 }
 
-function gameResponseToSlackHandler(response: GameResponse) {
+export function parseSlackActionPayload(request: Request): Lifecycle.Method {
+  if (!Buffer.isBuffer(request.payload)) {
+    throw Boom.internal('Payload is not a Buffer');
+  }
+
+  const body = request.payload.toString('utf-8');
+  const { payload } = Querystring.parse(body);
+
+  const parsed:
+    | SlackActionsPayload
+    | SlackDialogsPayload
+    | SlackBlockKitPayload
+    | SlackShortcutPayload
+    | SlackDialogSubmissionPayload = JSON.parse(payload as string);
+
+  let mutableSlackPayload;
+  switch (parsed.type) {
+    case 'message_action':
+      mutableSlackPayload = slackActionsPayloadSchema.validate(parsed as SlackActionsPayload, {
+        stripUnknown: true,
+      });
+      break;
+    case 'block_actions':
+      mutableSlackPayload = slackBlockPayloadSchema.validate(parsed as SlackBlockKitPayload, {
+        stripUnknown: true,
+      });
+      break;
+    case 'shortcut':
+      mutableSlackPayload = slackSShortcutPayloadSchema.validate(parsed as SlackShortcutPayload, {
+        stripUnknown: true,
+      });
+      break;
+    case 'view_submission':
+      mutableSlackPayload = slackSSDialogSubmissionPayloadSchema.validate(
+        parsed as SlackDialogSubmissionPayload,
+        {
+          stripUnknown: true,
+        }
+      );
+      break;
+    default:
+      const { view }: SlackActionsPayload = parsed as SlackActionsPayload;
+      mutableSlackPayload =
+        view && view.callback_id === 'modal-appreciation'
+          ? slackActionsPayloadSchema.validate(parsed as SlackActionsPayload, {
+              stripUnknown: true,
+            })
+          : slackDialogsPayloadSchema.validate(parsed as SlackDialogsPayload, {
+              stripUnknown: true,
+            });
+      break;
+  }
+
+  checkForSlackErrors(mutableSlackPayload, parsed);
+
+  return mutableSlackPayload.value;
+}
+
+export function gameResponseToSlackHandler(response: GameResponse | void) {
+  if (!response) {
+    const unknownCommandSent = `${SAD_PARROT} unknown command`;
+    logger.error(unknownCommandSent);
+    return getEphemeralText(unknownCommandSent);
+  }
+
   const defaultErrorMessage = 'Something Wrong Happened';
   if (response.type === 'error') {
     logger.error(response);
@@ -133,22 +208,18 @@ export const slackCommandSwitcher = async (
   payload: SlackSlashCommandPayload
 ): Promise<Lifecycle.ReturnValue> => {
   const { command, user_id, /*response_url,*/ text, trigger_id, channel_id } = payload;
-  let mutableUserRequesting;
+
   let mutableResponse: void | GameResponse;
-  try {
-    mutableUserRequesting = await getUserBySlackId(user_id);
-  } catch (e) {
-    // logger.error(e);
-    throw e;
-    // const errorMessage = `${SAD_PARROT} User with slack ID: <@${user_id}> not found`;
-    // logger.error(errorMessage);
-    // return getEphemeralText(errorMessage);
+  const errorMessage = `${SAD_PARROT} User with slack ID: <@${user_id}> not found`;
+  const userRequesting = await getUserBySlackId(user_id);
+  if (!userRequesting) {
+    return getEphemeralText(errorMessage);
   }
   if (isArenaCommand(command)) {
     mutableResponse = await arenaSwitchCommand({
       command,
       commandText: text,
-      userRequesting: mutableUserRequesting,
+      userRequesting,
       channelId: channel_id,
       triggerId: trigger_id,
     });
@@ -178,11 +249,5 @@ export const slackCommandSwitcher = async (
   //     userRequesting: mutableUserRequesting,
   //   });
   // }
-
-  if (!mutableResponse) {
-    const unknownCommandSent = `${SAD_PARROT} unknown command`;
-    logger.error(unknownCommandSent);
-    return getEphemeralText(unknownCommandSent);
-  }
   return gameResponseToSlackHandler(mutableResponse);
 };

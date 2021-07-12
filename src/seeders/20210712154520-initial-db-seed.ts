@@ -67,6 +67,11 @@ enum USER_ROLE_NAME {
   SUPER_ADMIN = 'super admin',
 }
 
+enum GAME_TYPE {
+  TOWER = 'The Tower',
+  ARENA = 'The Arena',
+}
+
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 function enumToIds(enumerable: any): Array<{ id: string }> {
   return Object.values<string>(enumerable).map((t) => ({ id: t }));
@@ -90,6 +95,7 @@ module.exports = {
         transaction,
       });
       await queryInterface.bulkInsert('ItemRarity', enumToIds(RARITY), { transaction });
+      await queryInterface.bulkInsert('GameType', enumToIds(GAME_TYPE), { transaction });
       await queryInterface.bulkInsert(
         'Trait',
         [
@@ -182,6 +188,7 @@ module.exports = {
         transaction,
       });
       await queryInterface.bulkDelete('ItemRarity', toDelete(RARITY), { transaction });
+      await queryInterface.bulkDelete('GameType', toDelete(GAME_TYPE), { transaction });
       await queryInterface.bulkDelete('Trait', toDelete(TRAIT), { transaction });
       await queryInterface.bulkDelete(
         'UserRole',
