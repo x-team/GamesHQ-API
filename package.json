@@ -5,6 +5,7 @@
   "main": "index.js",
   "scripts": {
     "start": "npm run prepare-db && node dist/src/index.js",
+    "start:noseed": "node dist/src/index.js",
     "dev": "npm install --frozen-lockfile --production=false && npm run build && npm run prepare-db && concurrently \"tsc --watch\" nodemon",
     "test": "cross-env NODE_ENV=test ENV=test npm run test:all",
     "test:integration": "cross-env NODE_ENV=test ENV=test npm run test:_integration",
@@ -16,6 +17,7 @@
     "tsc": "tsc --noEmit -p tsconfig.ci.json",
     "build": "npm run clean && tsc && rsync -av --exclude='*.ts' src/ dist/src",
     "build:start": "npm run build && npm run start",
+    "build:start:noseed": "npm run build && npm run start:noseed",
     "db:seed:up": "ts-node --transpile-only -e 'require(`./migrate.ts`).seedUp()'",
     "db:seed:down": "ts-node --transpile-only -e 'require(`./migrate.ts`).seedDown()'",
     "db:migrate:up": "ts-node --transpile-only -e 'require(`./migrate.ts`).migrateUp()'",
