@@ -17,6 +17,7 @@ import {
 } from 'sequelize-typescript';
 
 import { USER_ROLE_NAME } from '../consts/model';
+import { GameError } from '../games/utils/GameError';
 import { isScopeRole } from '../utils/permissions';
 
 import {
@@ -208,7 +209,7 @@ export async function findUsersBySlackIds(slackIds: string[]): Promise<User[]> {
   });
 
   if (!users || !users.length) {
-    throw Error('Users not found');
+    throw GameError.notFound('Users not found');
   }
 
   return users;

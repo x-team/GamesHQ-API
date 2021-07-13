@@ -15,6 +15,7 @@ import {
 
 import { GAME_TYPE } from '../games/consts/global';
 import { generateRandomNameForGame } from '../games/utils';
+import { GameError } from '../games/utils/GameError';
 
 import { User, ArenaGame, GameType } from './';
 
@@ -188,7 +189,9 @@ export async function startGame(
   }
   const activeGame = await findActiveGame(_gameTypeId, transaction);
   if (activeGame) {
-    throw Error('There is an active game. End it first, then try to create a new one');
+    throw GameError.activeGameRunning(
+      'There is an active game running. End it first (Use /arena-endgame command), then try to create a new one.'
+    );
   }
   return createGame({ name, _createdById, _gameTypeId, startedAt }, transaction);
 }

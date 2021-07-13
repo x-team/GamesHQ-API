@@ -21,7 +21,6 @@ import { SEED_MODE } from './consts/api';
   const xhqServer = await getServerWithPlugins();
   await xhqServer.start();
 
-  logger.info(`Seed Mode: ${getConfig('SEED_MODE')}`);
   logger.info('🚀 Hello from super logger 🚀\n\t⭐️⭐️⭐️⭐️⭐️');
   logger.info(`🚀 Server Running At: ${xhqServer.info.uri} 🚀`);
 })();

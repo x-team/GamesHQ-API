@@ -44,6 +44,7 @@ import { Ability, AbilityProperty } from '../games/classes/GameAbilities';
 import { listActiveWeaponsByGameType } from './ItemWeapon';
 import { findOrganizationByName } from './Organization';
 import { USER_ROLE_LEVEL } from '../consts/model';
+import { GameError } from '../games/utils/GameError';
 
 interface ArenaPlayerAttributes {
   id: number;
@@ -581,7 +582,7 @@ export async function getOrCreateBossesOrGuests({
     const organizationName = 'x-team'; // This will be dynamic in the future
     const organization = await findOrganizationByName(organizationName, transaction);
     if (!organization) {
-      throw Error('Organization not Found');
+      throw GameError.notFound('Organization not Found');
     }
     if (!mutableUser) {
       mutableUser = await User.create({

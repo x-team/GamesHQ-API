@@ -12,6 +12,7 @@ import {
   getGameError,
   getGameResponse,
 } from '../../../utils';
+import { GameError } from '../../../utils/GameError';
 import { generateArenaEndGameConfirmationBlockKit } from '../../generators';
 import { publishArenaMessage, withArenaTransaction } from '../../utils';
 import { ArenaEngine } from './engine';
@@ -53,12 +54,11 @@ export class ArenaRepository {
         await activateAllArenaZones(transaction);
         return getGameResponse(arenaCommandReply.adminCreatedGame(game));
       } catch (e) {
-        logger.error('Hello error :D');
+        logger.error(e);
+        if (e instanceof GameError) {
+          return getGameError(e.message);
+        }
         throw e;
-        // throw GameError({
-        //   message: e.message,
-        //   repository: ArenaRepository.name,
-        // })
       }
     });
   }
