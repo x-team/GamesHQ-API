@@ -44,16 +44,6 @@ const yellFormat = format((info) => {
   return info;
 });
 
-// const breakLineFormat = format((info) => {
-//   if (info.brAmount) {
-//     const radix = 10;
-//     const spacerNumber = parseInt(info.brAmount, radix);
-//     const breakLines = Array(spacerNumber).fill(`\n`).join('');
-//     info.message = `${breakLines}${info.message}${breakLines}`;
-//   }
-//   return info;
-// });
-
 export const logger = createLogger({
   level: process.env.NODE_ENV === 'production' ? 'info' : 'debug',
   format: combine(
@@ -63,7 +53,6 @@ export const logger = createLogger({
     timestamp({ format: 'YYYY-MM-DD HH:mm:ss' }),
     yellFormat(),
     prettyJSONFormat(),
-    // breakLineFormat(),
     debugFormat
   ),
   defaultMeta: { api: 'gameshq-api' },
