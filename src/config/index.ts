@@ -4,6 +4,7 @@ import { version } from '../../package.json';
 interface NameToType {
   // PROCESS
   ENV: 'production' | 'staging' | 'development' | 'test';
+  SEED_MODE: 'noseed' | 'seed';
   NODE_ENV: 'production' | 'development';
   // DATABASE
   DB_USERNAME: string;
@@ -35,6 +36,8 @@ export function getConfig(name: string): string | number | boolean {
       return val || 'development';
     case 'BUILD_VERSION':
       return getConfig('ENV') + '-' + version + '_BUILD_' /*+ versionFile*/;
+    case 'SEED_MODE':
+      return process.argv.filter((arg) => arg === 'noseed').pop() || 'seed';
   }
 
   if (!val) {

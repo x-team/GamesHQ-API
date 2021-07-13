@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "start": "npm run prepare-db && node dist/src/index.js",
-    "start:noseed": "node dist/src/index.js",
+    "start:noseed": "node dist/src/index.js -- noseed",
     "dev": "npm install --frozen-lockfile --production=false && npm run build && npm run prepare-db && concurrently \"tsc --watch\" nodemon",
     "test": "cross-env NODE_ENV=test ENV=test npm run test:all",
     "test:integration": "cross-env NODE_ENV=test ENV=test npm run test:_integration",
