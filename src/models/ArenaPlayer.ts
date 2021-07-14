@@ -17,34 +17,26 @@ import {
   Table,
 } from 'sequelize-typescript';
 
+import { USER_ROLE_LEVEL } from '../consts/model';
 import {
   MAX_PLAYER_HEALTH,
   MAX_BOSS_HEALTH,
   MAX_AMOUNT_HEALTHKITS_ALLOWED,
 } from '../games/arena/consts';
+import { Ability, AbilityProperty } from '../games/classes/GameAbilities';
+import { GAME_TYPE, ITEM_TYPE, ONE, SLACK_SPACE, TRAIT, ZERO } from '../games/consts/global';
+import { GameError } from '../games/utils/GameError';
 import { parseEscapedSlackUserValues } from '../utils/slack';
 
 import { addAmmoToInventory, getPlayerItemCount } from './ArenaItemInventory';
 import { findAvailableArenaZonesToLand } from './ArenaZone';
+import { listActiveWeaponsByGameType } from './ItemWeapon';
+import { findOrganizationByName } from './Organization';
 import { findActiveTeamByName } from './Team';
 import { findArenaPlayersByUserSlackId } from './User';
 
-import {
-  Item,
-  ItemArmor,
-  ArenaItemInventory,
-  Game,
-  ArenaZone,
-  ArenaRoundAction,
-  Team,
-  User,
-} from '.';
-import { GAME_TYPE, ITEM_TYPE, ONE, SLACK_SPACE, TRAIT, ZERO } from '../games/consts/global';
-import { Ability, AbilityProperty } from '../games/classes/GameAbilities';
-import { listActiveWeaponsByGameType } from './ItemWeapon';
-import { findOrganizationByName } from './Organization';
-import { USER_ROLE_LEVEL } from '../consts/model';
-import { GameError } from '../games/utils/GameError';
+import type { ItemArmor, ArenaRoundAction } from '.';
+import { Item, ArenaItemInventory, Game, ArenaZone, Team, User } from '.';
 
 interface ArenaPlayerAttributes {
   id: number;
@@ -300,7 +292,7 @@ export class ArenaPlayer
   setAsSpectator(transaction: Transaction) {
     return this.update(
       {
-        health: 0,
+        health: ZERO,
         isVisible: false,
         isSpectator: true,
       },
@@ -320,7 +312,7 @@ export class ArenaPlayer
   }
 
   isAlive() {
-    return this.health > 0;
+    return this.health > ZERO;
   }
 
   isCurrentlyVisible() {
@@ -330,7 +322,7 @@ export class ArenaPlayer
   damageAndHide(damage: number, isVisible: boolean, transaction: Transaction) {
     return this.update(
       {
-        health: Math.max(this.health - damage, 0),
+        health: Math.max(this.health - damage, ZERO),
         isVisible,
       },
       { transaction }
@@ -340,7 +332,7 @@ export class ArenaPlayer
   async addWeapon(item: Item, transaction: Transaction) {
     // check if Weapon already exists
     const ItemWeaponQty = await getPlayerItemCount({ player: this, item }, transaction);
-    if (ItemWeaponQty > 0 && item.usageLimit !== null) {
+    if (ItemWeaponQty > ZERO && item.usageLimit !== null) {
       // Add ammo to ItemWeapon when it exists
       const playerWeapon = this._weapons?.find((w) => w.id === item.id)!;
       await addAmmoToInventory({ item: playerWeapon, player: this }, transaction);
@@ -438,8 +430,8 @@ export class ArenaPlayer
   async useItem(item: Item & { ArenaItemInventory: ArenaItemInventory }, transaction: Transaction) {
     const currentRemainingUses = item.ArenaItemInventory.remainingUses;
     if (isNumber(currentRemainingUses)) {
-      const remainingUses = currentRemainingUses - 1;
-      if (remainingUses < 1) {
+      const remainingUses = currentRemainingUses - ONE;
+      if (remainingUses < ONE) {
         await ArenaItemInventory.destroy({
           where: {
             _arenaPlayerId: this.id,
@@ -524,7 +516,7 @@ export async function findLivingPlayersByGame(
   return ArenaPlayer.scope({
     method: ['withInventory', includeInventories],
   }).findAll({
-    where: { _gameId: gameId, health: { [Op.gt]: 0 } },
+    where: { _gameId: gameId, health: { [Op.gt]: ZERO } },
     order: [['health', 'DESC']],
     transaction,
   });
@@ -612,7 +604,7 @@ export async function getOrCreatePlayer(
   transaction: Transaction
 ) {
   const bossAbility = new Ability({
-    stunBlockRate: 1,
+    stunBlockRate: ONE,
   });
   const [player] = await ArenaPlayer.findOrCreate({
     where: { _gameId: gameId, _userId: user.id },
@@ -625,7 +617,7 @@ export async function getOrCreatePlayer(
       isBoss,
       isVisible: true,
       isSpectator: false,
-      luckBoost: 0,
+      luckBoost: ZERO,
       abilitiesJSON: isBoss ? bossAbility.toJSON() : Ability.defaultProps(),
     },
     transaction,
@@ -699,7 +691,7 @@ function compareAndSubtract(subtractPlayers: ArenaPlayer[] = []) {
     return (
       subtractPlayers.filter((otherPlayer) => {
         return otherPlayer.id === player.id;
-      }).length === 0
+      }).length === ZERO
     );
   };
 }
@@ -711,7 +703,7 @@ export async function setPlayerHealthkitQuantity(
   quantity: number,
   transaction: Transaction
 ) {
-  if (quantity < 1) {
+  if (quantity < ONE) {
     await ArenaItemInventory.destroy({
       where: {
         _arenaPlayerId: player.id,

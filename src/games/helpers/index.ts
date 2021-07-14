@@ -1,5 +1,6 @@
 import { random } from 'lodash';
-import { ArenaItemInventory, ArenaZone, Item } from '../../models';
+
+import type { ArenaItemInventory, ArenaZone, Item } from '../../models';
 import { ARENA_PERK } from '../arena/consts';
 import { hasArenaPerk } from '../arena/repositories/arena/engine/cheerSystem';
 import { arenaPerkStats } from '../arena/utils';
@@ -205,10 +206,7 @@ export function cheerSystemStatus(cheersAmount?: number) {
   }`;
 }
 
-export function generateRarityColorEmoji(
-  rarity: ITEM_RARITY,
-  getBigEmoji: boolean = false
-): string {
+export function generateRarityColorEmoji(rarity: ITEM_RARITY, getBigEmoji = false): string {
   switch (rarity) {
     case ITEM_RARITY.COMMON:
       return getBigEmoji ? COMMON_COLOR_EMOJI_BIG : COMMON_COLOR_EMOJI_SMALL;

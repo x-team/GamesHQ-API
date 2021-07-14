@@ -1,5 +1,6 @@
 import Joi from 'joi';
-import { SlackUser } from './SlackUser';
+
+import type { SlackUser } from './SlackUser';
 
 export interface SlackEventUserChange {
   type: 'user_change';

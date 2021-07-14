@@ -4,11 +4,12 @@ import Inert from '@hapi/inert';
 import Vision from '@hapi/vision';
 import HapiSwagger from 'hapi-swagger';
 import Joi from 'joi';
-import { getConfig, isProd, logger } from './config';
-import { routeToLabel } from './utils/api';
 
 import pkg from '../package.json';
+
+import { getConfig, isProd, logger } from './config';
 import { routes } from './routes';
+import { routeToLabel } from './utils/api';
 
 const getServer = () =>
   new Server({

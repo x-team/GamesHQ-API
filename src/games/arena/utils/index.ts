@@ -1,16 +1,17 @@
 import { sampleSize } from 'lodash';
 import type { Transaction } from 'sequelize';
+
 import { getConfig } from '../../../config';
 import { ONE, ZERO } from '../../consts/global';
 import { roundActionMessageBuilder } from '../../helpers';
-import { SlackBlockKitLayoutElement } from '../../model/SlackBlockKit';
+import type { SlackBlockKitLayoutElement } from '../../model/SlackBlockKit';
 import { notifyEphemeral, slackRequest, withTransaction } from '../../utils';
 import { GameError } from '../../utils/GameError';
+import type { ChangeLocationParams } from '../consts';
 import {
   ADRENALINE_THRESHOLD,
   ARENA_PERK,
   ARENA_REPOSITORY_NAME,
-  ChangeLocationParams,
   MAX_PLAYERS_PER_ARENA_ZONE,
 } from '../consts';
 import { generateChangeZonePickerBlock } from '../generators';
@@ -60,7 +61,7 @@ export function arenaRoundActionMessageBuilder(
     additionalMessages,
   }: RoundActionMessageBuilderParams
 ) {
-  let hasChangeLocation: boolean = false;
+  let hasChangeLocation = false;
   const SAMPLES = 2;
   if (player.isAlive()) {
     hasChangeLocation = true;

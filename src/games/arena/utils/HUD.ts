@@ -1,4 +1,4 @@
-import { ArenaPlayer } from '../../../models';
+import type { ArenaPlayer } from '../../../models';
 import { PLAYER_HIDE_EMOJI, PLAYER_VISIBLE_EMOJI } from '../../consts/emojis';
 import {
   armorStatus,

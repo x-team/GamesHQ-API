@@ -1,7 +1,9 @@
 import type { Lifecycle } from '@hapi/hapi';
+
 import { SLACK_COMMAND_TESTING_PREFIX } from '../../consts/api';
 import { handleArenaAction, handleViewSubmissionAction } from '../../games/arena/actions';
-import { SlackSlashCommandPayload } from '../../games/model/SlackSlashCommandPayload';
+import type { SlackSlashCommandPayload } from '../../games/model/SlackSlashCommandPayload';
+
 import { slackCommandSwitcher } from './utils';
 
 export const testRouteHandler: Lifecycle.Method = async () => {

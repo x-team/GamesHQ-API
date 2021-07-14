@@ -1,38 +1,33 @@
-import Boom from '@hapi/boom';
 import Querystring from 'querystring';
+
+import Boom from '@hapi/boom';
 import type { Lifecycle, Request, ResponseToolkit } from '@hapi/hapi';
 import type { ValidationResult } from 'joi';
-import { SAD_PARROT } from '../../games/consts/emojis';
-
-import {
-  SlackSlashCommandPayload,
-  slackSlashCommandPayloadSchema,
-} from '../../games/model/SlackSlashCommandPayload';
-import { isArenaCommand } from '../../games/arena/utils';
-import { getUserBySlackId } from '../../models/User';
-import { arenaSwitchCommand } from '../../games/arena/commands';
 import { endsWith } from 'lodash';
-import { SlackConfigKey, validateSlackSignatures } from '../../utils/cryptography';
-import { SlackActionsPayload } from '../../games/model/SlackActionPayload';
-import {
-  SlackDialogsPayload,
-  slackDialogsPayloadSchema,
-} from '../../games/model/SlackDialogPayload';
-import { SlackBlockKitPayload } from '../../games/model/SlackBlockKitPayload';
-import { SlackChallengesPayload } from '../../games/model/SlackChallengePayload';
-import { SlackEventsPayload } from '../../games/model/SlackEventPayload';
-import {
-  SlackDialogSubmissionPayload,
-  slackSSDialogSubmissionPayloadSchema,
-} from '../../games/model/SlackDialogObject';
-import {
-  SlackShortcutPayload,
-  slackSShortcutPayloadSchema,
-} from '../../games/model/SlackShortcutPayload';
-import { slackActionsPayloadSchema } from '../../games/model/SlackActionPayload';
-import { GameResponse, getEphemeralBlock, getEphemeralText } from '../../games/utils';
+
 import { logger } from '../../config';
+import { arenaSwitchCommand } from '../../games/arena/commands';
+import { isArenaCommand } from '../../games/arena/utils';
+import { SAD_PARROT } from '../../games/consts/emojis';
+import { slackActionsPayloadSchema } from '../../games/model/SlackActionPayload';
+import type { SlackActionsPayload } from '../../games/model/SlackActionPayload';
 import { slackBlockPayloadSchema } from '../../games/model/SlackBlockKit';
+import type { SlackBlockKitPayload } from '../../games/model/SlackBlockKitPayload';
+import type { SlackChallengesPayload } from '../../games/model/SlackChallengePayload';
+import type { SlackDialogSubmissionPayload } from '../../games/model/SlackDialogObject';
+import { slackSSDialogSubmissionPayloadSchema } from '../../games/model/SlackDialogObject';
+import type { SlackDialogsPayload } from '../../games/model/SlackDialogPayload';
+import { slackDialogsPayloadSchema } from '../../games/model/SlackDialogPayload';
+import type { SlackEventsPayload } from '../../games/model/SlackEventPayload';
+import type { SlackShortcutPayload } from '../../games/model/SlackShortcutPayload';
+import { slackSShortcutPayloadSchema } from '../../games/model/SlackShortcutPayload';
+import type { SlackSlashCommandPayload } from '../../games/model/SlackSlashCommandPayload';
+import { slackSlashCommandPayloadSchema } from '../../games/model/SlackSlashCommandPayload';
+import type { GameResponse } from '../../games/utils';
+import { getEphemeralBlock, getEphemeralText } from '../../games/utils';
+import { getUserBySlackId } from '../../models/User';
+import type { SlackConfigKey } from '../../utils/cryptography';
+import { validateSlackSignatures } from '../../utils/cryptography';
 
 export const isRequestFresh = (timestamp: number): boolean => {
   const SIXTY_SECONDS = 60;

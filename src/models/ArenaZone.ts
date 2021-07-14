@@ -16,7 +16,7 @@ import {
 
 import { ARENA_ZONE_RING, RING_SYSTEM_MAX_PENALTY_NUMBER } from '../games/arena/consts';
 import { arenaZoneCapacity } from '../games/arena/utils';
-import { SORT_ACTION_ARRAY_RATE } from '../games/consts/global';
+import { ONE, SORT_ACTION_ARRAY_RATE, ZERO } from '../games/consts/global';
 
 import type { ArenaGame } from '.';
 import { ArenaPlayer } from '.';
@@ -136,8 +136,8 @@ export async function findArenaZonesWithPlayers(transaction?: Transaction) {
     include: [ArenaPlayer],
     transaction,
   });
-  const GO_FIRST = -1;
-  const GO_LAST = 1;
+  const GO_FIRST = -ONE;
+  const GO_LAST = ONE;
   return allArenaZones
     .filter((arenaZone) => arenaZone._players?.length)
     .sort((zoneA, zoneB) => {
@@ -170,7 +170,7 @@ export async function findAvailableArenaZonesToLand(transaction?: Transaction) {
     transaction,
   });
   return arenaZonesAvailable.filter(
-    (arenaZone) => (arenaZone._players?.length ?? 0) < arenaZoneCapacity()
+    (arenaZone) => (arenaZone._players?.length ?? ZERO) < arenaZoneCapacity()
   );
 }
 
@@ -311,7 +311,7 @@ export async function ringDeactivationSystem(game: ArenaGame, transaction: Trans
 }
 
 export async function pickRingSystemAlgorithm(transaction: Transaction) {
-  const PICK_ONE = 1;
+  const PICK_ONE = ONE;
   const defaultAlgorithm = '5';
   const zonesByDistinctRings = await ArenaZone.findAll({
     attributes: [[Sequelize.literal('DISTINCT ring'), 'ring']],
@@ -320,7 +320,7 @@ export async function pickRingSystemAlgorithm(transaction: Transaction) {
   });
   const ringsAvailable = zonesByDistinctRings
     .map((zone) => zone.ring)
-    .map((ring) => ring[1])
+    .map((ring) => ring[ONE])
     .filter((ring) => !!ring);
   const uniqueLetters: Set<string> = new Set();
   ringsAvailable.forEach((ring) => uniqueLetters.add(ring));

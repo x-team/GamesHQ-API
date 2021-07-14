@@ -1,4 +1,4 @@
-import { User } from '../../../models';
+import type { User } from '../../../models';
 import { getGameResponse } from '../../utils';
 import { ARENA_SLACK_COMMANDS } from '../consts';
 import { ArenaRepository } from '../repositories/arena/arena';

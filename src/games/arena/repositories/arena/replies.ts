@@ -2,8 +2,8 @@ import Boom from '@hapi/boom';
 import a from 'indefinite';
 import { capitalize } from 'lodash';
 import type { Transaction } from 'sequelize';
-import { logger } from '../../../../config';
 
+import { logger } from '../../../../config';
 import type {
   Game,
   ArenaPlayer,
@@ -36,12 +36,8 @@ import {
   randomSkinColor,
   zoneStatus,
 } from '../../../helpers';
-import {
-  ARENA_ACTIONS,
-  ARENA_PLAYER_PERFORMANCE,
-  ChangeLocationParams,
-  MAX_PLAYER_HEALTH,
-} from '../../consts';
+import type { ChangeLocationParams } from '../../consts';
+import { ARENA_ACTIONS, ARENA_PLAYER_PERFORMANCE, MAX_PLAYER_HEALTH } from '../../consts';
 import { arenaNotifyEphemeral, arenaRoundActionMessageBuilder } from '../../utils';
 import { playerStatus } from '../../utils/HUD';
 

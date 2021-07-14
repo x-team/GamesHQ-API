@@ -10,7 +10,7 @@ import {
   BelongsTo,
 } from 'sequelize-typescript';
 
-import { ARENA_ACTIONS } from '../games/arena/consts';
+import type { ARENA_ACTIONS } from '../games/arena/consts';
 
 import { ArenaAction } from './AvailableAction';
 

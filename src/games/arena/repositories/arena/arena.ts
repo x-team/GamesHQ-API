@@ -1,5 +1,6 @@
 import { isEmpty } from 'lodash';
-import { User } from '../../../../models';
+
+import type { User } from '../../../../models';
 import { findActiveArenaGame, startArenaGame } from '../../../../models/ArenaGame';
 import {
   addArenaPlayers,
@@ -12,9 +13,9 @@ import { activateAllArenaZones } from '../../../../models/ArenaZone';
 import { enableAllItems } from '../../../../models/GameItemAvailability';
 import { parseEscapedSlackUserValues } from '../../../../utils/slack';
 import { GAME_TYPE } from '../../../consts/global';
+import type { GameResponse } from '../../../utils';
 import {
   adminAction,
-  GameResponse,
   generateRandomNameForGame,
   getGameError,
   getGameResponse,
@@ -23,7 +24,8 @@ import {
 import { generateArenaEndGameConfirmationBlockKit } from '../../generators';
 import { publishArenaMessage, withArenaTransaction } from '../../utils';
 import { addPlayers, addSpectator, parseBossAndGuestCommandText } from '../../utils/addPlayer';
-import { ArenaEngine } from './engine';
+
+import type { ArenaEngine } from './engine';
 import { arenaCommandReply } from './replies';
 
 export class ArenaRepository {

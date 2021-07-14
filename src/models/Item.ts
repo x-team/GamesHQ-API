@@ -15,6 +15,7 @@ import {
   HasOne,
 } from 'sequelize-typescript';
 
+import { logger } from '../config';
 import type { GAME_TYPE, TRAIT } from '../games/consts/global';
 import { ITEM_RARITY, ITEM_TYPE } from '../games/consts/global';
 
@@ -35,7 +36,6 @@ import {
   GameItemAvailability,
   Game,
 } from './';
-import { logger } from '../config';
 
 interface ItemAttributes {
   id: number;

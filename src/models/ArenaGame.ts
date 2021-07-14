@@ -18,6 +18,7 @@ import { GAME_TYPE, ONE, ZERO } from '../games/consts/global';
 import { createArenaRound } from './ArenaRound';
 import { pickRingSystemAlgorithm } from './ArenaZone';
 import { findActiveGame, findLastActiveGame, startGame } from './Game';
+
 import { ArenaPlayer, Game, ArenaRound, User } from './';
 
 interface ArenaGameAttributes {

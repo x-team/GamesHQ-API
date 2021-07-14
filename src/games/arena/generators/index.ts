@@ -1,5 +1,5 @@
-import { ArenaZone } from '../../../models';
-import {
+import type { ArenaZone } from '../../../models';
+import type {
   SlackBlockKitCompositionOption,
   SlackBlockKitDividerLayout,
   SlackBlockKitLayoutElement,

@@ -1,4 +1,4 @@
-import { ArenaPlayer, ArenaZone } from '../../models';
+import type { ArenaPlayer, ArenaZone } from '../../models';
 import { SHARED_ACTIONS } from '../consts/global';
 
 export const ARENA_ACTIONS = {

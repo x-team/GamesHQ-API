@@ -1,14 +1,16 @@
-import type { Transaction } from 'sequelize';
 import Boom from '@hapi/boom';
-import { ArenaPlayer, User } from '../../../models';
-import { findArenaZoneByName } from '../../../models/ArenaZone';
-import { addArenaPlayers, addArenaPlayersToZones } from '../../../models/ArenaPlayer';
-import { findActiveArenaGame } from '../../../models/ArenaGame';
-import { findUsersBySlackIds } from '../../../models/User';
-import { arenaNotifyEphemeral } from '.';
-import { arenaCommandReply } from '../repositories/arena/replies';
-import { parseCommandTextToSlackIds } from '../../utils';
+import type { Transaction } from 'sequelize';
+
 import { logger } from '../../../config';
+import type { ArenaPlayer, User } from '../../../models';
+import { findActiveArenaGame } from '../../../models/ArenaGame';
+import { addArenaPlayers, addArenaPlayersToZones } from '../../../models/ArenaPlayer';
+import { findArenaZoneByName } from '../../../models/ArenaZone';
+import { findUsersBySlackIds } from '../../../models/User';
+import { parseCommandTextToSlackIds } from '../../utils';
+import { arenaCommandReply } from '../repositories/arena/replies';
+
+import { arenaNotifyEphemeral } from '.';
 
 export function parseBossAndGuestCommandText(commandtext: string) {
   const bracesRegExp = new RegExp(/\{(.*?)\}/, 'g');

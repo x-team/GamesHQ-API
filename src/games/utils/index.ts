@@ -1,15 +1,16 @@
-import { random } from 'lodash';
-import type { Transaction } from 'sequelize';
 import { WebClient } from '@slack/client';
+import { random } from 'lodash';
 import fetch from 'node-fetch';
-import { User } from '../../models';
+import type { Transaction } from 'sequelize';
 
+import { getConfig, logger } from '../../config';
+import { sequelize } from '../../db';
+import type { User } from '../../models';
+import { parseEscapedSlackUserValues } from '../../utils/slack';
 import type { GAME_TYPE } from '../consts/global';
 import { HUNDRED } from '../consts/global';
-import { getConfig, logger } from '../../config';
-import { SlackBlockKitLayoutElement } from '../model/SlackBlockKit';
-import { sequelize } from '../../db';
-import { parseEscapedSlackUserValues } from '../../utils/slack';
+import type { SlackBlockKitLayoutElement } from '../model/SlackBlockKit';
+
 import { GameError } from './GameError';
 
 // DATABASE

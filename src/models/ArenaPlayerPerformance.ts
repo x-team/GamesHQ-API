@@ -162,8 +162,8 @@ export async function findFirstBlood(gameId: number, transaction?: Transaction) 
 
 export async function setFirstBlood(playerId: number, gameId: number, transaction: Transaction) {
   const playerPerformance = await findSinglePlayerPerformance(playerId, gameId, transaction);
-  if (!playerPerformance!.firstBlood) {
-    return playerPerformance!.update({ firstBlood: true }, { transaction });
+  if (!playerPerformance?.firstBlood) {
+    return playerPerformance?.update({ firstBlood: true }, { transaction });
   }
   return playerPerformance;
 }

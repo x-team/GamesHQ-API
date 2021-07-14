@@ -1,5 +1,5 @@
 import { defaultToAny } from '../../../utils/api';
-import {
+import type {
   SlackBlockKitActionLayout,
   SlackBlockKitButtonElement,
   SlackBlockKitCompositionImage,
@@ -15,7 +15,7 @@ import {
   SlackBlockKitSelectMenuElement,
   SlackConfirmDialog,
 } from '../../model/SlackBlockKit';
-import { SlackDialog } from '../../model/SlackDialogObject';
+import type { SlackDialog } from '../../model/SlackDialogObject';
 
 export function blockKitCompositionText(displayText: string): SlackBlockKitCompositionTextOnly {
   return {

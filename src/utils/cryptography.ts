@@ -1,5 +1,6 @@
 import { generateKey, createHmac } from 'crypto';
 import { promisify } from 'util';
+
 import { getConfig, logger } from '../config';
 
 const generateKeyAsync = promisify(generateKey);

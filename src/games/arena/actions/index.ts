@@ -1,20 +1,21 @@
 import type { Lifecycle } from '@hapi/hapi';
-import { ARENA_SECONDARY_ACTIONS } from '../consts';
-import { ArenaEngine } from '../repositories/arena/engine';
-import { ArenaRepository } from '../repositories/arena/arena';
-import { User } from '../../../models';
-import { getEphemeralText, getGameError, slackRequest } from '../../utils';
-import { getUserBySlackId } from '../../../models/User';
-import { SAD_PARROT } from '../../consts/emojis';
-import { SlackBlockKitPayload } from '../../model/SlackBlockKitPayload';
+
 import { logger } from '../../../config';
-import {
+import type { User } from '../../../models';
+import { getUserBySlackId } from '../../../models/User';
+import { gameResponseToSlackHandler } from '../../../modules/slack/utils';
+import { parseEscapedSlackId } from '../../../utils/slack';
+import { SAD_PARROT } from '../../consts/emojis';
+import { randomSkinColor } from '../../helpers';
+import type {
   SlackBlockKitButtonElement,
   SlackBlockKitSelectMenuElement,
 } from '../../model/SlackBlockKit';
-import { randomSkinColor } from '../../helpers';
-import { gameResponseToSlackHandler } from '../../../modules/slack/utils';
-import { parseEscapedSlackId } from '../../../utils/slack';
+import type { SlackBlockKitPayload } from '../../model/SlackBlockKitPayload';
+import { getEphemeralText, getGameError, slackRequest } from '../../utils';
+import { ARENA_SECONDARY_ACTIONS } from '../consts';
+import { ArenaRepository } from '../repositories/arena/arena';
+import { ArenaEngine } from '../repositories/arena/engine';
 
 const gameEngine = ArenaEngine.getInstance();
 const arena = new ArenaRepository(gameEngine);

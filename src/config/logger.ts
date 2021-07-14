@@ -1,5 +1,5 @@
-import { createLogger, format, transports, addColors } from 'winston';
 import safeStringify from 'fast-safe-stringify';
+import { createLogger, format, transports, addColors } from 'winston';
 // import { parseInt } from 'lodash';
 
 const { combine, timestamp, printf, colorize, errors } = format;

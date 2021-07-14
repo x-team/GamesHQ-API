@@ -11,8 +11,9 @@ import {
   BelongsTo,
 } from 'sequelize-typescript';
 
-import { Item, GameType } from './';
 import { GAME_TYPE } from '../games/consts/global';
+
+import { Item, GameType } from './';
 
 interface GameItemAvailabilityAttributes {
   _gameTypeId: GAME_TYPE;

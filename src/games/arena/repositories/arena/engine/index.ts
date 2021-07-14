@@ -9,7 +9,7 @@ export class ArenaEngine {
 
   private static instance: ArenaEngine;
 
-  private isRunningRound: boolean = false;
+  private isRunningRound = false;
 
   private constructor() {}
 

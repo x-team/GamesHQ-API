@@ -13,8 +13,14 @@ import type { GAME_TYPE, ITEM_RARITY } from '../games/consts/global';
 import { ITEM_TYPE } from '../games/consts/global';
 
 import type { GameItemAvailabilityCreationAttributes } from './GameItemAvailability';
-import { ItemCreationAttributes, listActiveItemsByGameType } from './Item';
-import { createOrUpdateItem, findItemById, findItemByName, findItemsByRarityAndType } from './Item';
+import type { ItemCreationAttributes } from './Item';
+import {
+  listActiveItemsByGameType,
+  createOrUpdateItem,
+  findItemById,
+  findItemByName,
+  findItemsByRarityAndType,
+} from './Item';
 
 import { Item } from './';
 

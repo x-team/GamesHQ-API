@@ -1,5 +1,5 @@
-import { SlackBlockKitButtonElement, SlackBlockKitSelectMenuElement } from './SlackBlockKit';
-import { SLackDialogSubmission } from './SlackDialogObject';
+import type { SlackBlockKitButtonElement, SlackBlockKitSelectMenuElement } from './SlackBlockKit';
+import type { SLackDialogSubmission } from './SlackDialogObject';
 
 export interface SlackBlockKitPayload {
   token: string;

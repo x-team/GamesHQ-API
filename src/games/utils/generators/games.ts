@@ -1,4 +1,5 @@
-import { ARENA_SECONDARY_ACTIONS } from '../../arena/consts';
+import type { ARENA_SECONDARY_ACTIONS } from '../../arena/consts';
+
 import { blockKitAction, blockKitButton, blockKitDivider, blockKitMrkdwnSection } from './slack';
 
 export function generateEndGameConfirmationBlockKit(
