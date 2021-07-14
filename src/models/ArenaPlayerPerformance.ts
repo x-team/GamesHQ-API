@@ -14,7 +14,7 @@ import type { ARENA_PLAYER_PERFORMANCE } from '../games/arena/consts';
 import { MAX_TOP_OUTSTANDING_PERFORMANCE } from '../games/arena/consts';
 import { ZERO } from '../games/consts/global';
 
-import { Game, ArenaPlayer, User } from './';
+import { Game, ArenaPlayer } from './';
 
 interface ArenaPlayerPerformanceAttributes {
   _arenaPlayerId: number;
@@ -127,7 +127,12 @@ export async function findPlayersPerformanceByAction(
     where: {
       _gameId: gameId,
     },
-    include: [{ model: ArenaPlayer, include: [User] }],
+    include: [
+      {
+        association: ArenaPlayerPerformance.associations._player,
+        include: [ArenaPlayer.associations._user],
+      },
+    ],
     order: [[`${action}`, 'DESC']],
     limit: MAX_TOP_OUTSTANDING_PERFORMANCE,
     transaction,
@@ -144,7 +149,12 @@ export async function findSinglePlayerPerformance(
       _arenaPlayerId: playerId,
       _gameId: gameId,
     },
-    include: [{ model: ArenaPlayer, include: [User] }],
+    include: [
+      {
+        association: ArenaPlayerPerformance.associations._player,
+        include: [ArenaPlayer.associations._user],
+      },
+    ],
     transaction,
   });
 }
@@ -155,7 +165,12 @@ export async function findFirstBlood(gameId: number, transaction?: Transaction) 
       _gameId: gameId,
       firstBlood: true,
     },
-    include: [{ model: ArenaPlayer, include: [User] }],
+    include: [
+      {
+        association: ArenaPlayerPerformance.associations._player,
+        include: [ArenaPlayer.associations._user],
+      },
+    ],
     transaction,
   });
 }

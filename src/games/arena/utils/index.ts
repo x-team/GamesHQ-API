@@ -2,12 +2,13 @@ import { sampleSize } from 'lodash';
 import type { Transaction } from 'sequelize';
 
 import { getConfig } from '../../../config';
+import { ArenaPlayerPerformance } from '../../../models';
 import { ONE, ZERO } from '../../consts/global';
-import { roundActionMessageBuilder } from '../../helpers';
+import { generateTeamEmoji, roundActionMessageBuilder } from '../../helpers';
 import type { SlackBlockKitLayoutElement } from '../../model/SlackBlockKit';
 import { notifyEphemeral, slackRequest, withTransaction } from '../../utils';
 import { GameError } from '../../utils/GameError';
-import type { ChangeLocationParams } from '../consts';
+import type { ARENA_PLAYER_PERFORMANCE, ChangeLocationParams } from '../consts';
 import {
   ADRENALINE_THRESHOLD,
   ARENA_PERK,
@@ -15,6 +16,24 @@ import {
   MAX_PLAYERS_PER_ARENA_ZONE,
 } from '../consts';
 import { generateChangeZonePickerBlock } from '../generators';
+
+export function topPlayerPerformance(
+  maxPlayersInTop: number,
+  performanceField: ARENA_PLAYER_PERFORMANCE,
+  playersPerformance: ArenaPlayerPerformance[]
+): string {
+  let mutableTopPerformance = '';
+  for (let mutableIndex = 1; mutableIndex <= maxPlayersInTop; mutableIndex++) {
+    const playerPerformance = playersPerformance[mutableIndex - 1];
+    mutableTopPerformance += playerPerformance
+      ? `\t${mutableIndex}. ${generateTeamEmoji(
+          playerPerformance._player?._user?._team?.emoji
+        )} | <@${playerPerformance._player?._user?.slackId}> ` +
+        `*[${playerPerformance[performanceField]}]*\n`
+      : '';
+  }
+  return mutableTopPerformance;
+}
 
 export function arenaZoneCapacity(activeZonezAmount = ONE, deactivatedZonesAmount = ZERO) {
   const extraCapacity = Math.ceil(

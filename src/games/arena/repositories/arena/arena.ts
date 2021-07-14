@@ -1,18 +1,29 @@
 import { isEmpty } from 'lodash';
 
 import type { User } from '../../../../models';
-import { findActiveArenaGame, startArenaGame } from '../../../../models/ArenaGame';
+import {
+  findActiveArenaGame,
+  findLastActiveArenaGame,
+  startArenaGame,
+} from '../../../../models/ArenaGame';
 import {
   addArenaPlayers,
   addArenaPlayersToZones,
   findLivingPlayersByGame,
+  findPlayersByGame,
   findSpectatorsByGame,
   getOrCreateBossesOrGuests,
+  removePlayersFromArenaZones,
 } from '../../../../models/ArenaPlayer';
+import {
+  findFirstBlood,
+  findPlayersPerformanceByAction,
+} from '../../../../models/ArenaPlayerPerformance';
 import { activateAllArenaZones } from '../../../../models/ArenaZone';
 import { enableAllItems } from '../../../../models/GameItemAvailability';
 import { parseEscapedSlackUserValues } from '../../../../utils/slack';
 import { GAME_TYPE } from '../../../consts/global';
+import { generateTeamEmoji } from '../../../helpers';
 import type { GameResponse } from '../../../utils';
 import {
   adminAction,
@@ -21,12 +32,17 @@ import {
   getGameResponse,
   parseCommandTextToSlackIds,
 } from '../../../utils';
+import { ARENA_PLAYER_PERFORMANCE, MAX_TOP_OUTSTANDING_PERFORMANCE } from '../../consts';
 import { generateArenaEndGameConfirmationBlockKit } from '../../generators';
-import { publishArenaMessage, withArenaTransaction } from '../../utils';
+import { publishArenaMessage, topPlayerPerformance, withArenaTransaction } from '../../utils';
 import { addPlayers, addSpectator, parseBossAndGuestCommandText } from '../../utils/addPlayer';
 
 import type { ArenaEngine } from './engine';
-import { arenaCommandReply } from './replies';
+import {
+  arenaCommandReply,
+  generatePlayerPerformanceActionHeader,
+  PLAYER_PERFORMANCE_HEADER,
+} from './replies';
 
 export class ArenaRepository {
   constructor(public arenaGameEngine: ArenaEngine) {}
@@ -251,6 +267,53 @@ export class ArenaRepository {
       const spectators = await findSpectatorsByGame(game.id, transaction);
       await publishArenaMessage(arenaCommandReply.channelDisplaySpectators(spectators), true);
       return getGameResponse(arenaCommandReply.adminPlayersInfoPosted());
+    });
+  }
+
+  async performance(userRequesting: User): Promise<void | GameResponse> {
+    return withArenaTransaction(async (transaction) => {
+      const isAdmin = adminAction(userRequesting);
+      if (!isAdmin) {
+        return getGameError(arenaCommandReply.adminsOnly());
+      }
+      const game = await findActiveArenaGame(transaction);
+      if (game) {
+        return getGameError(arenaCommandReply.activeGame());
+      }
+      const lastGame = await findLastActiveArenaGame(transaction);
+      if (!lastGame) {
+        return getGameError(arenaCommandReply.noLastGame());
+      }
+      const firstBloodPerformance = await findFirstBlood(lastGame.id, transaction);
+      const firstBloodHeader = PLAYER_PERFORMANCE_HEADER.FIRST_BLOOD;
+      const firstBloodMessage =
+        `\t1. ${generateTeamEmoji(firstBloodPerformance?._player?._user?._team?.emoji)} ` +
+        `| <@${firstBloodPerformance?._player?._user?.slackId}>`;
+      let mutableTopRankings = `${firstBloodHeader}\n${firstBloodMessage}`;
+      for (const performanceField of Object.values(ARENA_PLAYER_PERFORMANCE)) {
+        const playersPerformance = await findPlayersPerformanceByAction(
+          lastGame.id,
+          performanceField,
+          transaction
+        );
+        if (playersPerformance) {
+          const rankingHeader = generatePlayerPerformanceActionHeader(performanceField);
+          const top = topPlayerPerformance(
+            MAX_TOP_OUTSTANDING_PERFORMANCE,
+            performanceField,
+            playersPerformance
+          );
+          mutableTopRankings += `${rankingHeader}\n${top}`;
+        }
+      }
+      await publishArenaMessage(
+        arenaCommandReply.channelListOutstandingPerformance(mutableTopRankings),
+        true
+      );
+      // Clean Arena Zones
+      const allPlayers = await findPlayersByGame(lastGame.id, false, transaction);
+      await removePlayersFromArenaZones(allPlayers, transaction);
+      return getGameResponse('Outstanding Performance displayed');
     });
   }
 }
