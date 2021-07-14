@@ -14,7 +14,7 @@ import type { ARENA_ACTIONS } from '../games/arena/consts';
 
 import { ArenaAction } from './AvailableAction';
 
-import { AvailableAction, ItemHealthKit, ArenaPlayer, ArenaRound, ItemWeapon, User } from './';
+import { AvailableAction, ArenaPlayer, ArenaRound } from './';
 import { Item } from './Item';
 
 type Values<T> = T[keyof T];
