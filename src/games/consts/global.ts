@@ -43,7 +43,7 @@ export const SHARED_ACTIONS = {
   HUNT: 'hunt',
   REVIVE: 'revive',
   HIDE: 'hide',
-};
+} as const;
 
 export const SORT_ACTION_ARRAY_RATE = 0.5;
 export const SELECT_TEAM_URL = 'https://xhq.x-team.com/profile';

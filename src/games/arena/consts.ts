@@ -5,7 +5,7 @@ export const ARENA_ACTIONS = {
   ...SHARED_ACTIONS,
   CHEER: 'cheer',
   STAY_ON_LOCATION: 'idleStayOnLocation',
-};
+} as const;
 
 export enum ARENA_PERK {
   ATTACK_PERK,

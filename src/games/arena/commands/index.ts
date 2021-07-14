@@ -50,8 +50,8 @@ ArenaSwitchCommandOptions) {
       return arena.performance(userRequesting);
     case ARENA_SLACK_COMMANDS.REVIVE_BOSS:
       return arena.reviveBoss(commandText, userRequesting);
-    // case ARENA_SLACK_COMMANDS.MAKE_ALL_VISIBLE:
-    //   return arena.makeAllVisible(channelId, userRequesting);
+    case ARENA_SLACK_COMMANDS.MAKE_ALL_VISIBLE:
+      return arena.makeAllVisible(channelId, userRequesting);
     // case ARENA_SLACK_COMMANDS.GIVE_EVERYONE_WEAPON:
     //   return arena.selectWeaponForEveryone(userRequesting);
     // case ARENA_SLACK_COMMANDS.START_ROUND:
@@ -75,6 +75,7 @@ ArenaSwitchCommandOptions) {
     //   return arena.toggleZoneDeactivationSystem(userRequesting, true);
     // case ARENA_SLACK_COMMANDS.DISABLE_ZONE_DEACTIVATION:
     //   return arena.toggleZoneDeactivationSystem(userRequesting, false);
+
     // // PLAYERS
     // case ARENA_SLACK_COMMANDS.ACTIONS:
     //   return arena.actionsMenu(userRequesting);

@@ -15,12 +15,14 @@ import {
   findSpectatorsByGame,
   getOrCreateBossesOrGuests,
   removePlayersFromArenaZones,
+  setAllPlayerVisibility,
 } from '../../../../models/ArenaPlayer';
 import {
   findFirstBlood,
   findPlayersPerformanceByAction,
 } from '../../../../models/ArenaPlayerPerformance';
 import { findActiveRound } from '../../../../models/ArenaRound';
+import { removeActionFromRound } from '../../../../models/ArenaRoundAction';
 import { activateAllArenaZones } from '../../../../models/ArenaZone';
 import { enableAllItems } from '../../../../models/GameItemAvailability';
 import { getUserBySlackId } from '../../../../models/User';
@@ -40,6 +42,7 @@ import {
   MAX_BOSS_HEALTH,
   MAX_TOP_OUTSTANDING_PERFORMANCE,
   BOSS_HEALTHKIT_HEALING,
+  ARENA_ACTIONS,
 } from '../../consts';
 import { generateArenaEndGameConfirmationBlockKit } from '../../generators';
 import {
@@ -54,6 +57,7 @@ import type { ArenaEngine } from './engine';
 import {
   arenaCommandReply,
   generatePlayerPerformanceActionHeader,
+  notifyPlayersWhoWantedToHide,
   PLAYER_PERFORMANCE_HEADER,
 } from './replies';
 
@@ -258,7 +262,7 @@ export class ArenaRepository {
       const targetSlackId = parseRevivePlayerCommandText(commandText);
       const round = await findActiveRound(true, transaction);
       if (!round) {
-        return getGameError(arenaCommandReply.noActiveGame());
+        return getGameError(arenaCommandReply.noActiveRound());
       }
       if (!targetSlackId) {
         return getGameError(arenaCommandReply.noSlackIdProvided());
@@ -327,6 +331,25 @@ export class ArenaRepository {
       const spectators = await findSpectatorsByGame(game.id, transaction);
       await publishArenaMessage(arenaCommandReply.channelDisplaySpectators(spectators), true);
       return getGameResponse(arenaCommandReply.adminPlayersInfoPosted());
+    });
+  }
+
+  async makeAllVisible(channelId: string, userRequesting: User): Promise<void | GameResponse> {
+    return withArenaTransaction(async (transaction) => {
+      const isAdmin = adminAction(userRequesting);
+      if (!isAdmin) {
+        return getGameError(arenaCommandReply.adminsOnly());
+      }
+      const round = await findActiveRound(true, transaction);
+      if (!round) {
+        return getGameError(arenaCommandReply.noActiveRound());
+      }
+      await round.makeEveryoneVisible(transaction);
+      await setAllPlayerVisibility(round._gameId, true, transaction);
+      await publishArenaMessage(arenaCommandReply.channelAllVisible(), true);
+      await notifyPlayersWhoWantedToHide(round.id, channelId);
+      await removeActionFromRound(round.id, ARENA_ACTIONS.HIDE, transaction);
+      return getGameResponse(arenaCommandReply.adminMadeAllVisible());
     });
   }
 

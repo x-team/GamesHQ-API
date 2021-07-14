@@ -15,8 +15,13 @@ import type { ARENA_ACTIONS } from '../games/arena/consts';
 import { ArenaAction } from './AvailableAction';
 
 import { AvailableAction, ItemHealthKit, ArenaPlayer, ArenaRound, ItemWeapon, User } from './';
+import { Item } from './Item';
 
-type ARENA_ACTIONS_TYPE = typeof ARENA_ACTIONS;
+type Values<T> = T[keyof T];
+
+type ARENA_ACTIONS_TYPE = Values<typeof ARENA_ACTIONS>;
+
+// type ARENA_ACTIONS_TYPE = ARENA_ACTIONS[keyof ARENA_ACTIONS];
 
 interface ArenaRoundActionAttributes {
   _arenaPlayerId: number;
@@ -141,8 +146,25 @@ export async function findActionsByRound(
     where: { _arenaRoundId: roundId, _availableActionId: actionId } as WhereOptions,
     include: [
       {
-        model: ArenaPlayer,
-        include: [User, ItemWeapon, ItemHealthKit],
+        association: ArenaRoundAction.associations._player,
+        include: [
+          ArenaPlayer.associations._user,
+          {
+            association: ArenaPlayer.associations._healthkits,
+            include: [Item.associations._healthkit],
+            as: '_healthkits',
+          },
+          {
+            association: ArenaPlayer.associations._weapons,
+            include: [Item.associations._weapon, Item.associations._traits],
+            as: '_weapons',
+          },
+          {
+            association: ArenaPlayer.associations._armors,
+            include: [Item.associations._armor],
+            as: '_armors',
+          },
+        ],
       },
     ],
     transaction,
@@ -168,12 +190,12 @@ export async function findPlayerActionsByGame(
     where: whereQuery,
     include: [
       {
-        model: ArenaRound,
+        association: ArenaRoundAction.associations._round,
         where: { _gameId: gameId },
       },
       {
-        model: ArenaPlayer,
-        include: [User],
+        association: ArenaRoundAction.associations._player,
+        include: [ArenaPlayer.associations._user],
       },
     ],
     order: [['completedAt', 'DESC']],
