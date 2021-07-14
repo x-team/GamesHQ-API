@@ -9,17 +9,23 @@ import { HUNDRED } from '../consts/global';
 import { getConfig, logger } from '../../config';
 import { SlackBlockKitLayoutElement } from '../model/SlackBlockKit';
 import { sequelize } from '../../db';
+import { parseEscapedSlackUserValues } from '../../utils/slack';
+import { GameError } from './GameError';
 
 // DATABASE
 export function withTransaction<T>(fn: (transaction: Transaction) => Promise<T>) {
-  return sequelize.transaction((transaction) => {
-    return fn(transaction).catch(async (error) => {
-      if (error.data?.repository) {
-        logger.error(`Error in ${error.data.repository}`);
+  return sequelize
+    .transaction((transaction) => {
+      return fn(transaction);
+    })
+    .catch(async (error) => {
+      if (error instanceof GameError) {
+        logger.error(`Error in ${error.repository ?? 'Undefined Repository'}`);
+        return getGameError(error.message);
       }
       logger.error(error);
+      throw error;
     });
-  });
 }
 
 // OPERATIONS
@@ -63,6 +69,14 @@ export function getGameError(message: string): GameResponse {
     type: 'error',
     text: message,
   };
+}
+
+export function parseCommandTextToSlackIds(commandText: string, scapeSlackIds = true) {
+  const wrappedSlackIds = new Set<string>();
+  commandText.split(/\s+/).forEach((identifier) => wrappedSlackIds.add(identifier.trim()));
+  return scapeSlackIds
+    ? Array.from(wrappedSlackIds).map((slackId) => parseEscapedSlackUserValues(slackId) as string)
+    : Array.from(wrappedSlackIds);
 }
 
 // SLACK REQUESTS

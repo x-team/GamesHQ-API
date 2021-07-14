@@ -5,9 +5,11 @@ import { ONE, ZERO } from '../../consts/global';
 import { roundActionMessageBuilder } from '../../helpers';
 import { SlackBlockKitLayoutElement } from '../../model/SlackBlockKit';
 import { notifyEphemeral, slackRequest, withTransaction } from '../../utils';
+import { GameError } from '../../utils/GameError';
 import {
   ADRENALINE_THRESHOLD,
   ARENA_PERK,
+  ARENA_REPOSITORY_NAME,
   ChangeLocationParams,
   MAX_PLAYERS_PER_ARENA_ZONE,
 } from '../consts';
@@ -78,10 +80,13 @@ export function arenaRoundActionMessageBuilder(
 
 // DATABASE
 export function withArenaTransaction<T>(fn: (transaction: Transaction) => Promise<T>) {
-  return withTransaction(fn).catch(async (error) => {
-    if (error.data?.userToNotify) {
-      await arenaNotifyEphemeral(error.message, error.data.userToNotify, error.data.userToNotify);
-    }
+  return withTransaction((transaction) => {
+    return fn(transaction).catch(async (error) => {
+      if (error instanceof GameError) {
+        error.addRepository(ARENA_REPOSITORY_NAME);
+      }
+      throw error;
+    });
   });
 }
 
