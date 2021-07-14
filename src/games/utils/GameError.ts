@@ -11,6 +11,7 @@ interface GameErrorAttributes {
 export class GameError extends Error implements GameErrorAttributes {
   type: GAME_ERROR_TYPE;
   message: string;
+  repository: string | undefined;
 
   constructor({ type, message }: GameErrorAttributes) {
     super(message);
@@ -25,5 +26,9 @@ export class GameError extends Error implements GameErrorAttributes {
 
   static activeGameRunning(message: string) {
     return new GameError({ type: GAME_ERROR_TYPE.ACTIVE_GAME, message });
+  }
+
+  public addRepository(repositoryName: string) {
+    this.repository = repositoryName;
   }
 }

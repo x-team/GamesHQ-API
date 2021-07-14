@@ -89,10 +89,10 @@ export class ArenaGame
   })
   _game?: Game;
 
-  @HasMany(() => ArenaRound, '_arenaGameId')
+  @HasMany(() => ArenaRound, '_gameId')
   _rounds?: ArenaRound[];
 
-  @HasMany(() => ArenaPlayer, '_arenaGameId')
+  @HasMany(() => ArenaPlayer, '_gameId')
   _players?: ArenaPlayer[];
 
   static associations: {

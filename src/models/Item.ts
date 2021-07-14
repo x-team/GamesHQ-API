@@ -54,16 +54,16 @@ export interface ItemCreationAttributes {
   _itemRarityId: ITEM_RARITY;
 }
 
-function itemTypeToClass(itemType: ITEM_TYPE) {
+function itemTypeToAssociation(itemType: ITEM_TYPE) {
   switch (itemType) {
     case ITEM_TYPE.ARMOR:
-      return ItemArmor;
+      return Item.associations._armor;
     case ITEM_TYPE.WEAPON:
-      return ItemWeapon;
+      return Item.associations._weapon;
     case ITEM_TYPE.HEALTH_KIT:
-      return ItemHealthKit;
+      return Item.associations._healthkit;
     default:
-      return ItemHealthKit;
+      return Item.associations._healthkit;
   }
 }
 
@@ -192,7 +192,7 @@ export async function createOrUpdateItem(
 
 export async function findItemById(itemId: number, itemType: ITEM_TYPE, transaction?: Transaction) {
   return Item.findByPk(itemId, {
-    include: [itemTypeToClass(itemType)],
+    include: [itemTypeToAssociation(itemType)],
     transaction,
   });
 }
@@ -211,7 +211,7 @@ export async function findItemsByRarityAndType(
 ) {
   return Item.findAll({
     where: { type: itemType, _itemRarityId: rarityId },
-    include: [itemTypeToClass(itemType)],
+    include: [itemTypeToAssociation(itemType)],
     transaction,
   });
 }
@@ -223,24 +223,30 @@ export async function findItemByName(
 ) {
   return Item.findOne({
     where: { name: itemName },
-    include: [itemTypeToClass(itemType)],
+    include: [itemTypeToAssociation(itemType)],
     transaction,
   });
 }
 
-export function listActiveItemsByGameType(gameType: GAME_TYPE, transaction?: Transaction) {
+export function listActiveItemsByGameType(
+  gameType: GAME_TYPE,
+  itemType: ITEM_TYPE,
+  transaction?: Transaction
+) {
   return Item.findAll({
+    where: { type: itemType },
     include: [
       {
-        model: GameItemAvailability,
+        association: Item.associations._gameItemAvailability,
         where: { isActive: true },
         include: [
           {
-            model: Game,
-            where: { type: gameType },
+            association: GameItemAvailability.associations._gameType,
+            where: { id: gameType },
           },
         ],
       },
+      itemTypeToAssociation(itemType),
     ],
     transaction,
   });

@@ -16,6 +16,7 @@ import { findActionsByRound } from '../../../../models/ArenaRoundAction';
 import {
   APPROVE_SIGN,
   BOSS_EMOJI,
+  BOSS_HOUSE_EMOJI,
   BOSS_WEAPON_EMOJI,
   FULL_HEALTH_HEART_EMOJI,
   HEALTH_KIT_EMOJI,
@@ -31,7 +32,7 @@ import { ITEM_TYPE, SELECT_TEAM_URL, SLACK_SPACE, TRAIT } from '../../../consts/
 import {
   basicHealthDisplay,
   generateRarityColorEmoji,
-  // generateTeamEmoji,
+  generateTeamEmoji,
   randomSkinColor,
   zoneStatus,
 } from '../../../helpers';
@@ -54,9 +55,9 @@ function displayPlayers(players: ArenaPlayer[]) {
       const visibilityMessage = player.isVisible
         ? `${PLAYER_VISIBLE_EMOJI} Visible`
         : `${PLAYER_HIDE_EMOJI} Not Visible`;
-      const hunterMessage = `${/*generateTeamEmoji(player._user?._team?.emoji)*/ ''} | <@${
-        player._user?.slackId
-      }>`;
+      const hunterMessage = `${
+        player.isBoss ? BOSS_HOUSE_EMOJI : generateTeamEmoji(player._user?._team?.emoji)
+      } | <@${player._user?.slackId}>`;
       const healthMessage = `${FULL_HEALTH_HEART_EMOJI} ${player.health}`;
       return `${index + 1}. ${hunterMessage} | ${healthMessage} | ${visibilityMessage}`;
     })
@@ -67,9 +68,9 @@ function displayPlayers(players: ArenaPlayer[]) {
 function displaySpectators(spectators: ArenaPlayer[]) {
   const parsedSpectatorsInfo = spectators
     .map((spectator, index) => {
-      const hunterMessage = `${/*generateTeamEmoji(spectator._user?._team?.emoji)*/ ''} | <@${
-        spectator._user?.slackId
-      }>`;
+      const hunterMessage = `${
+        spectator.isBoss ? BOSS_HOUSE_EMOJI : generateTeamEmoji(spectator._user?._team?.emoji)
+      } | <@${spectator._user?.slackId}>`;
       return `${index + 1}. ${hunterMessage}`;
     })
     .join('\n');
@@ -144,6 +145,8 @@ export const arenaCommandReply = {
   adminsOnly: () => 'Only admins or community team can perform this action',
   adminAddedPlayers: (slackId: string[]) =>
     `Added player(s) to The Arena game: ${slackId.map((x) => `"<@${x}>"`).join(', ')}.`,
+  adminAddedSpectators: (spectatorsAdded: ArenaPlayer[]) =>
+    `Spectator(s) added: ${spectatorsAdded.length}`,
   adminAddedBossesOrGuests: (slackId: string[], isBoss: boolean) =>
     `Added ${isBoss ? 'boss(es)' : 'guest(s)'} to The Arena game: ${slackId
       .map((x) => `"<@${x}>"`)

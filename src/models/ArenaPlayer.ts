@@ -590,11 +590,11 @@ export async function getOrCreateBossesOrGuests({
         displayName: slackDisplayedName,
         slackId: slackId as string,
         profilePictureUrl: 'http://some.url.localhost/avatar.jpg',
+        _roleId: USER_ROLE_LEVEL.USER,
         _teamId: team ? team.id : null,
+        _organizationId: organization.id,
         createdAt: new Date(),
         updatedAt: new Date(),
-        _organizationId: organization.id,
-        _roleId: USER_ROLE_LEVEL.USER,
       });
     } else {
       if (!mutableUser._teamId && team) {

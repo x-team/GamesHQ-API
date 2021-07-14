@@ -97,6 +97,8 @@ export enum ARENA_SECONDARY_ACTIONS {
   CREATE_OR_UPDATE_ZONE_DATA = 'create_or_update_zone_data',
 }
 
+export const ARENA_REPOSITORY_NAME = 'arena-repository';
+
 // GAME
 export const MAX_TOP_OUTSTANDING_PERFORMANCE = 3;
 export const MAX_AMOUNT_HEALTHKITS_ALLOWED = 1;

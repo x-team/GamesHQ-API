@@ -12,10 +12,8 @@ import {
 import type { GAME_TYPE, ITEM_RARITY } from '../games/consts/global';
 import { ITEM_TYPE } from '../games/consts/global';
 
-import { Game } from './Game';
 import type { GameItemAvailabilityCreationAttributes } from './GameItemAvailability';
-import { GameItemAvailability } from './GameItemAvailability';
-import type { ItemCreationAttributes } from './Item';
+import { ItemCreationAttributes, listActiveItemsByGameType } from './Item';
 import { createOrUpdateItem, findItemById, findItemByName, findItemsByRarityAndType } from './Item';
 
 import { Item } from './';
@@ -79,23 +77,7 @@ export async function createOrUpdateArmor(
 }
 
 export async function listActiveArmorsByGameType(gameType: GAME_TYPE, transaction?: Transaction) {
-  return Item.findAll({
-    where: { type: ITEM_TYPE.ARMOR },
-    include: [
-      {
-        model: GameItemAvailability,
-        where: { isActive: true },
-        include: [
-          {
-            model: Game,
-            where: { type: gameType },
-          },
-        ],
-      },
-      ItemArmor,
-    ],
-    transaction,
-  });
+  return listActiveItemsByGameType(gameType, ITEM_TYPE.ARMOR, transaction);
 }
 
 export async function findArmorsByRarity(rarityId: ITEM_RARITY, transaction?: Transaction) {
