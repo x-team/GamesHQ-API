@@ -132,6 +132,7 @@ export const MAX_BOSS_HEALTH = 2000;
 export const BOSS_MINOR_DAMAGE = 90;
 export const BOSS_MAJOR_DAMAGE = 99;
 export const BOSS_HUNT_SUCCESS_RATE = 1;
+export const BOSS_HEALTHKIT_HEALING = 100;
 
 export interface ChangeLocationParams {
   player: ArenaPlayer;

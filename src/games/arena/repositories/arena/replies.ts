@@ -26,6 +26,7 @@ import {
   PLAYER_VISIBLE_EMOJI,
   PUBLIC_FAVOURITE_EMOJI,
   RING_SYSTEM_EMOJI,
+  SAD_PARROT,
   SPINNER_EMOJI,
 } from '../../../consts/emojis';
 import { ITEM_TYPE, SELECT_TEAM_URL, SLACK_SPACE, TRAIT } from '../../../consts/global';
@@ -104,6 +105,7 @@ export function generatePlayerPerformanceActionHeader(action: ARENA_PLAYER_PERFO
 
 export const arenaCommandReply = {
   // GENERIC //////////////////////////////////////////////////////////////////////////
+  userNotFound: (slackId: string) => `${SAD_PARROT} User with slack ID: <@${slackId}> not found`,
   couldNotFindBySlackId: (slackId: string) => `User with slack ID: <@${slackId}> not found`,
   noActiveRound: () => 'There is no The Arena round in progress.',
   noActiveGame: () => 'There is no active game. You can start a new The Arena game now.',

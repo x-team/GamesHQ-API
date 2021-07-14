@@ -48,6 +48,8 @@ ArenaSwitchCommandOptions) {
       return arena.listSpectators(userRequesting);
     case ARENA_SLACK_COMMANDS.PERFORMANCE:
       return arena.performance(userRequesting);
+    case ARENA_SLACK_COMMANDS.REVIVE_BOSS:
+      return arena.reviveBoss(commandText, userRequesting);
     // case ARENA_SLACK_COMMANDS.MAKE_ALL_VISIBLE:
     //   return arena.makeAllVisible(channelId, userRequesting);
     // case ARENA_SLACK_COMMANDS.GIVE_EVERYONE_WEAPON:
@@ -63,8 +65,6 @@ ArenaSwitchCommandOptions) {
     //   return arena.listIdlePlayers(userRequesting);
     // case ARENA_SLACK_COMMANDS.NARROW_WEAPONS:
     //   return arena.startNarrowWeaponsQuestion(userRequesting);
-    // case ARENA_SLACK_COMMANDS.REVIVE_BOSS:
-    //   return arena.reviveBoss(commandText, userRequesting);
     // case ARENA_SLACK_COMMANDS.CREATE_ZONE:
     //   return arena.openCreateZoneModal(userRequesting, triggerId);
     // case ARENA_SLACK_COMMANDS.UPDATE_ZONE:

@@ -3,6 +3,7 @@ import type { Transaction } from 'sequelize';
 
 import { getConfig } from '../../../config';
 import { ArenaPlayerPerformance } from '../../../models';
+import { parseEscapedSlackUserValues } from '../../../utils/slack';
 import { ONE, ZERO } from '../../consts/global';
 import { generateTeamEmoji, roundActionMessageBuilder } from '../../helpers';
 import type { SlackBlockKitLayoutElement } from '../../model/SlackBlockKit';
@@ -33,6 +34,12 @@ export function topPlayerPerformance(
       : '';
   }
   return mutableTopPerformance;
+}
+
+export function parseRevivePlayerCommandText(commandText?: string) {
+  return commandText && commandText.trim()
+    ? (parseEscapedSlackUserValues(commandText.trim()) as string)
+    : null;
 }
 
 export function arenaZoneCapacity(activeZonezAmount = ONE, deactivatedZonesAmount = ZERO) {

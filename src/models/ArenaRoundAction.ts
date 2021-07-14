@@ -81,9 +81,9 @@ export class ArenaRoundAction
   actionJSON!: ArenaAction;
 
   static associations: {
-    _palyer: Association<ArenaRound, ArenaPlayer>;
-    _round: Association<ArenaRound, ArenaRound>;
-    _actions: Association<ArenaRoundAction, AvailableAction>;
+    _player: Association<ArenaRoundAction, ArenaPlayer>;
+    _round: Association<ArenaRoundAction, ArenaRound>;
+    _action: Association<ArenaRoundAction, AvailableAction>;
   };
 
   completeRoundAction(transaction: Transaction) {

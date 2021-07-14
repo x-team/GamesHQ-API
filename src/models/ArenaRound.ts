@@ -12,15 +12,7 @@ import {
   AutoIncrement,
 } from 'sequelize-typescript';
 
-import {
-  Game,
-  ArenaPlayer,
-  ItemHealthKit,
-  ItemArmor,
-  ItemWeapon,
-  ArenaRoundAction,
-  User,
-} from './';
+import { Game, Item, User, ArenaPlayer, ArenaRoundAction } from './';
 
 interface ArenaRoundAttributes {
   id: number;
@@ -39,6 +31,39 @@ interface ArenaRoundCreationAttributes {
   startedAt: Date;
   isActive: boolean;
   endedAt: Date | null;
+}
+
+function includeAllAssociations(includeAll: boolean) {
+  return includeAll
+    ? [
+        {
+          association: ArenaRound.associations._actions,
+          include: [
+            {
+              association: ArenaRoundAction.associations._player,
+              include: [
+                ArenaPlayer.associations._user,
+                {
+                  association: ArenaPlayer.associations._healthkits,
+                  include: [Item.associations._healthkit],
+                  as: '_healthkits',
+                },
+                {
+                  association: ArenaPlayer.associations._weapons,
+                  include: [Item.associations._weapon, Item.associations._traits],
+                  as: '_weapons',
+                },
+                {
+                  association: ArenaPlayer.associations._armors,
+                  include: [Item.associations._armor],
+                  as: '_armors',
+                },
+              ],
+            },
+          ],
+        },
+      ]
+    : [];
 }
 
 @Table
@@ -106,24 +131,12 @@ export class ArenaRound
   async customReload(includeAll: boolean, transaction?: Transaction) {
     return this.reload({
       include: [
-        User,
+        ArenaRound.associations._createdBy,
         {
-          model: Game,
+          association: ArenaRound.associations._game,
           where: { isActive: true },
         },
-        ...(includeAll
-          ? [
-              {
-                model: ArenaRoundAction,
-                include: [
-                  {
-                    model: ArenaPlayer,
-                    include: [User, ItemHealthKit, ItemArmor, ItemWeapon],
-                  },
-                ],
-              },
-            ]
-          : []),
+        ...includeAllAssociations(includeAll),
       ],
       transaction,
     });
@@ -138,51 +151,27 @@ export async function findOneRound(
   return ArenaRound.findOne({
     where: { id: roundId },
     include: [
-      User,
+      ArenaRound.associations._createdBy,
       {
-        model: Game,
+        association: ArenaRound.associations._game,
         where: { isActive: true },
       },
-      ...(includeAll
-        ? [
-            {
-              model: ArenaRoundAction,
-              include: [
-                {
-                  model: ArenaPlayer,
-                  include: [User, ItemHealthKit, ItemArmor, ItemWeapon],
-                },
-              ],
-            },
-          ]
-        : []),
+      ...includeAllAssociations(includeAll),
     ],
     transaction,
   });
 }
 
-export async function findActiveRound(includeAll: boolean, transaction?: Transaction) {
+export function findActiveRound(includeAll: boolean, transaction?: Transaction) {
   return ArenaRound.findOne({
     where: { isActive: true },
     include: [
-      User,
+      ArenaRound.associations._createdBy,
       {
-        model: Game,
+        association: ArenaRound.associations._game,
         where: { isActive: true },
       },
-      ...(includeAll
-        ? [
-            {
-              model: ArenaRoundAction,
-              include: [
-                {
-                  model: ArenaPlayer,
-                  include: [User, ItemHealthKit, ItemArmor, ItemWeapon],
-                },
-              ],
-            },
-          ]
-        : []),
+      ...includeAllAssociations(includeAll),
     ],
     transaction,
   });
@@ -239,7 +228,7 @@ export function countRoundsCompleted(transaction?: Transaction) {
   return ArenaRound.count({
     include: [
       {
-        model: Game,
+        association: ArenaRound.associations._game,
         where: { isActive: true },
       },
     ],

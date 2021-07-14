@@ -10,6 +10,7 @@ import {
   addArenaPlayers,
   addArenaPlayersToZones,
   findLivingPlayersByGame,
+  findPlayerByUser,
   findPlayersByGame,
   findSpectatorsByGame,
   getOrCreateBossesOrGuests,
@@ -19,8 +20,10 @@ import {
   findFirstBlood,
   findPlayersPerformanceByAction,
 } from '../../../../models/ArenaPlayerPerformance';
+import { findActiveRound } from '../../../../models/ArenaRound';
 import { activateAllArenaZones } from '../../../../models/ArenaZone';
 import { enableAllItems } from '../../../../models/GameItemAvailability';
+import { getUserBySlackId } from '../../../../models/User';
 import { parseEscapedSlackUserValues } from '../../../../utils/slack';
 import { GAME_TYPE } from '../../../consts/global';
 import { generateTeamEmoji } from '../../../helpers';
@@ -32,9 +35,19 @@ import {
   getGameResponse,
   parseCommandTextToSlackIds,
 } from '../../../utils';
-import { ARENA_PLAYER_PERFORMANCE, MAX_TOP_OUTSTANDING_PERFORMANCE } from '../../consts';
+import {
+  ARENA_PLAYER_PERFORMANCE,
+  MAX_BOSS_HEALTH,
+  MAX_TOP_OUTSTANDING_PERFORMANCE,
+  BOSS_HEALTHKIT_HEALING,
+} from '../../consts';
 import { generateArenaEndGameConfirmationBlockKit } from '../../generators';
-import { publishArenaMessage, topPlayerPerformance, withArenaTransaction } from '../../utils';
+import {
+  parseRevivePlayerCommandText,
+  publishArenaMessage,
+  topPlayerPerformance,
+  withArenaTransaction,
+} from '../../utils';
 import { addPlayers, addSpectator, parseBossAndGuestCommandText } from '../../utils/addPlayer';
 
 import type { ArenaEngine } from './engine';
@@ -233,6 +246,53 @@ export class ArenaRepository {
       return getGameResponse(
         arenaCommandReply.adminAddedBossesOrGuests(Array.from(uniqueSlackIds), isBoss)
       );
+    });
+  }
+
+  async reviveBoss(commandText: string, userRequesting: User): Promise<void | GameResponse> {
+    return withArenaTransaction(async (transaction) => {
+      const isAdmin = adminAction(userRequesting);
+      if (!isAdmin) {
+        return getGameError(arenaCommandReply.adminsOnly());
+      }
+      const targetSlackId = parseRevivePlayerCommandText(commandText);
+      const round = await findActiveRound(true, transaction);
+      if (!round) {
+        return getGameError(arenaCommandReply.noActiveGame());
+      }
+      if (!targetSlackId) {
+        return getGameError(arenaCommandReply.noSlackIdProvided());
+      }
+      const targetUser = await getUserBySlackId(targetSlackId);
+
+      if (!targetUser) {
+        return getGameError(arenaCommandReply.userNotFound(targetSlackId));
+      }
+
+      const targetBossPlayer = await findPlayerByUser(
+        round._gameId,
+        targetUser.id,
+        false,
+        transaction
+      );
+
+      if (!targetBossPlayer) {
+        return getGameError(arenaCommandReply.playerNotInTheGame());
+      }
+
+      if (!targetBossPlayer.isBoss) {
+        return getGameError(arenaCommandReply.playerIsNotBoss(targetBossPlayer._user?.slackId!));
+      }
+
+      if (targetBossPlayer.health === MAX_BOSS_HEALTH) {
+        return getGameError(arenaCommandReply.playerHealsSomebodyMaxed(targetSlackId));
+      }
+      await targetBossPlayer.reviveOrHeal(BOSS_HEALTHKIT_HEALING, MAX_BOSS_HEALTH, transaction);
+      await publishArenaMessage(
+        arenaCommandReply.channelBossRevived(targetSlackId, targetBossPlayer.health),
+        true
+      );
+      return getGameResponse(arenaCommandReply.adminRevivedBoss(targetSlackId));
     });
   }
 

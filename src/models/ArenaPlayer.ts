@@ -235,7 +235,7 @@ export class ArenaPlayer
   reloadFullInventory(transaction?: Transaction) {
     return this.reload({
       include: [
-        User,
+        ArenaPlayer.associations._user,
         {
           association: ArenaPlayer.associations._healthkits,
           include: [Item.associations._healthkit],
