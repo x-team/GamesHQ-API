@@ -311,7 +311,6 @@ export async function ringDeactivationSystem(game: ArenaGame, transaction: Trans
 }
 
 export async function pickRingSystemAlgorithm(transaction: Transaction) {
-  const PICK_ONE = ONE;
   const defaultAlgorithm = '5';
   const zonesByDistinctRings = await ArenaZone.findAll({
     attributes: [[Sequelize.literal('DISTINCT ring'), 'ring']],
@@ -320,12 +319,12 @@ export async function pickRingSystemAlgorithm(transaction: Transaction) {
   });
   const ringsAvailable = zonesByDistinctRings
     .map((zone) => zone.ring)
-    .map((ring) => ring[ONE])
+    .map((ring) => ring[ONE]) // Pick the second part of the ring system e.g 2A => ring[1] = 'A'
     .filter((ring) => !!ring);
   const uniqueLetters: Set<string> = new Set();
   ringsAvailable.forEach((ring) => uniqueLetters.add(ring));
   uniqueLetters.add(defaultAlgorithm);
   const finalRingsAvailable = Array.from(uniqueLetters);
-  const [algorithmPicked] = sampleSize(finalRingsAvailable, PICK_ONE);
+  const [algorithmPicked] = sampleSize(finalRingsAvailable, ONE);
   return algorithmPicked;
 }
