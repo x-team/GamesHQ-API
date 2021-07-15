@@ -117,26 +117,26 @@ export interface LootCrateData {
 }
 
 export interface ZoneData {
-  create_or_update_zone_data_name: {
-    create_or_update_zone_data_name_action: {
+  ['create-or-update-zone-data-name']: {
+    ['create-or-update-zone-data-name-action']: {
       type: string;
       value: string;
     };
   };
-  create_or_update_zone_data_emoji: {
-    create_or_update_zone_data_emoji_action: {
+  ['create-or-update-zone-data-emoji']: {
+    ['create-or-update-zone-data-emoji-action']: {
       type: string;
       value: string;
     };
   };
-  create_or_update_zone_data_code: {
-    create_or_update_zone_data_code_action: {
+  ['create-or-update-zone-data-code']: {
+    ['create-or-update-zone-data-code-action']: {
       type: string;
       selected_option: SlackBlockKitCompositionOption;
     };
   };
-  create_or_update_zone_data_is_archived: {
-    create_or_update_zone_data_is_archived_action: {
+  ['create-or-update-zone-data-is-archived']: {
+    ['create-or-update-zone-data-is-archived-action']: {
       type: string;
       selected_option: SlackBlockKitCompositionOption;
     };

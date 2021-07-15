@@ -3,8 +3,10 @@ import { getGameResponse } from '../../utils';
 import { ARENA_SLACK_COMMANDS } from '../consts';
 import { ArenaRepository } from '../repositories/arena/arena';
 import { ArenaEngine } from '../repositories/arena/engine';
+import { ZoneRepository } from '../repositories/zones/zone';
 
 const arena = new ArenaRepository(ArenaEngine.getInstance());
+const zone = ZoneRepository.getInstance();
 
 interface ArenaSwitchCommandOptions {
   command: string;
@@ -19,8 +21,8 @@ export function arenaSwitchCommand({
   commandText,
   userRequesting,
   channelId,
-}: // triggerId,
-ArenaSwitchCommandOptions) {
+  triggerId,
+}: ArenaSwitchCommandOptions) {
   const isRoundRunning = arena.arenaGameEngine.getRoundState();
   if (isRoundRunning) {
     return getGameResponse('Please wait until the Round log finishes');
@@ -60,6 +62,14 @@ ArenaSwitchCommandOptions) {
       return arena.makeAllVisible(channelId, userRequesting);
     case ARENA_SLACK_COMMANDS.GIVE_EVERYONE_WEAPON:
       return arena.selectWeaponForEveryone(userRequesting);
+    case ARENA_SLACK_COMMANDS.CREATE_ZONE:
+      return zone.openCreateZoneModal(userRequesting, triggerId);
+    case ARENA_SLACK_COMMANDS.UPDATE_ZONE:
+      return zone.listZones(userRequesting);
+    case ARENA_SLACK_COMMANDS.NARROW_ZONES:
+      return zone.narrowZones(userRequesting);
+    // case ARENA_SLACK_COMMANDS.NARROW_WEAPONS:
+    //   return arena.startNarrowWeaponsQuestion(userRequesting);
     // case ARENA_SLACK_COMMANDS.START_ROUND:
     //   arena.startRound(userRequesting).catch((e) => {
     //     return handleBoomErrorsToSlack(e);
@@ -67,14 +77,6 @@ ArenaSwitchCommandOptions) {
     //   return adminsAndCommunityTeam(userRequesting, async () => {
     //     return getEphemeralText(CommandReply.adminFinishedRound());
     //   });
-    // case ARENA_SLACK_COMMANDS.NARROW_WEAPONS:
-    //   return arena.startNarrowWeaponsQuestion(userRequesting);
-    // case ARENA_SLACK_COMMANDS.CREATE_ZONE:
-    //   return arena.openCreateZoneModal(userRequesting, triggerId);
-    // case ARENA_SLACK_COMMANDS.UPDATE_ZONE:
-    //   return arena.listZones(userRequesting);
-    // case ARENA_SLACK_COMMANDS.NARROW_ZONES:
-    //   return arena.narrowZones(userRequesting);
 
     // // PLAYERS
     // case ARENA_SLACK_COMMANDS.ACTIONS:

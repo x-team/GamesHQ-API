@@ -94,10 +94,14 @@ export enum ARENA_SECONDARY_ACTIONS {
   CONFIRM_GIVE_EVERYONE_WEAPONS = 'arena-confirm-give-everyone-weapons',
   CONFIRM_NARROW_WEAPONS = 'confirm-narrow-weapons',
   CONFIRM_NARROW_ZONES = 'confirm-narrow-zones',
-  CREATE_OR_UPDATE_ZONE_DATA = 'create_or_update_zone_data',
+  CREATE_OR_UPDATE_ZONE_DATA = 'create-or-update-zone-data',
+  UPDATE_ZONE = 'update-zone',
+  DELETE_ZONE = 'delete-zone',
 }
 
+// REPOSITORIES
 export const ARENA_REPOSITORY_NAME = 'arena-repository';
+export const ZONE_REPOSITORY_NAME = 'zone-repository';
 
 // GAME
 export const MAX_TOP_OUTSTANDING_PERFORMANCE = 3;

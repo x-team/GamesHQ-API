@@ -7,9 +7,14 @@ import { parseEscapedSlackUserValues } from '../../../utils/slack';
 import { ONE, ZERO } from '../../consts/global';
 import { generateTeamEmoji, roundActionMessageBuilder } from '../../helpers';
 import type { SlackBlockKitLayoutElement } from '../../model/SlackBlockKit';
-import { notifyEphemeral, slackRequest, withTransaction } from '../../utils';
+import { notifyEphemeral, openView, slackRequest, withTransaction } from '../../utils';
 import { GameError } from '../../utils/GameError';
-import type { ARENA_PLAYER_PERFORMANCE, ChangeLocationParams } from '../consts';
+import {
+  ARENA_PLAYER_PERFORMANCE,
+  ARENA_SECONDARY_ACTIONS,
+  ChangeLocationParams,
+  ZONE_REPOSITORY_NAME,
+} from '../consts';
 import {
   ADRENALINE_THRESHOLD,
   ARENA_PERK,
@@ -69,6 +74,17 @@ export function isArenaCommand(command: string) {
   return arenaSign === '/arena' || arenaSign === '/ta';
 }
 
+export const isArenaConfigAction = (action: string) => {
+  const actionArr = action.split('-');
+  actionArr.pop();
+  const configAction = actionArr.join('-');
+  return (
+    ARENA_SECONDARY_ACTIONS.CREATE_OR_UPDATE_ZONE_DATA === configAction ||
+    ARENA_SECONDARY_ACTIONS.UPDATE_ZONE === configAction ||
+    ARENA_SECONDARY_ACTIONS.DELETE_ZONE === configAction
+  );
+};
+
 interface RoundActionMessageBuilderParams {
   actionText: string;
   emoji: string;
@@ -117,6 +133,17 @@ export function withArenaTransaction<T>(fn: (transaction: Transaction) => Promis
   });
 }
 
+export function withZoneTransaction<T>(fn: (transaction: Transaction) => Promise<T>) {
+  return withTransaction((transaction) => {
+    return fn(transaction).catch(async (error) => {
+      if (error instanceof GameError) {
+        error.addRepository(ZONE_REPOSITORY_NAME);
+      }
+      throw error;
+    });
+  });
+}
+
 // SLACK REQUESTS
 const ARENA_XHQ_SLACK_CHANNEL = 'SLACK_ARENA_XHQ_CHANNEL';
 const SECONDS_BETWEEN_ACTIONS = 1000;
@@ -143,4 +170,8 @@ export async function publishArenaMessage(message: string, sendImmediately = fal
     });
   }
   return { xhqChannel, requestBody };
+}
+
+export async function arenaOpenView(requestBody: object) {
+  return openView(requestBody, getConfig('SLACK_ARENA_TOKEN'));
 }

@@ -111,7 +111,7 @@ export const arenaCommandReply = {
   noActiveRound: () => 'There is no The Arena round in progress.',
   noActiveGame: () => 'There is no active game. You can start a new The Arena game now.',
   noLastGame: () => `There's no finished game found.`,
-  activeGame: () => `There's an active game you must end first.`,
+  activeGame: () => `There's an active game you must end first to run this command.`,
   playerWinsGame: (slackId: string) =>
     `\n:parrot-arena: We have a winner! :parrot-arena:\n` +
     `<@${slackId}> has claimed victory against the odds!\n`,

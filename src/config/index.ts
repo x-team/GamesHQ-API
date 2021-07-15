@@ -17,6 +17,7 @@ interface NameToType {
   HOST: string;
   BUILD_VERSION: string;
   // SLACK
+  SLACK_TOKEN: string;
   SLACK_ARENA_XHQ_CHANNEL: string;
   SLACK_ARENA_TOKEN: string;
   SLACK_TOWER_TOKEN: string;

@@ -30,6 +30,12 @@ export function withTransaction<T>(fn: (transaction: Transaction) => Promise<T>)
 }
 
 // OPERATIONS
+export const extractSecondaryAction = (action: string) => {
+  const actionArr = action.split('-');
+  const value = actionArr.pop();
+  return { action: actionArr.join('-'), selectedId: value };
+};
+
 export function rateToPercentage(rate: number): string {
   return `${Math.round(rate * HUNDRED)}%`;
 }
@@ -147,4 +153,24 @@ export async function notifyEphemeral(
   const web = new WebClient(slackToken);
 
   return web.chat.postEphemeral({ user: userTo, channel, text: message, blocks });
+}
+
+export async function openView(requestBody: object, bearer: string = getConfig('SLACK_TOKEN')) {
+  try {
+    const url = 'https://slack.com/api/views.open';
+    const options = {
+      method: 'POST',
+      headers: {
+        'Content-type': 'application/json; charset=UTF-8',
+        Authorization: `Bearer ${bearer}`,
+      },
+      body: JSON.stringify(requestBody),
+    };
+    const response = await fetch(url, options);
+    return response;
+  } catch (error) {
+    logger.error('Error in openView()');
+    logger.error(error);
+    throw error;
+  }
 }
