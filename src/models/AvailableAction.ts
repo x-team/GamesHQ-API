@@ -5,9 +5,10 @@ import type { SHARED_ACTIONS } from '../games/consts/global';
 import type { TOWER_ACTIONS } from '../games/tower/const';
 
 type Values<T> = T[keyof T];
-type GAME_ACTIONS = Values<typeof SHARED_ACTIONS> &
-  Values<typeof TOWER_ACTIONS> &
-  Values<typeof ARENA_ACTIONS>;
+type GAME_ACTIONS =
+  | Values<typeof SHARED_ACTIONS>
+  | Values<typeof TOWER_ACTIONS>
+  | Values<typeof ARENA_ACTIONS>;
 
 interface AvailableActionAttributes {
   id: GAME_ACTIONS;

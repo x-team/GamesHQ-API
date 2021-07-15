@@ -112,7 +112,7 @@ export async function setPlayerRoundAction(
     {
       _arenaPlayerId: player.id,
       _arenaRoundId: round.id,
-      _availableActionId: action.id,
+      _availableActionId: action.id as ARENA_ACTIONS_TYPE,
       isCompleted: false,
       completedAt: null,
       createdAt: new Date(),
