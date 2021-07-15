@@ -50,6 +50,8 @@ ArenaSwitchCommandOptions) {
       return arena.listPlayers(userRequesting);
     case ARENA_SLACK_COMMANDS.LIST_SPECTATORS:
       return arena.listSpectators(userRequesting);
+    case ARENA_SLACK_COMMANDS.LIST_IDLE:
+      return arena.listIdlePlayers(userRequesting);
     case ARENA_SLACK_COMMANDS.PERFORMANCE:
       return arena.performance(userRequesting);
     case ARENA_SLACK_COMMANDS.REVIVE_BOSS:
@@ -65,8 +67,6 @@ ArenaSwitchCommandOptions) {
     //   return adminsAndCommunityTeam(userRequesting, async () => {
     //     return getEphemeralText(CommandReply.adminFinishedRound());
     //   });
-    // case ARENA_SLACK_COMMANDS.LIST_IDLE:
-    //   return arena.listIdlePlayers(userRequesting);
     // case ARENA_SLACK_COMMANDS.NARROW_WEAPONS:
     //   return arena.startNarrowWeaponsQuestion(userRequesting);
     // case ARENA_SLACK_COMMANDS.CREATE_ZONE:

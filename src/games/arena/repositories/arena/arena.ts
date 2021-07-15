@@ -13,6 +13,7 @@ import {
   findPlayerByUser,
   findPlayersByGame,
   findSpectatorsByGame,
+  getIdlePlayers,
   getOrCreateBossesOrGuests,
   removePlayersFromArenaZones,
   setAllPlayerVisibility,
@@ -349,6 +350,22 @@ export class ArenaRepository {
       const spectators = await findSpectatorsByGame(game.id, transaction);
       await publishArenaMessage(arenaCommandReply.channelDisplaySpectators(spectators), true);
       return getGameResponse(arenaCommandReply.adminPlayersInfoPosted());
+    });
+  }
+
+  async listIdlePlayers(userRequesting: User): Promise<void | GameResponse> {
+    return withArenaTransaction(async (transaction) => {
+      const isAdmin = adminAction(userRequesting);
+      if (!isAdmin) {
+        return getGameError(arenaCommandReply.adminsOnly());
+      }
+      const round = await findActiveRound(true, transaction);
+      if (!round) {
+        return getGameError(arenaCommandReply.noActiveRound());
+      }
+      const actions = round._actions || [];
+      const idlePlayers = await getIdlePlayers(round._gameId, actions, transaction);
+      return getGameResponse(arenaCommandReply.adminIdlePlayers(idlePlayers));
     });
   }
 
