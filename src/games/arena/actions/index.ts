@@ -83,8 +83,8 @@ function arenaPlayerSwitchActions(action: string, args: number | number[], userR
       return arena.endGame(userRequesting);
     case ARENA_SECONDARY_ACTIONS.CANCEL_END_GAME:
       return arena.cancelEndGame(userRequesting);
-    // case ARENA_SECONDARY_ACTIONS.CONFIRM_GIVE_EVERYONE_WEAPONS:
-    //   return arena.giveEveryoneWeapon(userRequesting, singleArg);
+    case ARENA_SECONDARY_ACTIONS.CONFIRM_GIVE_EVERYONE_WEAPONS:
+      return arena.giveEveryoneWeapon(userRequesting, singleArg);
     // case ARENA_SECONDARY_ACTIONS.CONFIRM_NARROW_WEAPONS:
     //   return arena.confirmNarrowWeapons(userRequesting, arrayArgs);
     // case ARENA_SECONDARY_ACTIONS.CONFIRM_NARROW_ZONES:

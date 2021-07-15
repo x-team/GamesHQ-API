@@ -34,7 +34,6 @@ import {
   /*TowerItemInventory,*/
   ArenaItemInventory,
   GameItemAvailability,
-  Game,
 } from './';
 
 interface ItemAttributes {
@@ -192,7 +191,7 @@ export async function createOrUpdateItem(
 
 export async function findItemById(itemId: number, itemType: ITEM_TYPE, transaction?: Transaction) {
   return Item.findByPk(itemId, {
-    include: [itemTypeToAssociation(itemType)],
+    include: [itemTypeToAssociation(itemType), Item.associations._traits],
     transaction,
   });
 }
@@ -211,7 +210,7 @@ export async function findItemsByRarityAndType(
 ) {
   return Item.findAll({
     where: { type: itemType, _itemRarityId: rarityId },
-    include: [itemTypeToAssociation(itemType)],
+    include: [itemTypeToAssociation(itemType), Item.associations._traits],
     transaction,
   });
 }
@@ -223,7 +222,7 @@ export async function findItemByName(
 ) {
   return Item.findOne({
     where: { name: itemName },
-    include: [itemTypeToAssociation(itemType)],
+    include: [itemTypeToAssociation(itemType), Item.associations._traits],
     transaction,
   });
 }
@@ -247,6 +246,7 @@ export function listActiveItemsByGameType(
         ],
       },
       itemTypeToAssociation(itemType),
+      Item.associations._traits,
     ],
     transaction,
   });
@@ -254,7 +254,14 @@ export function listActiveItemsByGameType(
 
 export async function listAllItems(transaction?: Transaction) {
   return Item.findAll({
-    include: [ItemRarity, Trait, { model: GameItemAvailability, include: [Game] }],
+    include: [
+      Item.associations._rarity,
+      Item.associations._traits,
+      {
+        association: Item.associations._gameItemAvailability,
+        include: [GameItemAvailability.associations._gameType],
+      },
+    ],
     transaction,
   });
 }

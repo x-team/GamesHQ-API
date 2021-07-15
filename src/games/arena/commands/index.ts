@@ -52,8 +52,8 @@ ArenaSwitchCommandOptions) {
       return arena.reviveBoss(commandText, userRequesting);
     case ARENA_SLACK_COMMANDS.MAKE_ALL_VISIBLE:
       return arena.makeAllVisible(channelId, userRequesting);
-    // case ARENA_SLACK_COMMANDS.GIVE_EVERYONE_WEAPON:
-    //   return arena.selectWeaponForEveryone(userRequesting);
+    case ARENA_SLACK_COMMANDS.GIVE_EVERYONE_WEAPON:
+      return arena.selectWeaponForEveryone(userRequesting);
     // case ARENA_SLACK_COMMANDS.START_ROUND:
     //   arena.startRound(userRequesting).catch((e) => {
     //     return handleBoomErrorsToSlack(e);

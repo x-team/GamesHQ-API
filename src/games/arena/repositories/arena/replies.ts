@@ -106,6 +106,7 @@ export function generatePlayerPerformanceActionHeader(action: ARENA_PLAYER_PERFO
 export const arenaCommandReply = {
   // GENERIC //////////////////////////////////////////////////////////////////////////
   userNotFound: (slackId: string) => `${SAD_PARROT} User with slack ID: <@${slackId}> not found`,
+  weaponNotFound: () => `${SAD_PARROT} The weapon you're trying to get was not found`,
   couldNotFindBySlackId: (slackId: string) => `User with slack ID: <@${slackId}> not found`,
   noActiveRound: () => 'There is no The Arena round in progress.',
   noActiveGame: () => 'There is no active game. You can start a new The Arena game now.',
