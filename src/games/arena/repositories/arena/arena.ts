@@ -1,4 +1,4 @@
-import { isEmpty } from 'lodash';
+import { isEmpty, sampleSize } from 'lodash';
 
 import type { User } from '../../../../models';
 import {
@@ -25,9 +25,10 @@ import { findActiveRound } from '../../../../models/ArenaRound';
 import { removeActionFromRound } from '../../../../models/ArenaRoundAction';
 import { activateAllArenaZones } from '../../../../models/ArenaZone';
 import { enableAllItems } from '../../../../models/GameItemAvailability';
+import { findWeaponById, listActiveWeaponsByGameType } from '../../../../models/ItemWeapon';
 import { getUserBySlackId } from '../../../../models/User';
 import { parseEscapedSlackUserValues } from '../../../../utils/slack';
-import { GAME_TYPE } from '../../../consts/global';
+import { GAME_TYPE, ONE } from '../../../consts/global';
 import { generateTeamEmoji } from '../../../helpers';
 import type { GameResponse } from '../../../utils';
 import {
@@ -37,12 +38,14 @@ import {
   getGameResponse,
   parseCommandTextToSlackIds,
 } from '../../../utils';
+import { generateGenericWeaponPickerBlock } from '../../../utils/generators/games';
 import {
   ARENA_PLAYER_PERFORMANCE,
   MAX_BOSS_HEALTH,
   MAX_TOP_OUTSTANDING_PERFORMANCE,
   BOSS_HEALTHKIT_HEALING,
   ARENA_ACTIONS,
+  ARENA_SECONDARY_ACTIONS,
 } from '../../consts';
 import { generateArenaEndGameConfirmationBlockKit } from '../../generators';
 import {
@@ -127,6 +130,21 @@ export class ArenaRepository {
       await activateAllArenaZones(transaction);
       await publishArenaMessage(arenaCommandReply.channelEndGame(game), true);
       return getGameResponse(arenaCommandReply.adminEndedGame(game));
+    });
+  }
+
+  async toggleZoneDeactivationSystem(userRequesting: User, isEnable: boolean) {
+    return withArenaTransaction(async (transaction) => {
+      const isAdmin = adminAction(userRequesting);
+      if (!isAdmin) {
+        return getGameError(arenaCommandReply.adminsOnly());
+      }
+      const game = await findActiveArenaGame(transaction);
+      if (!game) {
+        return getGameError(arenaCommandReply.noActiveGame());
+      }
+      await game._arena?.toggleZoneDeactivation(isEnable, transaction);
+      return getGameResponse(arenaCommandReply.adminToggleZoneDeactivation(isEnable));
     });
   }
 
@@ -350,6 +368,53 @@ export class ArenaRepository {
       await notifyPlayersWhoWantedToHide(round.id, channelId);
       await removeActionFromRound(round.id, ARENA_ACTIONS.HIDE, transaction);
       return getGameResponse(arenaCommandReply.adminMadeAllVisible());
+    });
+  }
+
+  async selectWeaponForEveryone(userRequesting: User): Promise<void | GameResponse> {
+    return withArenaTransaction(async (transaction) => {
+      const isAdmin = adminAction(userRequesting);
+      if (!isAdmin) {
+        return getGameError(arenaCommandReply.adminsOnly());
+      }
+      const game = await findActiveArenaGame(transaction);
+      if (!game) {
+        return getGameError(arenaCommandReply.noActiveGame());
+      }
+      const allWeapons = await listActiveWeaponsByGameType(game._gameTypeId, transaction);
+      const [randomWeapon] = sampleSize(allWeapons, ONE);
+
+      const slackBlocks = generateGenericWeaponPickerBlock(
+        arenaCommandReply.adminGiveWeaponForEveryone(),
+        allWeapons,
+        randomWeapon,
+        ARENA_SECONDARY_ACTIONS.CONFIRM_GIVE_EVERYONE_WEAPONS
+      );
+      return getGameResponse(slackBlocks);
+    });
+  }
+
+  async giveEveryoneWeapon(
+    userRequesting: User,
+    selectedWeapon: number
+  ): Promise<void | GameResponse> {
+    return withArenaTransaction(async (transaction) => {
+      const isAdmin = adminAction(userRequesting);
+      if (!isAdmin) {
+        return getGameError(arenaCommandReply.adminsOnly());
+      }
+      const round = await findActiveRound(false, transaction);
+      if (!round) {
+        return getGameError(arenaCommandReply.noActiveRound());
+      }
+      const livingPlayers = await findLivingPlayersByGame(round._gameId, true, transaction);
+      const weaponToGive = await findWeaponById(selectedWeapon, transaction);
+      if (!weaponToGive) {
+        return getGameError(arenaCommandReply.weaponNotFound());
+      }
+      await Promise.all(livingPlayers.map((player) => player.addWeapon(weaponToGive, transaction)));
+      await publishArenaMessage(arenaCommandReply.channelWeaponsForEveryone(weaponToGive), true);
+      return getGameResponse(arenaCommandReply.adminWeaponsForEveryone(weaponToGive!));
     });
   }
 

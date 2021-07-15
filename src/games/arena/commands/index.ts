@@ -34,6 +34,10 @@ ArenaSwitchCommandOptions) {
       return arena.newGame(commandText, userRequesting);
     case ARENA_SLACK_COMMANDS.END_GAME:
       return arena.askEndGame(userRequesting);
+    case ARENA_SLACK_COMMANDS.ENABLE_ZONE_DEACTIVATION:
+      return arena.toggleZoneDeactivationSystem(userRequesting, true);
+    case ARENA_SLACK_COMMANDS.DISABLE_ZONE_DEACTIVATION:
+      return arena.toggleZoneDeactivationSystem(userRequesting, false);
     case ARENA_SLACK_COMMANDS.ADD_PLAYER:
       return arena.addPlayer(commandText, userRequesting, channelId);
     case ARENA_SLACK_COMMANDS.ADD_BOSS:
@@ -71,10 +75,6 @@ ArenaSwitchCommandOptions) {
     //   return arena.listZones(userRequesting);
     // case ARENA_SLACK_COMMANDS.NARROW_ZONES:
     //   return arena.narrowZones(userRequesting);
-    // case ARENA_SLACK_COMMANDS.ENABLE_ZONE_DEACTIVATION:
-    //   return arena.toggleZoneDeactivationSystem(userRequesting, true);
-    // case ARENA_SLACK_COMMANDS.DISABLE_ZONE_DEACTIVATION:
-    //   return arena.toggleZoneDeactivationSystem(userRequesting, false);
 
     // // PLAYERS
     // case ARENA_SLACK_COMMANDS.ACTIONS:
