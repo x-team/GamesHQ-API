@@ -73,17 +73,29 @@ function withInventory(allInventory?: boolean): FindOptions {
           {
             association: ArenaPlayer.associations._healthkits,
             include: [Item.associations._healthkit],
+            where: {
+              type: ITEM_TYPE.HEALTH_KIT,
+            },
             as: '_healthkits',
+            required: false,
           },
           {
             association: ArenaPlayer.associations._weapons,
             include: [Item.associations._weapon, Item.associations._traits],
+            where: {
+              type: ITEM_TYPE.WEAPON,
+            },
             as: '_weapons',
+            required: false,
           },
           {
             association: ArenaPlayer.associations._armors,
             include: [Item.associations._armor],
+            where: {
+              type: ITEM_TYPE.ARMOR,
+            },
             as: '_armors',
+            required: false,
           },
           ArenaPlayer.associations._zone,
         ]
@@ -93,6 +105,10 @@ function withInventory(allInventory?: boolean): FindOptions {
           {
             association: ArenaPlayer.associations._armors,
             include: [Item.associations._armor],
+            where: {
+              type: ITEM_TYPE.ARMOR,
+            },
+            required: false,
             as: '_armors',
           },
           ArenaPlayer.associations._zone,
@@ -239,16 +255,28 @@ export class ArenaPlayer
         {
           association: ArenaPlayer.associations._healthkits,
           include: [Item.associations._healthkit],
+          where: {
+            type: ITEM_TYPE.HEALTH_KIT,
+          },
+          required: false,
           as: '_healthkits',
         },
         {
           association: ArenaPlayer.associations._weapons,
           include: [Item.associations._weapon, Item.associations._traits],
+          where: {
+            type: ITEM_TYPE.WEAPON,
+          },
+          required: false,
           as: '_weapons',
         },
         {
           association: ArenaPlayer.associations._armors,
           include: [Item.associations._armor],
+          where: {
+            type: ITEM_TYPE.ARMOR,
+          },
+          required: false,
           as: '_armors',
         },
       ],
@@ -271,16 +299,28 @@ export class ArenaPlayer
         {
           association: ArenaPlayer.associations._healthkits,
           include: [Item.associations._healthkit],
+          where: {
+            type: ITEM_TYPE.HEALTH_KIT,
+          },
+          required: false,
           as: '_healthkits',
         },
         {
           association: ArenaPlayer.associations._weapons,
           include: [Item.associations._weapon, Item.associations._traits],
+          where: {
+            type: ITEM_TYPE.WEAPON,
+          },
+          required: false,
           as: '_weapons',
         },
         {
           association: ArenaPlayer.associations._armors,
           include: [Item.associations._armor],
+          where: {
+            type: ITEM_TYPE.ARMOR,
+          },
+          required: false,
           as: '_armors',
         },
         ArenaPlayer.associations._zone,

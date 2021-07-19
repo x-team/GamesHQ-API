@@ -14,7 +14,7 @@ import type {
 import type { SlackBlockKitPayload } from '../../model/SlackBlockKitPayload';
 import { ZoneData } from '../../model/SlackDialogObject';
 import { extractSecondaryAction, getEphemeralText, getGameError, slackRequest } from '../../utils';
-import { ARENA_SECONDARY_ACTIONS } from '../consts';
+import { ARENA_SECONDARY_ACTIONS, ARENA_SLACK_COMMANDS } from '../consts';
 import { ArenaRepository } from '../repositories/arena/arena';
 import { ArenaEngine } from '../repositories/arena/engine';
 import { ZoneRepository } from '../repositories/zones/zone';
@@ -52,16 +52,16 @@ function arenaPlayerSwitchActions(action: string, args: number | number[], userR
   logger.debug({ singleArg, arrayArgs });
   switch (action) {
     // PLAYER
-    // case ARENA_SLACK_COMMANDS.STATUS:
-    //   return arenaRepository.status(userRequesting);
+    case ARENA_SLACK_COMMANDS.STATUS:
+      return arenaRepository.status(userRequesting);
+    case ARENA_SLACK_COMMANDS.SEARCH_HEALTH:
+      return arenaRepository.searchForHealth(userRequesting);
+    case ARENA_SLACK_COMMANDS.SEARCH_WEAPONS:
+      return arenaRepository.searchForWeapons(userRequesting);
+    case ARENA_SLACK_COMMANDS.SEARCH_ARMOR:
+      return arenaRepository.searchForArmors(userRequesting);
     // case ARENA_SLACK_COMMANDS.HIDE:
     //   return arenaRepository.hide(userRequesting);
-    // case ARENA_SLACK_COMMANDS.SEARCH_HEALTH:
-    //   return arenaRepository.searchForHealth(userRequesting);
-    // case ARENA_SLACK_COMMANDS.SEARCH_WEAPONS:
-    //   return arenaRepository.searchForWeapons(userRequesting);
-    // case ARENA_SLACK_COMMANDS.SEARCH_ARMOR:
-    //   return arenaRepository.searchForArmors(userRequesting);
     // case ARENA_SLACK_COMMANDS.HEAL_OR_REVIVE_OTHER:
     //   return arenaRepository.reviveOther(userRequesting);
     // case ARENA_SLACK_COMMANDS.HEAL_OR_REVIVE_SELF:
@@ -72,10 +72,10 @@ function arenaPlayerSwitchActions(action: string, args: number | number[], userR
     //   return arenaRepository.cheer(userRequesting);
     // case ARENA_SLACK_COMMANDS.REPEAT_LAST_CHEER:
     //   return arenaRepository.repeatLastCheer(userRequesting);
+    case ARENA_SECONDARY_ACTIONS.CHANGE_LOCATION:
+      return arenaRepository.changeLocation(userRequesting, singleArg);
     // case ARENA_SLACK_COMMANDS.CHANGE_LOCATION:
     //   return arenaRepository.bossChangeLocation(userRequesting);
-    // case ARENA_SECONDARY_ACTIONS.CHANGE_LOCATION:
-    //   return arenaRepository.changeLocation(userRequesting, singleArg);
     // case ARENA_SECONDARY_ACTIONS.HUNT_CHOOSE_WEAPON:
     //   return arenaRepository.chooseWeapon(userRequesting, singleArg, ARENA_ACTIONS.HUNT);
     // case ARENA_SECONDARY_ACTIONS.CHEER_CHOOSE_TARGET:

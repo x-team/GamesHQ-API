@@ -26,8 +26,17 @@ import {
   findSinglePlayerPerformance,
 } from '../../../../models/ArenaPlayerPerformance';
 import { ArenaRound, findActiveRound } from '../../../../models/ArenaRound';
-import { removeActionFromRound } from '../../../../models/ArenaRoundAction';
-import { activateAllArenaZones, ArenaZone } from '../../../../models/ArenaZone';
+import {
+  findPlayerRoundAction,
+  removeActionFromRound,
+  setPlayerRoundAction,
+} from '../../../../models/ArenaRoundAction';
+import {
+  activateAllArenaZones,
+  ArenaZone,
+  findActiveArenaZones,
+  findArenaZoneById,
+} from '../../../../models/ArenaZone';
 import { disableItems, enableAllItems } from '../../../../models/GameItemAvailability';
 import { listAllItems } from '../../../../models/Item';
 import { findWeaponById, listActiveWeaponsByGameType } from '../../../../models/ItemWeapon';
@@ -127,7 +136,7 @@ export class ArenaRepository {
   constructor(public arenaGameEngine: ArenaEngine) {}
 
   // PLAYERS ///////////////////////////////////////////////////////////////////
-  async actionsMenu(userRequesting: User): Promise<void | GameResponse> {
+  async changeLocation(userRequesting: User, arenaZoneId: number) {
     return withArenaTransaction(async (transaction) => {
       const playerActions = await ArenaRepository.playerActions(userRequesting, false, transaction);
 
@@ -141,57 +150,183 @@ export class ArenaRepository {
         return getGameError(arenaCommandReply.zoneNeeded());
       }
 
-      const playerPerformance = (await findSinglePlayerPerformance(
+      const roundAction = await findPlayerRoundAction(player.id, round.id, transaction);
+      const playerPerformance = await findSinglePlayerPerformance(
         player.id,
         round._gameId,
         transaction
-      ))!;
+      );
+      const hud = arenaCommandReply.playerHUD(player, zone, playerPerformance);
+
+      if (!roundAction) {
+        const actionBlockkit = generateActionsBlockKit(
+          player,
+          hud,
+          arenaCommandReply.playerDoesntHaveAction()
+        );
+        return getGameResponse(actionBlockkit);
+      }
+
+      const actionJson = roundAction.actionJSON;
+      const arenaZoneToMove = await findArenaZoneById(arenaZoneId, transaction);
+
+      if (!arenaZoneToMove) {
+        const actionBlockkit = generateActionsBlockKit(
+          player,
+          hud,
+          arenaCommandReply.zoneNotFound()
+        );
+        return getGameResponse(actionBlockkit);
+      }
+
+      const playerWillMove = player._arenaZoneId !== arenaZoneToMove.id;
+      if (playerWillMove) {
+        await setPlayerRoundAction(
+          player,
+          round,
+          { ...actionJson, locationId: arenaZoneId },
+          transaction
+        );
+      }
+      return getGameResponse(arenaCommandReply.playerLocation(playerWillMove, arenaZoneToMove));
+    });
+  }
+
+  async actionsMenu(userRequesting: User) {
+    return withArenaTransaction(async (transaction) => {
+      const playerActions = await ArenaRepository.playerActions(userRequesting, false, transaction);
+
+      if (!(playerActions as PlayerActionsDeadOrAlive).interfaceName) {
+        return playerActions as GameResponse;
+      }
+
+      const { zone, player, round } = playerActions as PlayerActionsDeadOrAlive;
+
+      if (!zone) {
+        return getGameError(arenaCommandReply.zoneNeeded());
+      }
+
+      const playerPerformance = await findSinglePlayerPerformance(
+        player.id,
+        round._gameId,
+        transaction
+      );
       const hud = arenaCommandReply.playerHUD(player, zone, playerPerformance);
       return getGameResponse(generateActionsBlockKit(player, hud));
     });
   }
 
-  // async searchForWeapons(userRequesting: User) {
-  //   return withArenaTransaction(async (transaction) => {
-  //     const { player, round, zone } = await ArenaRepository.playerActions(userRequesting, true, transaction);;
-  //     return evaluateSearchForItem(
-  //       { raider, round, actionId: TOWER_ACTIONS.SEARCH_WEAPONS },
-  //       transaction
-  //     );
-  //   });
-  // }
+  async status(userRequesting: User) {
+    return withArenaTransaction(async (transaction) => {
+      const playerActions = await ArenaRepository.playerActions(userRequesting, false, transaction);
 
-  // async searchForArmors(userRequesting: User) {
-  //   return withArenaTransaction(async (transaction) => {
-  //     const { player, round, zone } = await ArenaRepository.playerActions(userRequesting, true, transaction);;
-  //     return evaluateSearchForItem(
-  //       { raider, round, actionId: TOWER_ACTIONS.SEARCH_ARMOR },
-  //       transaction
-  //     );
-  //   });
-  // }
+      if (!(playerActions as PlayerActionsDeadOrAlive).interfaceName) {
+        return playerActions as GameResponse;
+      }
 
-  // async searchForHealth(userRequesting: User) {
-  //   return withArenaTransaction(async (transaction) => {
-  //     const { player, round, zone } = await ArenaRepository.playerActions(userRequesting, true, transaction);;
-  //     const raidersHealthkits = raiderHasMaxHealthkits(raider);
-  //     if (raidersHealthkits) {
-  //       const hud = towerBotCommandReply.raiderHUD(raider);
-  //       const actionBlockkit = generateRaiderActionsBlockKit(
-  //         hud,
-  //         towerBotCommandReply.raiderCannotCarryMoreHealthkits()
-  //       );
-  //       return getEphemeralBlock(actionBlockkit);
-  //     }
-  //     return evaluateSearchForItem(
-  //       { raider, round, actionId: TOWER_ACTIONS.SEARCH_HEALTH },
-  //       transaction
-  //     );
-  //   });
-  // }
+      const { zone, player, round } = playerActions as PlayerActionsDeadOrAlive;
+
+      if (!zone) {
+        return getGameError(arenaCommandReply.zoneNeeded());
+      }
+
+      const playerPerformance = await findSinglePlayerPerformance(
+        player.id,
+        round._gameId,
+        transaction
+      );
+      const hud = arenaCommandReply.playerHUD(player, zone, playerPerformance);
+      const cheersReceived = playerPerformance?.cheersReceived ?? 0;
+      return getGameResponse(
+        generateActionsBlockKit(player, hud, arenaCommandReply.playerStatus(player, cheersReceived))
+      );
+    });
+  }
+
+  async searchForWeapons(userRequesting: User) {
+    return withArenaTransaction(async (transaction) => {
+      const playerActions = await ArenaRepository.playerActions(userRequesting, true, transaction);
+      if (!(playerActions as PlayerActionsDeadOrAlive).interfaceName) {
+        return playerActions as GameResponse;
+      }
+      const arenaZonesAvailable = await findActiveArenaZones(transaction);
+
+      const { player, round } = playerActions as PlayerActionsDeadOrAlive;
+      await setPlayerRoundAction(player, round, { id: ARENA_ACTIONS.SEARCH_WEAPONS }, transaction);
+
+      return getGameResponse(
+        arenaCommandReply.playerSearchesForItem(ARENA_ACTIONS.SEARCH_WEAPONS, {
+          player,
+          arenaZonesAvailable,
+        })
+      );
+    });
+  }
+
+  async searchForArmors(userRequesting: User) {
+    return withArenaTransaction(async (transaction) => {
+      const playerActions = await ArenaRepository.playerActions(userRequesting, true, transaction);
+      if (!(playerActions as PlayerActionsDeadOrAlive).interfaceName) {
+        return playerActions as GameResponse;
+      }
+      const arenaZonesAvailable = await findActiveArenaZones(transaction);
+
+      const { player, round } = playerActions as PlayerActionsDeadOrAlive;
+      await setPlayerRoundAction(player, round, { id: ARENA_ACTIONS.SEARCH_ARMOR }, transaction);
+
+      return getGameResponse(
+        arenaCommandReply.playerSearchesForItem(ARENA_ACTIONS.SEARCH_ARMOR, {
+          player,
+          arenaZonesAvailable,
+        })
+      );
+    });
+  }
+
+  async searchForHealth(userRequesting: User) {
+    return withArenaTransaction(async (transaction) => {
+      const playerActions = await ArenaRepository.playerActions(userRequesting, true, transaction);
+      if (!(playerActions as PlayerActionsDeadOrAlive).interfaceName) {
+        return playerActions as GameResponse;
+      }
+      const { player, round, zone } = playerActions as PlayerActionsDeadOrAlive;
+      const arenaZonesAvailable = await findActiveArenaZones(transaction);
+      const playerHasHealthkit = player.hasMaxHealthkits();
+
+      if (!zone) {
+        const actionBlockkit = generateActionsBlockKit(player, arenaCommandReply.zoneNeeded());
+        return getGameResponse(actionBlockkit);
+      }
+
+      if (playerHasHealthkit) {
+        const playerPerformance = await findSinglePlayerPerformance(
+          player.id,
+          round._gameId,
+          transaction
+        );
+        const hud = arenaCommandReply.playerHUD(player, zone, playerPerformance);
+
+        const actionBlockkit = generateActionsBlockKit(
+          player,
+          hud,
+          arenaCommandReply.playerCannotCarryMoreHealthkits()
+        );
+        return getGameResponse(actionBlockkit);
+      }
+
+      await setPlayerRoundAction(player, round, { id: ARENA_ACTIONS.SEARCH_HEALTH }, transaction);
+
+      return getGameResponse(
+        arenaCommandReply.playerSearchesForItem(ARENA_ACTIONS.SEARCH_HEALTH, {
+          player,
+          arenaZonesAvailable,
+        })
+      );
+    });
+  }
 
   // ADMINS ///////////////////////////////////////////////////////////////////
-  async newGame(commandText: string, userRequesting: User): Promise<void | GameResponse> {
+  async newGame(commandText: string, userRequesting: User) {
     return withArenaTransaction(async (transaction) => {
       const isAdmin = adminAction(userRequesting);
       if (!isAdmin) {
@@ -221,7 +356,7 @@ export class ArenaRepository {
     });
   }
 
-  async askEndGame(userRequesting: User): Promise<void | GameResponse> {
+  async askEndGame(userRequesting: User) {
     return withArenaTransaction(async (transaction) => {
       const isAdmin = adminAction(userRequesting);
       if (!isAdmin) {
@@ -236,7 +371,7 @@ export class ArenaRepository {
     });
   }
 
-  async endGame(userRequesting: User): Promise<void | GameResponse> {
+  async endGame(userRequesting: User) {
     return withArenaTransaction(async (transaction) => {
       const isAdmin = adminAction(userRequesting);
       if (!isAdmin) {
@@ -269,7 +404,7 @@ export class ArenaRepository {
     });
   }
 
-  async cancelEndGame(userRequesting: User): Promise<void | GameResponse> {
+  async cancelEndGame(userRequesting: User) {
     return withArenaTransaction(async (transaction) => {
       const isAdmin = adminAction(userRequesting);
       if (!isAdmin) {
@@ -283,11 +418,7 @@ export class ArenaRepository {
     });
   }
 
-  async addPlayer(
-    commandText: string,
-    userRequesting: User,
-    channelId: string
-  ): Promise<void | GameResponse> {
+  async addPlayer(commandText: string, userRequesting: User, channelId: string) {
     return withArenaTransaction(async (transaction) => {
       const isAdmin = adminAction(userRequesting);
       if (!isAdmin) {
@@ -312,11 +443,7 @@ export class ArenaRepository {
     });
   }
 
-  async addSpectator(
-    commandText: string,
-    userRequesting: User,
-    channelId: string
-  ): Promise<void | GameResponse> {
+  async addSpectator(commandText: string, userRequesting: User, channelId: string) {
     return withArenaTransaction(async (transaction) => {
       const isAdmin = adminAction(userRequesting);
       if (!isAdmin) {
@@ -340,11 +467,7 @@ export class ArenaRepository {
     });
   }
 
-  async addBossOrGuest(
-    commandText: string,
-    userRequesting: User,
-    isBoss: boolean
-  ): Promise<void | GameResponse> {
+  async addBossOrGuest(commandText: string, userRequesting: User, isBoss: boolean) {
     return withArenaTransaction(async (transaction) => {
       const isAdmin = adminAction(userRequesting);
       if (!isAdmin) {
@@ -392,7 +515,7 @@ export class ArenaRepository {
     });
   }
 
-  async reviveBoss(commandText: string, userRequesting: User): Promise<void | GameResponse> {
+  async reviveBoss(commandText: string, userRequesting: User) {
     return withArenaTransaction(async (transaction) => {
       const isAdmin = adminAction(userRequesting);
       if (!isAdmin) {
@@ -439,7 +562,7 @@ export class ArenaRepository {
     });
   }
 
-  async listPlayers(userRequesting: User): Promise<void | GameResponse> {
+  async listPlayers(userRequesting: User) {
     return withArenaTransaction(async (transaction) => {
       const isAdmin = adminAction(userRequesting);
       if (!isAdmin) {
@@ -456,7 +579,7 @@ export class ArenaRepository {
     });
   }
 
-  async listSpectators(userRequesting: User): Promise<void | GameResponse> {
+  async listSpectators(userRequesting: User) {
     return withArenaTransaction(async (transaction) => {
       const isAdmin = adminAction(userRequesting);
       if (!isAdmin) {
@@ -473,7 +596,7 @@ export class ArenaRepository {
     });
   }
 
-  async listIdlePlayers(userRequesting: User): Promise<void | GameResponse> {
+  async listIdlePlayers(userRequesting: User) {
     return withArenaTransaction(async (transaction) => {
       const isAdmin = adminAction(userRequesting);
       if (!isAdmin) {
@@ -489,7 +612,7 @@ export class ArenaRepository {
     });
   }
 
-  async makeAllVisible(channelId: string, userRequesting: User): Promise<void | GameResponse> {
+  async makeAllVisible(channelId: string, userRequesting: User) {
     return withArenaTransaction(async (transaction) => {
       const isAdmin = adminAction(userRequesting);
       if (!isAdmin) {
@@ -508,7 +631,7 @@ export class ArenaRepository {
     });
   }
 
-  async selectWeaponForEveryone(userRequesting: User): Promise<void | GameResponse> {
+  async selectWeaponForEveryone(userRequesting: User) {
     return withArenaTransaction(async (transaction) => {
       const isAdmin = adminAction(userRequesting);
       if (!isAdmin) {
@@ -531,10 +654,7 @@ export class ArenaRepository {
     });
   }
 
-  async giveEveryoneWeapon(
-    userRequesting: User,
-    selectedWeapon: number
-  ): Promise<void | GameResponse> {
+  async giveEveryoneWeapon(userRequesting: User, selectedWeapon: number) {
     return withArenaTransaction(async (transaction) => {
       const isAdmin = adminAction(userRequesting);
       if (!isAdmin) {
@@ -555,7 +675,7 @@ export class ArenaRepository {
     });
   }
 
-  async startNarrowWeaponsQuestion(userRequesting: User): Promise<void | GameResponse> {
+  async startNarrowWeaponsQuestion(userRequesting: User) {
     return withArenaTransaction(async (transaction) => {
       const isAdmin = adminAction(userRequesting);
       if (!isAdmin) {
@@ -610,7 +730,7 @@ export class ArenaRepository {
     });
   }
 
-  async performance(userRequesting: User): Promise<void | GameResponse> {
+  async performance(userRequesting: User) {
     return withArenaTransaction(async (transaction) => {
       const isAdmin = adminAction(userRequesting);
       if (!isAdmin) {

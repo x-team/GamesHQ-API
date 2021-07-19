@@ -30,12 +30,12 @@ export class AvailableAction
 
 export interface GameAction {
   id: GAME_ACTIONS;
-  weaponId: number;
+  weaponId?: number;
 }
 
 export interface ArenaAction extends GameAction {
-  locationId: number;
-  targetPlayerId: number;
+  locationId?: number;
+  targetPlayerId?: number;
 }
 
 export interface TowerAction extends GameAction {
