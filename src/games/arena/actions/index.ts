@@ -74,8 +74,8 @@ function arenaPlayerSwitchActions(action: string, args: number | number[], userR
     //   return arenaRepository.repeatLastCheer(userRequesting);
     case ARENA_SECONDARY_ACTIONS.CHANGE_LOCATION:
       return arenaRepository.changeLocation(userRequesting, singleArg);
-    // case ARENA_SLACK_COMMANDS.CHANGE_LOCATION:
-    //   return arenaRepository.bossChangeLocation(userRequesting);
+    case ARENA_SLACK_COMMANDS.CHANGE_LOCATION:
+      return arenaRepository.bossChangeLocation(userRequesting);
     // case ARENA_SECONDARY_ACTIONS.HUNT_CHOOSE_WEAPON:
     //   return arenaRepository.chooseWeapon(userRequesting, singleArg, ARENA_ACTIONS.HUNT);
     // case ARENA_SECONDARY_ACTIONS.CHEER_CHOOSE_TARGET:

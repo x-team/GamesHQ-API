@@ -192,6 +192,52 @@ export class ArenaRepository {
     });
   }
 
+  async bossChangeLocation(userRequesting: User) {
+    return withArenaTransaction(async (transaction) => {
+      const playerActions = await ArenaRepository.playerActions(userRequesting, false, transaction);
+
+      if (!(playerActions as PlayerActionsDeadOrAlive).interfaceName) {
+        return playerActions as GameResponse;
+      }
+
+      const { zone, player, round } = playerActions as PlayerActionsDeadOrAlive;
+
+      if (!zone) {
+        return getGameError(arenaCommandReply.zoneNeeded());
+      }
+
+      const playerPerformance = await findSinglePlayerPerformance(
+        player.id,
+        round._gameId,
+        transaction
+      );
+      const hud = arenaCommandReply.playerHUD(player, zone, playerPerformance);
+
+      if (!player.isBoss) {
+        const actionBlockkit = generateActionsBlockKit(
+          player,
+          hud,
+          arenaCommandReply.playerNotABoss()
+        );
+        return getGameResponse(actionBlockkit);
+      }
+
+      await setPlayerRoundAction(
+        player,
+        round,
+        { id: ARENA_ACTIONS.STAY_ON_LOCATION },
+        transaction
+      );
+
+      const arenaZonesAvailable = await findActiveArenaZones(transaction);
+      const changeLocationParams = {
+        player,
+        arenaZonesAvailable,
+      };
+      return getGameResponse(arenaCommandReply.bossChangesLocation(changeLocationParams));
+    });
+  }
+
   async actionsMenu(userRequesting: User) {
     return withArenaTransaction(async (transaction) => {
       const playerActions = await ArenaRepository.playerActions(userRequesting, false, transaction);
