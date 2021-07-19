@@ -123,6 +123,7 @@ export async function disableItems(
         },
         _gameTypeId: gameType,
       },
+      transaction,
     }
   );
 }

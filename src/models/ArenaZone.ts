@@ -226,7 +226,7 @@ export async function deactivateRingSystemZones(
   );
 }
 
-export async function deactivateZones(zoneIds: number[]) {
+export async function deactivateZones(zoneIds: number[], transaction: Transaction) {
   await activateAllArenaZones();
   return ArenaZone.update(
     {
@@ -238,6 +238,7 @@ export async function deactivateZones(zoneIds: number[]) {
           [Op.notIn]: zoneIds,
         },
       },
+      transaction,
     }
   );
 }

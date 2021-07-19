@@ -3,6 +3,7 @@ import { findActiveArenaGame } from '../../../../models/ArenaGame';
 import {
   ArenaZoneCreationAttributes,
   createOrUpdateArenaZone,
+  deactivateZones,
   deleteZoneById,
   findAllArenaZones,
   findArenaZoneById,
@@ -87,6 +88,37 @@ export class ZoneRepository {
       const allZones = await findAllArenaZones(transaction);
       const narrowZonesBlock = generateNarrowZonesBlock(allZones);
       return getGameResponse(narrowZonesBlock);
+    });
+  }
+
+  async confirmNarrowZones(userRequesting: User, selectedIds: number[]) {
+    return withZoneTransaction(async (transaction) => {
+      const isAdmin = adminAction(userRequesting);
+      if (!isAdmin) {
+        return getGameError(arenaCommandReply.adminsOnly());
+      }
+      const game = await findActiveArenaGame(transaction);
+      if (game) {
+        return getGameError(arenaCommandReply.activeGame());
+      }
+      await deactivateZones(selectedIds, transaction);
+      const allZones = await findAllArenaZones(transaction);
+      const { enabledZones, disabledZones } = allZones.reduce(
+        (acc, zone) => {
+          return {
+            ...acc,
+            ...(zone.isActive
+              ? { enabledZones: [...acc.enabledZones, zone] }
+              : { disabledZones: [...acc.disabledZones, zone] }),
+          };
+        },
+        { enabledZones: [], disabledZones: [] } as {
+          enabledZones: ArenaZone[];
+          disabledZones: ArenaZone[];
+        }
+      );
+
+      return getGameResponse(arenaCommandReply.confirmNarrowZones(enabledZones, disabledZones));
     });
   }
 

@@ -91,12 +91,12 @@ function arenaPlayerSwitchActions(action: string, args: number | number[], userR
       return arenaRepository.cancelEndGame(userRequesting);
     case ARENA_SECONDARY_ACTIONS.CONFIRM_GIVE_EVERYONE_WEAPONS:
       return arenaRepository.giveEveryoneWeapon(userRequesting, singleArg);
-    // case ARENA_SECONDARY_ACTIONS.CONFIRM_NARROW_WEAPONS:
-    //   return arenaRepository.confirmNarrowWeapons(userRequesting, arrayArgs);
-    // case ARENA_SECONDARY_ACTIONS.CONFIRM_NARROW_ZONES:
-    //   return arenaRepository.confirmNarrowZones(userRequesting, arrayArgs);
+    case ARENA_SECONDARY_ACTIONS.CONFIRM_NARROW_WEAPONS:
+      return arenaRepository.confirmNarrowWeapons(userRequesting, arrayArgs);
+    case ARENA_SECONDARY_ACTIONS.CONFIRM_NARROW_ZONES:
+      return zoneRepository.confirmNarrowZones(userRequesting, arrayArgs);
     default:
-      return getGameError('Please provide a valid The Arena command');
+      return Promise.resolve(getGameError('Please provide a valid The Arena command'));
   }
 }
 
@@ -210,23 +210,25 @@ export const handleArenaAction = async (
           mutableSelectedId = targetUser.id;
           break;
       }
-      const gameActionResponse = await arenaPlayerSwitchActions(
-        action_id,
-        mutableSelectedId,
-        userRequesting
-      );
-
-      const replyToPlayerBody = gameResponseToSlackHandler(gameActionResponse);
-      return slackRequest(response_url, replyToPlayerBody).catch((error) => {
-        logger.error('Error in Slack Action: The Arena');
-        logger.error(error);
-        return getGameError(actionReply.somethingWentWrong);
-      });
+      arenaPlayerSwitchActions(action_id, mutableSelectedId, userRequesting)
+        .then((gameActionResponse) => {
+          const replyToPlayerBody = gameResponseToSlackHandler(gameActionResponse);
+          return slackRequest(response_url, replyToPlayerBody);
+        })
+        .catch((error) => {
+          logger.error('Error in Slack Action: The Arena');
+          logger.error(error);
+          return getGameError(actionReply.somethingWentWrong);
+        });
+      break;
     default:
       // We need to respond to Slack within 3000ms or the action will fail.
       // So we need this line
       return {};
   }
+  // We need to respond to Slack within 3000ms or the action will fail.
+  // So we need this line
+  return {};
 };
 
 const handleConfigAction = async (

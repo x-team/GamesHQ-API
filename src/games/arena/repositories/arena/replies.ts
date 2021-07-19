@@ -133,7 +133,7 @@ export const arenaCommandReply = {
   // AREAS
   playersMoving: () =>
     `${SPINNER_EMOJI} Alive players are moving to a different area.\n ${PLAYER_VISIBLE_EMOJI} Check your \`Status\``,
-  playerOneLineZone: (zone: ArenaZone) =>
+  playerZoneHUD: (zone: ArenaZone) =>
     `> You are now in ${zone.emoji} *${zone.name}* ` +
     `[ _*${zone._players?.length}* players total_, _*${
       zone._players?.filter((p) => p.isVisible === false)?.length
@@ -173,13 +173,13 @@ export const arenaCommandReply = {
   cancelEndGame: () =>
     'Ok, the arena is still running, nothing happened here, you can keep walking :cop::skin-tone-2:',
   confirmNarrowWeapons: (enableWeapons: Item[], disableWeapons: Item[]) =>
-    `Weapon narrowing complete (it will only be valid for this game).\n\n*Enabled*: ${enableWeapons.map(
+    `Weapon narrowing complete.\nIt will only be valid for *this game*.\n\n*Enabled*: ${enableWeapons.map(
       (weapon) => ` ${generateRarityColorEmoji(weapon._itemRarityId)}${weapon.emoji} `
     )}\n*Disabled*: ${disableWeapons.map(
       (weapon) => ` ${generateRarityColorEmoji(weapon._itemRarityId)}${weapon.emoji}`
     )}`,
   confirmNarrowZones: (enabledZones: ArenaZone[], disabledZones: ArenaZone[]) =>
-    `Zone narrowing complete (it will only be valid for this game).\n\n*Enabled*: ${enabledZones.map(
+    `Zone narrowing complete\n. It will only be valid for *next game*.\n\n*Enabled*: ${enabledZones.map(
       (zone) => ` (${zone.ring}) ${zone.emoji} `
     )}\n*Disabled*: ${disabledZones.map((zone) => ` (${zone.ring}) ${zone.emoji}`)}`,
 
@@ -264,7 +264,12 @@ export const arenaCommandReply = {
   // PLAYER ///////////////////////////////////////////////////////////////////////////
   playerStatus,
 
-  playerOneLineStatus: (player: ArenaPlayer, playerPerformance?: ArenaPlayerPerformance | null) => {
+  playerHUD: (
+    player: ArenaPlayer,
+    zone: ArenaZone,
+    playerPerformance?: ArenaPlayerPerformance | null
+  ) => {
+    const zoneHUD = arenaCommandReply.playerZoneHUD(zone);
     const weapons = player._weapons?.length ? player._weapons : undefined;
     const armor = player._armors?.length ? player._armors[0] : undefined;
     const healthkit = player._healthkits?.length
@@ -272,6 +277,7 @@ export const arenaCommandReply = {
       : undefined;
     const cheersAmount = playerPerformance?.cheersReceived ?? 0;
     return (
+      `${zoneHUD}` +
       `${basicHealthDisplay(player.health, MAX_PLAYER_HEALTH)}` +
       `${
         weapons

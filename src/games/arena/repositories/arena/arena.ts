@@ -1,6 +1,7 @@
 import { isEmpty, sampleSize } from 'lodash';
+import type { Transaction } from 'sequelize';
 
-import type { User } from '../../../../models';
+import type { Item, User } from '../../../../models';
 import {
   findActiveArenaGame,
   findLastActiveArenaGame,
@@ -9,6 +10,7 @@ import {
 import {
   addArenaPlayers,
   addArenaPlayersToZones,
+  ArenaPlayer,
   findLivingPlayersByGame,
   findPlayerByUser,
   findPlayersByGame,
@@ -21,11 +23,13 @@ import {
 import {
   findFirstBlood,
   findPlayersPerformanceByAction,
+  findSinglePlayerPerformance,
 } from '../../../../models/ArenaPlayerPerformance';
-import { findActiveRound } from '../../../../models/ArenaRound';
+import { ArenaRound, findActiveRound } from '../../../../models/ArenaRound';
 import { removeActionFromRound } from '../../../../models/ArenaRoundAction';
-import { activateAllArenaZones } from '../../../../models/ArenaZone';
-import { enableAllItems } from '../../../../models/GameItemAvailability';
+import { activateAllArenaZones, ArenaZone } from '../../../../models/ArenaZone';
+import { disableItems, enableAllItems } from '../../../../models/GameItemAvailability';
+import { listAllItems } from '../../../../models/Item';
 import { findWeaponById, listActiveWeaponsByGameType } from '../../../../models/ItemWeapon';
 import { getUserBySlackId } from '../../../../models/User';
 import { parseEscapedSlackUserValues } from '../../../../utils/slack';
@@ -48,7 +52,11 @@ import {
   ARENA_ACTIONS,
   ARENA_SECONDARY_ACTIONS,
 } from '../../consts';
-import { generateArenaEndGameConfirmationBlockKit } from '../../generators';
+import {
+  generateActionsBlockKit,
+  generateArenaEndGameConfirmationBlockKit,
+  generateNarrowWeaponsBlock,
+} from '../../generators';
 import {
   parseRevivePlayerCommandText,
   publishArenaMessage,
@@ -65,9 +73,122 @@ import {
   PLAYER_PERFORMANCE_HEADER,
 } from './replies';
 
+interface PlayerActionsDeadOrAlive {
+  interfaceName: 'PlayerActionsDeadOrAlive' | 'PlayerActionsAlive';
+  player: ArenaPlayer;
+  round: ArenaRound;
+  zone: ArenaZone | undefined;
+}
+
 export class ArenaRepository {
+  static async playerActions(
+    userRequesting: User,
+    needsToBeAlive: boolean,
+    transaction: Transaction
+  ): Promise<GameResponse | PlayerActionsDeadOrAlive> {
+    const round = await findActiveRound(false, transaction);
+
+    if (!round) {
+      return getGameError(arenaCommandReply.noActiveRound());
+    }
+    const player = await findPlayerByUser(round._gameId, userRequesting.id, true, transaction);
+
+    if (!player) {
+      return getGameError(arenaCommandReply.playerNotInTheGame());
+    }
+
+    if (needsToBeAlive && !player.isAlive()) {
+      return getGameError(arenaCommandReply.playerCannotWhileDead(player));
+    }
+
+    const zone = player._zone;
+    await zone?.reload({
+      include: [
+        {
+          association: ArenaZone.associations._players,
+          include: [
+            {
+              association: ArenaPlayer.associations._game,
+              where: { isActive: true },
+            },
+          ],
+        },
+      ],
+      transaction,
+    });
+    return {
+      interfaceName: needsToBeAlive ? 'PlayerActionsDeadOrAlive' : 'PlayerActionsAlive',
+      player,
+      round,
+      zone,
+    };
+  }
+
   constructor(public arenaGameEngine: ArenaEngine) {}
+
   // PLAYERS ///////////////////////////////////////////////////////////////////
+  async actionsMenu(userRequesting: User): Promise<void | GameResponse> {
+    return withArenaTransaction(async (transaction) => {
+      const playerActions = await ArenaRepository.playerActions(userRequesting, false, transaction);
+
+      if (!(playerActions as PlayerActionsDeadOrAlive).interfaceName) {
+        return playerActions as GameResponse;
+      }
+
+      const { zone, player, round } = playerActions as PlayerActionsDeadOrAlive;
+
+      if (!zone) {
+        return getGameError(arenaCommandReply.zoneNeeded());
+      }
+
+      const playerPerformance = (await findSinglePlayerPerformance(
+        player.id,
+        round._gameId,
+        transaction
+      ))!;
+      const hud = arenaCommandReply.playerHUD(player, zone, playerPerformance);
+      return getGameResponse(generateActionsBlockKit(player, hud));
+    });
+  }
+
+  // async searchForWeapons(userRequesting: User) {
+  //   return withArenaTransaction(async (transaction) => {
+  //     const { player, round, zone } = await ArenaRepository.playerActions(userRequesting, true, transaction);;
+  //     return evaluateSearchForItem(
+  //       { raider, round, actionId: TOWER_ACTIONS.SEARCH_WEAPONS },
+  //       transaction
+  //     );
+  //   });
+  // }
+
+  // async searchForArmors(userRequesting: User) {
+  //   return withArenaTransaction(async (transaction) => {
+  //     const { player, round, zone } = await ArenaRepository.playerActions(userRequesting, true, transaction);;
+  //     return evaluateSearchForItem(
+  //       { raider, round, actionId: TOWER_ACTIONS.SEARCH_ARMOR },
+  //       transaction
+  //     );
+  //   });
+  // }
+
+  // async searchForHealth(userRequesting: User) {
+  //   return withArenaTransaction(async (transaction) => {
+  //     const { player, round, zone } = await ArenaRepository.playerActions(userRequesting, true, transaction);;
+  //     const raidersHealthkits = raiderHasMaxHealthkits(raider);
+  //     if (raidersHealthkits) {
+  //       const hud = towerBotCommandReply.raiderHUD(raider);
+  //       const actionBlockkit = generateRaiderActionsBlockKit(
+  //         hud,
+  //         towerBotCommandReply.raiderCannotCarryMoreHealthkits()
+  //       );
+  //       return getEphemeralBlock(actionBlockkit);
+  //     }
+  //     return evaluateSearchForItem(
+  //       { raider, round, actionId: TOWER_ACTIONS.SEARCH_HEALTH },
+  //       transaction
+  //     );
+  //   });
+  // }
 
   // ADMINS ///////////////////////////////////////////////////////////////////
   async newGame(commandText: string, userRequesting: User): Promise<void | GameResponse> {
@@ -96,7 +217,6 @@ export class ArenaRepository {
       );
 
       await enableAllItems(GAME_TYPE.ARENA, transaction);
-      await activateAllArenaZones(transaction);
       return getGameResponse(arenaCommandReply.adminCreatedGame(game));
     });
   }
@@ -432,6 +552,61 @@ export class ArenaRepository {
       await Promise.all(livingPlayers.map((player) => player.addWeapon(weaponToGive, transaction)));
       await publishArenaMessage(arenaCommandReply.channelWeaponsForEveryone(weaponToGive), true);
       return getGameResponse(arenaCommandReply.adminWeaponsForEveryone(weaponToGive!));
+    });
+  }
+
+  async startNarrowWeaponsQuestion(userRequesting: User): Promise<void | GameResponse> {
+    return withArenaTransaction(async (transaction) => {
+      const isAdmin = adminAction(userRequesting);
+      if (!isAdmin) {
+        return getGameError(arenaCommandReply.adminsOnly());
+      }
+      const round = await findActiveRound(true, transaction);
+      if (!round) {
+        return getGameError(arenaCommandReply.noActiveRound());
+      }
+      const game = round._game;
+      if (!game) {
+        return getGameError(arenaCommandReply.noActiveGame());
+      }
+      const allWeapons = await listActiveWeaponsByGameType(game._gameTypeId, transaction);
+      const narrowWeaponsBlock = generateNarrowWeaponsBlock(allWeapons);
+      return getGameResponse(narrowWeaponsBlock);
+    });
+  }
+
+  async confirmNarrowWeapons(userRequesting: User, selectedIds: number[]) {
+    return withArenaTransaction(async (transaction) => {
+      const isAdmin = adminAction(userRequesting);
+      if (!isAdmin) {
+        return getGameError(arenaCommandReply.adminsOnly());
+      }
+      const game = await findActiveArenaGame(transaction);
+      if (!game) {
+        return getGameError(arenaCommandReply.noActiveGame());
+      }
+      await disableItems(game._gameTypeId, selectedIds, transaction);
+      const allWeapons = await listAllItems(transaction);
+      const { enabledWeapons, disabledWeapons } = allWeapons.reduce(
+        (acc, item) => {
+          const isItemActive = item._gameItemAvailability?.find(
+            (itemAvailability) => itemAvailability._gameTypeId === game._gameTypeId
+          )?.isActive;
+          return {
+            ...acc,
+            ...(isItemActive
+              ? { enabledWeapons: [...acc.enabledWeapons, item] }
+              : { disabledWeapons: [...acc.disabledWeapons, item] }),
+          };
+        },
+        { enabledWeapons: [], disabledWeapons: [] } as {
+          enabledWeapons: Item[];
+          disabledWeapons: Item[];
+        }
+      );
+      return getGameResponse(
+        arenaCommandReply.confirmNarrowWeapons(enabledWeapons, disabledWeapons)
+      );
     });
   }
 

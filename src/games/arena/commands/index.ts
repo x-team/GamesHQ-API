@@ -25,7 +25,7 @@ export function arenaSwitchCommand({
 }: ArenaSwitchCommandOptions) {
   const isRoundRunning = arena.arenaGameEngine.getRoundState();
   if (isRoundRunning) {
-    return getGameResponse('Please wait until the Round log finishes');
+    return getGameResponse('*Please wait until the Round log finishes*');
   }
   switch (command) {
     // ADMIN
@@ -68,8 +68,8 @@ export function arenaSwitchCommand({
       return zone.listZones(userRequesting);
     case ARENA_SLACK_COMMANDS.NARROW_ZONES:
       return zone.narrowZones(userRequesting);
-    // case ARENA_SLACK_COMMANDS.NARROW_WEAPONS:
-    //   return arena.startNarrowWeaponsQuestion(userRequesting);
+    case ARENA_SLACK_COMMANDS.NARROW_WEAPONS:
+      return arena.startNarrowWeaponsQuestion(userRequesting);
     // case ARENA_SLACK_COMMANDS.START_ROUND:
     //   arena.startRound(userRequesting).catch((e) => {
     //     return handleBoomErrorsToSlack(e);
@@ -78,11 +78,9 @@ export function arenaSwitchCommand({
     //     return getEphemeralText(CommandReply.adminFinishedRound());
     //   });
 
-    // // PLAYERS
-    // case ARENA_SLACK_COMMANDS.ACTIONS:
-    //   return arena.actionsMenu(userRequesting);
-    // case `/${ARENA_SLACK_COMMANDS.STATUS}`:
-    //   return arena.status(userRequesting);
+    // PLAYERS
+    case ARENA_SLACK_COMMANDS.ACTIONS:
+      return arena.actionsMenu(userRequesting);
     default:
       return getGameResponse('Please provide a valid The Arena command');
   }

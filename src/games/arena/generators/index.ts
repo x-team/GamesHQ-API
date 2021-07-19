@@ -1,5 +1,6 @@
-import type { ArenaZone } from '../../../models';
+import type { ArenaPlayer, ArenaZone, Item } from '../../../models';
 import { APPROVE_SIGN } from '../../consts/emojis';
+import { generateRarityColorEmoji } from '../../helpers';
 import type {
   SlackBlockKitActionLayout,
   SlackBlockKitCompositionOption,
@@ -24,8 +25,100 @@ import {
   blockKitMultiSelect,
   blockKitSelectMenu,
 } from '../../utils/generators/slack';
-import { ARENA_SECONDARY_ACTIONS, ARENA_ZONE_RING } from '../consts';
+import { ARENA_SECONDARY_ACTIONS, ARENA_SLACK_COMMANDS, ARENA_ZONE_RING } from '../consts';
 
+// PLAYER ////////////////////////////////////////////////////////////////////////////////////////////////
+
+export function generateSpectatorActionsBlockKit(isDead: boolean): SlackBlockKitLayoutElement[] {
+  const mainMessage = isDead
+    ? "*YOU'RE DEAD. CHOOSE ACTIONS*"
+    : '*CHOOSE A SPECTATOR ACTION FOR THIS ROUND*';
+  const mainTitleContextLayout = blockKitContext(mainMessage);
+  const personalActionsLayout: SlackBlockKitActionLayout = blockKitAction([
+    blockKitButton('Cheer', ARENA_SLACK_COMMANDS.CHEER),
+    blockKitButton('Repeat Last Cheer', ARENA_SLACK_COMMANDS.REPEAT_LAST_CHEER),
+  ]);
+
+  return [mainTitleContextLayout, personalActionsLayout];
+}
+
+export function generateHunterActionsBlockKit(
+  primaryMessageText?: string,
+  secondaryMessageText?: string,
+  playerIsBoss?: boolean
+): SlackBlockKitLayoutElement[] {
+  const blockKitDivider: SlackBlockKitDividerLayout = {
+    type: 'divider',
+  };
+  // Block kit Titles and Subtitles (Main Sections)
+  const mainTitleContextLayout = blockKitContext('*CHOOSE AN ACTION FOR THIS ROUND*');
+  const personalContextLayout = blockKitContext('*PERSONAL*');
+  const searchForContextLayout = blockKitContext('*SEARCH FOR A*');
+  const actionsContextLayout = blockKitContext('*ACTIONS*');
+  const primaryMessageSection = primaryMessageText
+    ? [blockKitDivider, blockKitMrkdwnSection(primaryMessageText), blockKitDivider]
+    : [blockKitDivider];
+  const secondaryMessageSection = secondaryMessageText
+    ? [blockKitDivider, blockKitMrkdwnSection(secondaryMessageText), blockKitDivider]
+    : [blockKitDivider];
+
+  // Block kit Actions (Buttons)
+  const personalButtons = [
+    blockKitButton('Status', ARENA_SLACK_COMMANDS.STATUS),
+    blockKitButton('Cheer', ARENA_SLACK_COMMANDS.CHEER),
+    blockKitButton('Repeat Last Cheer', ARENA_SLACK_COMMANDS.REPEAT_LAST_CHEER),
+  ];
+  if (playerIsBoss) {
+    personalButtons.push(blockKitButton('Change Location', ARENA_SLACK_COMMANDS.CHANGE_LOCATION));
+  }
+  const personalActionsLayout: SlackBlockKitActionLayout = blockKitAction(personalButtons);
+
+  const searchButtons = [
+    blockKitButton('Weapon', ARENA_SLACK_COMMANDS.SEARCH_WEAPONS),
+    blockKitButton('Healthkit', ARENA_SLACK_COMMANDS.SEARCH_HEALTH),
+    blockKitButton('Armor', ARENA_SLACK_COMMANDS.SEARCH_ARMOR),
+  ];
+  const searchActionsLayout: SlackBlockKitActionLayout = blockKitAction(searchButtons);
+
+  const actionButtons = [
+    blockKitButton('Hunt', ARENA_SLACK_COMMANDS.HUNT),
+    blockKitButton('Hide', ARENA_SLACK_COMMANDS.HIDE),
+    blockKitButton('Heal Me', ARENA_SLACK_COMMANDS.HEAL_OR_REVIVE_SELF),
+    blockKitButton('Heal/Revive Other', ARENA_SLACK_COMMANDS.HEAL_OR_REVIVE_OTHER),
+  ];
+  const actionsLayout: SlackBlockKitActionLayout = blockKitAction(actionButtons);
+
+  return [
+    ...secondaryMessageSection,
+    mainTitleContextLayout,
+    blockKitDivider,
+    ...primaryMessageSection,
+    personalContextLayout,
+    personalActionsLayout,
+    blockKitDivider,
+    searchForContextLayout,
+    searchActionsLayout,
+    blockKitDivider,
+    actionsContextLayout,
+    actionsLayout,
+    blockKitDivider,
+  ];
+}
+
+export function generateActionsBlockKit(
+  player: ArenaPlayer,
+  primaryMessageText?: string,
+  secondaryMessageText?: string
+) {
+  const playerIsDead = player.health <= 0;
+  if (player.isSpectator || playerIsDead) {
+    return generateSpectatorActionsBlockKit(playerIsDead);
+  }
+
+  return generateHunterActionsBlockKit(primaryMessageText, secondaryMessageText, player.isBoss);
+}
+
+// ADMIN ////////////////////////////////////////////////////////////////////////////////////////////////
 export function generateArenaEndGameConfirmationBlockKit(
   questionText = 'Are you *absolutely sure* you want to *end the game*?'
 ) {
@@ -73,6 +166,16 @@ export function generateChangeZonePickerBlock(
   }
   return fullBlockSection;
 }
+export function generateMultiSelectWeaponOptions(
+  weaponList: Item[]
+): SlackBlockKitCompositionOption[] {
+  return weaponList.map((weapon) =>
+    blockKitCompositionOption(
+      `${generateRarityColorEmoji(weapon._itemRarityId)}${weapon.emoji} ${weapon.name}`,
+      `${weapon.id}`
+    )
+  );
+}
 
 export function generateMultiSelectZoneOptions(
   zones: ArenaZone[]
@@ -80,6 +183,16 @@ export function generateMultiSelectZoneOptions(
   return zones.map((zone) =>
     blockKitCompositionOption(`(${zone.ring}) ${zone.emoji} ${zone.name}`, `${zone.id}`)
   );
+}
+
+export function generateNarrowWeaponsBlock(weaponsList: Item[]): SlackBlockKitLayoutElement[] {
+  const multiSelect = blockKitMultiSelect(
+    ARENA_SECONDARY_ACTIONS.CONFIRM_NARROW_WEAPONS,
+    'Select available weapons',
+    generateMultiSelectWeaponOptions(weaponsList),
+    []
+  );
+  return [blockKitMrkdwnSection('Select which weapons can be obtained by players.', multiSelect)];
 }
 
 export function generateNarrowZonesBlock(zones: ArenaZone[]): SlackBlockKitLayoutElement[] {
