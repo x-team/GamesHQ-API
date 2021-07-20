@@ -38,11 +38,11 @@ import {
   findArenaZoneById,
 } from '../../../../models/ArenaZone';
 import { disableItems, enableAllItems } from '../../../../models/GameItemAvailability';
-import { listAllItems } from '../../../../models/Item';
+import { findItemByName, listAllItems } from '../../../../models/Item';
 import { findWeaponById, listActiveWeaponsByGameType } from '../../../../models/ItemWeapon';
 import { getUserBySlackId } from '../../../../models/User';
 import { parseEscapedSlackUserValues } from '../../../../utils/slack';
-import { GAME_TYPE, ONE } from '../../../consts/global';
+import { GAME_TYPE, ITEM_TYPE, ONE, ZERO } from '../../../consts/global';
 import { generateTeamEmoji } from '../../../helpers';
 import type { GameResponse } from '../../../utils';
 import {
@@ -60,12 +60,14 @@ import {
   BOSS_HEALTHKIT_HEALING,
   ARENA_ACTIONS,
   ARENA_SECONDARY_ACTIONS,
+  MAX_PLAYER_HEALTH,
 } from '../../consts';
 import {
   generateActionsBlockKit,
   generateArenaEndGameConfirmationBlockKit,
-  generateNarrowWeaponsBlock,
-} from '../../generators';
+  generateTargetPickerBlock,
+} from '../../generators/gameplay';
+import { generateNarrowWeaponsBlock } from '../../generators/weapons';
 import {
   parseRevivePlayerCommandText,
   publishArenaMessage,
@@ -82,7 +84,7 @@ import {
   PLAYER_PERFORMANCE_HEADER,
 } from './replies';
 
-interface PlayerActionsDeadOrAlive {
+export interface PlayerActionsDeadOrAlive {
   interfaceName: 'PlayerActionsDeadOrAlive' | 'PlayerActionsAlive';
   player: ArenaPlayer;
   round: ArenaRound;
@@ -138,7 +140,7 @@ export class ArenaRepository {
   // PLAYERS ///////////////////////////////////////////////////////////////////
   async changeLocation(userRequesting: User, arenaZoneId: number) {
     return withArenaTransaction(async (transaction) => {
-      const playerActions = await ArenaRepository.playerActions(userRequesting, false, transaction);
+      const playerActions = await ArenaRepository.playerActions(userRequesting, true, transaction);
 
       if (!(playerActions as PlayerActionsDeadOrAlive).interfaceName) {
         return playerActions as GameResponse;
@@ -194,7 +196,7 @@ export class ArenaRepository {
 
   async bossChangeLocation(userRequesting: User) {
     return withArenaTransaction(async (transaction) => {
-      const playerActions = await ArenaRepository.playerActions(userRequesting, false, transaction);
+      const playerActions = await ArenaRepository.playerActions(userRequesting, true, transaction);
 
       if (!(playerActions as PlayerActionsDeadOrAlive).interfaceName) {
         return playerActions as GameResponse;
@@ -264,7 +266,7 @@ export class ArenaRepository {
 
   async status(userRequesting: User) {
     return withArenaTransaction(async (transaction) => {
-      const playerActions = await ArenaRepository.playerActions(userRequesting, false, transaction);
+      const playerActions = await ArenaRepository.playerActions(userRequesting, true, transaction);
 
       if (!(playerActions as PlayerActionsDeadOrAlive).interfaceName) {
         return playerActions as GameResponse;
@@ -409,6 +411,216 @@ export class ArenaRepository {
       return getGameResponse(arenaCommandReply.playerHides(changeLocationParams));
     });
   }
+
+  async reviveSelf(userRequesting: User) {
+    return withArenaTransaction(async (transaction) => {
+      const playerActions = await ArenaRepository.playerActions(userRequesting, true, transaction);
+      if (!(playerActions as PlayerActionsDeadOrAlive).interfaceName) {
+        return playerActions as GameResponse;
+      }
+      const { player, round, zone } = playerActions as PlayerActionsDeadOrAlive;
+
+      if (!zone) {
+        const actionBlockkit = generateActionsBlockKit(player, arenaCommandReply.zoneNeeded());
+        return getGameResponse(actionBlockkit);
+      }
+      const healthKit = await findItemByName(
+        ITEM_TYPE.HEALTH_KIT,
+        ITEM_TYPE.HEALTH_KIT,
+        transaction
+      );
+      const healthKitQty = healthKit ? player.healthkitQty(healthKit.id) : ZERO;
+
+      const playerPerformance = await findSinglePlayerPerformance(
+        player.id,
+        round._gameId,
+        transaction
+      );
+      const hud = arenaCommandReply.playerHUD(player, zone, playerPerformance);
+
+      if (healthKitQty <= ZERO) {
+        const actionBlockkit = generateActionsBlockKit(
+          player,
+          hud,
+          arenaCommandReply.playerNeedsHealthKit()
+        );
+        return getGameResponse(actionBlockkit);
+      }
+      if (player.health === MAX_PLAYER_HEALTH) {
+        const actionBlockkit = generateActionsBlockKit(
+          player,
+          hud,
+          arenaCommandReply.playerHealsSelfMaxed()
+        );
+        return getGameResponse(actionBlockkit);
+      }
+      await setPlayerRoundAction(
+        player,
+        round,
+        { id: ARENA_ACTIONS.REVIVE, targetPlayerId: player.id },
+        transaction
+      );
+      const playerWillBeVisible = round.isEveryoneVisible ? true : player.isVisible;
+      const arenaZonesAvailable = await findActiveArenaZones(transaction);
+      const changeLocationParams = {
+        player,
+        arenaZonesAvailable,
+      };
+      return getGameResponse(
+        arenaCommandReply.playerHealsSelf(
+          changeLocationParams,
+          playerWillBeVisible,
+          healthKit?._healthkit?.healingPower ?? ZERO
+        )
+      );
+    });
+  }
+
+  async completeRevive(userRequesting: User, selectedTargetId: number) {
+    return withArenaTransaction(async (transaction) => {
+      const playerActions = await ArenaRepository.playerActions(userRequesting, true, transaction);
+      if (!(playerActions as PlayerActionsDeadOrAlive).interfaceName) {
+        return playerActions as GameResponse;
+      }
+      const { player, round, zone } = playerActions as PlayerActionsDeadOrAlive;
+
+      if (!zone) {
+        const actionBlockkit = generateActionsBlockKit(player, arenaCommandReply.zoneNeeded());
+        return getGameResponse(actionBlockkit);
+      }
+
+      const targetPlayer = await findPlayerByUser(
+        round._gameId,
+        selectedTargetId,
+        false,
+        transaction
+      );
+
+      const playerPerformance = await findSinglePlayerPerformance(
+        player.id,
+        round._gameId,
+        transaction
+      );
+      const hud = arenaCommandReply.playerHUD(player, zone, playerPerformance);
+
+      if (!targetPlayer || !targetPlayer._user || !targetPlayer._user.slackId) {
+        const actionBlockkit = generateActionsBlockKit(
+          player,
+          hud,
+          arenaCommandReply.playerNotInTheGame()
+        );
+        return getGameResponse(actionBlockkit);
+      }
+
+      const targetPlayerSlackId = targetPlayer._user.slackId;
+      const isSelf = player.id === targetPlayer.id;
+
+      if (targetPlayer.health === MAX_PLAYER_HEALTH) {
+        const actionBlockkit = generateActionsBlockKit(
+          player,
+          hud,
+          isSelf
+            ? arenaCommandReply.playerHealsSelfMaxed()
+            : arenaCommandReply.playerHealsSomebodyMaxed(targetPlayerSlackId)
+        );
+        return getGameResponse(actionBlockkit);
+      }
+
+      const healthKit = await findItemByName(
+        ITEM_TYPE.HEALTH_KIT,
+        ITEM_TYPE.HEALTH_KIT,
+        transaction
+      );
+      const healthKitQty = healthKit ? player.healthkitQty(healthKit.id) : ZERO;
+      if (healthKitQty <= ZERO) {
+        const actionBlockkit = generateActionsBlockKit(
+          player,
+          hud,
+          arenaCommandReply.playerNeedsHealthKit()
+        );
+        return getGameResponse(actionBlockkit);
+      }
+
+      await setPlayerRoundAction(
+        player,
+        round,
+        { id: ARENA_ACTIONS.REVIVE, targetPlayerId: targetPlayer.id },
+        transaction
+      );
+      const playerWillBeVisible = round.isEveryoneVisible ? true : player.isVisible;
+      const arenaZonesAvailable = await findActiveArenaZones(transaction);
+      const changeLocationParams = {
+        player,
+        arenaZonesAvailable,
+      };
+
+      return getGameResponse(
+        isSelf
+          ? arenaCommandReply.playerHealsSelf(
+              changeLocationParams,
+              playerWillBeVisible,
+              healthKit?._healthkit?.healingPower ?? ZERO
+            )
+          : arenaCommandReply.playerHealsSomebody(
+              changeLocationParams,
+              targetPlayerSlackId,
+              playerWillBeVisible,
+              healthKit?._healthkit?.healingPower ?? ZERO
+            )
+      );
+    });
+  }
+
+  async reviveOther(userRequesting: User) {
+    return withArenaTransaction(async (transaction) => {
+      const playerActions = await ArenaRepository.playerActions(userRequesting, true, transaction);
+      if (!(playerActions as PlayerActionsDeadOrAlive).interfaceName) {
+        return playerActions as GameResponse;
+      }
+      const { player, round, zone } = playerActions as PlayerActionsDeadOrAlive;
+
+      if (!zone) {
+        const actionBlockkit = generateActionsBlockKit(player, arenaCommandReply.zoneNeeded());
+        return getGameResponse(actionBlockkit);
+      }
+      const healthKit = await findItemByName(
+        ITEM_TYPE.HEALTH_KIT,
+        ITEM_TYPE.HEALTH_KIT,
+        transaction
+      );
+      const healthKitQty = healthKit ? player.healthkitQty(healthKit.id) : ZERO;
+
+      const playerPerformance = await findSinglePlayerPerformance(
+        player.id,
+        round._gameId,
+        transaction
+      );
+      const hud = arenaCommandReply.playerHUD(player, zone, playerPerformance);
+
+      if (healthKitQty <= ZERO) {
+        const actionBlockkit = generateActionsBlockKit(
+          player,
+          hud,
+          arenaCommandReply.playerNeedsHealthKit()
+        );
+        return getGameResponse(actionBlockkit);
+      }
+
+      const allPlayers = await findPlayersByGame(round._gameId, false, transaction);
+      const playersToDropdown = allPlayers.filter(
+        (p) =>
+          p.id !== player.id &&
+          zone._players?.find((zonePlayer) => zonePlayer.id === p.id) &&
+          !p.isSpectator
+      );
+      const slackBlocks = generateTargetPickerBlock(playersToDropdown, 'reviveother');
+      return getGameResponse(slackBlocks);
+    });
+  }
+
+  // HUNT
+  // async hunt(userRequesting: User): Promise<GameResponse>;
+  // chooseTarget: (userRequesting: User, selectedTargetId: number) => Promise<GameResponse>;
 
   // ADMINS ///////////////////////////////////////////////////////////////////
   async newGame(commandText: string, userRequesting: User) {

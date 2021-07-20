@@ -51,6 +51,10 @@ export function roundActionMessageBuilder(
   );
 }
 
+export function basicHealthDisplayInParentheses(health: number) {
+  return `( ${FULL_HEALTH_HEART_EMOJI} ${health} )`;
+}
+
 export function basicHealthDisplay(health: number, maxHealth: number) {
   return `${
     health === 0
@@ -179,11 +183,11 @@ export function healthKitStatus(
   if (!healthkitFound) {
     return ':medkit: *Health kits:* 0';
   }
-  const arenaItem = healthkitFound as Item & { ArenaItemInventory: ArenaItemInventory };
+  const healthkitItem = healthkitFound as Item & { ArenaItemInventory: ArenaItemInventory };
   // const towerItem = healthkitFound as Item & { TowerItemInventory: TowerItemInventory };
   let mutableQuantity = 0;
-  if (arenaItem.ArenaItemInventory) {
-    mutableQuantity = arenaItem.ArenaItemInventory.remainingUses ?? 0;
+  if (healthkitItem.ArenaItemInventory) {
+    mutableQuantity = healthkitItem.ArenaItemInventory.remainingUses ?? 0;
   } // } else if (towerItem.TowerItemInventory) {
   //   mutableQuantity = towerItem.TowerItemInventory.quantity;
   // }

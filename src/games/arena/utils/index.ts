@@ -21,7 +21,7 @@ import {
   ARENA_REPOSITORY_NAME,
   MAX_PLAYERS_PER_ARENA_ZONE,
 } from '../consts';
-import { generateChangeZonePickerBlock } from '../generators';
+import { generateChangeZonePickerBlock } from '../generators/gameplay';
 
 export function topPlayerPerformance(
   maxPlayersInTop: number,

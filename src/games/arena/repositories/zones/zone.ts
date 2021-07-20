@@ -15,7 +15,7 @@ import {
   generateArenaZoneModal,
   generateAvailableZonesBlockKit,
   generateNarrowZonesBlock,
-} from '../../generators';
+} from '../../generators/zones';
 import { arenaNotifyEphemeral, arenaOpenView, withZoneTransaction } from '../../utils';
 import { arenaCommandReply } from '../arena/replies';
 

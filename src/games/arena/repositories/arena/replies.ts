@@ -321,7 +321,7 @@ export const arenaCommandReply = {
     `${NO_ENTRY_SIGN} Your health is alright.\n:eager: Hurry! Take another action!`,
 
   playerNeedsHealthKit: () =>
-    `${NO_ENTRY_SIGN} You need to find a health kit to revive.\n` +
+    `${NO_ENTRY_SIGN} You need to find a health kit to heal or revive.\n` +
     'Use `Search for a healthkit` first.',
 
   playerHealsSelf: (

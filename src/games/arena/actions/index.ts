@@ -62,10 +62,10 @@ function arenaPlayerSwitchActions(action: string, args: number | number[], userR
       return arenaRepository.searchForArmors(userRequesting);
     case ARENA_SLACK_COMMANDS.HIDE:
       return arenaRepository.hide(userRequesting);
-    // case ARENA_SLACK_COMMANDS.HEAL_OR_REVIVE_OTHER:
-    //   return arenaRepository.reviveOther(userRequesting);
-    // case ARENA_SLACK_COMMANDS.HEAL_OR_REVIVE_SELF:
-    //   return arenaRepository.reviveSelf(userRequesting);
+    case ARENA_SLACK_COMMANDS.HEAL_OR_REVIVE_OTHER:
+      return arenaRepository.reviveOther(userRequesting);
+    case ARENA_SLACK_COMMANDS.HEAL_OR_REVIVE_SELF:
+      return arenaRepository.reviveSelf(userRequesting);
     // case ARENA_SLACK_COMMANDS.HUNT:
     //   return arenaRepository.hunt(userRequesting);
     // case ARENA_SLACK_COMMANDS.CHEER:
@@ -80,8 +80,8 @@ function arenaPlayerSwitchActions(action: string, args: number | number[], userR
     //   return arenaRepository.chooseWeapon(userRequesting, singleArg, ARENA_ACTIONS.HUNT);
     // case ARENA_SECONDARY_ACTIONS.CHEER_CHOOSE_TARGET:
     //   return arenaRepository.completeCheer(userRequesting, singleArg);
-    // case ARENA_SECONDARY_ACTIONS.HEAL_OR_REVIVE_CHOOSE_TARGET:
-    //   return arenaRepository.completeRevive(userRequesting, singleArg);
+    case ARENA_SECONDARY_ACTIONS.HEAL_OR_REVIVE_CHOOSE_TARGET:
+      return arenaRepository.completeRevive(userRequesting, singleArg);
     // case ARENA_SECONDARY_ACTIONS.HUNT_CHOOSE_TARGET:
     //   return arenaRepository.chooseTarget(userRequesting, singleArg);
     // ADMIN

@@ -663,10 +663,12 @@ export async function getOrCreatePlayer(
     transaction,
   });
 
-  const activeItemWeapons = await listActiveWeaponsByGameType(GAME_TYPE.ARENA, transaction);
-  const foundWeapon = activeItemWeapons.filter((weapon) => weapon.hasTrait(TRAIT.INITIAL));
-  for (const weapon of foundWeapon) {
-    await player.addWeapon(weapon, transaction);
+  if (!isBoss) {
+    const activeItemWeapons = await listActiveWeaponsByGameType(GAME_TYPE.ARENA, transaction);
+    const foundWeapon = activeItemWeapons.filter((weapon) => weapon.hasTrait(TRAIT.INITIAL));
+    for (const weapon of foundWeapon) {
+      await player.addWeapon(weapon, transaction);
+    }
   }
   return player;
 }
