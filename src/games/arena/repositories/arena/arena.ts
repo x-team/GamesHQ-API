@@ -371,6 +371,45 @@ export class ArenaRepository {
     });
   }
 
+  async hide(userRequesting: User) {
+    return withArenaTransaction(async (transaction) => {
+      const playerActions = await ArenaRepository.playerActions(userRequesting, true, transaction);
+      if (!(playerActions as PlayerActionsDeadOrAlive).interfaceName) {
+        return playerActions as GameResponse;
+      }
+      const { player, round, zone } = playerActions as PlayerActionsDeadOrAlive;
+
+      if (!zone) {
+        const actionBlockkit = generateActionsBlockKit(player, arenaCommandReply.zoneNeeded());
+        return getGameResponse(actionBlockkit);
+      }
+
+      const playerPerformance = await findSinglePlayerPerformance(
+        player.id,
+        round._gameId,
+        transaction
+      );
+      const hud = arenaCommandReply.playerHUD(player, zone, playerPerformance);
+
+      if (round.isEveryoneVisible) {
+        const actionBlockkit = generateActionsBlockKit(
+          player,
+          hud,
+          arenaCommandReply.playerCannotHide()
+        );
+        return getGameResponse(actionBlockkit);
+      }
+
+      await setPlayerRoundAction(player, round, { id: ARENA_ACTIONS.HIDE }, transaction);
+      const arenaZonesAvailable = await findActiveArenaZones(transaction);
+      const changeLocationParams = {
+        player,
+        arenaZonesAvailable,
+      };
+      return getGameResponse(arenaCommandReply.playerHides(changeLocationParams));
+    });
+  }
+
   // ADMINS ///////////////////////////////////////////////////////////////////
   async newGame(commandText: string, userRequesting: User) {
     return withArenaTransaction(async (transaction) => {

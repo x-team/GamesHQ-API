@@ -60,8 +60,8 @@ function arenaPlayerSwitchActions(action: string, args: number | number[], userR
       return arenaRepository.searchForWeapons(userRequesting);
     case ARENA_SLACK_COMMANDS.SEARCH_ARMOR:
       return arenaRepository.searchForArmors(userRequesting);
-    // case ARENA_SLACK_COMMANDS.HIDE:
-    //   return arenaRepository.hide(userRequesting);
+    case ARENA_SLACK_COMMANDS.HIDE:
+      return arenaRepository.hide(userRequesting);
     // case ARENA_SLACK_COMMANDS.HEAL_OR_REVIVE_OTHER:
     //   return arenaRepository.reviveOther(userRequesting);
     // case ARENA_SLACK_COMMANDS.HEAL_OR_REVIVE_SELF:
