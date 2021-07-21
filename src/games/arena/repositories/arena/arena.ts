@@ -23,6 +23,7 @@ import {
   startNarrowWeaponsQuestion,
 } from './actions/admin/weapons';
 import { bossChangeLocation, changeLocation } from './actions/player/change-location';
+import { cheer, completeCheer, repeatLastCheer } from './actions/player/cheer';
 import { hide } from './actions/player/hide';
 import { chooseTarget, chooseWeapon, hunt } from './actions/player/hunt';
 import { actionsMenu, status } from './actions/player/menu';
@@ -59,6 +60,11 @@ interface ArenaRepositoryMethods {
   hunt(userRequesting: User): Promise<GameResponse>;
   chooseWeapon(userRequesting: User, selectedWeapon: number, action: string): Promise<GameResponse>;
   chooseTarget(userRequesting: User, selectedTargetId: number): Promise<GameResponse>;
+
+  // PLAYERS: CHEER OPERATIONS /////////////////////////////////////////////////
+  cheer(userRequesting: User): Promise<GameResponse>;
+  repeatLastCheer(userRequesting: User): Promise<GameResponse>;
+  completeCheer(userRequesting: User, selectedTargetId: number): Promise<GameResponse>;
 
   /////////////////////////////////////////////////////////////////// ADMIN ///////////////////////////////////////////////////////////////////
 
@@ -137,6 +143,11 @@ export class ArenaRepository implements ArenaRepositoryMethods {
   public hunt = hunt.bind(this);
   public chooseWeapon = chooseWeapon.bind(this);
   public chooseTarget = chooseTarget.bind(this);
+
+  // PLAYERS: CHEER OPERATIONS /////////////////////////////////////////////////
+  public cheer = cheer.bind(this);
+  public repeatLastCheer = repeatLastCheer.bind(this);
+  public completeCheer = completeCheer.bind(this);
 
   /////////////////////////////////////////////////////////////////// ADMIN ///////////////////////////////////////////////////////////////////
 

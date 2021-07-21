@@ -68,18 +68,18 @@ function arenaPlayerSwitchActions(action: string, args: number | number[], userR
       return arenaRepository.reviveSelf(userRequesting);
     case ARENA_SLACK_COMMANDS.HUNT:
       return arenaRepository.hunt(userRequesting);
-    // case ARENA_SLACK_COMMANDS.CHEER:
-    //   return arenaRepository.cheer(userRequesting);
-    // case ARENA_SLACK_COMMANDS.REPEAT_LAST_CHEER:
-    //   return arenaRepository.repeatLastCheer(userRequesting);
+    case ARENA_SLACK_COMMANDS.CHEER:
+      return arenaRepository.cheer(userRequesting);
+    case ARENA_SLACK_COMMANDS.REPEAT_LAST_CHEER:
+      return arenaRepository.repeatLastCheer(userRequesting);
     case ARENA_SECONDARY_ACTIONS.CHANGE_LOCATION:
       return arenaRepository.changeLocation(userRequesting, singleArg);
     case ARENA_SLACK_COMMANDS.CHANGE_LOCATION:
       return arenaRepository.bossChangeLocation(userRequesting);
     case ARENA_SECONDARY_ACTIONS.HUNT_CHOOSE_WEAPON:
       return arenaRepository.chooseWeapon(userRequesting, singleArg, ARENA_ACTIONS.HUNT);
-    // case ARENA_SECONDARY_ACTIONS.CHEER_CHOOSE_TARGET:
-    //   return arenaRepository.completeCheer(userRequesting, singleArg);
+    case ARENA_SECONDARY_ACTIONS.CHEER_CHOOSE_TARGET:
+      return arenaRepository.completeCheer(userRequesting, singleArg);
     case ARENA_SECONDARY_ACTIONS.HEAL_OR_REVIVE_CHOOSE_TARGET:
       return arenaRepository.completeRevive(userRequesting, singleArg);
     case ARENA_SECONDARY_ACTIONS.HUNT_CHOOSE_TARGET:
