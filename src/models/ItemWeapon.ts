@@ -93,13 +93,13 @@ export async function listActiveWeaponsByGameType(gameType: GAME_TYPE, transacti
 }
 
 export async function findWeaponsByRarity(rarityId: ITEM_RARITY, transaction?: Transaction) {
-  return findItemsByRarityAndType(rarityId, ITEM_TYPE.ARMOR, transaction);
+  return findItemsByRarityAndType(rarityId, ITEM_TYPE.WEAPON, transaction);
 }
 
 export function findWeaponById(weaponId: number, transaction?: Transaction) {
-  return findItemById(weaponId, ITEM_TYPE.ARMOR, transaction);
+  return findItemById(weaponId, ITEM_TYPE.WEAPON, transaction);
 }
 
 export function findWeaponByName(weaponName: string, transaction?: Transaction) {
-  return findItemByName(weaponName, ITEM_TYPE.ARMOR, transaction);
+  return findItemByName(weaponName, ITEM_TYPE.WEAPON, transaction);
 }

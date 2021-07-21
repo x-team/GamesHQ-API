@@ -41,13 +41,13 @@ export function arenaSwitchCommand({
     case ARENA_SLACK_COMMANDS.DISABLE_ZONE_DEACTIVATION:
       return arena.toggleZoneDeactivationSystem(userRequesting, false);
     case ARENA_SLACK_COMMANDS.ADD_PLAYER:
-      return arena.addPlayer(commandText, userRequesting, channelId);
+      return arena.addPlayerCommand(commandText, userRequesting, channelId);
     case ARENA_SLACK_COMMANDS.ADD_BOSS:
-      return arena.addBossOrGuest(commandText, userRequesting, true);
+      return arena.addBossOrGuestCommand(commandText, userRequesting, true);
     case ARENA_SLACK_COMMANDS.ADD_GUEST:
-      return arena.addBossOrGuest(commandText, userRequesting, false);
+      return arena.addBossOrGuestCommand(commandText, userRequesting, false);
     case ARENA_SLACK_COMMANDS.ADD_SPECTATOR:
-      return arena.addSpectator(commandText, userRequesting, channelId);
+      return arena.addSpectatorCommand(commandText, userRequesting, channelId);
     case ARENA_SLACK_COMMANDS.LIST_PLAYERS:
       return arena.listPlayers(userRequesting);
     case ARENA_SLACK_COMMANDS.LIST_SPECTATORS:

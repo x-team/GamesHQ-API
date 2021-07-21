@@ -2,12 +2,21 @@ import { sampleSize } from 'lodash';
 import type { Transaction } from 'sequelize';
 
 import { getConfig } from '../../../config';
-import { ArenaPlayerPerformance } from '../../../models';
+import { ArenaPlayer, ArenaPlayerPerformance, ArenaRound, ArenaZone, User } from '../../../models';
+import { findPlayerByUser } from '../../../models/ArenaPlayer';
+import { findActiveRound } from '../../../models/ArenaRound';
 import { parseEscapedSlackUserValues } from '../../../utils/slack';
 import { ONE, ZERO } from '../../consts/global';
 import { generateTeamEmoji, roundActionMessageBuilder } from '../../helpers';
 import type { SlackBlockKitLayoutElement } from '../../model/SlackBlockKit';
-import { notifyEphemeral, openView, slackRequest, withTransaction } from '../../utils';
+import {
+  GameResponse,
+  getGameError,
+  notifyEphemeral,
+  openView,
+  slackRequest,
+  withTransaction,
+} from '../../utils';
 import { GameError } from '../../utils/GameError';
 import {
   ARENA_PLAYER_PERFORMANCE,
@@ -22,7 +31,57 @@ import {
   MAX_PLAYERS_PER_ARENA_ZONE,
 } from '../consts';
 import { generateChangeZonePickerBlock } from '../generators/gameplay';
+import { arenaCommandReply } from '../repositories/arena/replies';
 
+export interface PlayerActionsDeadOrAlive {
+  interfaceName: 'PlayerActionsDeadOrAlive' | 'PlayerActionsAlive';
+  player: ArenaPlayer;
+  round: ArenaRound;
+  zone: ArenaZone | undefined;
+}
+
+export async function playerActionsParams(
+  userRequesting: User,
+  needsToBeAlive: boolean,
+  transaction: Transaction
+): Promise<GameResponse | PlayerActionsDeadOrAlive> {
+  const round = await findActiveRound(false, transaction);
+
+  if (!round) {
+    return getGameError(arenaCommandReply.noActiveRound());
+  }
+  const player = await findPlayerByUser(round._gameId, userRequesting.id, true, transaction);
+
+  if (!player) {
+    return getGameError(arenaCommandReply.playerNotInTheGame());
+  }
+
+  if (needsToBeAlive && !player.isAlive()) {
+    return getGameError(arenaCommandReply.playerCannotWhileDead(player));
+  }
+
+  const zone = player._zone;
+  await zone?.reload({
+    include: [
+      {
+        association: ArenaZone.associations._players,
+        include: [
+          {
+            association: ArenaPlayer.associations._game,
+            where: { isActive: true },
+          },
+        ],
+      },
+    ],
+    transaction,
+  });
+  return {
+    interfaceName: needsToBeAlive ? 'PlayerActionsDeadOrAlive' : 'PlayerActionsAlive',
+    player,
+    round,
+    zone,
+  };
+}
 export function topPlayerPerformance(
   maxPlayersInTop: number,
   performanceField: ARENA_PLAYER_PERFORMANCE,
@@ -39,6 +98,23 @@ export function topPlayerPerformance(
       : '';
   }
   return mutableTopPerformance;
+}
+
+export function generateTargetGroup(
+  hunter: ArenaPlayer,
+  playersToHunt: ArenaPlayer[],
+  isTeambased: boolean
+) {
+  return isTeambased
+    ? playersToHunt.filter(
+        (huntablePlayer) =>
+          huntablePlayer.id !== hunter.id &&
+          huntablePlayer.isAlive() &&
+          huntablePlayer._teamId !== hunter._teamId
+      )
+    : playersToHunt.filter(
+        (huntablePlayer) => huntablePlayer.id !== hunter.id && huntablePlayer.isAlive()
+      );
 }
 
 export function parseRevivePlayerCommandText(commandText?: string) {

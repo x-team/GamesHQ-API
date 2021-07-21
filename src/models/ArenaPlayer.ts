@@ -461,8 +461,8 @@ export class ArenaPlayer
 
   // ITEMS GENERAL PURPOSE
   itemsAvailable(items: Array<Item & { ArenaItemInventory: ArenaItemInventory }> = []) {
-    return items.filter((armor) => {
-      const remainingUses = armor.ArenaItemInventory.remainingUses;
+    return items.filter((item) => {
+      const remainingUses = item.ArenaItemInventory.remainingUses;
       return remainingUses ?? true;
     });
   }

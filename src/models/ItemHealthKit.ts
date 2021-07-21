@@ -90,13 +90,13 @@ export async function listActiveHealthkitsByGameType(
 }
 
 export async function findhealthkitsByRarity(rarityId: ITEM_RARITY, transaction?: Transaction) {
-  return findItemsByRarityAndType(rarityId, ITEM_TYPE.ARMOR, transaction);
+  return findItemsByRarityAndType(rarityId, ITEM_TYPE.HEALTH_KIT, transaction);
 }
 
 export function findhealthkitById(healthkitId: number, transaction?: Transaction) {
-  return findItemById(healthkitId, ITEM_TYPE.ARMOR, transaction);
+  return findItemById(healthkitId, ITEM_TYPE.HEALTH_KIT, transaction);
 }
 
 export function findhealthkitByName(healthkitName: string, transaction?: Transaction) {
-  return findItemByName(healthkitName, ITEM_TYPE.ARMOR, transaction);
+  return findItemByName(healthkitName, ITEM_TYPE.HEALTH_KIT, transaction);
 }
