@@ -44,6 +44,10 @@ export function generateRandomNameForGame(gameType: GAME_TYPE) {
   return `${gameType} ${random(HUNDRED)}.${random(HUNDRED)}.${random(HUNDRED)}`;
 }
 
+export function hasLuck(successRate: number, boost = 0): boolean {
+  return Math.random() < successRate + boost;
+}
+
 export function adminAction(userRequesting: User): boolean {
   return !!(
     userRequesting.isSuperAdmin() ||

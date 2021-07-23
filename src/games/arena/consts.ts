@@ -1,5 +1,5 @@
 import type { ArenaPlayer, ArenaZone } from '../../models';
-import { SHARED_ACTIONS } from '../consts/global';
+import { ITEM_RARITY, SHARED_ACTIONS } from '../consts/global';
 
 export const ARENA_ACTIONS = {
   ...SHARED_ACTIONS,
@@ -99,11 +99,21 @@ export enum ARENA_SECONDARY_ACTIONS {
   DELETE_ZONE = 'delete-zone',
 }
 
+export interface ArmorSpecs {
+  rarity: ITEM_RARITY;
+  damageDealt: number;
+  emoji: string;
+}
+
 // REPOSITORIES
 export const ARENA_REPOSITORY_NAME = 'arena-repository';
 export const ZONE_REPOSITORY_NAME = 'zone-repository';
 
 // GAME
+export const SEARCH_WEAPONS_SUCCESS_RATE = 0.8;
+export const SEARCH_ARMOR_SUCCESS_RATE = 0.4;
+export const SEARCH_HEALTH_SUCCESS_RATE = 0.3;
+export const HEALTH_KIT_FOUND_QTY = 1;
 export const MAX_TOP_OUTSTANDING_PERFORMANCE = 3;
 export const MAX_AMOUNT_HEALTHKITS_ALLOWED = 1;
 

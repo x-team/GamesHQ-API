@@ -16,6 +16,7 @@ import { listIdlePlayers, listPlayers, listSpectators } from './actions/admin/li
 import { makeAllVisible } from './actions/admin/make-all-visible';
 import { performance } from './actions/admin/performance';
 import { reviveBoss } from './actions/admin/revive-boss';
+import { startRoundCommand } from './actions/admin/start-round';
 import {
   confirmNarrowWeapons,
   giveEveryoneWeapon,
@@ -111,6 +112,9 @@ interface ArenaRepositoryMethods {
 
   // ADMIN: PERFORMANCE OPERATIONS ////////////////////////////////////////////
   performance(userRequesting: User): Promise<GameResponse>;
+
+  // ADMIN: ROUND OPERATIONS /////////////////////////////////////////////////
+  startRound(userRequesting: User): Promise<GameResponse>;
 }
 
 export class ArenaRepository implements ArenaRepositoryMethods {
@@ -182,4 +186,7 @@ export class ArenaRepository implements ArenaRepositoryMethods {
 
   // ADMIN: PERFORMANCE OPERATIONS ////////////////////////////////////////////
   public performance = performance.bind(this);
+
+  // ADMIN: ROUND OPERATIONS /////////////////////////////////////////////////
+  public startRound = startRoundCommand.bind(this);
 }

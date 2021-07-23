@@ -2,11 +2,20 @@ import { sampleSize } from 'lodash';
 import type { Transaction } from 'sequelize';
 
 import { getConfig } from '../../../config';
-import { ArenaPlayer, ArenaPlayerPerformance, ArenaRound, ArenaZone, User } from '../../../models';
-import { findPlayerByUser } from '../../../models/ArenaPlayer';
+import {
+  ArenaPlayer,
+  ArenaPlayerPerformance,
+  ArenaRound,
+  ArenaRoundAction,
+  ArenaZone,
+  Item,
+  User,
+} from '../../../models';
+import { findLivingPlayersByGame, findPlayerByUser } from '../../../models/ArenaPlayer';
 import { findActiveRound } from '../../../models/ArenaRound';
+import { ARENA_ACTIONS_TYPE } from '../../../models/ArenaRoundAction';
 import { parseEscapedSlackUserValues } from '../../../utils/slack';
-import { ONE, ZERO } from '../../consts/global';
+import { ITEM_RARITY, ONE, ZERO } from '../../consts/global';
 import { generateTeamEmoji, roundActionMessageBuilder } from '../../helpers';
 import type { SlackBlockKitLayoutElement } from '../../model/SlackBlockKit';
 import {
@@ -100,6 +109,24 @@ export function topPlayerPerformance(
   return mutableTopPerformance;
 }
 
+export async function processWinner(round: ArenaRound, transaction: Transaction) {
+  const playersAlive = await findLivingPlayersByGame(round._gameId, false, transaction);
+  if (playersAlive.length === ONE) {
+    const [winner] = playersAlive;
+    await publishArenaMessage(arenaCommandReply.playerWinsGame(winner._user?.slackId!));
+  }
+  if (playersAlive.length > ONE && round._game?._arena?.teamBased) {
+    const teamReference = playersAlive[ZERO]._teamId;
+    const sameTeamPlayers = playersAlive.filter((p) => teamReference === p._teamId);
+    if (sameTeamPlayers.length === playersAlive.length) {
+      // All the players are from the same team
+      await publishArenaMessage(
+        arenaCommandReply.teamWinGame(playersAlive[ZERO]._user?._team?.name ?? 'No Team')
+      );
+    }
+  }
+}
+
 export function generateTargetGroup(
   hunter: ArenaPlayer,
   playersToHunt: ArenaPlayer[],
@@ -128,6 +155,18 @@ export function arenaZoneCapacity(activeZonezAmount = ONE, deactivatedZonesAmoun
     (deactivatedZonesAmount * MAX_PLAYERS_PER_ARENA_ZONE) / activeZonezAmount
   );
   return MAX_PLAYERS_PER_ARENA_ZONE + extraCapacity;
+}
+
+export function filterActionsById(actions: ArenaRoundAction[], actionId: ARENA_ACTIONS_TYPE) {
+  return actions.filter((a) => a._availableActionId === actionId);
+}
+
+export function filterActionsByZone(actions: ArenaRoundAction[], zoneId: number) {
+  return actions.filter((a) => a._player?._arenaZoneId === zoneId);
+}
+
+export function filterItemsByRarity(items: Item[], expectedRarity: ITEM_RARITY) {
+  return items.filter((item) => item._itemRarityId === expectedRarity);
 }
 
 export function arenaPerkStats(perk: ARENA_PERK) {

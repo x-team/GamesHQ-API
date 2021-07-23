@@ -11,6 +11,7 @@ import {
   PrimaryKey,
   AutoIncrement,
 } from 'sequelize-typescript';
+import { GAME_TYPE, ITEM_TYPE } from '../games/consts/global';
 
 import { Game, Item, User, ArenaPlayer, ArenaRoundAction } from './';
 
@@ -46,16 +47,28 @@ function includeAllAssociations(includeAll: boolean) {
                 {
                   association: ArenaPlayer.associations._healthkits,
                   include: [Item.associations._healthkit],
+                  where: {
+                    type: ITEM_TYPE.HEALTH_KIT,
+                  },
+                  required: false,
                   as: '_healthkits',
                 },
                 {
                   association: ArenaPlayer.associations._weapons,
                   include: [Item.associations._weapon, Item.associations._traits],
+                  where: {
+                    type: ITEM_TYPE.WEAPON,
+                  },
+                  required: false,
                   as: '_weapons',
                 },
                 {
                   association: ArenaPlayer.associations._armors,
                   include: [Item.associations._armor],
+                  where: {
+                    type: ITEM_TYPE.ARMOR,
+                  },
+                  required: false,
                   as: '_armors',
                 },
               ],
@@ -134,7 +147,7 @@ export class ArenaRound
         ArenaRound.associations._createdBy,
         {
           association: ArenaRound.associations._game,
-          where: { isActive: true },
+          where: { isActive: true, _gameTypeId: GAME_TYPE.ARENA },
         },
         ...includeAllAssociations(includeAll),
       ],
@@ -154,7 +167,7 @@ export async function findOneRound(
       ArenaRound.associations._createdBy,
       {
         association: ArenaRound.associations._game,
-        where: { isActive: true },
+        where: { isActive: true, _gameTypeId: GAME_TYPE.ARENA },
       },
       ...includeAllAssociations(includeAll),
     ],
@@ -169,7 +182,7 @@ export function findActiveRound(includeAll: boolean, transaction?: Transaction) 
       ArenaRound.associations._createdBy,
       {
         association: ArenaRound.associations._game,
-        where: { isActive: true },
+        where: { isActive: true, _gameTypeId: GAME_TYPE.ARENA },
       },
       ...includeAllAssociations(includeAll),
     ],
@@ -229,7 +242,7 @@ export function countRoundsCompleted(transaction?: Transaction) {
     include: [
       {
         association: ArenaRound.associations._game,
-        where: { isActive: true },
+        where: { isActive: true, _gameTypeId: GAME_TYPE.ARENA },
       },
     ],
     where: { isActive: false },

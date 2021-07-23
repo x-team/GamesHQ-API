@@ -19,7 +19,7 @@ import { Item } from './Item';
 
 type Values<T> = T[keyof T];
 
-type ARENA_ACTIONS_TYPE = Values<typeof ARENA_ACTIONS>;
+export type ARENA_ACTIONS_TYPE = Values<typeof ARENA_ACTIONS>;
 
 // type ARENA_ACTIONS_TYPE = ARENA_ACTIONS[keyof ARENA_ACTIONS];
 
