@@ -290,7 +290,7 @@ export class ArenaPlayer
     return this.save({ transaction });
   }
 
-  async setPlayerZone(zone: ArenaZone | null, transaction: Transaction) {
+  async setZone(zone: ArenaZone | null, transaction: Transaction) {
     this._arenaZoneId = zone?.id ?? null;
     await this.save({ transaction });
     await this.reload({
@@ -340,7 +340,7 @@ export class ArenaPlayer
     );
   }
 
-  setPlayerVisibility(isVisible: boolean, transaction: Transaction) {
+  setVisibility(isVisible: boolean, transaction: Transaction) {
     return this.isVisible !== isVisible ? this.update({ isVisible }, { transaction }) : this;
   }
 
@@ -695,7 +695,7 @@ export function addArenaPlayersToZones(
     arenaPlayers.map(async (player) => {
       const availableZones = zones ?? (await findAvailableArenaZonesToLand(transaction));
       const [zone] = sampleSize(availableZones, ONE);
-      await player.setPlayerZone(zone, transaction);
+      await player.setZone(zone, transaction);
     })
   );
 }

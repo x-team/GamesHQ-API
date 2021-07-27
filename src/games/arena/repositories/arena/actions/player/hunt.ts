@@ -131,7 +131,7 @@ export async function hunt(userRequesting: User) {
       const weapon = player._weapons![0];
 
       if (!weapon.hasTrait(TRAIT.STEALTH)) {
-        await player.setPlayerVisibility(true, transaction);
+        await player.setVisibility(true, transaction);
       }
 
       mutableVisiblePlayers = weapon?.hasTrait(TRAIT.DETECT)
@@ -202,7 +202,7 @@ export async function chooseWeapon(userRequesting: User, selectedWeapon: number,
     const weapon = await findWeaponById(selectedWeapon, transaction);
 
     if (!weapon?.hasTrait(TRAIT.STEALTH)) {
-      await player.setPlayerVisibility(true, transaction);
+      await player.setVisibility(true, transaction);
     }
     // find player's group
     const targetGroup = generateTargetGroup(
@@ -300,7 +300,7 @@ export async function chooseTarget(userRequesting: User, selectedTargetId: numbe
     const actionJson = roundAction.actionJSON;
     const weapon = await findWeaponById(actionJson.weaponId!, transaction);
     if (!isBoss && weapon && !weapon.hasTrait(TRAIT.STEALTH)) {
-      await player.setPlayerVisibility(true, transaction);
+      await player.setVisibility(true, transaction);
     }
     await setPlayerRoundAction(
       player,

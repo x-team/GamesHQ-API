@@ -28,7 +28,7 @@ export async function processSearchHealth(actions: ArenaRoundAction[], transacti
   await Promise.all(
     actions.map(async (action) => {
       const player = action._player!;
-      await player.setPlayerVisibility(true, transaction);
+      await player.setVisibility(true, transaction);
       const playerHasMaxHealthkit = player.hasMaxHealthkits();
       const searchHealthBoost =
         player.luckBoost +
@@ -63,7 +63,7 @@ export async function processSearchArmors(actions: ArenaRoundAction[], transacti
   await Promise.all(
     actions.map(async (action) => {
       const player = action._player!;
-      await player.setPlayerVisibility(true, transaction);
+      await player.setVisibility(true, transaction);
       if (!player.isAlive()) {
         return;
       }
@@ -163,7 +163,7 @@ export async function processSearchWeapons(
   await Promise.all(
     actions.map(async (action) => {
       const player = action._player!;
-      await player.setPlayerVisibility(true, transaction);
+      await player.setVisibility(true, transaction);
       if (!player.isAlive()) {
         return;
       }

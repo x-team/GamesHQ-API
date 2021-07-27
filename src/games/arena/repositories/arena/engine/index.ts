@@ -3,9 +3,12 @@ import { ArenaRound } from '../../../../../models';
 import { getIdlePlayers } from '../../../../../models/ArenaPlayer';
 import { setPlayerRoundAction } from '../../../../../models/ArenaRoundAction';
 import { ArenaZone, findArenaZoneById } from '../../../../../models/ArenaZone';
+import { ZERO } from '../../../../consts/global';
 import { ARENA_ACTIONS } from '../../../consts';
 import { filterActionsById, filterActionsByZone, publishArenaMessage } from '../../../utils';
 import { processChangeLocation } from './processChangeLocation';
+import { processHealOrRevive } from './processHealOrRevive';
+import { processRingSystemPenalty } from './processRingSystem';
 import { processSearchArmors, processSearchHealth, processSearchWeapons } from './processSearch';
 import { gameEngineReply } from './replies';
 
@@ -50,32 +53,33 @@ export class ArenaEngine {
   }
 
   async runRound(zone: ArenaZone, round: ArenaRound, transaction: Transaction) {
+    const DEFAULT_INACTIVE_ZONE_PENALTY_POWER = ZERO;
     const actions = filterActionsByZone(round._actions!, zone.id);
     if (actions.length) {
       const WAIT_BETWEEN_ZONES_MILLIS = 2500;
-      // Wait 3 seconds to post the next zone
+      // Wait 2.5 seconds to post the next zone
       await new Promise((resolve) => {
         setTimeout(resolve, WAIT_BETWEEN_ZONES_MILLIS);
       });
       await publishArenaMessage(gameEngineReply.areaReport(zone));
     }
     if (!zone.isActive && zone.name !== 'Streaming Zone') {
-      // await this.processRingSystemPenalty(
-      //   round._game?.inactiveZonePenaltyPower!,
-      //   actions,
-      //   transaction
-      // );
+      await this.processRingSystemPenalty(
+        round._game?._arena?.inactiveZonePenaltyPower ?? DEFAULT_INACTIVE_ZONE_PENALTY_POWER,
+        actions,
+        transaction
+      );
     }
 
     await this.processSearchHealth(
       filterActionsById(actions, ARENA_ACTIONS.SEARCH_HEALTH),
       transaction
     );
-    //   await this.processHealOrRevive(
-    //     round,
-    //     filterActionsById(actions, ARENA_ACTIONS.REVIVE),
-    //     transaction
-    //   );
+    await this.processHealOrRevive(
+      round,
+      filterActionsById(actions, ARENA_ACTIONS.REVIVE),
+      transaction
+    );
     await this.processSearchArmors(
       filterActionsById(actions, ARENA_ACTIONS.SEARCH_ARMOR),
       transaction
@@ -96,10 +100,10 @@ export class ArenaEngine {
   private processSearchWeapons = processSearchWeapons.bind(this);
 
   // CHANGE LOCATION OPERATIONS /////////////////////////////////////////////////
-  public processChangeLocation = processChangeLocation.bind(this);
+  private processHealOrRevive = processHealOrRevive.bind(this);
 
   // HEAL OR REVIVE OPERATIONS /////////////////////////////////////////////////
-  // private processChangeLocation = processChangeLocation.bind(this);
+  public processChangeLocation = processChangeLocation.bind(this);
 
   // HIDE OPERATIONS /////////////////////////////////////////////////
   // private processChangeLocation = processChangeLocation.bind(this);
@@ -109,4 +113,7 @@ export class ArenaEngine {
 
   // CHEER OPERATIONS /////////////////////////////////////////////////
   // private processChangeLocation = processChangeLocation.bind(this);
+
+  // RING SYSTEM OPERATIONS /////////////////////////////////////////////////
+  private processRingSystemPenalty = processRingSystemPenalty.bind(this);
 }

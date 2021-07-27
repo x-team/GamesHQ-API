@@ -8,7 +8,7 @@ export async function processChangeLocation(actions: ArenaRoundAction[], transac
     const { locationId } = action.actionJSON;
     if (locationId) {
       const zone = await findArenaZoneById(locationId, transaction);
-      await player.setPlayerZone(zone, transaction);
+      await player.setZone(zone, transaction);
     }
   }
 }
