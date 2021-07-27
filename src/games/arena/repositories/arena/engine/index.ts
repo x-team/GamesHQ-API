@@ -7,7 +7,9 @@ import { ZERO } from '../../../../consts/global';
 import { ARENA_ACTIONS } from '../../../consts';
 import { filterActionsById, filterActionsByZone, publishArenaMessage } from '../../../utils';
 import { processChangeLocation } from './processChangeLocation';
+import { processCheers } from './processCheer';
 import { processHealOrRevive } from './processHealOrRevive';
+import { processHide } from './processHide';
 import { processRingSystemPenalty } from './processRingSystem';
 import { processSearchArmors, processSearchHealth, processSearchWeapons } from './processSearch';
 import { gameEngineReply } from './replies';
@@ -84,14 +86,14 @@ export class ArenaEngine {
       filterActionsById(actions, ARENA_ACTIONS.SEARCH_ARMOR),
       transaction
     );
-    //   await this.processHide(filterActionsById(actions, ARENA_ACTIONS.HIDE), transaction);
+    await this.processHide(filterActionsById(actions, ARENA_ACTIONS.HIDE), transaction);
     await this.processSearchWeapons(
       round,
       filterActionsById(actions, ARENA_ACTIONS.SEARCH_WEAPONS),
       transaction
     );
     //   await this.processHunt(round, filterActionsById(actions, ARENA_ACTIONS.HUNT), transaction);
-    //   await this.processCheers(round, filterActionsById(actions, ARENA_ACTIONS.CHEER), transaction);
+    await this.processCheers(round, filterActionsById(actions, ARENA_ACTIONS.CHEER), transaction);
   }
 
   // SEARCH OPERATIONS /////////////////////////////////////////////////
@@ -106,13 +108,13 @@ export class ArenaEngine {
   public processChangeLocation = processChangeLocation.bind(this);
 
   // HIDE OPERATIONS /////////////////////////////////////////////////
-  // private processChangeLocation = processChangeLocation.bind(this);
+  private processHide = processHide.bind(this);
 
   // HUNT OPERATIONS /////////////////////////////////////////////////
   // private processChangeLocation = processChangeLocation.bind(this);
 
   // CHEER OPERATIONS /////////////////////////////////////////////////
-  // private processChangeLocation = processChangeLocation.bind(this);
+  private processCheers = processCheers.bind(this);
 
   // RING SYSTEM OPERATIONS /////////////////////////////////////////////////
   private processRingSystemPenalty = processRingSystemPenalty.bind(this);
