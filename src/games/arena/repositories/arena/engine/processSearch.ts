@@ -101,7 +101,7 @@ export async function processSearchArmors(actions: ArenaRoundAction[], transacti
                 gameEngineReply.playerFoundNoArmor(player._user!.slackId!, player.health)
               );
             } else {
-              await player.removeArmor(currentArmor._armor!, transaction);
+              await player.removeArmor(currentArmor, transaction);
               await player.addArmor(foundArmor, transaction);
               await publishArenaMessage(
                 gameEngineReply.playerFoundBetterArmor(

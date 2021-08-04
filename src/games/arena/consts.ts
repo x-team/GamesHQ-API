@@ -120,6 +120,8 @@ export const MAX_AMOUNT_HEALTHKITS_ALLOWED = 1;
 // PLAYER
 export const MAX_PLAYER_HEALTH = 100;
 export const ADRENALINE_THRESHOLD = 50;
+export const LOSE_ACTION_RATE = 0.7;
+export const HUNT_SUCCESS_RATE = 0.8;
 
 // ZONES
 export const MAX_PLAYERS_PER_ARENA_ZONE = 50;

@@ -48,6 +48,14 @@ export function hasLuck(successRate: number, boost = 0): boolean {
   return Math.random() < successRate + boost;
 }
 
+export function damageIncrease(damage: number, increaseRate: number): number {
+  return Math.round(damage * increaseRate);
+}
+
+export function damageReduction(damage: number, reductionRate: number): number {
+  return Math.round(damage * reductionRate);
+}
+
 export function adminAction(userRequesting: User): boolean {
   return !!(
     userRequesting.isSuperAdmin() ||

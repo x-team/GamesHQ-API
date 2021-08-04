@@ -28,14 +28,14 @@ import { GAME_TYPE, ITEM_TYPE, ONE, SLACK_SPACE, TRAIT, ZERO } from '../games/co
 import { GameError } from '../games/utils/GameError';
 import { parseEscapedSlackUserValues } from '../utils/slack';
 
-import { addAmmoToInventory, getPlayerItemCount } from './ArenaItemInventory';
+import { addAmmoToItemInInventory, getPlayerItemCount } from './ArenaItemInventory';
 import { findAvailableArenaZonesToLand } from './ArenaZone';
 import { listActiveWeaponsByGameType } from './ItemWeapon';
 import { findOrganizationByName } from './Organization';
 import { findActiveTeamByName } from './Team';
 import { findArenaPlayersByUserSlackId } from './User';
 
-import type { ItemArmor, ArenaRoundAction } from '.';
+import type { ArenaRoundAction } from '.';
 import { Item, ArenaItemInventory, Game, ArenaZone, Team, User } from '.';
 
 interface ArenaPlayerAttributes {
@@ -368,6 +368,7 @@ export class ArenaPlayer
       { transaction }
     );
   }
+
   // WEAPONS
   async addWeapon(item: Item, transaction: Transaction) {
     // check if Weapon already exists
@@ -375,7 +376,7 @@ export class ArenaPlayer
     if (ItemWeaponQty > ZERO && item.usageLimit !== null) {
       // Add ammo to ItemWeapon when it exists
       const playerWeapon = this._weapons?.find((w) => w.id === item.id)!;
-      await addAmmoToInventory({ item: playerWeapon, player: this }, transaction);
+      await addAmmoToItemInInventory({ item: playerWeapon, player: this }, transaction);
     } else if (!ItemWeaponQty) {
       await ArenaItemInventory.create(
         {
@@ -392,6 +393,17 @@ export class ArenaPlayer
 
   useWeapon(weapon: Item & { ArenaItemInventory: ArenaItemInventory }, transaction: Transaction) {
     return this.useItem(weapon, transaction);
+  }
+
+  async removeWeapon(weapon: Item, transaction: Transaction) {
+    await ArenaItemInventory.destroy({
+      where: {
+        _arenaPlayerId: this.id,
+        _itemId: weapon.id,
+      },
+      transaction,
+    });
+    return this.reloadFullInventory(transaction);
   }
 
   // ARMOR
@@ -411,11 +423,11 @@ export class ArenaPlayer
     return this.useItem(armor, transaction);
   }
 
-  async removeArmor(ItemArmor: ItemArmor, transaction: Transaction) {
+  async removeArmor(armor: Item, transaction: Transaction) {
     await ArenaItemInventory.destroy({
       where: {
         _arenaPlayerId: this.id,
-        _itemId: ItemArmor.id,
+        _itemId: armor.id,
       },
       transaction,
     });

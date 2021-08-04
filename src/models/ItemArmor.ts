@@ -39,13 +39,13 @@ export class ItemArmor
   extends Model<ItemArmorAttributes, ItemArmorCreationAttributes>
   implements ItemArmorAttributes
 {
-  @Column(DataType.DOUBLE)
-  reductionRate!: number;
-
   @PrimaryKey
   @ForeignKey(() => Item)
   @Column(DataType.INTEGER)
   _itemId!: number;
+
+  @Column(DataType.DOUBLE)
+  reductionRate!: number;
 
   @BelongsTo(() => Item, '_itemId')
   _item?: Item;

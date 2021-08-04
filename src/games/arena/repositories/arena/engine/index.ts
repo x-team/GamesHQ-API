@@ -10,6 +10,7 @@ import { processChangeLocation } from './processChangeLocation';
 import { processCheers } from './processCheer';
 import { processHealOrRevive } from './processHealOrRevive';
 import { processHide } from './processHide';
+import { processHunt } from './processHunt';
 import { processRingSystemPenalty } from './processRingSystem';
 import { processSearchArmors, processSearchHealth, processSearchWeapons } from './processSearch';
 import { gameEngineReply } from './replies';
@@ -92,7 +93,7 @@ export class ArenaEngine {
       filterActionsById(actions, ARENA_ACTIONS.SEARCH_WEAPONS),
       transaction
     );
-    //   await this.processHunt(round, filterActionsById(actions, ARENA_ACTIONS.HUNT), transaction);
+    await this.processHunt(round, filterActionsById(actions, ARENA_ACTIONS.HUNT), transaction);
     await this.processCheers(round, filterActionsById(actions, ARENA_ACTIONS.CHEER), transaction);
   }
 
@@ -111,7 +112,7 @@ export class ArenaEngine {
   private processHide = processHide.bind(this);
 
   // HUNT OPERATIONS /////////////////////////////////////////////////
-  // private processChangeLocation = processChangeLocation.bind(this);
+  private processHunt = processHunt.bind(this);
 
   // CHEER OPERATIONS /////////////////////////////////////////////////
   private processCheers = processCheers.bind(this);

@@ -96,7 +96,7 @@ export async function removePlayerItem(
 }
 
 // Only use this function if weapon has usageLimit != null
-export function addAmmoToInventory(
+export function addAmmoToItemInInventory(
   { player, item, ammo }: ArenaPlayerItemInventoryInstances,
   transaction: Transaction
 ) {

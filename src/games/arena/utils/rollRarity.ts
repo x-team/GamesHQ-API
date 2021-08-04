@@ -1,6 +1,6 @@
 import { random } from 'lodash';
 import { Item } from '../../../models';
-import { GAME_TYPE, HUNDRED, ITEM_RARITY, ITEM_TYPE, ZERO } from '../../consts/global';
+import { GAME_TYPE, HUNDRED, ITEM_RARITY, ITEM_TYPE, ONE, ZERO } from '../../consts/global';
 import {
   COMMON_ARMOR_CHANCE,
   COMMON_WEAPON_CHANCE,
@@ -159,7 +159,7 @@ export function rarityWeight(rarityId: ITEM_RARITY): number {
 }
 
 export function randomizeItems(items: Item[]): Item {
-  return items[random(items.length)];
+  return items[random(items.length - ONE)];
 }
 
 export function generateItemRarityAvailability(

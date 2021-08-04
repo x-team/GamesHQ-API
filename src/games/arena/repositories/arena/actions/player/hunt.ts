@@ -8,7 +8,7 @@ import {
 } from '../../../../../../models/ArenaRoundAction';
 import { findActiveArenaZones } from '../../../../../../models/ArenaZone';
 import { findWeaponById } from '../../../../../../models/ItemWeapon';
-import { TRAIT } from '../../../../../consts/global';
+import { ONE, TRAIT } from '../../../../../consts/global';
 import { GameResponse, getGameResponse } from '../../../../../utils';
 import { generateGenericWeaponPickerBlock } from '../../../../../utils/generators/games';
 import { ARENA_ACTIONS, ARENA_SECONDARY_ACTIONS } from '../../../../consts';
@@ -22,6 +22,7 @@ import {
   playerActionsParams,
   withArenaTransaction,
 } from '../../../../utils';
+import { randomizeItems } from '../../../../utils/rollRarity';
 import { arenaCommandReply } from '../../replies';
 
 export async function hunt(userRequesting: User) {
@@ -88,7 +89,7 @@ export async function hunt(userRequesting: User) {
           return getGameResponse(actionBlockkit);
         }
 
-        const randomTarget = mutableVisiblePlayers[random(mutableVisiblePlayers.length)];
+        const randomTarget = mutableVisiblePlayers[random(mutableVisiblePlayers.length - ONE)];
         await setPlayerRoundAction(
           player,
           round,
@@ -118,7 +119,7 @@ export async function hunt(userRequesting: User) {
 
     if (weaponQty > 1) {
       // select random target from group
-      const randomWeapon = player._weapons![random(player._weapons!.length)];
+      const randomWeapon = randomizeItems(player._weapons!);
 
       const slackBlocks = generateGenericWeaponPickerBlock(
         arenaCommandReply.playerChooseWeapon(),
@@ -159,7 +160,7 @@ export async function hunt(userRequesting: User) {
         );
       } else {
         // select random target from group
-        const randomTarget = mutableVisiblePlayers[random(mutableVisiblePlayers.length)];
+        const randomTarget = mutableVisiblePlayers[random(mutableVisiblePlayers.length - ONE)];
         await setPlayerRoundAction(
           player,
           round,
@@ -224,7 +225,7 @@ export async function chooseWeapon(userRequesting: User, selectedWeapon: number,
     }
 
     if (visiblePlayers.length > 0) {
-      const randomTarget = visiblePlayers[random(visiblePlayers.length)];
+      const randomTarget = visiblePlayers[random(visiblePlayers.length - ONE)];
 
       await setPlayerRoundAction(
         player,
