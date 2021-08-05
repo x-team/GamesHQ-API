@@ -41,7 +41,11 @@ export class ItemTrait
   @Column(DataType.INTEGER)
   _itemId!: number;
 
-  @BelongsTo(() => Item)
+  @BelongsTo(() => Item, {
+    foreignKey: '_itemId',
+    onUpdate: 'CASCADE',
+    onDelete: 'CASCADE',
+  })
   _item?: Item;
 
   @PrimaryKey

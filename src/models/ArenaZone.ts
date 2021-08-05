@@ -65,11 +65,10 @@ export class ArenaZone
   @Column(DataType.BOOLEAN)
   isActive!: boolean;
 
-  @Default(true)
+  @Default(false)
   @Column(DataType.BOOLEAN)
   isArchived!: boolean;
 
-  @Default(false)
   @Column(DataType.TEXT)
   emoji!: string;
 

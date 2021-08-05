@@ -48,7 +48,11 @@ export class GameItemAvailability
   @Column(DataType.TEXT)
   _gameTypeId!: GAME_TYPE;
 
-  @BelongsTo(() => GameType, '_gameTypeId')
+  @BelongsTo(() => GameType, {
+    foreignKey: '_gameTypeId',
+    onUpdate: 'CASCADE',
+    onDelete: 'CASCADE',
+  })
   _gameType?: GAME_TYPE;
 
   @PrimaryKey
@@ -56,14 +60,18 @@ export class GameItemAvailability
   @Column(DataType.INTEGER)
   _itemId!: number;
 
-  @BelongsTo(() => Item, '_itemId')
+  @BelongsTo(() => Item, {
+    foreignKey: '_itemId',
+    onUpdate: 'CASCADE',
+    onDelete: 'CASCADE',
+  })
   _item?: Item;
 
   @Default(true)
   @Column(DataType.BOOLEAN)
   isActive!: boolean;
 
-  @Default(true)
+  @Default(false)
   @Column(DataType.BOOLEAN)
   isArchived!: boolean;
 

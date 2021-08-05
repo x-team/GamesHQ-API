@@ -47,7 +47,11 @@ export class ItemArmor
   @Column(DataType.DOUBLE)
   reductionRate!: number;
 
-  @BelongsTo(() => Item, '_itemId')
+  @BelongsTo(() => Item, {
+    foreignKey: '_itemId',
+    onUpdate: 'CASCADE',
+    onDelete: 'CASCADE',
+  })
   _item?: Item;
 
   static associations: {
