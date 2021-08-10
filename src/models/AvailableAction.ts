@@ -2,7 +2,7 @@ import { Table, Column, Model, DataType, PrimaryKey } from 'sequelize-typescript
 
 import type { ARENA_ACTIONS } from '../games/arena/consts';
 import type { SHARED_ACTIONS } from '../games/consts/global';
-import type { TOWER_ACTIONS } from '../games/tower/const';
+import type { TOWER_ACTIONS } from '../games/tower/consts';
 
 type Values<T> = T[keyof T];
 type GAME_ACTIONS =
