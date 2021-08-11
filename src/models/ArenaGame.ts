@@ -176,8 +176,8 @@ export async function createArenaGame(
         attributes: basicUserInfo,
       },
       {
-        model: ArenaGame,
-        include: [ArenaRound],
+        association: Game.associations._arena,
+        include: [{ association: ArenaGame.associations._rounds }],
       },
     ],
     transaction,

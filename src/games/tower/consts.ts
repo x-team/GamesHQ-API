@@ -48,3 +48,17 @@ export enum TOWER_SLACK_COMMANDS {
   RE_ENTER_BUTTON = 'tower-enter',
   PROGRESS_BUTTON = 'tower-progress',
 }
+
+// GAME
+export const MAX_FLOOR_NUMBER = 10;
+export const DEFAULT_LUNA_PRIZE = 5;
+export const DEFAULT_COIN_PRIZE = 5;
+export const LOOT_PRIZE_WEAPON_CHANCE = 0.5;
+export const LOOT_PRIZE_ARMOR_CHANCE = 0.25;
+export const LOOT_PRIZE_ITEM_CHANCE = 0.25;
+export const HEALTHKIT_ITEM_CHANCE = 0.95;
+export const LUCKELIXIR_ITEM_CHANCE = 0.05;
+export const LOSE_ACTION_RATE = 0.6;
+export const INITIATIVE_WEAPON_DAMAGE_THRESHOLD = 0.6;
+export const INITIATIVE_INCREASE = 0.02;
+export const INITIATIVE_DECREASE = -0.01;

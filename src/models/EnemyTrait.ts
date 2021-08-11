@@ -1,4 +1,5 @@
 import { Table, Column, Model, DataType, ForeignKey, BelongsTo } from 'sequelize-typescript';
+import { Association } from 'sequelize/types';
 
 import { Enemy, Trait } from '.';
 import { TRAIT } from '../games/consts/global';
@@ -45,4 +46,9 @@ export class EnemyTrait
     onDelete: 'CASCADE',
   })
   _trait?: Trait;
+
+  static associations: {
+    _enemy: Association<EnemyTrait, Enemy>;
+    _trait: Association<EnemyTrait, Trait>;
+  };
 }

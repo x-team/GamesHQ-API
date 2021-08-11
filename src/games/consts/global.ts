@@ -37,6 +37,53 @@ export enum ITEM_RARITY {
   LEGENDARY = 'Legendary',
 }
 
+export enum PERK_ARCHETYPE {
+  VANGUARD = 'vanguard',
+  DEFENDER = 'defender',
+  AVENGER = 'avenger',
+}
+
+export enum PERK {
+  // VANGUARD
+  HYPER = 'hyper', // Common
+  LOCK_ON = 'lockon', // Rare
+  FRONTLINER = 'frontliner', // Epic
+  SHARPSHOOTER = 'sharpshooter', // Legendary
+
+  // DEFENDER
+  UNSTOPPABLE = 'unstoppable', // Common
+  ENDURANCE = 'endurance', // Rare
+  VIGOR = 'vigor', // Epic
+  HERBOLOGY = 'herbology', // Legendary
+
+  // AVENGER
+  FOCUSED_VIEW = 'focusedview', // Common
+  CHARGE = 'charge', // Rare
+  ADRENALINE = 'adrenaline', // Epic
+  NINJITSU = 'ninjitsu', // Legendary
+}
+
+export enum PERK_CONDITIONS {
+  // ADRENALINE
+  ADRENALINE_FIRST_HP_THRESHOLD = 60,
+  ADRENALINE_SECOND_HP_THRESHOLD = 40,
+  ADRENALINE_THIRD_HP_THRESHOLD = 20,
+  // VIGOR
+  VIGOR_FIRST_HP_THRESHOLD = 80,
+  VIGOR_SECOND_HP_THRESHOLD = 100,
+  VIGOR_THIRD_HP_THRESHOLD = 120,
+  // CHARGE
+}
+export type PerkConditionKey = keyof typeof PERK_CONDITIONS;
+
+export enum PERK_MULTIPLIERS {
+  ADRENALINE = 2, // Checked
+  VIGOR = 2, // checked
+  CHARGE = 2,
+}
+
+export type PerkMultiplierKey = keyof typeof PERK_MULTIPLIERS;
+
 export const SHARED_ACTIONS = {
   SEARCH_WEAPONS: 'searchWeapons',
   SEARCH_HEALTH: 'searchHealth',

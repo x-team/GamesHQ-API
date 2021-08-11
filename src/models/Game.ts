@@ -17,7 +17,7 @@ import { GAME_TYPE } from '../games/consts/global';
 import { generateRandomNameForGame } from '../games/utils';
 import { GameError } from '../games/utils/GameError';
 
-import { User, ArenaGame, GameType } from './';
+import { User, ArenaGame, GameType, TowerGame, TowerFloor, TowerFloorEnemy } from './';
 
 function includeArrayByGameType(type: GAME_TYPE) {
   return type === GAME_TYPE.ARENA
@@ -28,12 +28,21 @@ function includeArrayByGameType(type: GAME_TYPE) {
         },
       ]
     : [
-        /*
         {
-          model: TowerGame,
-          include: [TowerRound],
+          association: Game.associations._tower,
+          include: [
+            {
+              association: TowerGame.associations._floors,
+              include: [
+                {
+                  association: TowerFloor.associations._floorEnemies,
+                  include: [TowerFloorEnemy.associations._enemy],
+                },
+              ],
+              // order: [['number', 'ASC']],
+            },
+          ],
         },
-    */
       ];
 }
 
@@ -104,11 +113,12 @@ export class Game extends Model<GameAttributes, GameCreationAttributes> implemen
   @HasOne(() => ArenaGame)
   _arena?: ArenaGame;
 
-  // @HasOne(() => TowerGame)
-  // _tower?: TowerGame;
+  @HasOne(() => TowerGame)
+  _tower?: TowerGame;
 
   static associations: {
     _arena: Association<Game, ArenaGame>;
+    _tower: Association<Game, TowerGame>;
     _createdBy: Association<Game, User>;
     _gameType: Association<Game, GameType>;
   };
