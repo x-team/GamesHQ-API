@@ -11,7 +11,8 @@ import {
   AutoIncrement,
 } from 'sequelize-typescript';
 
-import { /*TowerRaider, TowerRound,*/ TowerFloor, TowerFloorBattlefieldEnemy } from '.';
+import { TowerRaider, TowerRound, TowerFloor, TowerFloorBattlefieldEnemy } from '.';
+import { ONE, ZERO } from '../games/consts/global';
 
 interface TowerFloorBattlefieldAttributes {
   id: number;
@@ -57,17 +58,17 @@ export class TowerFloorBattlefield
   @HasMany(() => TowerFloorBattlefieldEnemy, '_towerFloorBattlefieldId')
   _enemies?: TowerFloorBattlefieldEnemy[];
 
-  // @HasMany(() => TowerRaider, '_towerFloorBattlefieldId')
-  // _raiders?: TowerRaider[];
+  @HasMany(() => TowerRaider, '_towerFloorBattlefieldId')
+  _raiders?: TowerRaider[];
 
-  // @HasMany(() => TowerRound, '_towerFloorBattlefieldId')
-  // _rounds?: TowerRound[];
+  @HasMany(() => TowerRound, '_towerFloorBattlefieldId')
+  _rounds?: TowerRound[];
 
   static associations: {
     _towerFloor: Association<TowerFloorBattlefield, TowerFloor>;
     _enemies: Association<TowerFloorBattlefield, TowerFloorBattlefieldEnemy>;
-    // _raiders: Association<TowerFloorBattlefield, Towerraider>;
-    // _rounds: Association<TowerFloorBattlefield, TowerRound>;
+    _raiders: Association<TowerFloorBattlefield, TowerRaider>;
+    _rounds: Association<TowerFloorBattlefield, TowerRound>;
   };
 }
 
@@ -81,15 +82,15 @@ export function createBattlefield(floorId: number, transaction: Transaction) {
   );
 }
 
-// export async function totalRaidersAlive(battlefieldId: number, transaction: Transaction) {
-//   const battlefield = await TowerFloorBattlefield.findByPk(battlefieldId, {
-//     include: [TowerRaider],
-//     transaction,
-//   });
-//   const reduceTotalAlive = (acc: number, raider: TowerRaider) =>
-//     raider.health > 0 ? acc + 1 : acc;
-//   return battlefield!._raiders!.reduce(reduceTotalAlive, 0);
-// }
+export async function totalRaidersAlive(battlefieldId: number, transaction: Transaction) {
+  const battlefield = await TowerFloorBattlefield.findByPk(battlefieldId, {
+    include: [TowerRaider],
+    transaction,
+  });
+  const reduceTotalAlive = (acc: number, raider: TowerRaider) =>
+    raider.health > ZERO ? acc + ONE : acc;
+  return battlefield!._raiders!.reduce(reduceTotalAlive, ZERO);
+}
 
 export async function totalEnemiesAlive(battlefieldId: number, transaction: Transaction) {
   const battlefield = await TowerFloorBattlefield.findByPk(battlefieldId, {
@@ -97,6 +98,6 @@ export async function totalEnemiesAlive(battlefieldId: number, transaction: Tran
     transaction,
   });
   const reduceTotalAlive = (acc: number, enemy: TowerFloorBattlefieldEnemy) =>
-    enemy.health > 0 ? acc + 1 : acc;
-  return battlefield!._enemies!.reduce(reduceTotalAlive, 0);
+    enemy.health > ZERO ? acc + ONE : acc;
+  return battlefield!._enemies!.reduce(reduceTotalAlive, ZERO);
 }

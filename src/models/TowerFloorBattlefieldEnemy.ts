@@ -5,6 +5,7 @@ import {
   Model,
   DataType,
   BelongsTo,
+  BelongsToMany,
   Default,
   ForeignKey,
   AllowNull,
@@ -12,7 +13,7 @@ import {
   PrimaryKey,
 } from 'sequelize-typescript';
 
-import { TowerFloorEnemy, TowerFloorBattlefield, Enemy /*, Perk, PerkInventory*/ } from '.';
+import { TowerFloorEnemy, TowerFloorBattlefield, Enemy, Perk, PerkInventory } from '.';
 import { Ability, AbilityProperty, AbilityPropertyKeys } from '../games/classes/GameAbilities';
 import { ONE, TRAIT, ZERO } from '../games/consts/global';
 import { INITIATIVE_DECREASE, INITIATIVE_INCREASE } from '../games/tower/consts';
@@ -96,13 +97,13 @@ export class TowerFloorBattlefieldEnemy
   @BelongsTo(() => TowerFloorBattlefield, '_towerFloorBattlefieldId')
   _currentTowerFloorBattlefield?: TowerFloorBattlefield;
 
-  // @BelongsToMany(() => Perk, {
-  //   through: () => PerkInventory,
-  //   foreignKey: '_towerFloorBattlefieldEnemyId',
-  //   otherKey: '_perkId',
-  //   as: '_perks',
-  // })
-  // _perks?: Array<Perk & { PerkInventory: PerkInventory }>;
+  @BelongsToMany(() => Perk, {
+    through: () => PerkInventory,
+    foreignKey: '_towerFloorBattlefieldEnemyId',
+    otherKey: '_perkId',
+    as: '_perks',
+  })
+  _perks?: Array<Perk & { PerkInventory: PerkInventory }>;
 
   static associations: {
     _towerFloorEnemy: Association<TowerFloorBattlefieldEnemy, TowerFloorEnemy>;

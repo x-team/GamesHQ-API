@@ -129,7 +129,7 @@ export function generateTargetPickerBlock(
 
   const playersToDropdownOptions: SlackBlockKitCompositionOption[] = players.map((player) =>
     blockKitCompositionOption(
-      `${player.isBoss ? BOSS_HOUSE_EMOJI : generateTeamEmoji(player._user?._team?.name!)} <@${
+      `${player.isBoss ? BOSS_HOUSE_EMOJI : generateTeamEmoji(player._user?._team?.emoji!)} <@${
         player._user?.slackId
       }> ${basicHealthDisplayInParentheses(player.health)}`,
       `${player._user?.slackId}`

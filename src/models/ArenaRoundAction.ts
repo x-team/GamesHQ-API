@@ -79,7 +79,11 @@ export class ArenaRoundAction
   @Column(DataType.TEXT)
   _availableActionId!: ARENA_ACTIONS_TYPE;
 
-  @BelongsTo(() => AvailableAction, '_availableActionId')
+  @BelongsTo(() => AvailableAction, {
+    foreignKey: '_availableActionId',
+    onUpdate: 'CASCADE',
+    onDelete: 'CASCADE',
+  })
   _action?: AvailableAction;
 
   @Column(DataType.JSONB)
