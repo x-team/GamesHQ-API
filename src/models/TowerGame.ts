@@ -1,4 +1,4 @@
-import type { Association, Transaction } from 'sequelize';
+import { Association, Op, Transaction } from 'sequelize';
 // import { Op } from 'sequelize';
 import {
   Table,
@@ -14,7 +14,7 @@ import {
   Unique,
 } from 'sequelize-typescript';
 import { DEFAULT_COIN_PRIZE, DEFAULT_LUNA_PRIZE, MAX_FLOOR_NUMBER } from '../games/tower/consts';
-import { Game, User, TowerStatistics, TowerFloor } from '.';
+import { Game, User, TowerStatistics, TowerFloor, TowerRaider } from '.';
 import { findActiveGame, findLastActiveGame, startGame } from './Game';
 import { GAME_TYPE } from '../games/consts/global';
 import { addTowerFloors } from './TowerFloor';
@@ -78,10 +78,10 @@ export class TowerGame
   })
   _game?: Game;
 
-  @HasMany(() => TowerFloor, '_towerGameId')
+  @HasMany(() => TowerFloor, '_gameId')
   _floors?: TowerFloor[];
 
-  @HasMany(() => TowerStatistics, '_towerGameId')
+  @HasMany(() => TowerStatistics, '_gameId')
   _statistics?: TowerStatistics[];
 
   static associations: {
@@ -90,40 +90,38 @@ export class TowerGame
     _statistics: Association<TowerGame, TowerStatistics>;
   };
 
-  // findRaiderInTower(raider: TowerRaider) {
-  //   return this._floors?.find(
-  //     (floor) => floor.id === raider._currentTowerFloorBattlefield?._towerFloorId
-  //   );
-  // }
+  findRaiderInTower(raider: TowerRaider) {
+    return this._floors?.find(
+      (floor) => floor.id === raider._currentTowerFloorBattlefield?._towerFloorId
+    );
+  }
 
-  // async findAllRaidersInsideActiveTower(
-  //   transaction?: Transaction
-  // ) {
-  //   await this.reload({
-  //     include: [
-  //       {
-  //         association: TowerGame.associations._floors,
-  //         order: [['number', 'ASC']],
-  //         include: [{ association: TowerFloor.associations._floorBattlefields }],
-  //       },
-  //     ],
-  //     transaction,
-  //   });
-  //   const towerFloorBattlefields: Set<number> = new Set();
-  //   this._floors?.map((floor) => {
-  //     floor._floorBattlefields?.map((battlefield) => {
-  //       towerFloorBattlefields.add(battlefield.id);
-  //     });
-  //   });
-  //   return TowerRaider.findAll({
-  //     where: {
-  //       _towerFloorBattlefieldId: {
-  //         [Op.in]: Array.from(towerFloorBattlefields),
-  //       },
-  //     },
-  //     transaction,
-  //   });
-  // }
+  async findAllRaidersInsideActiveTower(transaction?: Transaction) {
+    await this.reload({
+      include: [
+        {
+          association: TowerGame.associations._floors,
+          order: [['number', 'ASC']],
+          include: [{ association: TowerFloor.associations._floorBattlefields }],
+        },
+      ],
+      transaction,
+    });
+    const towerFloorBattlefields: Set<number> = new Set();
+    this._floors?.map((floor) => {
+      floor._floorBattlefields?.map((battlefield) => {
+        towerFloorBattlefields.add(battlefield.id);
+      });
+    });
+    return TowerRaider.findAll({
+      where: {
+        _towerFloorBattlefieldId: {
+          [Op.in]: Array.from(towerFloorBattlefields),
+        },
+      },
+      transaction,
+    });
+  }
 
   async openOrCloseTowerGame(isOpen: boolean, transaction: Transaction) {
     await this.update(
