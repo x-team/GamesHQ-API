@@ -148,6 +148,7 @@ export class ArenaRound
         {
           association: ArenaRound.associations._game,
           where: { isActive: true, _gameTypeId: GAME_TYPE.ARENA },
+          include: [Game.associations._arena],
         },
         ...includeAllAssociations(includeAll),
       ],
@@ -183,6 +184,7 @@ export function findActiveRound(includeAll: boolean, transaction?: Transaction) 
       {
         association: ArenaRound.associations._game,
         where: { isActive: true, _gameTypeId: GAME_TYPE.ARENA },
+        include: [Game.associations._arena],
       },
       ...includeAllAssociations(includeAll),
     ],

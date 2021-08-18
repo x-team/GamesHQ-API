@@ -284,11 +284,11 @@ export function deleteZoneById(id: number, transaction: Transaction) {
 export async function ringDeactivationSystem(game: ArenaGame, transaction: Transaction) {
   // Ring Deactivation System
   const RADIX = 10;
-  const ARENA_PORTAL = 5;
+  const RING_ARENA_PORTAL = 5;
   const isDefaultAlgorithm =
-    parseInt(game.ringSystemAlgorithm, RADIX) === ARENA_PORTAL ? true : false;
+    parseInt(game.ringSystemAlgorithm, RADIX) === RING_ARENA_PORTAL ? true : false;
   // If there's only the Portal zone left, then do nothing
-  if (isDefaultAlgorithm && game.currentRingDeactivation === ARENA_PORTAL) {
+  if (isDefaultAlgorithm && game.currentRingDeactivation === RING_ARENA_PORTAL) {
     return;
   }
   await deactivateRingSystemZones(
@@ -304,7 +304,7 @@ export async function ringDeactivationSystem(game: ArenaGame, transaction: Trans
   }
 
   await game.incrementCurrentRingDeactivation(transaction);
-  if (!isDefaultAlgorithm && game.currentRingDeactivation === ARENA_PORTAL) {
+  if (!isDefaultAlgorithm && game.currentRingDeactivation === RING_ARENA_PORTAL) {
     await game.resetCurrentRingDeactivation(transaction);
     await game.setRingSystemAlgorithm('5', transaction);
   }

@@ -615,7 +615,7 @@ export async function getOrCreateBossesOrGuests({
   teamName,
   transaction,
 }: FindOrCreateBossOrGuestParams): Promise<User[]> {
-  const bossUsers: User[] = [];
+  const bossOrGuestUsers: User[] = [];
   const team = teamName ? await findActiveTeamByName(teamName) : null;
   for (const fullSlackId of fullSlackIds) {
     const slackId = parseEscapedSlackUserValues(fullSlackId);
@@ -646,9 +646,9 @@ export async function getOrCreateBossesOrGuests({
         await mutableUser.reload({ transaction });
       }
     }
-    bossUsers.push(mutableUser);
+    bossOrGuestUsers.push(mutableUser);
   }
-  return bossUsers;
+  return bossOrGuestUsers;
 }
 
 export async function getOrCreatePlayer(

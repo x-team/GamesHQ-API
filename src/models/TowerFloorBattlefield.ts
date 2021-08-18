@@ -94,7 +94,7 @@ export async function totalRaidersAlive(battlefieldId: number, transaction: Tran
 
 export async function totalEnemiesAlive(battlefieldId: number, transaction: Transaction) {
   const battlefield = await TowerFloorBattlefield.findByPk(battlefieldId, {
-    include: [TowerFloorBattlefieldEnemy],
+    include: [TowerFloorBattlefield.associations._enemies],
     transaction,
   });
   const reduceTotalAlive = (acc: number, enemy: TowerFloorBattlefieldEnemy) =>

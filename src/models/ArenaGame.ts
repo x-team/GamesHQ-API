@@ -134,11 +134,15 @@ export class ArenaGame
 
   async totalPlayersAlive(transaction?: Transaction) {
     await this.reload({
-      include: [ArenaPlayer],
+      include: [
+        {
+          association: ArenaGame.associations._players,
+        },
+      ],
       transaction,
     });
     const reduceTotalAlive = (acc: number, player: ArenaPlayer) =>
-      player.health > ZERO ? acc + ONE : acc;
+      player.isAlive() ? acc + ONE : acc;
     return this._players ? this._players.reduce(reduceTotalAlive, ZERO) : ZERO;
   }
 }
