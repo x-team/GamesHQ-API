@@ -30,8 +30,8 @@ import {
   ItemHealthKit,
   Trait,
   ItemTrait,
-  /*TowerRaider,*/
-  /*TowerItemInventory,*/
+  TowerRaider,
+  TowerItemInventory,
   ArenaItemInventory,
   GameItemAvailability,
 } from './';
@@ -119,13 +119,13 @@ export class Item extends Model<ItemAttributes, ItemCreationAttributes> implemen
   })
   _traits?: Array<Trait & { ItemTrait: ItemTrait }>;
 
-  // @BelongsToMany(() => TowerRaider, {
-  //   through: () => TowerItemInventory,
-  //   foreignKey: '_itemId',
-  //   otherKey: '_towerRaiderId',
-  //   as: '_towerRaiders',
-  // })
-  // _towerRaiders?: TowerRaider[];
+  @BelongsToMany(() => TowerRaider, {
+    through: () => TowerItemInventory,
+    foreignKey: '_itemId',
+    otherKey: '_towerRaiderId',
+    as: '_towerRaiders',
+  })
+  _towerRaiders?: TowerRaider[];
 
   @HasMany(() => GameItemAvailability, '_itemId')
   _gameItemAvailability?: GameItemAvailability[];
@@ -141,7 +141,7 @@ export class Item extends Model<ItemAttributes, ItemCreationAttributes> implemen
 
   static associations: {
     _arenaPlayers: Association<Item, ArenaPlayer>;
-    // _towerRaiders: Association<Item, TowerRaider>;
+    _towerRaiders: Association<Item, TowerRaider>;
     _gameItemAvailability: Association<Item, GameItemAvailability>;
     _rarity: Association<Item, ItemRarity>;
     _traits: Association<Item, Trait>;
@@ -267,12 +267,12 @@ export async function listAllItems(transaction?: Transaction) {
 }
 
 export async function deleteItem(itemId: number, transaction?: Transaction) {
-  await ArenaItemInventory.destroy({
-    where: {
-      _itemId: itemId,
-    },
-    transaction,
-  });
+  // await ArenaItemInventory.destroy({
+  //   where: {
+  //     _itemId: itemId,
+  //   },
+  //   transaction,
+  // });
 
   // await TowerItemInventory.destroy({
   //   where: {
