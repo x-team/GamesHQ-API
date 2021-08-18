@@ -614,7 +614,7 @@ module.exports = {
       )) as Item[];
 
       const [basicHealthkit] = await queryItemByName(
-        ITEM_NAME_TO_ADD.LEGENDARY_ARMOR,
+        ITEM_NAME_TO_ADD.HEALTH_KIT,
         queryInterface,
         transaction
       );
