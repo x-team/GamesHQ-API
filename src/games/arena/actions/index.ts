@@ -49,7 +49,6 @@ const actionReply = {
 function arenaPlayerSwitchActions(action: string, args: number | number[], userRequesting: User) {
   const singleArg = typeof args === 'number' ? args : args[0];
   const arrayArgs = typeof args === 'number' ? [args] : args;
-  logger.debug({ singleArg, arrayArgs });
   switch (action) {
     // PLAYER
     case ARENA_SLACK_COMMANDS.STATUS:
