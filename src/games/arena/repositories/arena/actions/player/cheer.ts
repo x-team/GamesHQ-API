@@ -25,7 +25,7 @@ import { arenaCommandReply } from '../../replies';
 
 export async function cheer(userRequesting: User) {
   return withArenaTransaction(async (transaction) => {
-    const playerActions = await playerActionsParams(userRequesting, true, transaction);
+    const playerActions = await playerActionsParams(userRequesting, false, transaction);
     if (!(playerActions as PlayerActionsDeadOrAlive).interfaceName) {
       return playerActions as GameResponse;
     }
@@ -46,7 +46,7 @@ export async function cheer(userRequesting: User) {
 
 export async function completeCheer(userRequesting: User, selectedTargetId: number) {
   return withArenaTransaction(async (transaction) => {
-    const playerActions = await playerActionsParams(userRequesting, true, transaction);
+    const playerActions = await playerActionsParams(userRequesting, false, transaction);
     if (!(playerActions as PlayerActionsDeadOrAlive).interfaceName) {
       return playerActions as GameResponse;
     }
@@ -100,7 +100,7 @@ export async function completeCheer(userRequesting: User, selectedTargetId: numb
 
 export async function repeatLastCheer(userRequesting: User) {
   return withArenaTransaction(async (transaction) => {
-    const playerActions = await playerActionsParams(userRequesting, true, transaction);
+    const playerActions = await playerActionsParams(userRequesting, false, transaction);
     if (!(playerActions as PlayerActionsDeadOrAlive).interfaceName) {
       return playerActions as GameResponse;
     }
