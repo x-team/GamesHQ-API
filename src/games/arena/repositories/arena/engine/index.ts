@@ -13,7 +13,7 @@ import { processHide } from './processHide';
 import { processHunt } from './processHunt';
 import { processRingSystemPenalty } from './processRingSystem';
 import { processSearchArmors, processSearchHealth, processSearchWeapons } from './processSearch';
-import { gameEngineReply } from './replies';
+import { arenaEngineReply } from './replies';
 
 export class ArenaEngine {
   static getInstance(): ArenaEngine {
@@ -64,7 +64,7 @@ export class ArenaEngine {
       await new Promise((resolve) => {
         setTimeout(resolve, WAIT_BETWEEN_ZONES_MILLIS);
       });
-      await publishArenaMessage(gameEngineReply.areaReport(zone));
+      await publishArenaMessage(arenaEngineReply.areaReport(zone));
     }
     if (!zone.isActive && zone.name !== 'Streaming Zone') {
       await this.processRingSystemPenalty(

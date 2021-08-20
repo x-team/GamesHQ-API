@@ -2,7 +2,7 @@ import type { Transaction } from 'sequelize';
 import { ArenaRoundAction } from '../../../../../models';
 import { ARENA_ACTIONS, RING_SYSTEM_BASE_DAMAGE } from '../../../consts';
 import { publishArenaMessage } from '../../../utils';
-import { gameEngineReply } from './replies';
+import { arenaEngineReply } from './replies';
 
 export async function processRingSystemPenalty(
   inactiveZonePenaltyPower: number,
@@ -18,7 +18,7 @@ export async function processRingSystemPenalty(
       transaction
     );
     await targetPlayer.reloadFullInventory(transaction);
-    const dealtDamageMessage = gameEngineReply.zonePenaltyDamageDealt({
+    const dealtDamageMessage = arenaEngineReply.zonePenaltyDamageDealt({
       damage: penaltyDamage,
       targetHealth: targetPlayer.health,
       targetSlackId: targetPlayer._user?.slackId!,

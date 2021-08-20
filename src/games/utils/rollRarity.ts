@@ -1,6 +1,6 @@
 import { random } from 'lodash';
-import { Item } from '../../../models';
-import { GAME_TYPE, HUNDRED, ITEM_RARITY, ITEM_TYPE, ONE, ZERO } from '../../consts/global';
+import { Item } from '../../models';
+import { GAME_TYPE, HUNDRED, ITEM_RARITY, ITEM_TYPE, ONE, ZERO } from '../consts/global';
 import {
   COMMON_ARMOR_CHANCE,
   COMMON_WEAPON_CHANCE,
@@ -10,7 +10,7 @@ import {
   LEGENDARY_WEAPON_CHANCE,
   RARE_ARMOR_CHANCE,
   RARE_WEAPON_CHANCE,
-} from '../consts';
+} from '../arena/consts';
 
 export function weightedChance<T>(specs: Array<{ chance: number; result: T }>, defaultValue: T) {
   const total = specs.reduce((acc, { chance }) => acc + chance, 0);

@@ -16,7 +16,11 @@ import { findActiveRound } from '../../../models/ArenaRound';
 import { ARENA_ACTIONS_TYPE } from '../../../models/ArenaRoundAction';
 import { parseEscapedSlackUserValues } from '../../../utils/slack';
 import { ITEM_RARITY, ONE, ZERO } from '../../consts/global';
-import { generateTeamEmoji, roundActionMessageBuilder } from '../../helpers';
+import {
+  generateTeamEmoji,
+  roundActionMessageBuilder,
+  RoundActionMessageBuilderParams,
+} from '../../helpers';
 import type { SlackBlockKitLayoutElement } from '../../model/SlackBlockKit';
 import {
   GameResponse,
@@ -199,14 +203,6 @@ export const isArenaConfigAction = (action: string) => {
     ARENA_SECONDARY_ACTIONS.DELETE_ZONE === configAction
   );
 };
-
-interface RoundActionMessageBuilderParams {
-  actionText: string;
-  emoji: string;
-  isVisible: boolean;
-  secondaryMessage?: string;
-  additionalMessages?: string[];
-}
 
 export function arenaRoundActionMessageBuilder(
   { player, arenaZonesAvailable }: ChangeLocationParams,

@@ -19,8 +19,8 @@ import {
   randomizeItems,
   rarityWeight,
   rollItemRarity,
-} from '../../../utils/rollRarity';
-import { gameEngineReply } from './replies';
+} from '../../../../utils/rollRarity';
+import { arenaEngineReply } from './replies';
 
 export async function processSearchHealth(actions: ArenaRoundAction[], transaction: Transaction) {
   const activeHealthkits = await listActiveHealthkitsByGameType(GAME_TYPE.ARENA, transaction);
@@ -40,17 +40,17 @@ export async function processSearchHealth(actions: ArenaRoundAction[], transacti
       ) {
         if (!healthKit) {
           await publishArenaMessage(
-            gameEngineReply.playerFoundNoHealthKit(player._user!.slackId!, player.health)
+            arenaEngineReply.playerFoundNoHealthKit(player._user!.slackId!, player.health)
           );
           break hasLuckStatement;
         }
         await player.addHealthkit(healthKit.id, HEALTH_KIT_FOUND_QTY, transaction);
         await publishArenaMessage(
-          gameEngineReply.playerFoundHealthKit(player._user!.slackId!, player.health)
+          arenaEngineReply.playerFoundHealthKit(player._user!.slackId!, player.health)
         );
       } else {
         await publishArenaMessage(
-          gameEngineReply.playerFoundNoHealthKit(player._user!.slackId!, player.health)
+          arenaEngineReply.playerFoundNoHealthKit(player._user!.slackId!, player.health)
         );
       }
       await action.completeRoundAction(transaction);
@@ -81,7 +81,7 @@ export async function processSearchArmors(actions: ArenaRoundAction[], transacti
         const foundArmor = randomizeItems(filterItemsByRarity(activeArmors, rolledRarity));
         if (!foundArmor) {
           await publishArenaMessage(
-            gameEngineReply.playerFoundNoArmor(player._user!.slackId!, player.health)
+            arenaEngineReply.playerFoundNoArmor(player._user!.slackId!, player.health)
           );
           break hasLuckStatement;
         }
@@ -98,13 +98,13 @@ export async function processSearchArmors(actions: ArenaRoundAction[], transacti
               currentRemainingUses === foundRemainingUses
             ) {
               await publishArenaMessage(
-                gameEngineReply.playerFoundNoArmor(player._user!.slackId!, player.health)
+                arenaEngineReply.playerFoundNoArmor(player._user!.slackId!, player.health)
               );
             } else {
               await player.removeArmor(currentArmor, transaction);
               await player.addArmor(foundArmor, transaction);
               await publishArenaMessage(
-                gameEngineReply.playerFoundBetterArmor(
+                arenaEngineReply.playerFoundBetterArmor(
                   player._user!.slackId!,
                   player.health,
                   foundArmor.name,
@@ -115,7 +115,7 @@ export async function processSearchArmors(actions: ArenaRoundAction[], transacti
             }
           } else {
             await publishArenaMessage(
-              gameEngineReply.playerFoundNoBetterArmor(
+              arenaEngineReply.playerFoundNoBetterArmor(
                 player._user!.slackId!,
                 player.health,
                 foundArmor.name,
@@ -127,7 +127,7 @@ export async function processSearchArmors(actions: ArenaRoundAction[], transacti
         } else {
           await player.addArmor(foundArmor, transaction);
           await publishArenaMessage(
-            gameEngineReply.playerFoundArmor(
+            arenaEngineReply.playerFoundArmor(
               player._user!.slackId!,
               player.health,
               foundArmor.name,
@@ -138,7 +138,7 @@ export async function processSearchArmors(actions: ArenaRoundAction[], transacti
         }
       } else {
         await publishArenaMessage(
-          gameEngineReply.playerFoundNoArmor(player._user!.slackId!, player.health)
+          arenaEngineReply.playerFoundNoArmor(player._user!.slackId!, player.health)
         );
       }
       await action.completeRoundAction(transaction);
@@ -179,13 +179,13 @@ export async function processSearchWeapons(
         );
         if (!foundWeapon) {
           await publishArenaMessage(
-            gameEngineReply.playerFoundNoWeapon(player._user!.slackId!, player.health)
+            arenaEngineReply.playerFoundNoWeapon(player._user!.slackId!, player.health)
           );
           break hasLuckStatement;
         }
         await player.addWeapon(foundWeapon, transaction);
         await publishArenaMessage(
-          gameEngineReply.playerFoundWeapon(
+          arenaEngineReply.playerFoundWeapon(
             player._user!.slackId!,
             player.health,
             foundWeapon.name,
@@ -201,7 +201,7 @@ export async function processSearchWeapons(
         );
       } else {
         await publishArenaMessage(
-          gameEngineReply.playerFoundNoWeapon(player._user!.slackId!, player.health)
+          arenaEngineReply.playerFoundNoWeapon(player._user!.slackId!, player.health)
         );
       }
       await action.completeRoundAction(transaction);

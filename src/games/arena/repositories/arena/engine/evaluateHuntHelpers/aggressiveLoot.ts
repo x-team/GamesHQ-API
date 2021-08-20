@@ -8,8 +8,8 @@ import { findHealthkitByName } from '../../../../../../models/ItemHealthKit';
 import { ITEM_TYPE } from '../../../../../consts/global';
 import { MAX_PLAYER_HEALTH } from '../../../../consts';
 import { publishArenaMessage } from '../../../../utils';
-import { rarityWeight } from '../../../../utils/rollRarity';
-import { gameEngineReply } from '../replies';
+import { rarityWeight } from '../../../../../utils/rollRarity';
+import { arenaEngineReply } from '../replies';
 
 export async function aggressiveLoot(
   { killerPlayer, deadPlayer }: { killerPlayer: ArenaPlayer; deadPlayer: ArenaPlayer },
@@ -59,7 +59,7 @@ export async function aggressiveLoot(
     }
     await deadPlayer.removeWeapon(bestWeapon, transaction);
     await publishArenaMessage(
-      gameEngineReply.playerLootAWeapon(
+      arenaEngineReply.playerLootAWeapon(
         killerPlayer._user?.slackId ?? '',
         bestWeapon.emoji,
         bestWeapon._itemRarityId,
@@ -84,14 +84,14 @@ export async function aggressiveLoot(
       );
       await deadPlayer.subtractHealthkit(healthKit.id, deadPlayerHealthKitsQty, transaction);
       await publishArenaMessage(
-        gameEngineReply.playerLootAHealthkit(killerPlayer, deadPlayer._user?.slackId!, true)
+        arenaEngineReply.playerLootAHealthkit(killerPlayer, deadPlayer._user?.slackId!, true)
       );
     } else if (killerPlayerHealthKitsQty === ZERO) {
       // Saves it in the inventory
       await killerPlayer.addHealthkit(healthKit.id, deadPlayerHealthKitsQty, transaction);
       await deadPlayer.subtractHealthkit(healthKit.id, deadPlayerHealthKitsQty, transaction);
       await publishArenaMessage(
-        gameEngineReply.playerLootAHealthkit(killerPlayer, deadPlayer._user?.slackId!, false)
+        arenaEngineReply.playerLootAHealthkit(killerPlayer, deadPlayer._user?.slackId!, false)
       );
     }
   }

@@ -99,13 +99,8 @@ export enum ARENA_SECONDARY_ACTIONS {
   DELETE_ZONE = 'delete-zone',
 }
 
-export interface ArmorSpecs {
-  rarity: ITEM_RARITY;
-  damageDealt: number;
-  emoji: string;
-}
-
 // REPOSITORIES
+export const TOWER_REPOSITORY_NAME = 'tower-repository';
 export const ARENA_REPOSITORY_NAME = 'arena-repository';
 export const ZONE_REPOSITORY_NAME = 'zone-repository';
 

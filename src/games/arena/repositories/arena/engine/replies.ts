@@ -1,5 +1,6 @@
 import { ArenaPlayer, ArenaZone } from '../../../../../models';
 import {
+  ARMOR_INVENTORY_EMOJI,
   BOSS_EMOJI,
   BOSS_WEAPON_EMOJI,
   FULL_HEALTH_HEART_EMOJI,
@@ -12,15 +13,16 @@ import {
   PLAYER_VISIBLE_EMOJI,
   RING_SYSTEM_EMOJI,
   SPINNER_EMOJI,
+  WEAPON_INVENTORY_EMOJI,
 } from '../../../../consts/emojis';
-import { ITEM_RARITY } from '../../../../consts/global';
+import { ITEM_RARITY, ArmorSpecs } from '../../../../consts/global';
 import {
   basicHealthDisplayInParentheses,
   generateRarityColorEmoji,
   generateSoldierAnimationEmoji,
   randomSkinColor,
 } from '../../../../helpers';
-import { ARENA_PERK, ArmorSpecs } from '../../../consts';
+import { ARENA_PERK } from '../../../consts';
 import { arenaPerkStats } from '../../../utils';
 
 export function getCheerEmoji(player: ArenaPlayer) {
@@ -38,7 +40,7 @@ export function playerAndHealthDisplay(data: Array<{ slackId: string; health: nu
   return `${statusList}\n`;
 }
 
-export const gameEngineReply = {
+export const arenaEngineReply = {
   // ARENA ZONES
   areaReport: (zone: ArenaZone) => `\n\n> ${zone.emoji} *>* *AREA REPORT: ${zone.name}*`,
   zonePenaltyDamageDealt: ({
@@ -145,7 +147,7 @@ export const gameEngineReply = {
     weaponEmoji: string,
     rarity: ITEM_RARITY
   ) =>
-    `:blaster: <@${slackId}> ${basicHealthDisplayInParentheses(health)} ` +
+    `${WEAPON_INVENTORY_EMOJI} <@${slackId}> ${basicHealthDisplayInParentheses(health)} ` +
     `searched for a weapon and *found one*! ${weaponName}${generateRarityColorEmoji(
       rarity
     )}${weaponEmoji}!`,
@@ -157,7 +159,7 @@ export const gameEngineReply = {
     armorEmoji: string,
     rarity: string
   ) =>
-    `:shield: <@${slackId}> ${basicHealthDisplayInParentheses(health)} ` +
+    `${ARMOR_INVENTORY_EMOJI} <@${slackId}> ${basicHealthDisplayInParentheses(health)} ` +
     `searched for an armor and *found one*! ${armorName} ${armorEmoji} (${rarity})!`,
 
   playerFoundBetterArmor: (
@@ -167,7 +169,7 @@ export const gameEngineReply = {
     armorEmoji: string,
     rarity: string
   ) =>
-    `:shield: <@${slackId}> ${basicHealthDisplayInParentheses(health)} ` +
+    `${ARMOR_INVENTORY_EMOJI} <@${slackId}> ${basicHealthDisplayInParentheses(health)} ` +
     `searched for a _new_ armor and *found a better one*! ${armorName} ${armorEmoji} (${rarity})!`,
 
   playerFoundNoBetterArmor: (
@@ -177,15 +179,15 @@ export const gameEngineReply = {
     armorEmoji: string,
     rarity: string
   ) =>
-    `:shield: <@${slackId}> ${basicHealthDisplayInParentheses(health)} ` +
+    `${ARMOR_INVENTORY_EMOJI} <@${slackId}> ${basicHealthDisplayInParentheses(health)} ` +
     `searched for a _new_ armor and *and didn't find something better*! ${armorName} ${armorEmoji} (${rarity})!`,
 
   playerFoundNoWeapon: (slackId: string, health: number) =>
-    `:blaster: <@${slackId}> ${basicHealthDisplayInParentheses(health)} ` +
+    `${WEAPON_INVENTORY_EMOJI} <@${slackId}> ${basicHealthDisplayInParentheses(health)} ` +
     `searched for a weapon and *found... nothing*! :grimacing:`,
 
   playerFoundNoArmor: (slackId: string, health: number) =>
-    `:shield: <@${slackId}> ${basicHealthDisplayInParentheses(health)} ` +
+    `${ARMOR_INVENTORY_EMOJI} <@${slackId}> ${basicHealthDisplayInParentheses(health)} ` +
     `searched for an armor and *found... nothing*! :grimacing:`,
 
   playerWillHide: (slackId: string, health: number) =>

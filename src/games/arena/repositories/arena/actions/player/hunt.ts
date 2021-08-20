@@ -22,7 +22,7 @@ import {
   playerActionsParams,
   withArenaTransaction,
 } from '../../../../utils';
-import { randomizeItems } from '../../../../utils/rollRarity';
+import { randomizeItems } from '../../../../../utils/rollRarity';
 import { arenaCommandReply } from '../../replies';
 
 export async function hunt(userRequesting: User) {

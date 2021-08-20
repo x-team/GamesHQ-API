@@ -23,7 +23,7 @@ import { publishArenaMessage } from '../../../utils';
 import { aggressiveLoot } from './evaluateHuntHelpers/aggressiveLoot';
 import { huntablePlayersFilter } from './evaluateHuntHelpers/huntablePlayersFilter';
 import { targetsPicker } from './evaluateHuntHelpers/targetsPicker';
-import { gameEngineReply } from './replies';
+import { arenaEngineReply } from './replies';
 
 interface HuntParams {
   player: ArenaPlayer;
@@ -76,7 +76,7 @@ export async function playerHuntPlayers({
       ))!;
       const isDead = !deadOrHidePlayerFound.isAlive();
       await publishArenaMessage(
-        gameEngineReply.targetPlayerIsDeadOrHide(
+        arenaEngineReply.targetPlayerIsDeadOrHide(
           player._user?.slackId!,
           deadOrHidePlayerFound._user?.slackId!,
           isDead
@@ -91,7 +91,7 @@ export async function playerHuntPlayers({
       await player.useWeapon(weapon, transaction);
 
       if (targets.length >= 2) {
-        const blastDamageMessage = gameEngineReply.weaponBlastDamage();
+        const blastDamageMessage = arenaEngineReply.weaponBlastDamage();
         await publishArenaMessage(blastDamageMessage);
       }
     }
@@ -152,7 +152,7 @@ export async function playerHuntPlayers({
                   emoji: targetArmor.emoji,
                 }
               : null;
-          const dealtDamageMessage = gameEngineReply.playerDealtDamage(
+          const dealtDamageMessage = arenaEngineReply.playerDealtDamage(
             player._user?.slackId!,
             player.health,
             originalDamageAndIncrease,
@@ -168,7 +168,7 @@ export async function playerHuntPlayers({
           if (isArmorBreakingAttack && targetArmor) {
             await target.removeArmor(targetArmor, transaction);
             await publishArenaMessage(
-              gameEngineReply.playerArmorBrokenByArmorbreakingTrait(
+              arenaEngineReply.playerArmorBrokenByArmorbreakingTrait(
                 target._user!.slackId!,
                 weapon.emoji,
                 targetArmor.emoji
@@ -197,7 +197,7 @@ export async function playerHuntPlayers({
             await aggressiveLoot({ killerPlayer: player, deadPlayer: target }, transaction);
           }
         } else {
-          const failedToHitMessage = gameEngineReply.playerFailedToHit(
+          const failedToHitMessage = arenaEngineReply.playerFailedToHit(
             player._user!.slackId!,
             player.health,
             weapon.emoji,
@@ -209,7 +209,7 @@ export async function playerHuntPlayers({
       }
     }
   } else {
-    const nobodyToHuntMessage = gameEngineReply.playerHasNobodyToHunt(
+    const nobodyToHuntMessage = arenaEngineReply.playerHasNobodyToHunt(
       player._user!.slackId!,
       weapon.emoji
     );
@@ -239,7 +239,7 @@ export async function bossHuntPlayers({
       const deadOrHidePlayerFound = (await findPlayerById(targetPlayerId!, false, transaction))!;
       const isDead = !deadOrHidePlayerFound.isAlive();
       await publishArenaMessage(
-        gameEngineReply.targetPlayerIsDeadOrHide(
+        arenaEngineReply.targetPlayerIsDeadOrHide(
           boss._user?.slackId!,
           deadOrHidePlayerFound._user?.slackId!,
           isDead
@@ -302,7 +302,7 @@ export async function bossHuntPlayers({
               emoji: targetArmor.emoji,
             }
           : null;
-        const dealtDamageMessage = gameEngineReply.bossDealtDamage(
+        const dealtDamageMessage = arenaEngineReply.bossDealtDamage(
           boss._user?.slackId!,
           boss.health,
           originalDamageAndIncrease,
@@ -334,7 +334,7 @@ export async function bossHuntPlayers({
           );
         }
       } else {
-        const failedToHitMessage = gameEngineReply.bossFailedToHit(
+        const failedToHitMessage = arenaEngineReply.bossFailedToHit(
           boss._user!.slackId!,
           boss.health,
           randomTargetPlayer._user!.slackId!,
@@ -344,7 +344,7 @@ export async function bossHuntPlayers({
       }
     }
   } else {
-    const nobodyToHuntMessage = gameEngineReply.bossHasNobodyToHunt(boss._user!.slackId!);
+    const nobodyToHuntMessage = arenaEngineReply.bossHasNobodyToHunt(boss._user!.slackId!);
     await publishArenaMessage(nobodyToHuntMessage);
   }
 }

@@ -6,7 +6,7 @@ import { findHealthkitByName } from '../../../../../models/ItemHealthKit';
 import { ITEM_TYPE, ZERO } from '../../../../consts/global';
 import { ARENA_PLAYER_PERFORMANCE, MAX_PLAYER_HEALTH } from '../../../consts';
 import { publishArenaMessage } from '../../../utils';
-import { gameEngineReply } from './replies';
+import { arenaEngineReply } from './replies';
 
 export async function processHealOrRevive(
   round: ArenaRound,
@@ -24,7 +24,7 @@ export async function processHealOrRevive(
       healthKitQtyStatement: if (healthKitQty > 0) {
         if (!healthKit) {
           await publishArenaMessage(
-            gameEngineReply.playerFoundNoHealthKit(player._user!.slackId!, player.health)
+            arenaEngineReply.playerFoundNoHealthKit(player._user!.slackId!, player.health)
           );
           break healthKitQtyStatement;
         }
@@ -38,19 +38,19 @@ export async function processHealOrRevive(
           );
           await player.subtractHealthkit(healthKit.id, usedItemQuantity, transaction);
           await publishArenaMessage(
-            gameEngineReply.playerSelfRevive(player._user!.slackId!, action._player!.health)
+            arenaEngineReply.playerSelfRevive(player._user!.slackId!, action._player!.health)
           );
         } else {
           if (!targetPlayerId) {
             await publishArenaMessage(
-              gameEngineReply.playerFoundNoHealthKit(player._user!.slackId!, player.health)
+              arenaEngineReply.playerFoundNoHealthKit(player._user!.slackId!, player.health)
             );
             break targetStatement;
           }
           const targetPlayer = await findPlayerById(targetPlayerId, true, transaction);
           if (!targetPlayer) {
             await publishArenaMessage(
-              gameEngineReply.playerFoundNoHealthKit(player._user!.slackId!, player.health)
+              arenaEngineReply.playerFoundNoHealthKit(player._user!.slackId!, player.health)
             );
             break targetStatement;
           }
@@ -61,7 +61,7 @@ export async function processHealOrRevive(
           );
           await player.subtractHealthkit(healthKit.id, usedItemQuantity, transaction);
           await publishArenaMessage(
-            gameEngineReply.playerReviveOther(
+            arenaEngineReply.playerReviveOther(
               player._user?.slackId!,
               player.health,
               targetPlayer._user?.slackId!,

@@ -7,7 +7,7 @@ import { hasLuck } from '../../../../utils';
 import { LOSE_ACTION_RATE } from '../../../consts';
 import { publishArenaMessage } from '../../../utils';
 import { bossHuntPlayers, playerHuntPlayers } from './evaluateHunt';
-import { gameEngineReply } from './replies';
+import { arenaEngineReply } from './replies';
 
 export async function processHunt(
   round: ArenaRound,
@@ -87,7 +87,7 @@ export async function processHunt(
       }
     } else {
       const isDead = !player.isAlive();
-      await publishArenaMessage(gameEngineReply.playerLostAction(player._user!.slackId!, isDead));
+      await publishArenaMessage(arenaEngineReply.playerLostAction(player._user!.slackId!, isDead));
     }
     await mutableAction.completeRoundAction(transaction);
   }

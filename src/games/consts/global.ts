@@ -93,5 +93,24 @@ export const SHARED_ACTIONS = {
   HIDE: 'hide',
 } as const;
 
+export enum GAME_ACTION_MAPPING {
+  HUNT = 'A', // Attack
+  HIDE = 'H', // Hide
+  CHARGE = 'C', // Charge
+}
+
 export const SORT_ACTION_ARRAY_RATE = 0.5;
 export const SELECT_TEAM_URL = 'https://xhq.x-team.com/profile';
+
+export interface ArmorSpecs {
+  rarity: ITEM_RARITY;
+  damageDealt: number;
+  emoji: string;
+}
+
+export interface DamageDealtSpecs {
+  originalDamage: number;
+  newDamage?: number;
+  armorSpecs?: ArmorSpecs;
+  wasOriginatedByPerk: boolean;
+}

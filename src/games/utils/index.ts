@@ -7,7 +7,7 @@ import { getConfig, logger } from '../../config';
 import { sequelize } from '../../db';
 import type { User } from '../../models';
 import { parseEscapedSlackUserValues } from '../../utils/slack';
-import type { GAME_TYPE } from '../consts/global';
+import { GAME_TYPE, ZERO } from '../consts/global';
 import { HUNDRED } from '../consts/global';
 import type { SlackBlockKitLayoutElement } from '../model/SlackBlockKit';
 
@@ -30,6 +30,11 @@ export function withTransaction<T>(fn: (transaction: Transaction) => Promise<T>)
 }
 
 // OPERATIONS
+
+export function nonLessThanZeroParam(value: number) {
+  return Math.max(value, ZERO);
+}
+
 export const extractSecondaryAction = (action: string) => {
   const actionArr = action.split('-');
   const value = actionArr.pop();
@@ -133,6 +138,26 @@ export async function slackRequest(responseUrl: string, requestBody: SlackRespon
     return response;
   } catch (error) {
     logger.error('Error in slackRequest()');
+    logger.error(error);
+    throw error;
+  }
+}
+
+export async function chatUnfurl(requestBody: object, bearer: string = getConfig('SLACK_TOKEN')) {
+  try {
+    const url = 'https://slack.com/api/chat.unfurl';
+    const options = {
+      method: 'POST',
+      headers: {
+        'Content-type': 'application/json; charset=UTF-8',
+        Authorization: `Bearer ${bearer}`,
+      },
+      body: JSON.stringify(requestBody),
+    };
+    const response = await fetch(url, options);
+    return response;
+  } catch (error) {
+    logger.error('Error in chatUnfurl()');
     logger.error(error);
     throw error;
   }

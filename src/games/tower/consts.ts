@@ -1,4 +1,5 @@
 import { SHARED_ACTIONS } from '../consts/global';
+import { generateEnemyPatterns } from '../enemy/helpers/enemyPatterns';
 
 export const TOWER_GIF_URL = 'https://xhq-bucket-campaigns.s3.amazonaws.com/gifs/';
 export const BOSS_MIN_DAMAGE_RATE = 20;
@@ -49,6 +50,40 @@ export enum TOWER_SLACK_COMMANDS {
   PROGRESS_BUTTON = 'tower-progress',
 }
 
+export enum TOWER_SECONDARY_SLACK_ACTIONS {
+  // ADMIN
+  CREATE_OR_UPDATE_ENEMY_DATA = 'create_or_update_enemy_data',
+  REMOVE_ENEMY_FROM_TOWER_FLOOR = 'tower-settowerfloor-floor-enemy-remove',
+  ADD_ENEMY_TO_TOWER_FLOOR = 'tower-settowerfloor-floor-enemy-add',
+  ADD_ENEMY_AMOUNT_TO_TOWER_FLOOR = 'tower-settowerfloor-enemy',
+  ADD_ENEMY_TO_TOWER_FLOOR_BTN_YES = 'tower-settowerfloor-btnyes',
+  ADD_ENEMY_TO_TOWER_FLOOR_BTN_NO = 'tower-settowerfloor-btnno',
+  CREATE_OR_UPDATE_WEAPON_DATA = 'create_or_update_weapon_data',
+  UPDATE_TOWER_ID = 'tower-update',
+  UPDATE_TOWER_FLOOR_ID = 'tower-settowerfloor-byfloor',
+  ENABLE_HIDING = 'tower-settowerfloor-enable-hiding',
+  DISABLE_HIDING = 'tower-settowerfloor-disable-hiding',
+  CONFIRM_END_GAME = 'tower-confirm-endgame',
+  CANCEL_END_GAME = 'tower-cancel-endgame',
+  // RAIDER
+  HUNT_CHOOSE_WEAPON = 'tower-hunt-choose-weapon',
+  HUNT_CHOOSE_TARGET = 'tower-hunt-choose-target',
+  HEAL_OR_REVIVE_CHOOSE_TARGET = 'tower-reviveother-choose-target',
+  CHOOSE_PERK = 'tower-raider-choose-perk',
+  CHOOSE_ITEM = 'tower-raider-choose-item',
+}
+
+export enum TOWER_FLOOR_HIDING {
+  ENABLE = 'enable',
+  DISABLE = 'disable',
+}
+
+export enum TOWER_LOOT_PRIZES {
+  ITEM = 'item',
+  WEAPON = 'weapon',
+  ARMOR = 'armor',
+}
+
 // GAME
 export const MAX_FLOOR_NUMBER = 10;
 export const DEFAULT_LUNA_PRIZE = 5;
@@ -74,3 +109,23 @@ export const SEARCH_HEALTH_FOUND_QTY = 1;
 export const MAX_AMOUNT_HEALTHKITS_ALLOWED = 4;
 export const LUCK_ELIXIR_BOOST = 0.2;
 export const DEFAULT_SORT_INITIATIVE_SUCCESS_RATE = 0.6;
+
+// ENEMIES
+export const ENEMY_HUNT_SUCCESS_RATE = 0.8;
+export const ENEMY_HUNT_CHANCE = 0.8;
+export const ENEMY_HIDE_CHANCE = 0.2;
+export const ENEMY_DEFAULT_SORT_INITIATIVE_SUCCESS_RATE = 0.4;
+const TOWER_ENEMY_PATTERN_LENGTH = 4;
+export const TOWER_ENEMY_PATTERNS = generateEnemyPatterns(TOWER_ENEMY_PATTERN_LENGTH);
+
+// WEAPON
+export const LEGENDARY_WEAPON_CHANCE = 0.1;
+export const EPIC_WEAPON_CHANCE = 0.15;
+export const RARE_WEAPON_CHANCE = 0.25;
+export const COMMON_WEAPON_CHANCE = 0.5;
+
+// ARMOR
+export const LEGENDARY_ARMOR_CHANCE = 0.05;
+export const EPIC_ARMOR_CHANCE = 0.15;
+export const RARE_ARMOR_CHANCE = 0.3;
+export const COMMON_ARMOR_CHANCE = 0.5;

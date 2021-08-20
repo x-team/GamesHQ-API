@@ -40,7 +40,7 @@ import {
 import type { ChangeLocationParams } from '../../consts';
 import { ARENA_ACTIONS, ARENA_PLAYER_PERFORMANCE, MAX_PLAYER_HEALTH } from '../../consts';
 import { arenaNotifyEphemeral, arenaRoundActionMessageBuilder } from '../../utils';
-import { playerStatus } from '../../utils/HUD';
+import { playerStatus } from '../../utils/playerStatus';
 
 const FILL_WITH_EMOJIS_FIRE = 18;
 const FILL_WITH_EMOJIS_RING_SYSTEM = 18;

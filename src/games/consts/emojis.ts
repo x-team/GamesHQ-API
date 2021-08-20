@@ -26,6 +26,8 @@ export const LEGENDARY_COLOR_EMOJI_BIG = ':large_orange_circle:';
 export const RING_SYSTEM_EMOJI = ':matrix:';
 export const SAD_PARROT = ':sad-parrot:';
 export const FREE_AGENT_EMOJI = ':dove_of_peace:';
+export const ARMOR_INVENTORY_EMOJI = ':shield:';
+export const WEAPON_INVENTORY_EMOJI = ':blaster:';
 
 // ARENA BOSS EMOJIS
 export const BOSS_EMOJI = ':arena-boss:';

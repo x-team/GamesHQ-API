@@ -5,7 +5,7 @@ import { setPlayerPerformanceAction } from '../../../../../models/ArenaPlayerPer
 import { ARENA_PLAYER_PERFORMANCE } from '../../../consts';
 import { publishArenaMessage } from '../../../utils';
 import { cheerAwards } from './cheerSystem';
-import { gameEngineReply } from './replies';
+import { arenaEngineReply } from './replies';
 
 export async function processCheers(
   round: ArenaRound,
@@ -26,12 +26,12 @@ export async function processCheers(
       const targetPlayer = await findPlayerById(targetPlayerId, false, transaction);
       if (!targetPlayer) {
         await publishArenaMessage(
-          gameEngineReply.playerFoundNoHealthKit(player._user!.slackId!, player.health)
+          arenaEngineReply.playerFoundNoHealthKit(player._user!.slackId!, player.health)
         );
         break targetStatement;
       }
       await publishArenaMessage(
-        gameEngineReply.playerCheerSomebody(player, targetPlayer?._user?.slackId!)
+        arenaEngineReply.playerCheerSomebody(player, targetPlayer?._user?.slackId!)
       );
       const playerPerformance = await setPlayerPerformanceAction(
         targetPlayer?.id,
@@ -46,7 +46,7 @@ export async function processCheers(
       );
       if (perkAwarded !== undefined) {
         await publishArenaMessage(
-          gameEngineReply.playerReceivedPerk(targetPlayer?._user?.slackId!, perkAwarded)
+          arenaEngineReply.playerReceivedPerk(targetPlayer?._user?.slackId!, perkAwarded)
         );
       }
     }
