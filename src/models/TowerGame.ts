@@ -13,7 +13,11 @@ import {
   PrimaryKey,
   Unique,
 } from 'sequelize-typescript';
-import { DEFAULT_COIN_PRIZE, DEFAULT_LUNA_PRIZE, MAX_FLOOR_NUMBER } from '../games/tower/consts';
+import {
+  DEFAULT_COIN_PRIZE,
+  DEFAULT_LUNA_PRIZE,
+  DEFAULT_MAX_FLOOR_NUMBER,
+} from '../games/tower/consts';
 import { Game, User, TowerStatistics, TowerFloor, TowerRaider } from '.';
 import { findActiveGame, findLastActiveGame, startGame } from './Game';
 import { GAME_TYPE } from '../games/consts/global';
@@ -55,7 +59,7 @@ export class TowerGame
   @Column(DataType.INTEGER)
   lunaPrize!: number;
 
-  @Default(MAX_FLOOR_NUMBER)
+  @Default(DEFAULT_MAX_FLOOR_NUMBER)
   @Column(DataType.INTEGER)
   height!: number;
 
@@ -96,7 +100,7 @@ export class TowerGame
     );
   }
 
-  async findAllRaidersInsideActiveTower(transaction?: Transaction) {
+  async findAllRaidersInside(transaction?: Transaction) {
     await this.reload({
       include: [
         {

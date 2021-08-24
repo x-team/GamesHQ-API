@@ -12,7 +12,6 @@ import { ONE, HUNDRED, ITEM_RARITY, ITEM_TYPE } from '../../consts/global';
 import { roundActionMessageBuilder, RoundActionMessageBuilderParams } from '../../helpers';
 import type { SlackBlockKitLayoutElement } from '../../model/SlackBlockKit';
 import {
-  adminAction,
   chatUnfurl,
   GameResponse,
   getGameError,
@@ -48,14 +47,6 @@ export interface TowerRaiderInteraction {
   interfaceName: 'TowerRaiderInteraction';
   raider: TowerRaider;
   round: TowerRound;
-}
-
-export async function towerAdminHandler(userRequesting: User) {
-  const isAdmin = adminAction(userRequesting);
-  if (!isAdmin) {
-    return getGameError(towerCommandReply.adminsOnly());
-  }
-  return true;
 }
 
 export async function activeTowerHandler(transaction: Transaction): Promise<GameResponse | Game> {
@@ -124,6 +115,10 @@ export function towerRoundActionMessageBuilder({
 }
 
 // Utils
+export function isTowerCommand(command: string) {
+  return command.startsWith('/tower');
+}
+
 export const isTowerConfigAction = (action: string) => {
   const actionArr = action.split('-');
   actionArr.pop();
@@ -295,7 +290,7 @@ export function parseCreateTowerCommandText(commandText: string) {
   const towerHeight = parseInt(towerHeightString, RADIX_BASE);
   return {
     name: towerName,
-    towerHeight: !isNaN(towerHeight) ? towerHeight : undefined,
+    height: !isNaN(towerHeight) ? towerHeight : undefined,
     lunaPrize: !isNaN(lunaPrize) ? lunaPrize : undefined,
     coinPrize: !isNaN(coinPrize) ? coinPrize : undefined,
   };

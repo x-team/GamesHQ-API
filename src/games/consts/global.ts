@@ -1,6 +1,7 @@
 export const ZERO = 0;
 export const ONE = 1;
 export const TWO = 2;
+export const TEN = 10;
 export const THREE = 3;
 export const HUNDRED = 100;
 export const SLACK_SPACE = '\u0020';

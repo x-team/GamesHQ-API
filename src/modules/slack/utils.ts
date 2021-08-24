@@ -28,6 +28,8 @@ import { getEphemeralBlock, getEphemeralText } from '../../games/utils';
 import { getUserBySlackId } from '../../models/User';
 import type { SlackConfigKey } from '../../utils/cryptography';
 import { validateSlackSignatures } from '../../utils/cryptography';
+import { isTowerCommand } from '../../games/tower/utils';
+import { towerSwitchCommand } from '../../games/tower/commands';
 
 export const isRequestFresh = (timestamp: number): boolean => {
   const SIXTY_SECONDS = 60;
@@ -175,9 +177,7 @@ export function parseSlackActionPayload(request: Request): Lifecycle.Method {
             });
       break;
   }
-
   checkForSlackErrors(mutableSlackPayload, parsed);
-
   return mutableSlackPayload.value;
 }
 
@@ -220,14 +220,15 @@ export const slackCommandSwitcher = async (
     });
   }
 
-  // if (isTowerCommand(command)) {
-  //   return towerSwitchCommand({
-  //     command,
-  //     commandText: text,
-  //     userRequesting: mutableUserRequesting,
-  //     triggerId: trigger_id,
-  //   }) as SlackResponse;
-  // }
+  if (isTowerCommand(command)) {
+    mutableResponse = await towerSwitchCommand({
+      command,
+      commandText: text,
+      userRequesting,
+      triggerId: trigger_id,
+    });
+  }
+
   // if (isCampaignCommand(command)) {
   //   return campaignSwitchCommand({
   //     command,
@@ -244,5 +245,6 @@ export const slackCommandSwitcher = async (
   //     userRequesting: mutableUserRequesting,
   //   });
   // }
+
   return gameResponseToSlackHandler(mutableResponse);
 };

@@ -4,6 +4,7 @@ import {
   SlackBlockKitCompositionOption,
   SlackBlockKitDividerLayout,
 } from '../../model/SlackBlockKit';
+import { TOWER_SECONDARY_SLACK_ACTIONS } from '../../tower/consts';
 
 import {
   blockKitAction,
@@ -15,9 +16,9 @@ import {
 } from './slack';
 
 export function generateEndGameConfirmationBlockKit(
-  questionText = 'Are you *absolutely sure* you want to *end the game*?',
-  confirmActionValue: ARENA_SECONDARY_ACTIONS, // | TOWER_SECONDARY_SLACK_ACTIONS,
-  cancelActionValue: ARENA_SECONDARY_ACTIONS // || TOWER_SECONDARY_SLACK_ACTIONS,
+  questionText: string = 'Are you *absolutely sure* you want to *end the game*?',
+  confirmActionValue: ARENA_SECONDARY_ACTIONS | TOWER_SECONDARY_SLACK_ACTIONS,
+  cancelActionValue: ARENA_SECONDARY_ACTIONS | TOWER_SECONDARY_SLACK_ACTIONS
 ) {
   const blockKitDividerSection = blockKitDivider();
 

@@ -1,3 +1,6 @@
+import { User } from '../../../../models';
+import { GameResponse } from '../../../utils';
+import { askEndGame, cancelEndGame, endGame, newGame } from './actions/admin/create-or-finish-game';
 import type { TowerEngine } from './engine';
 
 interface TowerRepositoryMethods {
@@ -11,6 +14,10 @@ interface TowerRepositoryMethods {
   // PLAYERS: CHEER OPERATIONS /////////////////////////////////////////////////
   /////////////////////////////////////////////////////////////////// ADMIN ///////////////////////////////////////////////////////////////////
   // ADMIN: CREATE AND SETUP OPERATIONS ////////////////////////////////////////////
+  newGame(commandText: string, userRequesting: User): Promise<GameResponse>;
+  askEndGame(userRequesting: User): Promise<GameResponse>;
+  endGame(userRequesting: User): Promise<GameResponse>;
+  cancelEndGame(userRequesting: User): Promise<GameResponse>;
   // ADMIN: ADD PLAYER OPERATIONS ////////////////////////////////////////////
   // ADMIN: WEAPONS OPERATIONS ////////////////////////////////////////////
   // ADMIN: WEAPONS OPERATIONS ////////////////////////////////////////////
@@ -21,7 +28,7 @@ interface TowerRepositoryMethods {
 }
 
 export class TowerRepository implements TowerRepositoryMethods {
-  constructor(public arenaGameEngine: TowerEngine) {}
+  constructor(public towerGameEngine: TowerEngine) {}
 
   /////////////////////////////////////////////////////////////////// PLAYER ///////////////////////////////////////////////////////////////////
 
@@ -42,6 +49,10 @@ export class TowerRepository implements TowerRepositoryMethods {
   /////////////////////////////////////////////////////////////////// ADMIN ///////////////////////////////////////////////////////////////////
 
   // ADMIN: CREATE AND SETUP OPERATIONS ///////////////////////////////////////////////////////////////////
+  public newGame = newGame.bind(this);
+  public askEndGame = askEndGame.bind(this);
+  public endGame = endGame.bind(this);
+  public cancelEndGame = cancelEndGame.bind(this);
 
   // ADMIN: ADD PLAYER OPERATIONS ///////////////////////////////////////////////////////////////////
 

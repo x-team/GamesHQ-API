@@ -1,8 +1,10 @@
+import Boom from '@hapi/boom';
 import type { Lifecycle } from '@hapi/hapi';
 
 import { SLACK_COMMAND_TESTING_PREFIX } from '../../consts/api';
 import { handleArenaAction, handleViewSubmissionAction } from '../../games/arena/actions';
 import type { SlackSlashCommandPayload } from '../../games/model/SlackSlashCommandPayload';
+import { handleTowerBlockAction } from '../../games/tower/actions';
 
 import { slackCommandSwitcher } from './utils';
 
@@ -45,21 +47,21 @@ export const arenaSlackActionHandler: Lifecycle.Method = async (request, _h) => 
   }
 };
 
-export const towerSlackActionHandler: Lifecycle.Method = async (_request, _h) => {
-  // const slackActionPayload = request.pre.slackActionsPayload;
-  // try {
-  //   switch (slackActionPayload.type) {
-  //     case 'shortcut':
-  //       return handleTowerShortcut(slackActionPayload as SlackShortcutPayload);
-  //     case 'view_submission':
-  //       return handleTowerAction(slackActionPayload as SlackDialogSubmissionPayload);
-  //     case 'block_actions':
-  //       return handleTowerBlockAction(slackActionPayload as SlackBlockPayload);
-  //     default:
-  //       throw Boom.internal('Unknown payload');
-  //   }
-  // } catch (err) {
-  //   err.data = slackActionPayload;
-  //   throw err;
-  // }
+export const towerSlackActionHandler: Lifecycle.Method = async (request, _h) => {
+  const slackActionPayload = request.pre.slackActionPayload;
+  try {
+    switch (slackActionPayload.type) {
+      case 'shortcut':
+      // return handleTowerShortcut(slackActionPayload as SlackShortcutPayload);
+      case 'view_submission':
+      // return handleTowerAction(slackActionPayload as SlackDialogSubmissionPayload);
+      case 'block_actions':
+        return handleTowerBlockAction(slackActionPayload);
+      default:
+        throw Boom.internal('Unknown payload');
+    }
+  } catch (err) {
+    err.data = slackActionPayload;
+    throw err;
+  }
 };

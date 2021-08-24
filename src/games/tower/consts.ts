@@ -85,7 +85,7 @@ export enum TOWER_LOOT_PRIZES {
 }
 
 // GAME
-export const MAX_FLOOR_NUMBER = 10;
+export const DEFAULT_MAX_FLOOR_NUMBER = 10;
 export const DEFAULT_LUNA_PRIZE = 5;
 export const DEFAULT_COIN_PRIZE = 5;
 export const LOOT_PRIZE_WEAPON_CHANCE = 0.5;
