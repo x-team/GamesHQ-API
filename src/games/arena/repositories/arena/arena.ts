@@ -93,7 +93,7 @@ interface ArenaRepositoryMethods {
     isBoss: boolean
   ): Promise<GameResponse>;
 
-  // ADMIN: WEAPONS OPERATIONS ////////////////////////////////////////////
+  // ADMIN: HEAL OR REVIVE BOSS OPERATIONS ////////////////////////////////////////////
   reviveBoss(commandText: string, userRequesting: User): Promise<GameResponse>;
 
   // ADMIN: WEAPONS OPERATIONS ////////////////////////////////////////////

@@ -13,7 +13,7 @@ import { GameResponse, getGameResponse } from '../../../../../utils';
 import { generateGenericWeaponPickerBlock } from '../../../../../utils/generators/games';
 import { ARENA_ACTIONS, ARENA_SECONDARY_ACTIONS } from '../../../../consts';
 import {
-  generateActionsBlockKit,
+  generateArenaActionsBlockKit,
   generateTargetPickerBlock,
 } from '../../../../generators/gameplay';
 import {
@@ -34,7 +34,7 @@ export async function hunt(userRequesting: User) {
     const { player, round, zone } = playerActions as PlayerActionsDeadOrAlive;
 
     if (!zone) {
-      const actionBlockkit = generateActionsBlockKit(player, arenaCommandReply.zoneNeeded());
+      const actionBlockkit = generateArenaActionsBlockKit(player, arenaCommandReply.zoneNeeded());
       return getGameResponse(actionBlockkit);
     }
 
@@ -55,7 +55,7 @@ export async function hunt(userRequesting: User) {
     );
 
     if (targetGroup.length === 0) {
-      const actionBlockkit = generateActionsBlockKit(
+      const actionBlockkit = generateArenaActionsBlockKit(
         player,
         hud,
         arenaCommandReply.noTargetsAvailable()
@@ -81,7 +81,7 @@ export async function hunt(userRequesting: User) {
       } else {
         // select random target from group
         if (!mutableVisiblePlayers.length) {
-          const actionBlockkit = generateActionsBlockKit(
+          const actionBlockkit = generateArenaActionsBlockKit(
             player,
             hud,
             arenaCommandReply.noTargetsVisibleButPresent(targetGroup.length, zone)
@@ -109,7 +109,7 @@ export async function hunt(userRequesting: User) {
     }
 
     if (weaponQty === 0) {
-      const actionBlockkit = generateActionsBlockKit(
+      const actionBlockkit = generateArenaActionsBlockKit(
         player,
         hud,
         arenaCommandReply.playerNeedsWeapon(player)
@@ -139,7 +139,7 @@ export async function hunt(userRequesting: User) {
         ? targetGroup
         : targetGroup.filter((p) => p.isCurrentlyVisible());
       if (!mutableVisiblePlayers.length) {
-        const actionBlockkit = generateActionsBlockKit(
+        const actionBlockkit = generateArenaActionsBlockKit(
           player,
           hud,
           arenaCommandReply.noTargetsVisibleButPresent(targetGroup.length, zone)
@@ -190,7 +190,7 @@ export async function chooseWeapon(userRequesting: User, selectedWeapon: number,
     const { player, round, zone } = playerActions as PlayerActionsDeadOrAlive;
 
     if (!zone) {
-      const actionBlockkit = generateActionsBlockKit(player, arenaCommandReply.zoneNeeded());
+      const actionBlockkit = generateArenaActionsBlockKit(player, arenaCommandReply.zoneNeeded());
       return getGameResponse(actionBlockkit);
     }
 
@@ -216,7 +216,7 @@ export async function chooseWeapon(userRequesting: User, selectedWeapon: number,
       ? targetGroup
       : targetGroup.filter((p) => p.isCurrentlyVisible());
     if (!visiblePlayers.length) {
-      const actionBlockkit = generateActionsBlockKit(
+      const actionBlockkit = generateArenaActionsBlockKit(
         player,
         hud,
         arenaCommandReply.noTargetsVisibleButPresent(targetGroup.length, zone)
@@ -241,7 +241,7 @@ export async function chooseWeapon(userRequesting: User, selectedWeapon: number,
       );
       return getGameResponse(slackBlocks);
     } else {
-      const actionBlockkit = generateActionsBlockKit(
+      const actionBlockkit = generateArenaActionsBlockKit(
         player,
         hud,
         arenaCommandReply.noTargetsAvailable()
@@ -260,7 +260,7 @@ export async function chooseTarget(userRequesting: User, selectedTargetId: numbe
     const { player, round, zone } = playerActions as PlayerActionsDeadOrAlive;
 
     if (!zone) {
-      const actionBlockkit = generateActionsBlockKit(player, arenaCommandReply.zoneNeeded());
+      const actionBlockkit = generateArenaActionsBlockKit(player, arenaCommandReply.zoneNeeded());
       return getGameResponse(actionBlockkit);
     }
 
@@ -281,7 +281,7 @@ export async function chooseTarget(userRequesting: User, selectedTargetId: numbe
     const roundAction = await findPlayerRoundAction(player.id, round.id, transaction);
 
     if (!roundAction) {
-      const actionBlockkit = generateActionsBlockKit(
+      const actionBlockkit = generateArenaActionsBlockKit(
         player,
         hud,
         arenaCommandReply.playerDoesntHaveAction()
@@ -290,7 +290,7 @@ export async function chooseTarget(userRequesting: User, selectedTargetId: numbe
     }
 
     if (!targetPlayer) {
-      const actionBlockkit = generateActionsBlockKit(
+      const actionBlockkit = generateArenaActionsBlockKit(
         player,
         hud,
         arenaCommandReply.playerNotInTheGame()

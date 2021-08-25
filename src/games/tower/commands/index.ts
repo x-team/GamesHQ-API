@@ -27,6 +27,14 @@ export function towerSwitchCommand({
       return theTower.newGame(commandText, userRequesting);
     case TOWER_SLACK_COMMANDS.FINISH_TOWER:
       return theTower.askEndGame(userRequesting);
+    case TOWER_SLACK_COMMANDS.TOWER_OPEN:
+      return theTower.openOrCloseTowerGates(userRequesting, true);
+    case TOWER_SLACK_COMMANDS.TOWER_CLOSED:
+      return theTower.openOrCloseTowerGates(userRequesting, false);
+    case TOWER_SLACK_COMMANDS.TOWER_INFO:
+      return theTower.displayTowerInfo(userRequesting);
+    case TOWER_SLACK_COMMANDS.DISPLAY_SCOREBOARD:
+      return theTower.displayScoreboard(userRequesting);
     // case TOWER_SLACK_COMMANDS.CREATE_WEAPON:
     //   return theTower.openCreateWeaponModal(userRequesting, triggerId);
     // case TOWER_SLACK_COMMANDS.UPDATE_WEAPON:
@@ -37,19 +45,12 @@ export function towerSwitchCommand({
     //   return enemyBotSingleton.displayAvailableEnemies(userRequesting, 'Delete');
     // case TOWER_SLACK_COMMANDS.SET_TOWER_FLOORS:
     //   return theTower.setFloorEnemies(userRequesting);
-    // case TOWER_SLACK_COMMANDS.TOWER_OPEN:
-    //   return theTower.openOrCloseTowerGates(userRequesting, true);
-    // case TOWER_SLACK_COMMANDS.TOWER_CLOSED:
-    //   return theTower.openOrCloseTowerGates(userRequesting, false);
-    // case TOWER_SLACK_COMMANDS.TOWER_INFO:
-    //   return theTower.displayTowerInfo(userRequesting);
-    // case TOWER_SLACK_COMMANDS.DISPLAY_SCOREBOARD:
-    //   return theTower.displayScoreboard(userRequesting);
-    // // RAIDER
+
+    // RAIDER
+    case TOWER_SLACK_COMMANDS.ENTER:
+      return theTower.enterTheTower(userRequesting);
     // case TOWER_SLACK_COMMANDS.ACTIONS:
     //   return theTower.raiderActions(userRequesting);
-    // case TOWER_SLACK_COMMANDS.ENTER:
-    //   return theTower.enter(userRequesting);
     // case TOWER_SLACK_COMMANDS.EXIT:
     //   return theTower.exit(userRequesting);
     // case TOWER_SLACK_COMMANDS.START_ROUND:

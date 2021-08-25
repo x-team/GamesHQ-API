@@ -13,7 +13,7 @@ import { findActiveArenaZones } from '../../../../../../models/ArenaZone';
 import { GameResponse, getGameResponse } from '../../../../../utils';
 import { ARENA_ACTIONS } from '../../../../consts';
 import {
-  generateActionsBlockKit,
+  generateArenaActionsBlockKit,
   generateTargetPickerBlock,
 } from '../../../../generators/gameplay';
 import {
@@ -32,7 +32,7 @@ export async function cheer(userRequesting: User) {
     const { player, round, zone } = playerActions as PlayerActionsDeadOrAlive;
 
     if (!zone) {
-      const actionBlockkit = generateActionsBlockKit(player, arenaCommandReply.zoneNeeded());
+      const actionBlockkit = generateArenaActionsBlockKit(player, arenaCommandReply.zoneNeeded());
       return getGameResponse(actionBlockkit);
     }
 
@@ -53,7 +53,7 @@ export async function completeCheer(userRequesting: User, selectedTargetId: numb
     const { player, round, zone } = playerActions as PlayerActionsDeadOrAlive;
 
     if (!zone) {
-      const actionBlockkit = generateActionsBlockKit(player, arenaCommandReply.zoneNeeded());
+      const actionBlockkit = generateArenaActionsBlockKit(player, arenaCommandReply.zoneNeeded());
       return getGameResponse(actionBlockkit);
     }
 
@@ -71,7 +71,7 @@ export async function completeCheer(userRequesting: User, selectedTargetId: numb
     );
 
     if (!targetPlayer) {
-      const actionBlockkit = generateActionsBlockKit(
+      const actionBlockkit = generateArenaActionsBlockKit(
         player,
         hud,
         arenaCommandReply.playerNotInTheGame()
@@ -107,7 +107,7 @@ export async function repeatLastCheer(userRequesting: User) {
     const { player, round, zone } = playerActions as PlayerActionsDeadOrAlive;
 
     if (!zone) {
-      const actionBlockkit = generateActionsBlockKit(player, arenaCommandReply.zoneNeeded());
+      const actionBlockkit = generateArenaActionsBlockKit(player, arenaCommandReply.zoneNeeded());
       return getGameResponse(actionBlockkit);
     }
 
@@ -125,7 +125,7 @@ export async function repeatLastCheer(userRequesting: User) {
     );
 
     if (!lastCheerAction) {
-      const actionBlockkit = generateActionsBlockKit(
+      const actionBlockkit = generateArenaActionsBlockKit(
         player,
         hud,
         arenaCommandReply.playerDoesntHaveLastCheerAction()
@@ -136,7 +136,7 @@ export async function repeatLastCheer(userRequesting: User) {
     const targetPlayer = await findPlayerById(targetPlayerId!, false, transaction);
 
     if (!targetPlayer) {
-      const actionBlockkit = generateActionsBlockKit(
+      const actionBlockkit = generateArenaActionsBlockKit(
         player,
         hud,
         arenaCommandReply.playerNotInTheGame()
@@ -147,7 +147,7 @@ export async function repeatLastCheer(userRequesting: User) {
     const targetPlayerSlackId = targetPlayer._user?.slackId!;
 
     if (!targetPlayer.isAlive()) {
-      const actionBlockkit = generateActionsBlockKit(
+      const actionBlockkit = generateArenaActionsBlockKit(
         player,
         hud,
         arenaCommandReply.playerCannotCheerDeads(targetPlayerSlackId)

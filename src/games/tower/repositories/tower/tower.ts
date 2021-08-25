@@ -1,29 +1,54 @@
 import { User } from '../../../../models';
 import { GameResponse } from '../../../utils';
-import { askEndGame, cancelEndGame, endGame, newGame } from './actions/admin/create-or-finish-game';
+import {
+  askEndGame,
+  cancelEndGame,
+  displayScoreboard,
+  displayTowerInfo,
+  endGame,
+  newGame,
+  openOrCloseTowerGates,
+} from './actions/admin/create-or-finish-game';
+import { enterTheTower } from './actions/player/enter';
 import type { TowerEngine } from './engine';
 
 interface TowerRepositoryMethods {
   /////////////////////////////////////////////////////////////////// PLAYER ///////////////////////////////////////////////////////////////////
-  // PLAYERS: CHANGE LOCATION OPERATIONS ///////////////////////////////////////
+
+  // PLAYERS: ENTER AND EXIT OPERATIONS ///////////////////////////////////////
+  enterTheTower(userRequesting: User): Promise<GameResponse>;
+
   // PLAYERS: MENU OPERATIONS ///////////////////////////////////////
+
   // PLAYERS: HIDE OPERATIONS ///////////////////////////////////////////////////////////////////
+
   // PLAYERS: SEARCH OPERATIONS ///////////////////////////////////////////////
+
   // PLAYERS: HEAL OR REVIVE OPERATIONS ///////////////////////////////////////
+
   // PLAYERS: HUNT OPERATIONS /////////////////////////////////////////////////
+
   // PLAYERS: CHEER OPERATIONS /////////////////////////////////////////////////
+
   /////////////////////////////////////////////////////////////////// ADMIN ///////////////////////////////////////////////////////////////////
+
   // ADMIN: CREATE AND SETUP OPERATIONS ////////////////////////////////////////////
   newGame(commandText: string, userRequesting: User): Promise<GameResponse>;
   askEndGame(userRequesting: User): Promise<GameResponse>;
   endGame(userRequesting: User): Promise<GameResponse>;
   cancelEndGame(userRequesting: User): Promise<GameResponse>;
-  // ADMIN: ADD PLAYER OPERATIONS ////////////////////////////////////////////
-  // ADMIN: WEAPONS OPERATIONS ////////////////////////////////////////////
-  // ADMIN: WEAPONS OPERATIONS ////////////////////////////////////////////
+  openOrCloseTowerGates(userRequesting: User, isOpen: boolean): Promise<GameResponse>;
+  displayTowerInfo(userRequesting: User): Promise<GameResponse>;
+
+  // ADMIN: FLOORS OPERATIONS ////////////////////////////////////////////
+
   // ADMIN: LIST OPERATIONS ////////////////////////////////////////////
+  displayScoreboard(userRequesting: User): Promise<GameResponse>;
+
   // ADMIN: VISIBILITY OPERATIONS ////////////////////////////////////////////
+
   // ADMIN: PERFORMANCE OPERATIONS ////////////////////////////////////////////
+
   // ADMIN: ROUND OPERATIONS /////////////////////////////////////////////////
 }
 
@@ -32,7 +57,8 @@ export class TowerRepository implements TowerRepositoryMethods {
 
   /////////////////////////////////////////////////////////////////// PLAYER ///////////////////////////////////////////////////////////////////
 
-  // PLAYERS: CHANGE LOCATION OPERATIONS ///////////////////////////////////////
+  // PLAYERS: ENTER AND EXIT OPERATIONS ///////////////////////////////////////
+  public enterTheTower = enterTheTower.bind(this);
 
   // PLAYERS: MENU OPERATIONS ///////////////////////////////////////
 
@@ -53,12 +79,13 @@ export class TowerRepository implements TowerRepositoryMethods {
   public askEndGame = askEndGame.bind(this);
   public endGame = endGame.bind(this);
   public cancelEndGame = cancelEndGame.bind(this);
+  public openOrCloseTowerGates = openOrCloseTowerGates.bind(this);
+  public displayTowerInfo = displayTowerInfo.bind(this);
 
-  // ADMIN: ADD PLAYER OPERATIONS ///////////////////////////////////////////////////////////////////
-
-  // ADMIN: HEAL OR REVIVE BOSS OPERATIONS ///////////////////////////////////////////////////////////////////
+  // ADMIN: FLOORS OPERATIONS ///////////////////////////////////////////////////////////////////
 
   // ADMIN: LIST OPERATIONS ////////////////////////////////////////////
+  public displayScoreboard = displayScoreboard.bind(this);
 
   // ADMIN: VISIBILITY OPERATIONS ////////////////////////////////////////////
 

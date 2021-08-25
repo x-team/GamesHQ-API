@@ -1,7 +1,7 @@
 import { User } from '../../../../../../models';
 import { findSinglePlayerPerformance } from '../../../../../../models/ArenaPlayerPerformance';
 import { GameResponse, getGameError, getGameResponse } from '../../../../../utils';
-import { generateActionsBlockKit } from '../../../../generators/gameplay';
+import { generateArenaActionsBlockKit } from '../../../../generators/gameplay';
 import {
   PlayerActionsDeadOrAlive,
   playerActionsParams,
@@ -29,7 +29,7 @@ export async function actionsMenu(userRequesting: User) {
       transaction
     );
     const hud = arenaCommandReply.playerHUD(player, zone, playerPerformance);
-    return getGameResponse(generateActionsBlockKit(player, hud));
+    return getGameResponse(generateArenaActionsBlockKit(player, hud));
   });
 }
 
@@ -55,7 +55,11 @@ export async function status(userRequesting: User) {
     const hud = arenaCommandReply.playerHUD(player, zone, playerPerformance);
     const cheersReceived = playerPerformance?.cheersReceived ?? 0;
     return getGameResponse(
-      generateActionsBlockKit(player, hud, arenaCommandReply.playerStatus(player, cheersReceived))
+      generateArenaActionsBlockKit(
+        player,
+        hud,
+        arenaCommandReply.playerStatus(player, cheersReceived)
+      )
     );
   });
 }

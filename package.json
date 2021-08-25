@@ -47,6 +47,7 @@
     "hapi-swagger": "14.2.1",
     "indefinite": "2.4.1",
     "joi": "17.4.0",
+    "moment": "2.29.1",
     "node-fetch": "2.6.1",
     "pg": "8.6.0",
     "reflect-metadata": "0.1.13",

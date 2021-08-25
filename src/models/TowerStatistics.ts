@@ -7,24 +7,22 @@ import {
   ForeignKey,
   BelongsTo,
   PrimaryKey,
-  AutoIncrement,
 } from 'sequelize-typescript';
 
-import { User, Game, Team } from '.';
+import { User, TowerGame } from '.';
 import { ONE, ZERO } from '../games/consts/global';
 
 interface TowerStatisticsAttributes {
-  id: number;
   attempts: number;
   completed: number;
-  _gameId: number;
+  _towerGameId: number;
   _userId: number;
 }
 
 interface TowerStatisticsCreationAttributes {
   attempts: number;
   completed: number;
-  _gameId: number;
+  _towerGameId: number;
   _userId: number;
 }
 
@@ -41,11 +39,6 @@ export class TowerStatistics
   implements TowerStatisticsAttributes
 {
   @PrimaryKey
-  @AutoIncrement
-  @Column(DataType.INTEGER)
-  id!: number;
-
-  @PrimaryKey
   @ForeignKey(() => User)
   @Column(DataType.INTEGER)
   _userId!: number;
@@ -58,16 +51,16 @@ export class TowerStatistics
   _user?: User;
 
   @PrimaryKey
-  @ForeignKey(() => Game)
+  @ForeignKey(() => TowerGame)
   @Column(DataType.INTEGER)
-  _gameId!: number;
+  _towerGameId!: number;
 
-  @BelongsTo(() => Game, {
+  @BelongsTo(() => TowerGame, {
     foreignKey: '_gameId',
     onUpdate: 'CASCADE',
     onDelete: 'CASCADE',
   })
-  _game?: Game;
+  _towerGame?: TowerGame;
 
   @Column(DataType.INTEGER)
   attempts!: number;
@@ -77,7 +70,7 @@ export class TowerStatistics
 
   static associations: {
     _user: Association<TowerStatistics, User>;
-    _game: Association<TowerStatistics, Game>;
+    _towerGame: Association<TowerStatistics, TowerGame>;
   };
 }
 
@@ -85,7 +78,7 @@ export function findOneTowerStatistics(gameId: number, userId: number, transacti
   return TowerStatistics.findOne({
     where: {
       _userId: userId,
-      _gameId: gameId,
+      _towerGameId: gameId,
     },
     transaction,
   });
@@ -99,11 +92,11 @@ export async function findOrCreateTowerStatistics(
   const [towerStatistics, created] = await TowerStatistics.findOrCreate({
     where: {
       _userId: userId,
-      _gameId: gameId,
+      _towerGameId: gameId,
     },
     defaults: {
       _userId: userId,
-      _gameId: gameId,
+      _towerGameId: gameId,
       attempts: ONE,
       completed: ZERO,
     },
@@ -123,7 +116,7 @@ export async function updateTowerAsCompleted(
   const towerStats = await TowerStatistics.findOne({
     where: {
       _userId: userId,
-      _gameId: gameId,
+      _towerGameId: gameId,
     },
     transaction,
   });
@@ -135,13 +128,18 @@ export async function updateTowerAsCompleted(
 export function findTowerStatisticsByGame(gameId: number, transaction: Transaction) {
   return TowerStatistics.findAll({
     where: {
-      _gameId: gameId,
+      _towerGameId: gameId,
     },
     order: [
       ['completed', 'DESC'],
       ['attempts', 'ASC'],
     ],
-    include: [{ model: User, include: [Team] }],
+    include: [
+      {
+        association: TowerStatistics.associations._user,
+        include: [User.associations._team],
+      },
+    ],
     transaction,
   });
 }
@@ -154,7 +152,7 @@ export async function updateTowerAttempts(
   const towerStats = await TowerStatistics.findOne({
     where: {
       _userId: userId,
-      _gameId: gameId,
+      _towerGameId: gameId,
     },
     transaction,
   });

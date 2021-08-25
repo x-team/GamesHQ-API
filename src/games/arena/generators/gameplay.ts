@@ -106,7 +106,7 @@ export function generateHunterActionsBlockKit(
   ];
 }
 
-export function generateActionsBlockKit(
+export function generateArenaActionsBlockKit(
   player: ArenaPlayer,
   primaryMessageText?: string,
   secondaryMessageText?: string

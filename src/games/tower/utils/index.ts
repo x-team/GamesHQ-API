@@ -72,7 +72,10 @@ export async function raiderActionsAlive(
   if (!(activeTower instanceof Game)) {
     return activeTower as GameResponse;
   }
-  await towerGatesHandler(activeTower);
+  const towerGates = await towerGatesHandler(activeTower);
+  if (towerGates !== true) {
+    return towerGates as GameResponse;
+  }
   const raider = await findRaiderByUser(userRequesting.id, true, transaction);
   if (!raider) {
     return getGameError(towerCommandReply.raiderNotInTheGame());

@@ -100,14 +100,22 @@ export class Game extends Model<GameAttributes, GameCreationAttributes> implemen
   @Column(DataType.TEXT)
   _gameTypeId!: GAME_TYPE;
 
-  @BelongsTo(() => GameType, '_gameTypeId')
+  @BelongsTo(() => GameType, {
+    foreignKey: '_gameTypeId',
+    onUpdate: 'CASCADE',
+    onDelete: 'CASCADE',
+  })
   _gameType?: GameType;
 
   @ForeignKey(() => User)
   @Column(DataType.INTEGER)
   _createdById!: number;
 
-  @BelongsTo(() => User)
+  @BelongsTo(() => User, {
+    foreignKey: '_createdById',
+    onUpdate: 'CASCADE',
+    onDelete: 'CASCADE',
+  })
   _createdBy?: User;
 
   @HasOne(() => ArenaGame)

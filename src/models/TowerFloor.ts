@@ -12,19 +12,19 @@ import {
   AutoIncrement,
 } from 'sequelize-typescript';
 
-import { Enemy, Game, TowerFloorBattlefield, TowerFloorEnemy } from '.';
+import { TowerGame, TowerFloorBattlefield, TowerFloorEnemy } from '.';
 
 interface TowerFloorAttributes {
   id: number;
   number: number;
   isEveryoneVisible: boolean;
-  _gameId: number;
+  _towerGameId: number;
 }
 
 interface TowerFloorCreationAttributes {
   number: number;
   isEveryoneVisible?: boolean;
-  _gameId: number;
+  _towerGameId: number;
 }
 
 @Table({
@@ -50,16 +50,16 @@ export class TowerFloor
   @Column(DataType.BOOLEAN)
   isEveryoneVisible!: boolean;
 
-  @ForeignKey(() => Game)
+  @ForeignKey(() => TowerGame)
   @Column(DataType.INTEGER)
-  _gameId!: number;
+  _towerGameId!: number;
 
-  @BelongsTo(() => Game, {
+  @BelongsTo(() => TowerGame, {
     foreignKey: '_gameId',
     onUpdate: 'CASCADE',
     onDelete: 'CASCADE',
   })
-  _game?: Game;
+  _towerGame?: TowerGame;
 
   @HasMany(() => TowerFloorEnemy, '_towerFloorId')
   _floorEnemies?: TowerFloorEnemy[];
@@ -68,7 +68,7 @@ export class TowerFloor
   _floorBattlefields?: TowerFloorBattlefield[];
 
   static associations: {
-    _game: Association<TowerFloor, Game>;
+    _towerGame: Association<TowerFloor, TowerGame>;
     _floorEnemies: Association<TowerFloor, TowerFloorEnemy>;
     _floorBattlefields: Association<TowerFloor, TowerFloorBattlefield>;
   };
@@ -79,26 +79,36 @@ export function findTowerFloorById(id: number, includeAll: boolean, transaction?
     include: includeAll
       ? [
           {
-            model: Game,
+            association: TowerFloor.associations._towerGame,
             include: [
               {
-                model: TowerFloor,
-                include: [{ model: TowerFloorEnemy, include: [Enemy] }],
+                association: TowerGame.associations._floors,
+                include: [
+                  {
+                    association: TowerFloor.associations._floorEnemies,
+                    include: [TowerFloorEnemy.associations._enemy],
+                  },
+                ],
                 order: [['number', 'ASC']],
               },
             ],
           },
         ]
-      : [{ model: TowerFloorEnemy, include: [Enemy] }],
+      : [
+          {
+            association: TowerFloor.associations._floorEnemies,
+            include: [TowerFloorEnemy.associations._enemy],
+          },
+        ],
     transaction,
   });
 }
 
-export async function addTowerFloors(game: Game, transaction: Transaction) {
-  for (let mutableIndex = 1; mutableIndex <= game._tower?.height!; mutableIndex++) {
+export async function addTowerFloors(towerGame: TowerGame, transaction: Transaction) {
+  for (let mutableIndex = 1; mutableIndex <= towerGame.height!; mutableIndex++) {
     await TowerFloor.create(
       {
-        _gameId: game.id,
+        _towerGameId: towerGame.id,
         number: mutableIndex,
       },
       { transaction }

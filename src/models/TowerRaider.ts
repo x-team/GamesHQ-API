@@ -577,7 +577,10 @@ export async function getOrcreateRaider(
     for (const weapon of foundWeapons) {
       await raiderFound.addWeapon(weapon, transaction);
     }
-    return raiderFound;
+    return raiderFound.reload({
+      include: [TowerRaider.associations._user],
+      transaction,
+    });
   } else {
     const newTowerRaider = await TowerRaider.create({
       _userId: user.id,
@@ -591,7 +594,10 @@ export async function getOrcreateRaider(
     for (const weapon of foundWeapons) {
       await newTowerRaider.addWeapon(weapon, transaction);
     }
-    return newTowerRaider;
+    return newTowerRaider.reload({
+      include: [TowerRaider.associations._user],
+      transaction,
+    });
   }
 }
 

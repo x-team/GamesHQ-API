@@ -4,7 +4,7 @@ import { setPlayerRoundAction } from '../../../../../../models/ArenaRoundAction'
 import { findActiveArenaZones } from '../../../../../../models/ArenaZone';
 import { GameResponse, getGameResponse } from '../../../../../utils';
 import { ARENA_ACTIONS } from '../../../../consts';
-import { generateActionsBlockKit } from '../../../../generators/gameplay';
+import { generateArenaActionsBlockKit } from '../../../../generators/gameplay';
 import {
   PlayerActionsDeadOrAlive,
   playerActionsParams,
@@ -21,7 +21,7 @@ export async function hide(userRequesting: User) {
     const { player, round, zone } = playerActions as PlayerActionsDeadOrAlive;
 
     if (!zone) {
-      const actionBlockkit = generateActionsBlockKit(player, arenaCommandReply.zoneNeeded());
+      const actionBlockkit = generateArenaActionsBlockKit(player, arenaCommandReply.zoneNeeded());
       return getGameResponse(actionBlockkit);
     }
 
@@ -33,7 +33,7 @@ export async function hide(userRequesting: User) {
     const hud = arenaCommandReply.playerHUD(player, zone, playerPerformance);
 
     if (round.isEveryoneVisible) {
-      const actionBlockkit = generateActionsBlockKit(
+      const actionBlockkit = generateArenaActionsBlockKit(
         player,
         hud,
         arenaCommandReply.playerCannotHide()

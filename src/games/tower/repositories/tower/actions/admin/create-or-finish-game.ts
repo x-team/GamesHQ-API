@@ -1,8 +1,10 @@
 import { Game, User } from '../../../../../../models';
 import { startTowerGame } from '../../../../../../models/TowerGame';
 import { findActiveRound } from '../../../../../../models/TowerRound';
+import { findTowerStatisticsByGame } from '../../../../../../models/TowerStatistics';
 import { adminAction, GameResponse, getGameError, getGameResponse } from '../../../../../utils';
 import { generateTowerEndGameConfirmationBlockKit } from '../../../../generators/gameplay';
+import { generateTowerInformation } from '../../../../generators/info-setup-and-config';
 import {
   activeTowerHandler,
   parseCreateTowerCommandText,
@@ -84,5 +86,65 @@ export async function cancelEndGame(userRequesting: User) {
       return getGameError(towerCommandReply.adminsOnly());
     }
     return getGameResponse(towerCommandReply.cancelEndGame());
+  });
+}
+
+export async function openOrCloseTowerGates(userRequesting: User, isOpen: boolean) {
+  return withTowerTransaction(async (transaction) => {
+    const isAdmin = adminAction(userRequesting);
+    if (!isAdmin) {
+      return getGameError(towerCommandReply.adminsOnly());
+    }
+    const activeTower = await activeTowerHandler(transaction);
+    if (!(activeTower instanceof Game)) {
+      return activeTower as GameResponse;
+    }
+    if (!isOpen) {
+      const allRaiderInsideTheTower =
+        (await activeTower._tower?.findAllRaidersInside(transaction)) ?? [];
+      await Promise.all(
+        allRaiderInsideTheTower.map(async (raider) => {
+          const activeRound = await findActiveRound(
+            raider._towerFloorBattlefieldId!,
+            false,
+            transaction
+          );
+          await leaveTower({ raider, round: activeRound }, transaction);
+        })
+      );
+    }
+    await activeTower._tower?.openOrCloseGates(isOpen, transaction);
+    return getGameResponse(towerCommandReply.towerGatesInfo(isOpen));
+  });
+}
+
+export async function displayTowerInfo(userRequesting: User) {
+  return withTowerTransaction(async (transaction) => {
+    const isAdmin = adminAction(userRequesting);
+    if (!isAdmin) {
+      return getGameError(towerCommandReply.adminsOnly());
+    }
+    const activeTower = await activeTowerHandler(transaction);
+    if (!(activeTower instanceof Game)) {
+      return activeTower as GameResponse;
+    }
+    const slackBlockKit = generateTowerInformation(activeTower);
+    return getGameResponse(slackBlockKit);
+  });
+}
+
+export async function displayScoreboard(userRequesting: User) {
+  return withTowerTransaction(async (transaction) => {
+    const isAdmin = adminAction(userRequesting);
+    if (!isAdmin) {
+      return getGameError(towerCommandReply.adminsOnly());
+    }
+    const activeTower = await activeTowerHandler(transaction);
+    if (!(activeTower instanceof Game)) {
+      return activeTower as GameResponse;
+    }
+    const stats = await findTowerStatisticsByGame(activeTower.id, transaction);
+    await publishTowerPublicMessage(towerCommandReply.adminDisplayScoreboard(activeTower, stats));
+    return getGameResponse('Scoreboard displayed');
   });
 }

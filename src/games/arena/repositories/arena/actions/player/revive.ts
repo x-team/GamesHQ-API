@@ -8,7 +8,7 @@ import { ITEM_TYPE, ZERO } from '../../../../../consts/global';
 import { GameResponse, getGameResponse } from '../../../../../utils';
 import { ARENA_ACTIONS, MAX_PLAYER_HEALTH } from '../../../../consts';
 import {
-  generateActionsBlockKit,
+  generateArenaActionsBlockKit,
   generateTargetPickerBlock,
 } from '../../../../generators/gameplay';
 import {
@@ -27,7 +27,7 @@ export async function reviveSelf(userRequesting: User) {
     const { player, round, zone } = playerActions as PlayerActionsDeadOrAlive;
 
     if (!zone) {
-      const actionBlockkit = generateActionsBlockKit(player, arenaCommandReply.zoneNeeded());
+      const actionBlockkit = generateArenaActionsBlockKit(player, arenaCommandReply.zoneNeeded());
       return getGameResponse(actionBlockkit);
     }
     const healthKit = await findHealthkitByName(ITEM_TYPE.HEALTH_KIT, transaction);
@@ -41,7 +41,7 @@ export async function reviveSelf(userRequesting: User) {
     const hud = arenaCommandReply.playerHUD(player, zone, playerPerformance);
 
     if (healthKitQty <= ZERO) {
-      const actionBlockkit = generateActionsBlockKit(
+      const actionBlockkit = generateArenaActionsBlockKit(
         player,
         hud,
         arenaCommandReply.playerNeedsHealthKit()
@@ -49,7 +49,7 @@ export async function reviveSelf(userRequesting: User) {
       return getGameResponse(actionBlockkit);
     }
     if (player.health === MAX_PLAYER_HEALTH) {
-      const actionBlockkit = generateActionsBlockKit(
+      const actionBlockkit = generateArenaActionsBlockKit(
         player,
         hud,
         arenaCommandReply.playerHealsSelfMaxed()
@@ -87,7 +87,7 @@ export async function completeRevive(userRequesting: User, selectedTargetId: num
     const { player, round, zone } = playerActions as PlayerActionsDeadOrAlive;
 
     if (!zone) {
-      const actionBlockkit = generateActionsBlockKit(player, arenaCommandReply.zoneNeeded());
+      const actionBlockkit = generateArenaActionsBlockKit(player, arenaCommandReply.zoneNeeded());
       return getGameResponse(actionBlockkit);
     }
 
@@ -106,7 +106,7 @@ export async function completeRevive(userRequesting: User, selectedTargetId: num
     const hud = arenaCommandReply.playerHUD(player, zone, playerPerformance);
 
     if (!targetPlayer || !targetPlayer._user || !targetPlayer._user.slackId) {
-      const actionBlockkit = generateActionsBlockKit(
+      const actionBlockkit = generateArenaActionsBlockKit(
         player,
         hud,
         arenaCommandReply.playerNotInTheGame()
@@ -118,7 +118,7 @@ export async function completeRevive(userRequesting: User, selectedTargetId: num
     const isSelf = player.id === targetPlayer.id;
 
     if (targetPlayer.health === MAX_PLAYER_HEALTH) {
-      const actionBlockkit = generateActionsBlockKit(
+      const actionBlockkit = generateArenaActionsBlockKit(
         player,
         hud,
         isSelf
@@ -131,7 +131,7 @@ export async function completeRevive(userRequesting: User, selectedTargetId: num
     const healthKit = await findHealthkitByName(ITEM_TYPE.HEALTH_KIT, transaction);
     const healthKitQty = healthKit ? player.healthkitQty(healthKit.id) : ZERO;
     if (healthKitQty <= ZERO) {
-      const actionBlockkit = generateActionsBlockKit(
+      const actionBlockkit = generateArenaActionsBlockKit(
         player,
         hud,
         arenaCommandReply.playerNeedsHealthKit()
@@ -178,7 +178,7 @@ export async function reviveOther(userRequesting: User) {
     const { player, round, zone } = playerActions as PlayerActionsDeadOrAlive;
 
     if (!zone) {
-      const actionBlockkit = generateActionsBlockKit(player, arenaCommandReply.zoneNeeded());
+      const actionBlockkit = generateArenaActionsBlockKit(player, arenaCommandReply.zoneNeeded());
       return getGameResponse(actionBlockkit);
     }
     const healthKit = await findHealthkitByName(ITEM_TYPE.HEALTH_KIT, transaction);
@@ -192,7 +192,7 @@ export async function reviveOther(userRequesting: User) {
     const hud = arenaCommandReply.playerHUD(player, zone, playerPerformance);
 
     if (healthKitQty <= ZERO) {
-      const actionBlockkit = generateActionsBlockKit(
+      const actionBlockkit = generateArenaActionsBlockKit(
         player,
         hud,
         arenaCommandReply.playerNeedsHealthKit()

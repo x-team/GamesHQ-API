@@ -82,10 +82,10 @@ export class TowerGame
   })
   _game?: Game;
 
-  @HasMany(() => TowerFloor, '_gameId')
+  @HasMany(() => TowerFloor, '_towerGameId')
   _floors?: TowerFloor[];
 
-  @HasMany(() => TowerStatistics, '_gameId')
+  @HasMany(() => TowerStatistics, '_towerGameId')
   _statistics?: TowerStatistics[];
 
   static associations: {
@@ -127,14 +127,13 @@ export class TowerGame
     });
   }
 
-  async openOrCloseTowerGame(isOpen: boolean, transaction: Transaction) {
-    await this.update(
+  async openOrCloseGates(isOpen: boolean, transaction: Transaction) {
+    return this.update(
       {
         isOpen,
       },
       { transaction }
     );
-    return this.get({ plain: true });
   }
 
   async updateTowerGame(
@@ -204,7 +203,7 @@ export async function createTowerGame(
     isOpen,
   });
   await newTowerGame.save({ transaction });
-  await addTowerFloors(game, transaction);
+  await addTowerFloors(newTowerGame, transaction);
   return game.reload({
     include: [
       {

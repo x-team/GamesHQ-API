@@ -7,7 +7,7 @@ import {
 import { findActiveArenaZones, findArenaZoneById } from '../../../../../../models/ArenaZone';
 import { GameResponse, getGameError, getGameResponse } from '../../../../../utils';
 import { ARENA_ACTIONS } from '../../../../consts';
-import { generateActionsBlockKit } from '../../../../generators/gameplay';
+import { generateArenaActionsBlockKit } from '../../../../generators/gameplay';
 import {
   PlayerActionsDeadOrAlive,
   playerActionsParams,
@@ -38,7 +38,7 @@ export async function changeLocation(userRequesting: User, arenaZoneId: number) 
     const hud = arenaCommandReply.playerHUD(player, zone, playerPerformance);
 
     if (!roundAction) {
-      const actionBlockkit = generateActionsBlockKit(
+      const actionBlockkit = generateArenaActionsBlockKit(
         player,
         hud,
         arenaCommandReply.playerDoesntHaveAction()
@@ -50,7 +50,11 @@ export async function changeLocation(userRequesting: User, arenaZoneId: number) 
     const arenaZoneToMove = await findArenaZoneById(arenaZoneId, transaction);
 
     if (!arenaZoneToMove) {
-      const actionBlockkit = generateActionsBlockKit(player, hud, arenaCommandReply.zoneNotFound());
+      const actionBlockkit = generateArenaActionsBlockKit(
+        player,
+        hud,
+        arenaCommandReply.zoneNotFound()
+      );
       return getGameResponse(actionBlockkit);
     }
 
@@ -89,7 +93,7 @@ export async function bossChangeLocation(userRequesting: User) {
     const hud = arenaCommandReply.playerHUD(player, zone, playerPerformance);
 
     if (!player.isBoss) {
-      const actionBlockkit = generateActionsBlockKit(
+      const actionBlockkit = generateArenaActionsBlockKit(
         player,
         hud,
         arenaCommandReply.playerNotABoss()
