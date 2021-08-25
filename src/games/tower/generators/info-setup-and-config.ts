@@ -1,11 +1,20 @@
 import moment from 'moment';
 import { Game, TowerFloor } from '../../../models';
 import { FULL_HEALTH_HEART_EMOJI } from '../../consts/emojis';
-import { SlackBlockKitDividerLayout, SlackBlockKitSectionLayout } from '../../model/SlackBlockKit';
+import {
+  SlackBlockKitDividerLayout,
+  SlackBlockKitLayoutElement,
+  SlackBlockKitSectionLayout,
+} from '../../model/SlackBlockKit';
+import { SlackDialog } from '../../model/SlackDialogObject';
 import {
   blockKitButton,
+  blockKitCompositionText,
   blockKitContext,
+  blockKitDialogObject,
+  blockKitDivider,
   blockKitHeader,
+  blockKitInputText,
   blockKitMrkdwnSection,
 } from '../../utils/generators/slack';
 import { TOWER_SECONDARY_SLACK_ACTIONS } from '../consts';
@@ -29,9 +38,7 @@ function towerFloorDetail(floor: TowerFloor) {
 }
 
 export function generateTowerInformation(towerGame: Game) {
-  const blockKitDivider: SlackBlockKitDividerLayout = {
-    type: 'divider',
-  };
+  const blockKitDividerSection = blockKitDivider();
   const parsedDate = moment.utc(towerGame.startedAt).format('MMMM Do YYYY, h:mm:ss a');
   // Block kit Titles and Subtitles (Main Sections)
   const mainTitleHeaderLayout = blockKitHeader(`${towerGame.name} information`);
@@ -56,17 +63,67 @@ export function generateTowerInformation(towerGame: Game) {
       blockKitButton('Edit', `${TOWER_SECONDARY_SLACK_ACTIONS.UPDATE_TOWER_FLOOR_ID}-${floor.id}`)
     );
     floorsWithDividerSection.push(titleSection);
-    floorsWithDividerSection.push(blockKitDivider);
+    floorsWithDividerSection.push(blockKitDividerSection);
   });
 
   return [
-    blockKitDivider,
+    blockKitDividerSection,
     mainTitleHeaderLayout,
     mainContextLayout,
-    blockKitDivider,
+    blockKitDividerSection,
     prizeSection,
     floorTitleHeaderLayout,
-    blockKitDivider,
+    blockKitDividerSection,
     ...floorsWithDividerSection,
   ];
+}
+
+export function generateUpdateTowerDialogView(towerGame: Game): SlackDialog {
+  const blockKitDividerSection = blockKitDivider();
+  const callbackId = TOWER_SECONDARY_SLACK_ACTIONS.UPDATE_TOWER_ID;
+  const blocks: SlackBlockKitLayoutElement[] = [
+    blockKitDividerSection,
+    {
+      type: 'input',
+      block_id: `${callbackId}-name-block`,
+      label: blockKitCompositionText('Name'),
+      dispatch_action: false,
+      element: blockKitInputText(
+        `${callbackId}-name-action`,
+        'Please provide a name',
+        towerGame.name
+      ),
+      optional: false,
+    },
+    {
+      type: 'input',
+      block_id: `${callbackId}-luna-prize-block`,
+      label: blockKitCompositionText('Luna Prize'),
+      dispatch_action: false,
+      element: blockKitInputText(
+        `${callbackId}-luna-prize-action`,
+        'Please provide a luna prize amount',
+        `${towerGame._tower?.lunaPrize}`
+      ),
+    },
+    {
+      type: 'input',
+      block_id: `${callbackId}-coin-prize-block`,
+      label: blockKitCompositionText('Coin Prize'),
+      dispatch_action: false,
+      element: blockKitInputText(
+        `${callbackId}-coin-prize-action`,
+        'Please provide a coin prize amount',
+        `${towerGame._tower?.coinPrize}`
+      ),
+    },
+    blockKitDividerSection,
+  ];
+  return blockKitDialogObject({
+    type: 'modal',
+    submit: blockKitCompositionText('Send'),
+    title: blockKitCompositionText('The Tower Setup'),
+    callback_id: callbackId,
+    blocks,
+  });
 }

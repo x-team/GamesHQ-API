@@ -141,6 +141,16 @@ export class Game extends Model<GameAttributes, GameCreationAttributes> implemen
     );
     return this.get({ plain: true });
   }
+
+  async updateGame({ name, isActive }: Partial<GameAttributes>, transaction: Transaction) {
+    return this.update(
+      {
+        name,
+        isActive,
+      },
+      { transaction }
+    );
+  }
 }
 
 const basicUserInfo = ['id', 'displayName', 'slackId', 'email'];

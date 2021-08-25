@@ -5,6 +5,7 @@ import { SLACK_COMMAND_TESTING_PREFIX } from '../../consts/api';
 import { handleArenaAction, handleViewSubmissionAction } from '../../games/arena/actions';
 import type { SlackSlashCommandPayload } from '../../games/model/SlackSlashCommandPayload';
 import { handleTowerBlockAction } from '../../games/tower/actions';
+import { handleTowerAction } from '../../games/tower/actions/towerAction';
 
 import { slackCommandSwitcher } from './utils';
 
@@ -54,7 +55,7 @@ export const towerSlackActionHandler: Lifecycle.Method = async (request, _h) => 
       case 'shortcut':
       // return handleTowerShortcut(slackActionPayload as SlackShortcutPayload);
       case 'view_submission':
-      // return handleTowerAction(slackActionPayload as SlackDialogSubmissionPayload);
+        return handleTowerAction(slackActionPayload);
       case 'block_actions':
         return handleTowerBlockAction(slackActionPayload);
       default:

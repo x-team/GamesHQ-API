@@ -1,4 +1,5 @@
 import { User } from '../../../../models';
+import { TowerFormData } from '../../../model/SlackDialogObject';
 import { GameResponse } from '../../../utils';
 import {
   askEndGame,
@@ -9,6 +10,7 @@ import {
   newGame,
   openOrCloseTowerGates,
 } from './actions/admin/create-or-finish-game';
+import { updateTowerBasicInfo, updateTowerBasicInfoForm } from './actions/admin/update-config-game';
 import { enterTheTower } from './actions/player/enter';
 import type { TowerEngine } from './engine';
 
@@ -39,6 +41,15 @@ interface TowerRepositoryMethods {
   cancelEndGame(userRequesting: User): Promise<GameResponse>;
   openOrCloseTowerGates(userRequesting: User, isOpen: boolean): Promise<GameResponse>;
   displayTowerInfo(userRequesting: User): Promise<GameResponse>;
+  updateTowerBasicInfo(
+    userRequesting: User,
+    triggerId: string,
+    towerId: number
+  ): Promise<GameResponse>;
+  updateTowerBasicInfoForm(
+    userRequesting: User,
+    towerGameInfo: TowerFormData
+  ): Promise<GameResponse>;
 
   // ADMIN: FLOORS OPERATIONS ////////////////////////////////////////////
 
@@ -81,13 +92,13 @@ export class TowerRepository implements TowerRepositoryMethods {
   public cancelEndGame = cancelEndGame.bind(this);
   public openOrCloseTowerGates = openOrCloseTowerGates.bind(this);
   public displayTowerInfo = displayTowerInfo.bind(this);
+  public updateTowerBasicInfo = updateTowerBasicInfo.bind(this);
+  public updateTowerBasicInfoForm = updateTowerBasicInfoForm.bind(this);
 
   // ADMIN: FLOORS OPERATIONS ///////////////////////////////////////////////////////////////////
 
   // ADMIN: LIST OPERATIONS ////////////////////////////////////////////
   public displayScoreboard = displayScoreboard.bind(this);
-
-  // ADMIN: VISIBILITY OPERATIONS ////////////////////////////////////////////
 
   // ADMIN: WEAPONS OPERATIONS ////////////////////////////////////////////
 
