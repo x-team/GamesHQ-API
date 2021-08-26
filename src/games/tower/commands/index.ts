@@ -49,8 +49,10 @@ export function towerSwitchCommand({
     // RAIDER
     case TOWER_SLACK_COMMANDS.ENTER:
       return theTower.enterTheTower(userRequesting);
-    // case TOWER_SLACK_COMMANDS.ACTIONS:
-    //   return theTower.raiderActions(userRequesting);
+    case TOWER_SLACK_COMMANDS.ACTIONS:
+      return theTower.raiderActions(userRequesting);
+    case TOWER_SLACK_COMMANDS.PROGRESS:
+      return theTower.displayProgress(userRequesting);
     // case TOWER_SLACK_COMMANDS.EXIT:
     //   return theTower.exit(userRequesting);
     // case TOWER_SLACK_COMMANDS.START_ROUND:
@@ -58,8 +60,6 @@ export function towerSwitchCommand({
     //     handleException({ error, plugin: 'slack' });
     //   });
     //   break;
-    // case TOWER_SLACK_COMMANDS.PROGRESS:
-    //   return theTower.displayProgress(userRequesting);
     default:
       return getGameResponse('Please provide a valid The Tower command');
   }

@@ -14,7 +14,7 @@ import type {
 } from '../../model/SlackBlockKit';
 import { SlackBlockKitPayload } from '../../model/SlackBlockKitPayload';
 import { getEphemeralText, getGameError, slackRequest } from '../../utils';
-import { TOWER_SECONDARY_SLACK_ACTIONS } from '../consts';
+import { TOWER_SECONDARY_SLACK_ACTIONS, TOWER_SLACK_COMMANDS } from '../consts';
 import { TowerEngine } from '../repositories/tower/engine';
 import { TowerRepository } from '../repositories/tower/tower';
 import { isTowerConfigAction, isTowerRaiderWithParamsAction } from '../utils';
@@ -62,6 +62,12 @@ function towerPlayerSwitchActions(action: string, selectedId: number, userReques
   logger.debug({ selectedId });
   switch (action) {
     // // RAIDER
+    case TOWER_SLACK_COMMANDS.PROGRESS_BUTTON:
+      return theTower.displayProgress(userRequesting);
+    // case TOWER_SLACK_COMMANDS.ACTIONS_FROM_QUESTION:
+    //   return theTower.raiderActions(userRequesting);
+    // case TOWER_SLACK_COMMANDS.RE_ENTER_BUTTON:
+    //   return theTower.enter(userRequesting);
     // case TOWER_SLACK_COMMANDS.HIDE:
     //   return theTower.hide(userRequesting);
     // case TOWER_SLACK_COMMANDS.SEARCH_HEALTH:
@@ -78,12 +84,6 @@ function towerPlayerSwitchActions(action: string, selectedId: number, userReques
     //   return theTower.hunt(userRequesting);
     // case TOWER_SLACK_COMMANDS.REPEAT_LAST_ACTION:
     //   return theTower.repeatLastAction(userRequesting);
-    // case TOWER_SLACK_COMMANDS.RE_ENTER_BUTTON:
-    //   return theTower.enter(userRequesting);
-    // case TOWER_SLACK_COMMANDS.PROGRESS_BUTTON:
-    //   return theTower.displayProgress(userRequesting);
-    // case TOWER_SLACK_COMMANDS.ACTIONS_FROM_QUESTION:
-    //   return theTower.raiderActions(userRequesting);
     // case TOWER_SLACK_COMMANDS.START_ROUND_FROM_QUESTION:
     //   theTower.startRound(userRequesting).catch((error) => {
     //     handleException({ error, plugin: 'slack' });

@@ -21,6 +21,7 @@ import {
   setFloorVisibility,
 } from './actions/admin/tower-floors-operations';
 import { updateTowerBasicInfo, updateTowerBasicInfoForm } from './actions/admin/update-config-game';
+import { displayProgress, raiderActions } from './actions/player/actions-menu';
 import { enterTheTower } from './actions/player/enter';
 import type { TowerEngine } from './engine';
 
@@ -31,6 +32,8 @@ interface TowerRepositoryMethods {
   enterTheTower(userRequesting: User): Promise<GameResponse>;
 
   // PLAYERS: MENU OPERATIONS ///////////////////////////////////////
+  raiderActions(userRequesting: User): Promise<GameResponse>;
+  displayProgress(userRequesting: User): Promise<GameResponse>;
 
   // PLAYERS: HIDE OPERATIONS ///////////////////////////////////////////////////////////////////
 
@@ -101,6 +104,8 @@ export class TowerRepository implements TowerRepositoryMethods {
   public enterTheTower = enterTheTower.bind(this);
 
   // PLAYERS: MENU OPERATIONS ///////////////////////////////////////
+  public raiderActions = raiderActions.bind(this);
+  public displayProgress = displayProgress.bind(this);
 
   // PLAYERS: HIDE OPERATIONS ///////////////////////////////////////////////////////////////////
 

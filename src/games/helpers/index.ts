@@ -12,6 +12,7 @@ import { ARENA_PERK } from '../arena/consts';
 import { hasArenaPerk } from '../arena/repositories/arena/engine/cheerSystem';
 import { arenaPerkStats } from '../arena/utils';
 import {
+  ARMOR_INVENTORY_EMOJI,
   COMMON_COLOR_EMOJI_BIG,
   COMMON_COLOR_EMOJI_SMALL,
   EMPTY_HEALTH_HEART_EMOJI,
@@ -165,7 +166,7 @@ export function armorStatus(
 ) {
   const armor = armors.length ? armors[ZERO] : null;
   if (!armor) {
-    return '${ARMOR_INVENTORY_EMOJI} *Inventory:* (no armor)';
+    return `${ARMOR_INVENTORY_EMOJI} *Inventory:* (no armor)`;
   }
   const { name, emoji, _armor } = armor;
   const arenaArmor = armor as Item & { ArenaItemInventory: ArenaItemInventory };

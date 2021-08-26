@@ -27,7 +27,7 @@ import { bossChangeLocation, changeLocation } from './actions/player/change-loca
 import { cheer, completeCheer, repeatLastCheer } from './actions/player/cheer';
 import { hide } from './actions/player/hide';
 import { chooseTarget, chooseWeapon, hunt } from './actions/player/hunt';
-import { actionsMenu, status } from './actions/player/menu';
+import { actionsMenu, status } from './actions/player/actions-menu';
 import { completeRevive, reviveOther, reviveSelf } from './actions/player/revive';
 import { searchForArmors, searchForHealth, searchForWeapons } from './actions/player/search';
 

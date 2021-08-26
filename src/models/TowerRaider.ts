@@ -48,6 +48,16 @@ interface TowerRaiderCreationAttributes {
   _towerFloorBattlefieldId?: number;
 }
 
+function basicInclude() {
+  return {
+    include: [
+      TowerRaider.associations._user,
+      TowerRaider.associations._perks,
+      TowerRaider.associations._currentTowerFloorBattlefield,
+    ],
+  };
+}
+
 function withInventory(allInventory?: boolean): FindOptions {
   return {
     include: allInventory
@@ -95,8 +105,8 @@ function withInventory(allInventory?: boolean): FindOptions {
         ],
   };
 }
-
 @Scopes(() => ({
+  basicInclude,
   withInventory,
 }))
 @Table({
@@ -496,7 +506,10 @@ export async function findRaiderByUser(
   includeInventories: boolean,
   transaction?: Transaction
 ) {
-  return TowerRaider.scope({ method: ['withInventory', includeInventories] }).findOne({
+  return TowerRaider.scope([
+    'basicInclude',
+    { method: ['withInventory', includeInventories] },
+  ]).findOne({
     where: { _userId: userId },
     order: [['id', 'DESC']],
     transaction,
@@ -508,7 +521,10 @@ export async function findRaiderById(
   includeInventories: boolean,
   transaction?: Transaction
 ) {
-  return TowerRaider.scope({ method: ['withInventory', includeInventories] }).findByPk(raiderId, {
+  return TowerRaider.scope([
+    'basicInclude',
+    { method: ['withInventory', includeInventories] },
+  ]).findByPk(raiderId, {
     transaction,
   });
 }
@@ -518,7 +534,10 @@ export async function findRaidersByFloorBattlefield(
   includeInventories: boolean,
   transaction?: Transaction
 ) {
-  return TowerRaider.scope({ method: ['withInventory', includeInventories] }).findAll({
+  return TowerRaider.scope([
+    'basicInclude',
+    { method: ['withInventory', includeInventories] },
+  ]).findAll({
     where: { _towerFloorBattlefieldId: battlefieldId },
     transaction,
   });
@@ -529,7 +548,10 @@ export async function findVisibleRaiders(
   includeInventories: boolean,
   transaction?: Transaction
 ) {
-  return TowerRaider.scope({ method: ['withInventory', includeInventories] }).findAll({
+  return TowerRaider.scope([
+    'basicInclude',
+    { method: ['withInventory', includeInventories] },
+  ]).findAll({
     where: { _towerFloorBattlefieldId: battlefieldId, isVisible: true },
     transaction,
   });
