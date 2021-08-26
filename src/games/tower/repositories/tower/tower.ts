@@ -23,6 +23,7 @@ import {
 import { updateTowerBasicInfo, updateTowerBasicInfoForm } from './actions/admin/update-config-game';
 import { displayProgress, raiderActions } from './actions/player/actions-menu';
 import { enterTheTower } from './actions/player/enter';
+import { exitTheTower } from './actions/player/exit';
 import type { TowerEngine } from './engine';
 
 interface TowerRepositoryMethods {
@@ -30,6 +31,7 @@ interface TowerRepositoryMethods {
 
   // PLAYERS: ENTER AND EXIT OPERATIONS ///////////////////////////////////////
   enterTheTower(userRequesting: User): Promise<GameResponse>;
+  exitTheTower(userRequesting: User): Promise<GameResponse>;
 
   // PLAYERS: MENU OPERATIONS ///////////////////////////////////////
   raiderActions(userRequesting: User): Promise<GameResponse>;
@@ -102,6 +104,7 @@ export class TowerRepository implements TowerRepositoryMethods {
 
   // PLAYERS: ENTER AND EXIT OPERATIONS ///////////////////////////////////////
   public enterTheTower = enterTheTower.bind(this);
+  public exitTheTower = exitTheTower.bind(this);
 
   // PLAYERS: MENU OPERATIONS ///////////////////////////////////////
   public raiderActions = raiderActions.bind(this);

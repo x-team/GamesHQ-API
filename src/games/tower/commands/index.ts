@@ -1,5 +1,6 @@
 import { logger } from '../../../config';
 import { User } from '../../../models';
+import { SPINNER_EMOJI } from '../../consts/emojis';
 import { getGameResponse } from '../../utils';
 import { TOWER_SLACK_COMMANDS } from '../consts';
 import { TowerEngine } from '../repositories/tower/engine';
@@ -49,17 +50,32 @@ export function towerSwitchCommand({
     // RAIDER
     case TOWER_SLACK_COMMANDS.ENTER:
       return theTower.enterTheTower(userRequesting);
+    case TOWER_SLACK_COMMANDS.EXIT:
+      return theTower.exitTheTower(userRequesting);
     case TOWER_SLACK_COMMANDS.ACTIONS:
       return theTower.raiderActions(userRequesting);
     case TOWER_SLACK_COMMANDS.PROGRESS:
       return theTower.displayProgress(userRequesting);
-    // case TOWER_SLACK_COMMANDS.EXIT:
-    //   return theTower.exit(userRequesting);
-    // case TOWER_SLACK_COMMANDS.START_ROUND:
-    //   theTower.startRound(userRequesting).catch((error) => {
-    //     handleException({ error, plugin: 'slack' });
-    //   });
-    //   break;
+    case TOWER_SLACK_COMMANDS.START_ROUND:
+      // theTower.startRound(userRequesting)
+      //   .then(async (reply) => {
+      //     const slackResponseBody = gameResponseToSlackHandler(reply);
+      //     await theTowerNotifyEphemeral(
+      //       slackResponseBody.text ?? 'Something went wrong',
+      //       userRequesting.slackId!,
+      //       userRequesting.slackId!
+      //     );
+      //   })
+      //   .catch(async (e) => {
+      //     logger.error('Error in Slack Command: The Tower');
+      //     logger.error(e);
+      //     await theTowerNotifyEphemeral(
+      //       'Something went wrong',
+      //       userRequesting.slackId!,
+      //       userRequesting.slackId!
+      //     );
+      //   });
+      return getGameResponse(`Starting round ${SPINNER_EMOJI}`);
     default:
       return getGameResponse('Please provide a valid The Tower command');
   }

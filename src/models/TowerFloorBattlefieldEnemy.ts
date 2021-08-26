@@ -13,7 +13,7 @@ import {
   PrimaryKey,
 } from 'sequelize-typescript';
 
-import { TowerFloorEnemy, TowerFloorBattlefield, Enemy, Perk, PerkInventory } from '.';
+import { TowerFloorEnemy, TowerFloorBattlefield, Perk, PerkInventory } from '.';
 import { Ability, AbilityProperty, AbilityPropertyKeys } from '../games/classes/GameAbilities';
 import { ONE, TRAIT, ZERO } from '../games/consts/global';
 import { INITIATIVE_DECREASE, INITIATIVE_INCREASE } from '../games/tower/consts';
@@ -108,7 +108,7 @@ export class TowerFloorBattlefieldEnemy
   static associations: {
     _towerFloorEnemy: Association<TowerFloorBattlefieldEnemy, TowerFloorEnemy>;
     _currentTowerFloorBattlefield: Association<TowerFloorBattlefieldEnemy, TowerFloorBattlefield>;
-    // _perks: Association<TowerFloorBattlefieldEnemy, Perk>;
+    _perks: Association<TowerFloorBattlefieldEnemy, Perk>;
   };
 
   async incrementCursor(patternLength: number, transaction: Transaction) {
@@ -174,6 +174,18 @@ export class TowerFloorBattlefieldEnemy
     this.abilitiesJSON = newAbilitiesJSON;
     await this.save({ transaction });
   }
+
+  reloadFullEnemy(transaction: Transaction) {
+    return this.reload({
+      include: [
+        {
+          association: TowerFloorBattlefieldEnemy.associations._towerFloorEnemy,
+          include: [TowerFloorEnemy.associations._enemy],
+        },
+      ],
+      transaction,
+    });
+  }
 }
 
 export function breakEnemyArmor(enemy: TowerFloorBattlefieldEnemy, transaction?: Transaction) {
@@ -193,7 +205,12 @@ export function findBattlefieldEnemyById(id: number, transaction: Transaction) {
 export function findEnemiesByFloorBattlefield(battlefieldId: number, transaction: Transaction) {
   return TowerFloorBattlefieldEnemy.findAll({
     where: { _towerFloorBattlefieldId: battlefieldId },
-    include: [{ model: TowerFloorEnemy, include: [Enemy] }],
+    include: [
+      {
+        association: TowerFloorBattlefieldEnemy.associations._towerFloorEnemy,
+        include: [TowerFloorEnemy.associations._enemy],
+      },
+    ],
     transaction,
   });
 }
@@ -201,7 +218,12 @@ export function findEnemiesByFloorBattlefield(battlefieldId: number, transaction
 export function findFloorBattlefieldEnemiesByFloorEnemy(enemyId: number, transaction: Transaction) {
   return TowerFloorBattlefieldEnemy.findAll({
     where: { _towerFloorEnemyId: enemyId },
-    include: [{ model: TowerFloorEnemy, include: [Enemy] }],
+    include: [
+      {
+        association: TowerFloorBattlefieldEnemy.associations._towerFloorEnemy,
+        include: [TowerFloorEnemy.associations._enemy],
+      },
+    ],
     transaction,
   });
 }
@@ -220,7 +242,12 @@ export function findEnemyByFloorBattlefield(
 export function findVisibleEnemies(battlefieldId: number, transaction: Transaction) {
   return TowerFloorBattlefieldEnemy.findAll({
     where: { _towerFloorBattlefieldId: battlefieldId, isVisible: true },
-    include: [{ model: TowerFloorEnemy, include: [Enemy] }],
+    include: [
+      {
+        association: TowerFloorBattlefieldEnemy.associations._towerFloorEnemy,
+        include: [TowerFloorEnemy.associations._enemy],
+      },
+    ],
     transaction,
   });
 }
