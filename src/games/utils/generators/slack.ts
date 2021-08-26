@@ -103,11 +103,12 @@ export function blockKitButton(
   displayText: string,
   value: string,
   confirm?: SlackConfirmDialog,
-  style?: 'primary' | 'danger'
+  style?: 'primary' | 'danger',
+  actionId?: string
 ): SlackBlockKitButtonElement {
   return {
     type: 'button',
-    action_id: `${value}`,
+    action_id: `${actionId ?? value}`,
     text: {
       type: 'plain_text',
       text: displayText,

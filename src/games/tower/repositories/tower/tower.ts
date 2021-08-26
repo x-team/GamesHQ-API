@@ -1,6 +1,7 @@
 import { User } from '../../../../models';
 import { TowerFormData } from '../../../model/SlackDialogObject';
 import { GameResponse } from '../../../utils';
+import { TOWER_FLOOR_HIDING } from '../../consts';
 import {
   askEndGame,
   cancelEndGame,
@@ -10,6 +11,15 @@ import {
   newGame,
   openOrCloseTowerGates,
 } from './actions/admin/create-or-finish-game';
+import {
+  addEnemyAmountToFloor,
+  addEnemyToFloor,
+  finishTowerFloorEnemyAddition,
+  removeEnemyFromFloor,
+  setFloorById,
+  setFloorEnemies,
+  setFloorVisibility,
+} from './actions/admin/tower-floors-operations';
 import { updateTowerBasicInfo, updateTowerBasicInfoForm } from './actions/admin/update-config-game';
 import { enterTheTower } from './actions/player/enter';
 import type { TowerEngine } from './engine';
@@ -52,6 +62,25 @@ interface TowerRepositoryMethods {
   ): Promise<GameResponse>;
 
   // ADMIN: FLOORS OPERATIONS ////////////////////////////////////////////
+  setFloorById(userRequesting: User, floorId: number): Promise<GameResponse>;
+  setFloorVisibility(
+    userRequesting: User,
+    hiding: TOWER_FLOOR_HIDING,
+    floorId: number
+  ): Promise<GameResponse>;
+  setFloorEnemies(userRequesting: User, floorNumber?: number): Promise<GameResponse>;
+  removeEnemyFromFloor(userRequesting: User, towerEnemyId: number): Promise<GameResponse>;
+  addEnemyToFloor(
+    userRequesting: User,
+    floorNumber: number,
+    enemyId: number
+  ): Promise<GameResponse>;
+  addEnemyAmountToFloor(
+    userRequesting: User,
+    enemyId: number,
+    floorAndAmount: string
+  ): Promise<GameResponse>;
+  finishTowerFloorEnemyAddition(userRequesting: User): Promise<GameResponse>;
 
   // ADMIN: LIST OPERATIONS ////////////////////////////////////////////
   displayScoreboard(userRequesting: User): Promise<GameResponse>;
@@ -96,6 +125,13 @@ export class TowerRepository implements TowerRepositoryMethods {
   public updateTowerBasicInfoForm = updateTowerBasicInfoForm.bind(this);
 
   // ADMIN: FLOORS OPERATIONS ///////////////////////////////////////////////////////////////////
+  public setFloorById = setFloorById.bind(this);
+  public setFloorVisibility = setFloorVisibility.bind(this);
+  public setFloorEnemies = setFloorEnemies.bind(this);
+  public removeEnemyFromFloor = removeEnemyFromFloor.bind(this);
+  public addEnemyToFloor = addEnemyToFloor.bind(this);
+  public addEnemyAmountToFloor = addEnemyAmountToFloor.bind(this);
+  public finishTowerFloorEnemyAddition = finishTowerFloorEnemyAddition.bind(this);
 
   // ADMIN: LIST OPERATIONS ////////////////////////////////////////////
   public displayScoreboard = displayScoreboard.bind(this);

@@ -143,6 +143,16 @@ export class TowerRoundAction
     _enemy: Association<TowerRoundAction, TowerFloorBattlefieldEnemy>;
     _raider: Association<TowerRoundAction, TowerRaider>;
   };
+
+  completeRoundAction(transaction: Transaction) {
+    return this.update(
+      {
+        isCompleted: true,
+        completedAt: new Date(),
+      },
+      { transaction }
+    );
+  }
 }
 
 interface RoundActionKey {
@@ -218,17 +228,6 @@ export async function findRoundAction(
     },
     transaction,
   });
-}
-
-export async function completeRoundAction(action: TowerRoundAction, transaction: Transaction) {
-  await action.update(
-    {
-      isCompleted: true,
-      completedAt: new Date(),
-    },
-    { transaction }
-  );
-  return action.get({ plain: true });
 }
 
 export async function findLastRaiderActionByRound(

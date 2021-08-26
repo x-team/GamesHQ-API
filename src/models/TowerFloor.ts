@@ -72,6 +72,12 @@ export class TowerFloor
     _floorEnemies: Association<TowerFloor, TowerFloorEnemy>;
     _floorBattlefields: Association<TowerFloor, TowerFloorBattlefield>;
   };
+
+  async setVisibility(isEveryoneVisible: boolean, transaction: Transaction) {
+    return this.isEveryoneVisible !== isEveryoneVisible
+      ? this.update({ isEveryoneVisible }, { transaction })
+      : this;
+  }
 }
 
 export function findTowerFloorById(id: number, includeAll: boolean, transaction?: Transaction) {
@@ -114,14 +120,4 @@ export async function addTowerFloors(towerGame: TowerGame, transaction: Transact
       { transaction }
     );
   }
-}
-
-export async function setTowerFloorVisibility(
-  floor: TowerFloor,
-  isEveryoneVisible: boolean,
-  transaction: Transaction
-) {
-  return floor.isEveryoneVisible !== isEveryoneVisible
-    ? floor.update({ isEveryoneVisible }, { transaction })
-    : floor;
 }

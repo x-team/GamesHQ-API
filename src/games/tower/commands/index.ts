@@ -35,8 +35,8 @@ export function towerSwitchCommand({
       return theTower.displayTowerInfo(userRequesting);
     case TOWER_SLACK_COMMANDS.DISPLAY_SCOREBOARD:
       return theTower.displayScoreboard(userRequesting);
-    // case TOWER_SLACK_COMMANDS.SET_TOWER_FLOORS:
-    //   return theTower.setFloorEnemies(userRequesting);
+    case TOWER_SLACK_COMMANDS.SET_TOWER_FLOORS:
+      return theTower.setFloorEnemies(userRequesting);
     // case TOWER_SLACK_COMMANDS.CREATE_WEAPON:
     //   return theTower.openCreateWeaponModal(userRequesting, triggerId);
     // case TOWER_SLACK_COMMANDS.UPDATE_WEAPON:
