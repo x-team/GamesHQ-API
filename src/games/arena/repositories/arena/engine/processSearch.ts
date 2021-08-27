@@ -7,6 +7,7 @@ import { listActiveWeaponsByGameType } from '../../../../../models/ItemWeapon';
 import { GAME_TYPE, ITEM_TYPE, TRAIT } from '../../../../consts/global';
 import { hasLuck } from '../../../../utils';
 import {
+  ARENA_HEALTHKITS,
   ARENA_PLAYER_PERFORMANCE,
   HEALTH_KIT_FOUND_QTY,
   SEARCH_ARMOR_SUCCESS_RATE,
@@ -24,7 +25,7 @@ import { arenaEngineReply } from './replies';
 
 export async function processSearchHealth(actions: ArenaRoundAction[], transaction: Transaction) {
   const activeHealthkits = await listActiveHealthkitsByGameType(GAME_TYPE.ARENA, transaction);
-  const healthKit = activeHealthkits.find((hk) => hk.name === ITEM_TYPE.HEALTH_KIT);
+  const healthKit = activeHealthkits.find((hk) => hk.name === ARENA_HEALTHKITS.COMMON);
   await Promise.all(
     actions.map(async (action) => {
       const player = action._player!;

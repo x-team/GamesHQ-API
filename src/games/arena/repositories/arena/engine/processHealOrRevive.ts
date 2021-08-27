@@ -3,8 +3,8 @@ import { ArenaRound, ArenaRoundAction } from '../../../../../models';
 import { findPlayerById } from '../../../../../models/ArenaPlayer';
 import { setPlayerPerformanceAction } from '../../../../../models/ArenaPlayerPerformance';
 import { findHealthkitByName } from '../../../../../models/ItemHealthKit';
-import { ITEM_TYPE, ZERO } from '../../../../consts/global';
-import { ARENA_PLAYER_PERFORMANCE, MAX_PLAYER_HEALTH } from '../../../consts';
+import { ZERO } from '../../../../consts/global';
+import { ARENA_HEALTHKITS, ARENA_PLAYER_PERFORMANCE, MAX_PLAYER_HEALTH } from '../../../consts';
 import { publishArenaMessage } from '../../../utils';
 import { arenaEngineReply } from './replies';
 
@@ -13,7 +13,7 @@ export async function processHealOrRevive(
   actions: ArenaRoundAction[],
   transaction: Transaction
 ) {
-  const healthKit = await findHealthkitByName(ITEM_TYPE.HEALTH_KIT, transaction);
+  const healthKit = await findHealthkitByName(ARENA_HEALTHKITS.COMMON, transaction);
   await Promise.all(
     actions.map(async (action) => {
       const player = action._player!;

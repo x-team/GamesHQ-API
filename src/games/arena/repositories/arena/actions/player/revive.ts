@@ -4,12 +4,12 @@ import { findSinglePlayerPerformance } from '../../../../../../models/ArenaPlaye
 import { setPlayerRoundAction } from '../../../../../../models/ArenaRoundAction';
 import { findActiveArenaZones } from '../../../../../../models/ArenaZone';
 import { findHealthkitByName } from '../../../../../../models/ItemHealthKit';
-import { ITEM_TYPE, ZERO } from '../../../../../consts/global';
+import { ZERO } from '../../../../../consts/global';
 import { GameResponse, getGameResponse } from '../../../../../utils';
-import { ARENA_ACTIONS, MAX_PLAYER_HEALTH } from '../../../../consts';
+import { ARENA_ACTIONS, ARENA_HEALTHKITS, MAX_PLAYER_HEALTH } from '../../../../consts';
 import {
   generateArenaActionsBlockKit,
-  generateTargetPickerBlock,
+  generateArenaTargetPickerBlock,
 } from '../../../../generators/gameplay';
 import {
   PlayerActionsDeadOrAlive,
@@ -30,7 +30,7 @@ export async function reviveSelf(userRequesting: User) {
       const actionBlockkit = generateArenaActionsBlockKit(player, arenaCommandReply.zoneNeeded());
       return getGameResponse(actionBlockkit);
     }
-    const healthKit = await findHealthkitByName(ITEM_TYPE.HEALTH_KIT, transaction);
+    const healthKit = await findHealthkitByName(ARENA_HEALTHKITS.COMMON, transaction);
     const healthKitQty = healthKit ? player.healthkitQty(healthKit.id) : ZERO;
 
     const playerPerformance = await findSinglePlayerPerformance(
@@ -128,7 +128,7 @@ export async function completeRevive(userRequesting: User, selectedTargetId: num
       return getGameResponse(actionBlockkit);
     }
 
-    const healthKit = await findHealthkitByName(ITEM_TYPE.HEALTH_KIT, transaction);
+    const healthKit = await findHealthkitByName(ARENA_HEALTHKITS.COMMON, transaction);
     const healthKitQty = healthKit ? player.healthkitQty(healthKit.id) : ZERO;
     if (healthKitQty <= ZERO) {
       const actionBlockkit = generateArenaActionsBlockKit(
@@ -181,7 +181,7 @@ export async function reviveOther(userRequesting: User) {
       const actionBlockkit = generateArenaActionsBlockKit(player, arenaCommandReply.zoneNeeded());
       return getGameResponse(actionBlockkit);
     }
-    const healthKit = await findHealthkitByName(ITEM_TYPE.HEALTH_KIT, transaction);
+    const healthKit = await findHealthkitByName(ARENA_HEALTHKITS.COMMON, transaction);
     const healthKitQty = healthKit ? player.healthkitQty(healthKit.id) : ZERO;
 
     const playerPerformance = await findSinglePlayerPerformance(
@@ -207,7 +207,7 @@ export async function reviveOther(userRequesting: User) {
         zone._players?.find((zonePlayer) => zonePlayer.id === p.id) &&
         !p.isSpectator
     );
-    const slackBlocks = generateTargetPickerBlock(playersToDropdown, 'reviveother');
+    const slackBlocks = generateArenaTargetPickerBlock(playersToDropdown, 'reviveother');
     return getGameResponse(slackBlocks);
   });
 }

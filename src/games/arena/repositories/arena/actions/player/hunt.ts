@@ -14,7 +14,7 @@ import { generateGenericWeaponPickerBlock } from '../../../../../utils/generator
 import { ARENA_ACTIONS, ARENA_SECONDARY_ACTIONS } from '../../../../consts';
 import {
   generateArenaActionsBlockKit,
-  generateTargetPickerBlock,
+  generateArenaTargetPickerBlock,
 } from '../../../../generators/gameplay';
 import {
   generateTargetGroup,
@@ -96,7 +96,7 @@ export async function hunt(userRequesting: User) {
           { id: ARENA_ACTIONS.HUNT, targetPlayerId: randomTarget.id },
           transaction
         );
-        const slackBlocks = generateTargetPickerBlock(
+        const slackBlocks = generateArenaTargetPickerBlock(
           mutableVisiblePlayers,
           'hunt',
           arenaCommandReply.playerChooseTarget(
@@ -167,7 +167,7 @@ export async function hunt(userRequesting: User) {
           { id: ARENA_ACTIONS.HUNT, weaponId: weapon.id, targetPlayerId: randomTarget.id },
           transaction
         );
-        const slackBlocks = generateTargetPickerBlock(
+        const slackBlocks = generateArenaTargetPickerBlock(
           mutableVisiblePlayers,
           'hunt',
           arenaCommandReply.playerChooseTarget(
@@ -234,7 +234,7 @@ export async function chooseWeapon(userRequesting: User, selectedWeapon: number,
         transaction
       );
 
-      const slackBlocks = generateTargetPickerBlock(
+      const slackBlocks = generateArenaTargetPickerBlock(
         visiblePlayers,
         action,
         arenaCommandReply.playerChooseTarget(zone, targetGroup.length - visiblePlayers.length)

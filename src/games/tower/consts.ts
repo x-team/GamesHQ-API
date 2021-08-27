@@ -84,6 +84,13 @@ export enum TOWER_LOOT_PRIZES {
   ARMOR = 'armor',
 }
 
+export enum TOWER_HEALTHKITS {
+  COMMON = 'tower health kit',
+}
+
+// REPOSITORIES
+export const TOWER_REPOSITORY_NAME = 'tower-repository';
+
 // GAME
 export const DEFAULT_MAX_FLOOR_NUMBER = 10;
 export const DEFAULT_LUNA_PRIZE = 5;
@@ -103,7 +110,6 @@ export const SEARCH_WEAPONS_SUCCESS_RATE = 0.6;
 export const SEARCH_ARMOR_SUCCESS_RATE = 0.6;
 export const SEARCH_HEALTH_SUCCESS_RATE = 0.6;
 export const HUNT_SUCCESS_RATE = 0.8;
-export const HEALTHKIT_HEALING = 20;
 export const MAX_RAIDER_HEALTH = 120;
 export const SEARCH_HEALTH_FOUND_QTY = 1;
 export const MAX_AMOUNT_HEALTHKITS_ALLOWED = 4;

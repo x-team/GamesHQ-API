@@ -25,6 +25,7 @@ import { displayProgress, raiderActions } from './actions/player/actions-menu';
 import { enterTheTower } from './actions/player/enter';
 import { exitTheTower } from './actions/player/exit';
 import { hide } from './actions/player/hide';
+import { completeRevive, reviveOther, reviveSelf } from './actions/player/revive';
 import { searchForArmors, searchForHealthkits, searchForWeapons } from './actions/player/search';
 import type { TowerEngine } from './engine';
 
@@ -48,6 +49,9 @@ interface TowerRepositoryMethods {
   searchForWeapons(userRequesting: User): Promise<GameResponse>;
 
   // PLAYERS: HEAL OR REVIVE OPERATIONS ///////////////////////////////////////
+  reviveSelf(userRequesting: User): Promise<GameResponse>;
+  reviveOther(userRequesting: User): Promise<GameResponse>;
+  completeRevive(userRequesting: User, selectedTargetId: number): Promise<GameResponse>;
 
   // PLAYERS: HUNT OPERATIONS /////////////////////////////////////////////////
 
@@ -125,6 +129,9 @@ export class TowerRepository implements TowerRepositoryMethods {
   public searchForWeapons = searchForWeapons.bind(this);
 
   // PLAYERS: HEAL OR REVIVE OPERATIONS ///////////////////////////////////////////////////////////////////
+  public reviveSelf = reviveSelf.bind(this);
+  public reviveOther = reviveOther.bind(this);
+  public completeRevive = completeRevive.bind(this);
 
   // PLAYERS: HUNT OPERATIONS ///////////////////////////////////////////////////////////////////
 

@@ -19,7 +19,7 @@ import {
   PLAYER_HIDE_EMOJI,
   PLAYER_VISIBLE_EMOJI,
 } from '../../../consts/emojis';
-import { ITEM_TYPE, SLACK_SPACE, TRAIT, ZERO } from '../../../consts/global';
+import { SLACK_SPACE, TRAIT, ZERO } from '../../../consts/global';
 import {
   basicHealthDisplay,
   basicHealthDisplayInParentheses,
@@ -29,10 +29,10 @@ import {
 } from '../../../helpers';
 import { rateToPercentage } from '../../../utils';
 import {
-  HEALTHKIT_HEALING,
   MAX_AMOUNT_HEALTHKITS_ALLOWED,
   MAX_RAIDER_HEALTH,
   TOWER_ACTIONS,
+  TOWER_HEALTHKITS,
 } from '../../consts';
 import { towerRoundActionMessageBuilder } from '../../utils';
 import {
@@ -168,9 +168,9 @@ export const towerCommandReply = {
         (prize) =>
           `\t${generateRarityColorEmoji(prize._itemRarityId)} ${prize.emoji} ` +
           `${
-            prize.name !== ITEM_TYPE.HEALTH_KIT
+            prize.name !== TOWER_HEALTHKITS.COMMON
               ? 'Edlixir (Auto-applied)'
-              : prize.name === ITEM_TYPE.HEALTH_KIT && Math.max(healthKitsAutoApplied--, ZERO)
+              : prize.name === TOWER_HEALTHKITS.COMMON && Math.max(healthKitsAutoApplied--, ZERO)
               ? `${prize.name} (Auto-applied)`
               : `${prize.name}`
           }`
@@ -206,7 +206,7 @@ export const towerCommandReply = {
     const weapons = raider._weapons?.length ? raider._weapons : undefined;
     const armor = raider._armors?.length ? raider._armors[ZERO] : undefined;
     const healthkit = raider._healthkits?.length
-      ? raider._healthkits.find((healthkit) => healthkit.name === ITEM_TYPE.HEALTH_KIT)
+      ? raider._healthkits.find((healthkit) => healthkit.name === TOWER_HEALTHKITS.COMMON)
       : undefined;
     return (
       `${basicHealthDisplay(raider.health, MAX_RAIDER_HEALTH)}` +
@@ -244,16 +244,16 @@ export const towerCommandReply = {
     `${NO_ENTRY_SIGN} You need to find a health kit to heal yourself or another watchman.\n` +
     'Use `Search for a healthkit` first.',
 
-  raiderHealsSelf: (isVisible: boolean) =>
+  raiderHealsSelf: (isVisible: boolean, healthkitHealingPower: number) =>
     towerRoundActionMessageBuilder({
-      actionText: `*heal* +${HEALTHKIT_HEALING} HP`,
+      actionText: `*heal* +${healthkitHealingPower} HP`,
       emoji: FULL_HEALTH_HEART_EMOJI,
       isVisible,
     }),
 
-  raiderHealsSomebody: (targetSlackId: string, isVisible: boolean) =>
+  raiderHealsSomebody: (targetSlackId: string, isVisible: boolean, healthkitHealingPower: number) =>
     towerRoundActionMessageBuilder({
-      actionText: `*heal* <@${targetSlackId}> for +${HEALTHKIT_HEALING} HP`,
+      actionText: `*heal* <@${targetSlackId}> for +${healthkitHealingPower} HP`,
       emoji: FULL_HEALTH_HEART_EMOJI,
       isVisible,
     }),

@@ -99,8 +99,11 @@ export enum ARENA_SECONDARY_ACTIONS {
   DELETE_ZONE = 'delete-zone',
 }
 
-// REPOSITORIES
-export const TOWER_REPOSITORY_NAME = 'tower-repository';
+export enum ARENA_HEALTHKITS {
+  COMMON = 'arena health kit',
+}
+
+// REPOSITORIEs
 export const ARENA_REPOSITORY_NAME = 'arena-repository';
 export const ZONE_REPOSITORY_NAME = 'zone-repository';
 

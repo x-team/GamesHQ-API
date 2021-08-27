@@ -76,10 +76,10 @@ function towerPlayerSwitchActions(action: string, selectedId: number, userReques
       return theTower.searchForWeapons(userRequesting);
     case TOWER_SLACK_COMMANDS.SEARCH_ARMOR:
       return theTower.searchForArmors(userRequesting);
-    // case TOWER_SLACK_COMMANDS.HEAL_OR_REVIVE_OTHER:
-    //   return theTower.reviveOther(userRequesting);
-    // case TOWER_SLACK_COMMANDS.HEAL_OR_REVIVE_SELF:
-    //   return theTower.reviveSelf(userRequesting);
+    case TOWER_SLACK_COMMANDS.HEAL_OR_REVIVE_OTHER:
+      return theTower.reviveOther(userRequesting);
+    case TOWER_SLACK_COMMANDS.HEAL_OR_REVIVE_SELF:
+      return theTower.reviveSelf(userRequesting);
     // case TOWER_SLACK_COMMANDS.HUNT:
     //   return theTower.hunt(userRequesting);
     // case TOWER_SLACK_COMMANDS.REPEAT_LAST_ACTION:

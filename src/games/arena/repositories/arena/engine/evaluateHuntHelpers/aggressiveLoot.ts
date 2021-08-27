@@ -5,8 +5,8 @@ import {
   getPlayerItemCount,
 } from '../../../../../../models/ArenaItemInventory';
 import { findHealthkitByName } from '../../../../../../models/ItemHealthKit';
-import { ITEM_TYPE } from '../../../../../consts/global';
-import { MAX_PLAYER_HEALTH } from '../../../../consts';
+import { ZERO } from '../../../../../consts/global';
+import { ARENA_HEALTHKITS, MAX_PLAYER_HEALTH } from '../../../../consts';
 import { publishArenaMessage } from '../../../../utils';
 import { rarityWeight } from '../../../../../utils/rollRarity';
 import { arenaEngineReply } from '../replies';
@@ -68,8 +68,7 @@ export async function aggressiveLoot(
     );
   }
 
-  const ZERO = 0;
-  const healthKit = await findHealthkitByName(ITEM_TYPE.HEALTH_KIT, transaction);
+  const healthKit = await findHealthkitByName(ARENA_HEALTHKITS.COMMON, transaction);
   if (!healthKit) {
     return;
   }

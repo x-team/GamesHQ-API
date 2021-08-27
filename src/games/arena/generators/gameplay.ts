@@ -2,12 +2,7 @@ import { ArenaPlayer, ArenaZone } from '../../../models';
 import { BOSS_HOUSE_EMOJI } from '../../consts/emojis';
 import { ZERO } from '../../consts/global';
 import { basicHealthDisplayInParentheses, generateTeamEmoji } from '../../helpers';
-import {
-  SlackBlockKitActionLayout,
-  SlackBlockKitCompositionOption,
-  SlackBlockKitLayoutElement,
-  SlackBlockKitSelectMenuElement,
-} from '../../model/SlackBlockKit';
+import { SlackBlockKitLayoutElement } from '../../model/SlackBlockKit';
 import { generateEndGameConfirmationBlockKit } from '../../utils/generators/games';
 import {
   blockKitAction,
@@ -37,7 +32,7 @@ export function generateSpectatorActionsBlockKit(isDead: boolean): SlackBlockKit
     ? "*YOU'RE DEAD. CHOOSE ACTIONS*"
     : '*CHOOSE A SPECTATOR ACTION FOR THIS ROUND*';
   const mainTitleContextLayout = blockKitContext(mainMessage);
-  const personalActionsLayout: SlackBlockKitActionLayout = blockKitAction([
+  const personalActionsLayout = blockKitAction([
     blockKitButton('Cheer', ARENA_SLACK_COMMANDS.CHEER),
     blockKitButton('Repeat Last Cheer', ARENA_SLACK_COMMANDS.REPEAT_LAST_CHEER),
   ]);
@@ -72,14 +67,14 @@ export function generateHunterActionsBlockKit(
   if (playerIsBoss) {
     personalButtons.push(blockKitButton('Change Location', ARENA_SLACK_COMMANDS.CHANGE_LOCATION));
   }
-  const personalActionsLayout: SlackBlockKitActionLayout = blockKitAction(personalButtons);
+  const personalActionsLayout = blockKitAction(personalButtons);
 
   const searchButtons = [
     blockKitButton('Weapon', ARENA_SLACK_COMMANDS.SEARCH_WEAPONS),
     blockKitButton('Healthkit', ARENA_SLACK_COMMANDS.SEARCH_HEALTH),
     blockKitButton('Armor', ARENA_SLACK_COMMANDS.SEARCH_ARMOR),
   ];
-  const searchActionsLayout: SlackBlockKitActionLayout = blockKitAction(searchButtons);
+  const searchActionsLayout = blockKitAction(searchButtons);
 
   const actionButtons = [
     blockKitButton('Hunt', ARENA_SLACK_COMMANDS.HUNT),
@@ -87,7 +82,7 @@ export function generateHunterActionsBlockKit(
     blockKitButton('Heal Me', ARENA_SLACK_COMMANDS.HEAL_OR_REVIVE_SELF),
     blockKitButton('Heal/Revive Other', ARENA_SLACK_COMMANDS.HEAL_OR_REVIVE_OTHER),
   ];
-  const actionsLayout: SlackBlockKitActionLayout = blockKitAction(actionButtons);
+  const actionsLayout = blockKitAction(actionButtons);
 
   return [
     ...secondaryMessageSection,
@@ -119,7 +114,7 @@ export function generateArenaActionsBlockKit(
   return generateHunterActionsBlockKit(primaryMessageText, secondaryMessageText, player.isBoss);
 }
 
-export function generateTargetPickerBlock(
+export function generateArenaTargetPickerBlock(
   players: ArenaPlayer[],
   action: string,
   displayText = 'Please select a target (Player)'
@@ -127,7 +122,7 @@ export function generateTargetPickerBlock(
   const blockKitDividerSection = blockKitDivider();
   const mainMessageSection = blockKitMrkdwnSection(displayText);
 
-  const playersToDropdownOptions: SlackBlockKitCompositionOption[] = players.map((player) =>
+  const playersToDropdownOptions = players.map((player) =>
     blockKitCompositionOption(
       `${player.isBoss ? BOSS_HOUSE_EMOJI : generateTeamEmoji(player._user?._team?.emoji!)} <@${
         player._user?.slackId
@@ -136,13 +131,13 @@ export function generateTargetPickerBlock(
     )
   );
 
-  const slackSelectTargetMenu: SlackBlockKitSelectMenuElement = blockKitSelectMenu(
+  const slackSelectTargetMenu = blockKitSelectMenu(
     `arena-${action}-choose-target`,
     'Choose your target',
     playersToDropdownOptions
   );
 
-  const actionLayout: SlackBlockKitActionLayout = blockKitAction([slackSelectTargetMenu]);
+  const actionLayout = blockKitAction([slackSelectTargetMenu]);
 
   return [blockKitDividerSection, mainMessageSection, actionLayout];
 }
@@ -158,11 +153,11 @@ export function generateChangeZonePickerBlock(
     `Change Location ${currentLocation.emoji}`
   );
 
-  const locationsToDropdownOptions: SlackBlockKitCompositionOption[] = locations.map((arenaZone) =>
+  const locationsToDropdownOptions = locations.map((arenaZone) =>
     blockKitCompositionOption(`${arenaZone.emoji} ${arenaZone.name}`, `${arenaZone.id}`)
   );
 
-  const slackChangeZonePickerMenu: SlackBlockKitSelectMenuElement = blockKitSelectMenu(
+  const slackChangeZonePickerMenu = blockKitSelectMenu(
     ARENA_SECONDARY_ACTIONS.CHANGE_LOCATION,
     'Where to move after your action?',
     locationsToDropdownOptions

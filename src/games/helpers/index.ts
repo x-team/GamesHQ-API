@@ -8,7 +8,7 @@ import type {
   PerkInventory,
   TowerItemInventory,
 } from '../../models';
-import { ARENA_PERK } from '../arena/consts';
+import { ARENA_HEALTHKITS, ARENA_PERK } from '../arena/consts';
 import { hasArenaPerk } from '../arena/repositories/arena/engine/cheerSystem';
 import { arenaPerkStats } from '../arena/utils';
 import {
@@ -31,7 +31,8 @@ import {
   RARE_COLOR_EMOJI_SMALL,
   WEAPON_INVENTORY_EMOJI,
 } from '../consts/emojis';
-import { ITEM_RARITY, ITEM_TYPE, SLACK_SPACE, ZERO } from '../consts/global';
+import { ITEM_RARITY, SLACK_SPACE, ZERO } from '../consts/global';
+import { TOWER_HEALTHKITS } from '../tower/consts';
 import { rateToPercentage } from '../utils';
 
 export const randomSkinColor = () => {
@@ -191,7 +192,7 @@ export function healthKitStatus(
   >
 ) {
   const healthkitFound = items.length
-    ? items.find(({ name }) => name === ITEM_TYPE.HEALTH_KIT)
+    ? items.find(({ name }) => name === ARENA_HEALTHKITS.COMMON || name === TOWER_HEALTHKITS.COMMON)
     : null;
   if (!healthkitFound) {
     return ':medkit: *Health kits:* 0';

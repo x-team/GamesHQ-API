@@ -1,11 +1,14 @@
-import { SlackBlockKitActionLayout, SlackBlockKitLayoutElement } from '../../model/SlackBlockKit';
+import { TowerRaider } from '../../../models';
+import { SlackBlockKitLayoutElement } from '../../model/SlackBlockKit';
 import { generateEndGameConfirmationBlockKit } from '../../utils/generators/games';
 import {
   blockKitAction,
   blockKitButton,
+  blockKitCompositionOption,
   blockKitContext,
   blockKitDivider,
   blockKitMrkdwnSection,
+  blockKitSelectMenu,
 } from '../../utils/generators/slack';
 import { TOWER_SECONDARY_SLACK_ACTIONS, TOWER_SLACK_COMMANDS } from '../consts';
 
@@ -42,7 +45,7 @@ export function generateTowerActionsBlockKit(
     blockKitButton('Healthkit', TOWER_SLACK_COMMANDS.SEARCH_HEALTH),
     blockKitButton('Armor', TOWER_SLACK_COMMANDS.SEARCH_ARMOR),
   ];
-  const searchActionsLayout: SlackBlockKitActionLayout = blockKitAction(searchButtons);
+  const searchActionsLayout = blockKitAction(searchButtons);
 
   const actionButtons = [
     blockKitButton('Hunt', TOWER_SLACK_COMMANDS.HUNT),
@@ -56,7 +59,7 @@ export function generateTowerActionsBlockKit(
     ),
     blockKitButton('Progress', TOWER_SLACK_COMMANDS.PROGRESS_BUTTON),
   ];
-  const actionsLayout: SlackBlockKitActionLayout = blockKitAction(actionButtons);
+  const actionsLayout = blockKitAction(actionButtons);
 
   return [
     ...actionSentFailedSection,
@@ -94,4 +97,33 @@ export function generateTowerStartRoundQuestionSection(displayText: string) {
     slackMainMessageSection,
     slackActionLayout,
   ];
+}
+
+export function generateTowerTargetRaiderPickerBlock(
+  raiders: TowerRaider[],
+  defaultPlayerSlackId: string,
+  action: string,
+  displayText = 'Please select a target'
+): SlackBlockKitLayoutElement[] {
+  const blockKitDividerSection = blockKitDivider();
+  const mainMessageSection = blockKitMrkdwnSection(displayText);
+
+  const raidersToDropdownOptions = raiders.map((raider) =>
+    blockKitCompositionOption(`<@${raider._user?.slackId}>`, `${raider._user?.slackId}`)
+  );
+
+  const targetMenuInitialOption = blockKitCompositionOption(
+    `<@${defaultPlayerSlackId}>`,
+    defaultPlayerSlackId
+  );
+  const slackSelectTargetMenu = blockKitSelectMenu(
+    `${action}-choose-target`,
+    'Choose your target',
+    raidersToDropdownOptions,
+    targetMenuInitialOption
+  );
+
+  const actionLayout = blockKitAction([slackSelectTargetMenu]);
+
+  return [blockKitDividerSection, mainMessageSection, actionLayout];
 }

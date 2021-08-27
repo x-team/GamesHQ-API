@@ -6,9 +6,9 @@ import { findActiveTowerGame } from '../../../models/TowerGame';
 import { findRaiderByUser } from '../../../models/TowerRaider';
 import { findActiveRound } from '../../../models/TowerRound';
 import { TOWER_ACTIONS_TYPE } from '../../../models/TowerRoundAction';
-import { TOWER_REPOSITORY_NAME } from '../../arena/consts';
+import { TOWER_HEALTHKITS, TOWER_REPOSITORY_NAME } from '../../tower/consts';
 
-import { ONE, HUNDRED, ITEM_RARITY, ITEM_TYPE } from '../../consts/global';
+import { ONE, HUNDRED, ITEM_RARITY } from '../../consts/global';
 import { roundActionMessageBuilder, RoundActionMessageBuilderParams } from '../../helpers';
 import type { SlackBlockKitLayoutElement } from '../../model/SlackBlockKit';
 import {
@@ -265,13 +265,13 @@ export function rollLootPrize(
   return weightedChance(customPrizesAvailable, TOWER_LOOT_PRIZES.WEAPON);
 }
 
-export function rollItem(): ITEM_TYPE | undefined {
+export function rollHealthkit(): TOWER_HEALTHKITS | undefined {
   return weightedChance(
     [
       // { chance: LUCKELIXIR_ITEM_CHANCE, result: ARENA_ITEM.LUCK_ELIXIR },
-      { chance: HEALTHKIT_ITEM_CHANCE, result: ITEM_TYPE.HEALTH_KIT },
+      { chance: HEALTHKIT_ITEM_CHANCE, result: TOWER_HEALTHKITS.COMMON },
     ],
-    ITEM_TYPE.HEALTH_KIT
+    TOWER_HEALTHKITS.COMMON
   );
 }
 

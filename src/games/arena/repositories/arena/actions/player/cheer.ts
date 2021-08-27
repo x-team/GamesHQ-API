@@ -14,7 +14,7 @@ import { GameResponse, getGameResponse } from '../../../../../utils';
 import { ARENA_ACTIONS } from '../../../../consts';
 import {
   generateArenaActionsBlockKit,
-  generateTargetPickerBlock,
+  generateArenaTargetPickerBlock,
 } from '../../../../generators/gameplay';
 import {
   PlayerActionsDeadOrAlive,
@@ -39,7 +39,7 @@ export async function cheer(userRequesting: User) {
     const allPlayers = await findPlayersByGame(round._gameId, false, transaction);
     // You can't cheer yourself or dead players
     const filteredPlayers = allPlayers.filter((p) => p.id !== player.id && p.isAlive());
-    const slackBlocks = generateTargetPickerBlock(filteredPlayers, 'cheer');
+    const slackBlocks = generateArenaTargetPickerBlock(filteredPlayers, 'cheer');
     return getGameResponse(slackBlocks);
   });
 }

@@ -2,7 +2,6 @@ import { Enemy, TowerFloor } from '../../../models';
 import { FULL_HEALTH_HEART_EMOJI } from '../../consts/emojis';
 import { basicHealthDisplayInParentheses } from '../../helpers';
 import {
-  SlackBlockKitActionLayout,
   SlackBlockKitCompositionOption,
   SlackBlockKitLayoutElement,
 } from '../../model/SlackBlockKit';
@@ -59,7 +58,7 @@ export function generateTowerFloorSpecs(floor: TowerFloor): SlackBlockKitLayoutE
       `${TOWER_SECONDARY_SLACK_ACTIONS.ADD_ENEMY_TO_TOWER_FLOOR_BTN_YES}-${floor.number}`
     ),
   ];
-  const configActionsLayout: SlackBlockKitActionLayout = blockKitAction(configButtons);
+  const configActionsLayout = blockKitAction(configButtons);
 
   return [
     blockKitDividerSection,
@@ -80,7 +79,7 @@ export function generateFloorEnemyPickerBlock(
 ): SlackBlockKitLayoutElement[] {
   const mainMessageSection = blockKitMrkdwnSection(displayText);
   const titleMessageSection = blockKitMrkdwnSection('Please select the enemy you want to add:');
-  const enemiesToDropdownOptions: SlackBlockKitCompositionOption[] = enemies.map((enemy) =>
+  const enemiesToDropdownOptions = enemies.map((enemy) =>
     blockKitCompositionOption(
       `${enemy.emoji} | ${enemy.name} ${
         enemy.isBoss ? '[Boss]' : ''

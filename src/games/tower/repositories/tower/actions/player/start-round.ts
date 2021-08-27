@@ -6,7 +6,7 @@
 // import { startRound } from "../../../../../../models/TowerRound";
 // import { findAllActionsByRound } from "../../../../../../models/TowerRoundAction";
 // import { updateTowerAsCompleted } from "../../../../../../models/TowerStatistics";
-// import { ITEM_TYPE, ONE, TWO, ZERO } from "../../../../../consts/global";
+// import { ONE, TWO, ZERO } from "../../../../../consts/global";
 // import { SlackBlockKitLayoutElement } from "../../../../../model/SlackBlockKit";
 // import { GameResponse, getGameResponse } from "../../../../../utils";
 // import { HEALTHKIT_HEALING, MAX_RAIDER_HEALTH } from "../../../../consts";
@@ -120,7 +120,7 @@
 //         );
 //         await raider.reloadFullInventory(transaction);
 //         const healthKitsLooted = lootPrize.filter(
-//           (prize) => prize.name === ITEM_TYPE.HEALTH_KIT
+//           (prize) => prize.name === TOWER_HEALTHKITS.COMMON
 //         ).length;
 //         const healthKitsNeededToFullHP = Math.ceil(
 //           (MAX_RAIDER_HEALTH - previousHealth) / HEALTHKIT_HEALING

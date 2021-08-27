@@ -3,7 +3,6 @@ import { APPROVE_SIGN } from '../../consts/emojis';
 import type {
   SlackBlockKitActionLayout,
   SlackBlockKitCompositionOption,
-  SlackBlockKitDividerLayout,
   SlackBlockKitLayoutElement,
   SlackBlockKitSectionLayout,
 } from '../../model/SlackBlockKit';
@@ -16,6 +15,7 @@ import {
   blockKitConfirmDialog,
   blockKitContext,
   blockKitDialogObject,
+  blockKitDivider,
   blockKitInputField,
   blockKitInputText,
   blockKitMrkdwnSection,
@@ -43,9 +43,7 @@ export function generateNarrowZonesBlock(zones: ArenaZone[]): SlackBlockKitLayou
 }
 
 export function generateAvailableZonesBlockKit(zones: ArenaZone[]): SlackBlockKitLayoutElement[] {
-  const blockKitDivider: SlackBlockKitDividerLayout = {
-    type: 'divider',
-  };
+  const blockKitDividerSection = blockKitDivider();
   // Block kit Titles and Subtitles (Main Sections)
   const mainTitleContextLayout = blockKitContext('*AVAILABLE ARENA ZONES*');
 
@@ -62,7 +60,7 @@ export function generateAvailableZonesBlockKit(zones: ArenaZone[]): SlackBlockKi
     )
   );
 
-  const actionsSection: SlackBlockKitActionLayout[] = zones.map((zone) =>
+  const actionsSection = zones.map((zone) =>
     blockKitAction([
       blockKitButton('Edit', `${ARENA_SECONDARY_ACTIONS.UPDATE_ZONE}-${zone.id}`),
       blockKitButton(
@@ -85,16 +83,19 @@ export function generateAvailableZonesBlockKit(zones: ArenaZone[]): SlackBlockKi
     zonesActionsSection.push(actionsSection[index]);
   });
 
-  return [mainTitleContextLayout, blockKitDivider, ...zonesActionsSection, blockKitDivider];
+  return [
+    mainTitleContextLayout,
+    blockKitDividerSection,
+    ...zonesActionsSection,
+    blockKitDividerSection,
+  ];
 }
 
 export function generateArenaZoneModal(zone?: ArenaZone): SlackDialog {
-  const blockKitDivider: SlackBlockKitDividerLayout = {
-    type: 'divider',
-  };
+  const blockKitDividerSection = blockKitDivider();
   const callbackId = ARENA_SECONDARY_ACTIONS.CREATE_OR_UPDATE_ZONE_DATA;
   const blocks: SlackBlockKitLayoutElement[] = [
-    blockKitDivider,
+    blockKitDividerSection,
     {
       type: 'input',
       block_id: `${callbackId}-name`,
@@ -147,7 +148,7 @@ export function generateArenaZoneModal(zone?: ArenaZone): SlackDialog {
       ),
       optional: false,
     }),
-    blockKitDivider,
+    blockKitDividerSection,
   ];
 
   return blockKitDialogObject({

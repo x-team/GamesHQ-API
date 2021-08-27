@@ -58,7 +58,8 @@ enum ITEM_NAME_TO_ADD {
   RARE_ARMOR = 'Rare Armor',
   EPIC_ARMOR = 'Epic Armor',
   LEGENDARY_ARMOR = 'Legendary Armor',
-  HEALTH_KIT = 'health kit',
+  ARENA_HEALTH_KIT = 'arena health kit',
+  TOWER_HEALTH_KIT = 'tower health kit',
   NOSSECS_PRIME = `Nossec's Prime`,
   DMITREVNAS_SHOTGUN = `Dmitrevna's Shotgun`,
   WATCHMANS_CHRONOGUN = `Watchman's Chronogun`,
@@ -599,11 +600,18 @@ module.exports = {
       );
 
       //        HEALTH KITS        ///////////////////////////////////////////////////////////
-      const itemHealthkits: Item[] = (await queryInterface.bulkInsert(
+      await queryInterface.bulkInsert(
         'Item',
         [
           {
-            name: ITEM_NAME_TO_ADD.HEALTH_KIT,
+            name: ITEM_NAME_TO_ADD.ARENA_HEALTH_KIT,
+            emoji: ':medkit:',
+            usageLimit: 1,
+            type: ITEM_TYPE.HEALTH_KIT,
+            _itemRarityId: RARITY.COMMON,
+          },
+          {
+            name: ITEM_NAME_TO_ADD.TOWER_HEALTH_KIT,
             emoji: ':medkit:',
             usageLimit: 1,
             type: ITEM_TYPE.HEALTH_KIT,
@@ -611,10 +619,16 @@ module.exports = {
           },
         ],
         { transaction, returning: true } as QueryOptions
-      )) as Item[];
+      );
 
-      const [basicHealthkit] = await queryItemByName(
-        ITEM_NAME_TO_ADD.HEALTH_KIT,
+      const [basicArenaHealthkit] = await queryItemByName(
+        ITEM_NAME_TO_ADD.ARENA_HEALTH_KIT,
+        queryInterface,
+        transaction
+      );
+
+      const [basicTowerHealthkit] = await queryItemByName(
+        ITEM_NAME_TO_ADD.TOWER_HEALTH_KIT,
         queryInterface,
         transaction
       );
@@ -623,15 +637,19 @@ module.exports = {
         'ItemHealthKit',
         [
           {
-            _itemId: basicHealthkit!.id,
+            _itemId: basicArenaHealthkit.id,
             healingPower: 35,
+          },
+          {
+            _itemId: basicTowerHealthkit.id,
+            healingPower: 20,
           },
         ],
         { transaction }
       );
 
       //        GAME AVAILABILITY        /////////////////////////////////////////////////////
-      items.push(...itemWeapons, ...itemArmors, ...itemHealthkits);
+      items.push(...itemWeapons, ...itemArmors);
 
       for (const item of items) {
         await queryInterface.bulkInsert(
@@ -649,6 +667,21 @@ module.exports = {
           { transaction }
         );
       }
+
+      await queryInterface.bulkInsert(
+        'GameItemAvailability',
+        [
+          {
+            _gameTypeId: GAME_TYPE.ARENA,
+            _itemId: basicArenaHealthkit.id,
+          },
+          {
+            _gameTypeId: GAME_TYPE.TOWER,
+            _itemId: basicTowerHealthkit.id,
+          },
+        ],
+        { transaction }
+      );
 
       //        ZONES        ///////////////////////////////////////////////////////////
       await queryInterface.bulkInsert(

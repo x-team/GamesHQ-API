@@ -29,7 +29,7 @@ import {
   SAD_PARROT,
   SPINNER_EMOJI,
 } from '../../../consts/emojis';
-import { ITEM_TYPE, SELECT_TEAM_URL, SLACK_SPACE, TRAIT } from '../../../consts/global';
+import { SELECT_TEAM_URL, SLACK_SPACE, TRAIT } from '../../../consts/global';
 import {
   basicHealthDisplay,
   generateRarityColorEmoji,
@@ -37,7 +37,7 @@ import {
   randomSkinColor,
   zoneStatus,
 } from '../../../helpers';
-import type { ChangeLocationParams } from '../../consts';
+import { ARENA_HEALTHKITS, ChangeLocationParams } from '../../consts';
 import { ARENA_ACTIONS, ARENA_PLAYER_PERFORMANCE, MAX_PLAYER_HEALTH } from '../../consts';
 import { arenaNotifyEphemeral, arenaRoundActionMessageBuilder } from '../../utils';
 import { playerStatus } from '../../utils/playerStatus';
@@ -273,7 +273,7 @@ export const arenaCommandReply = {
     const weapons = player._weapons?.length ? player._weapons : undefined;
     const armor = player._armors?.length ? player._armors[0] : undefined;
     const healthkit = player._healthkits?.length
-      ? player._healthkits.find((healthkit) => healthkit.name === ITEM_TYPE.HEALTH_KIT)
+      ? player._healthkits.find((healthkit) => healthkit.name === ARENA_HEALTHKITS.COMMON)
       : undefined;
     const cheersAmount = playerPerformance?.cheersReceived ?? 0;
     return (
