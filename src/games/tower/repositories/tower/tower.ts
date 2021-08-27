@@ -24,6 +24,8 @@ import { updateTowerBasicInfo, updateTowerBasicInfoForm } from './actions/admin/
 import { displayProgress, raiderActions } from './actions/player/actions-menu';
 import { enterTheTower } from './actions/player/enter';
 import { exitTheTower } from './actions/player/exit';
+import { hide } from './actions/player/hide';
+import { searchForArmors, searchForHealthkits, searchForWeapons } from './actions/player/search';
 import type { TowerEngine } from './engine';
 
 interface TowerRepositoryMethods {
@@ -38,8 +40,12 @@ interface TowerRepositoryMethods {
   displayProgress(userRequesting: User): Promise<GameResponse>;
 
   // PLAYERS: HIDE OPERATIONS ///////////////////////////////////////////////////////////////////
+  hide(userRequesting: User): Promise<GameResponse>;
 
   // PLAYERS: SEARCH OPERATIONS ///////////////////////////////////////////////
+  searchForHealthkits(userRequesting: User): Promise<GameResponse>;
+  searchForArmors(userRequesting: User): Promise<GameResponse>;
+  searchForWeapons(userRequesting: User): Promise<GameResponse>;
 
   // PLAYERS: HEAL OR REVIVE OPERATIONS ///////////////////////////////////////
 
@@ -111,8 +117,12 @@ export class TowerRepository implements TowerRepositoryMethods {
   public displayProgress = displayProgress.bind(this);
 
   // PLAYERS: HIDE OPERATIONS ///////////////////////////////////////////////////////////////////
+  public hide = hide.bind(this);
 
   // PLAYERS: SEARCH OPERATIONS ///////////////////////////////////////////////////////////////////
+  public searchForHealthkits = searchForHealthkits.bind(this);
+  public searchForArmors = searchForArmors.bind(this);
+  public searchForWeapons = searchForWeapons.bind(this);
 
   // PLAYERS: HEAL OR REVIVE OPERATIONS ///////////////////////////////////////////////////////////////////
 

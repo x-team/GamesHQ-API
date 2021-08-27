@@ -69,3 +69,29 @@ export function generateTowerActionsBlockKit(
     blockKitDividerSection,
   ];
 }
+
+export function generateTowerStartRoundQuestionSection(displayText: string) {
+  const blockKitDividerSection = blockKitDivider();
+
+  const mainMessageSection = blockKitMrkdwnSection(displayText);
+  const questionText = `Want to *start the round* now?`;
+  const slackMainMessageSection = blockKitMrkdwnSection(questionText);
+
+  const slackActionLayout = blockKitAction([
+    blockKitButton('Start!', TOWER_SLACK_COMMANDS.START_ROUND_FROM_QUESTION, undefined, 'primary'),
+    blockKitButton(
+      'Change Action',
+      TOWER_SLACK_COMMANDS.ACTIONS_FROM_QUESTION,
+      undefined,
+      'danger'
+    ),
+  ]);
+
+  return [
+    blockKitDividerSection,
+    mainMessageSection,
+    blockKitDividerSection,
+    slackMainMessageSection,
+    slackActionLayout,
+  ];
+}

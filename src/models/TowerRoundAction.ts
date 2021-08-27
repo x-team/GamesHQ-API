@@ -9,6 +9,7 @@ import {
   Default,
   BelongsTo,
   AllowNull,
+  AutoIncrement,
 } from 'sequelize-typescript';
 
 import {
@@ -27,6 +28,7 @@ type Values<T> = T[keyof T];
 export type TOWER_ACTIONS_TYPE = Values<typeof TOWER_ACTIONS>;
 
 interface TowerRoundActionAttributes {
+  id: number;
   isCompleted: boolean;
   createdAt: Date;
   completedAt: Date | null;
@@ -91,6 +93,10 @@ export class TowerRoundAction
   implements TowerRoundActionAttributes
 {
   @PrimaryKey
+  @AutoIncrement
+  @Column(DataType.INTEGER)
+  id!: number;
+
   @ForeignKey(() => TowerRaider)
   @AllowNull(true)
   @Column(DataType.INTEGER)
@@ -99,7 +105,6 @@ export class TowerRoundAction
   @BelongsTo(() => TowerRaider, '_towerRaiderId')
   _raider?: TowerRaider;
 
-  @PrimaryKey
   @ForeignKey(() => TowerFloorBattlefieldEnemy)
   @AllowNull(true)
   @Column(DataType.INTEGER)
@@ -108,7 +113,6 @@ export class TowerRoundAction
   @BelongsTo(() => TowerFloorBattlefieldEnemy, '_towerFloorBattlefieldEnemyId')
   _enemy?: TowerFloorBattlefieldEnemy;
 
-  @PrimaryKey
   @ForeignKey(() => TowerRound)
   @Column(DataType.INTEGER)
   _towerRoundId!: number;

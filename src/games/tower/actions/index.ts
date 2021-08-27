@@ -64,18 +64,18 @@ function towerPlayerSwitchActions(action: string, selectedId: number, userReques
     // // RAIDER
     case TOWER_SLACK_COMMANDS.PROGRESS_BUTTON:
       return theTower.displayProgress(userRequesting);
-    // case TOWER_SLACK_COMMANDS.ACTIONS_FROM_QUESTION:
-    //   return theTower.raiderActions(userRequesting);
-    // case TOWER_SLACK_COMMANDS.RE_ENTER_BUTTON:
-    //   return theTower.enter(userRequesting);
-    // case TOWER_SLACK_COMMANDS.HIDE:
-    //   return theTower.hide(userRequesting);
-    // case TOWER_SLACK_COMMANDS.SEARCH_HEALTH:
-    //   return theTower.searchForHealth(userRequesting);
-    // case TOWER_SLACK_COMMANDS.SEARCH_WEAPONS:
-    //   return theTower.searchForWeapons(userRequesting);
-    // case TOWER_SLACK_COMMANDS.SEARCH_ARMOR:
-    //   return theTower.searchForArmors(userRequesting);
+    case TOWER_SLACK_COMMANDS.ACTIONS_FROM_QUESTION:
+      return theTower.raiderActions(userRequesting);
+    case TOWER_SLACK_COMMANDS.RE_ENTER_BUTTON:
+      return theTower.enterTheTower(userRequesting);
+    case TOWER_SLACK_COMMANDS.HIDE:
+      return theTower.hide(userRequesting);
+    case TOWER_SLACK_COMMANDS.SEARCH_HEALTH:
+      return theTower.searchForHealthkits(userRequesting);
+    case TOWER_SLACK_COMMANDS.SEARCH_WEAPONS:
+      return theTower.searchForWeapons(userRequesting);
+    case TOWER_SLACK_COMMANDS.SEARCH_ARMOR:
+      return theTower.searchForArmors(userRequesting);
     // case TOWER_SLACK_COMMANDS.HEAL_OR_REVIVE_OTHER:
     //   return theTower.reviveOther(userRequesting);
     // case TOWER_SLACK_COMMANDS.HEAL_OR_REVIVE_SELF:

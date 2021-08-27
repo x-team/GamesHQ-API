@@ -39,6 +39,6 @@ export interface ArenaAction extends GameAction {
 }
 
 export interface TowerAction extends GameAction {
-  targetFloorBattlefieldEnemyId: number;
-  targetRaiderId: number;
+  targetFloorBattlefieldEnemyId?: number;
+  targetRaiderId?: number;
 }

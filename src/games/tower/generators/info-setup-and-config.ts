@@ -14,6 +14,7 @@ import {
   blockKitDialogObject,
   blockKitDivider,
   blockKitHeader,
+  blockKitInputField,
   blockKitInputText,
   blockKitMrkdwnSection,
 } from '../../utils/generators/slack';
@@ -83,40 +84,39 @@ export function generateUpdateTowerDialogView(towerGame: Game): SlackDialog {
   const callbackId = TOWER_SECONDARY_SLACK_ACTIONS.UPDATE_TOWER_ID;
   const blocks: SlackBlockKitLayoutElement[] = [
     blockKitDividerSection,
-    {
-      type: 'input',
-      block_id: `${callbackId}-name-block`,
-      label: blockKitCompositionText('Name'),
-      dispatch_action: false,
+    blockKitInputField({
+      blockId: `${callbackId}-name-block`,
+      labelText: 'Name',
+      dispatchAction: false,
       element: blockKitInputText(
         `${callbackId}-name-action`,
         'Please provide a name',
         towerGame.name
       ),
       optional: false,
-    },
-    {
-      type: 'input',
-      block_id: `${callbackId}-luna-prize-block`,
-      label: blockKitCompositionText('Luna Prize'),
-      dispatch_action: false,
+    }),
+    blockKitInputField({
+      blockId: `${callbackId}-luna-prize-block`,
+      labelText: 'Luna Prize',
+      dispatchAction: false,
       element: blockKitInputText(
         `${callbackId}-luna-prize-action`,
         'Please provide a luna prize amount',
         `${towerGame._tower?.lunaPrize}`
       ),
-    },
-    {
-      type: 'input',
-      block_id: `${callbackId}-coin-prize-block`,
-      label: blockKitCompositionText('Coin Prize'),
-      dispatch_action: false,
+      optional: true,
+    }),
+    blockKitInputField({
+      blockId: `${callbackId}-coin-prize-block`,
+      labelText: 'Coin Prize',
+      dispatchAction: false,
       element: blockKitInputText(
         `${callbackId}-coin-prize-action`,
         'Please provide a coin prize amount',
         `${towerGame._tower?.coinPrize}`
       ),
-    },
+      optional: true,
+    }),
     blockKitDividerSection,
   ];
   return blockKitDialogObject({
