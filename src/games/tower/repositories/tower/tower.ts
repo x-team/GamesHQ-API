@@ -25,6 +25,7 @@ import { displayProgress, raiderActions } from './actions/player/actions-menu';
 import { enterTheTower } from './actions/player/enter';
 import { exitTheTower } from './actions/player/exit';
 import { hide } from './actions/player/hide';
+import { chooseTarget, chooseWeapon, hunt } from './actions/player/hunt';
 import { completeRevive, reviveOther, reviveSelf } from './actions/player/revive';
 import { searchForArmors, searchForHealthkits, searchForWeapons } from './actions/player/search';
 import type { TowerEngine } from './engine';
@@ -54,8 +55,11 @@ interface TowerRepositoryMethods {
   completeRevive(userRequesting: User, selectedTargetId: number): Promise<GameResponse>;
 
   // PLAYERS: HUNT OPERATIONS /////////////////////////////////////////////////
+  hunt(userRequesting: User): Promise<GameResponse>;
+  chooseWeapon(userRequesting: User, selectedWeaponId: number): Promise<GameResponse>;
+  chooseTarget(userRequesting: User, selectedTargetId: number): Promise<GameResponse>;
 
-  // PLAYERS: CHEER OPERATIONS /////////////////////////////////////////////////
+  // PLAYERS: REPEAT LAST ACTION OPERATION /////////////////////////////////////////////////
 
   /////////////////////////////////////////////////////////////////// ADMIN ///////////////////////////////////////////////////////////////////
 
@@ -99,12 +103,6 @@ interface TowerRepositoryMethods {
 
   // ADMIN: LIST OPERATIONS ////////////////////////////////////////////
   displayScoreboard(userRequesting: User): Promise<GameResponse>;
-
-  // ADMIN: VISIBILITY OPERATIONS ////////////////////////////////////////////
-
-  // ADMIN: PERFORMANCE OPERATIONS ////////////////////////////////////////////
-
-  // ADMIN: ROUND OPERATIONS /////////////////////////////////////////////////
 }
 
 export class TowerRepository implements TowerRepositoryMethods {
@@ -134,8 +132,11 @@ export class TowerRepository implements TowerRepositoryMethods {
   public completeRevive = completeRevive.bind(this);
 
   // PLAYERS: HUNT OPERATIONS ///////////////////////////////////////////////////////////////////
+  public hunt = hunt.bind(this);
+  public chooseWeapon = chooseWeapon.bind(this);
+  public chooseTarget = chooseTarget.bind(this);
 
-  // PLAYERS: CHEER OPERATIONS /////////////////////////////////////////////////
+  // PLAYERS: REPEAT LAST ACTION OPERATION /////////////////////////////////////////////////
 
   /////////////////////////////////////////////////////////////////// ADMIN ///////////////////////////////////////////////////////////////////
 
@@ -160,10 +161,4 @@ export class TowerRepository implements TowerRepositoryMethods {
 
   // ADMIN: LIST OPERATIONS ////////////////////////////////////////////
   public displayScoreboard = displayScoreboard.bind(this);
-
-  // ADMIN: WEAPONS OPERATIONS ////////////////////////////////////////////
-
-  // ADMIN: PERFORMANCE OPERATIONS ////////////////////////////////////////////
-
-  // ADMIN: ROUND OPERATIONS /////////////////////////////////////////////////
 }

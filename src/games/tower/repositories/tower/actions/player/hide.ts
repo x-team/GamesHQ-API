@@ -1,3 +1,4 @@
+import type { Transaction } from 'sequelize';
 import { User } from '../../../../../../models';
 import { setRoundAction } from '../../../../../../models/TowerRoundAction';
 import { GameResponse, getGameResponse } from '../../../../../utils';
@@ -12,6 +13,27 @@ import {
   withTowerTransaction,
 } from '../../../../utils';
 import { towerCommandReply } from '../../replies';
+
+export async function hideHelper(
+  { raider, round }: TowerRaiderInteraction,
+  transaction: Transaction
+) {
+  if (round.isEveryoneVisible) {
+    const hud = towerCommandReply.raiderHUD(raider);
+    const actionBlockkit = generateTowerActionsBlockKit(hud, towerCommandReply.raiderCannotHide());
+    return getGameResponse(actionBlockkit);
+  }
+  await setRoundAction(
+    {
+      raiderId: raider.id,
+      roundId: round.id,
+      action: { id: TOWER_ACTIONS.HIDE },
+    },
+    transaction
+  );
+  const blocks = generateTowerStartRoundQuestionSection(towerCommandReply.raiderHides());
+  return getGameResponse(blocks);
+}
 
 export async function hide(userRequesting: User) {
   return withTowerTransaction(async (transaction) => {

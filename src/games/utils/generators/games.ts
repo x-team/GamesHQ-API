@@ -1,9 +1,6 @@
 import { Item } from '../../../models';
 import type { ARENA_SECONDARY_ACTIONS } from '../../arena/consts';
-import {
-  SlackBlockKitCompositionOption,
-  SlackBlockKitDividerLayout,
-} from '../../model/SlackBlockKit';
+import { SlackBlockKitCompositionOption } from '../../model/SlackBlockKit';
 import { TOWER_SECONDARY_SLACK_ACTIONS } from '../../tower/consts';
 
 import {
@@ -39,12 +36,10 @@ const genericWeaponsOptionBuilder = (weapon: Item) => {
 export function generateGenericWeaponPickerBlock(
   displayText: string,
   weapons: Item[],
-  defaultWeapon: Item,
+  defaultWeapon: Item | null,
   action: string
 ) {
-  const blockKitDivider: SlackBlockKitDividerLayout = {
-    type: 'divider',
-  };
+  const blockKitDividerSection = blockKitDivider();
 
   const mainMessageSection = blockKitMrkdwnSection(displayText);
   const weaponsToDropdownOptions: SlackBlockKitCompositionOption[] = weapons.map(
@@ -62,5 +57,5 @@ export function generateGenericWeaponPickerBlock(
   );
 
   const actionLayout = blockKitAction([selectWeaponsMenu]);
-  return [blockKitDivider, mainMessageSection, actionLayout];
+  return [blockKitDividerSection, mainMessageSection, actionLayout];
 }

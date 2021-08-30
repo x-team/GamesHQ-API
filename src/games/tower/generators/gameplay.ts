@@ -1,5 +1,9 @@
-import { TowerRaider } from '../../../models';
-import { SlackBlockKitLayoutElement } from '../../model/SlackBlockKit';
+import { TowerFloorBattlefieldEnemy, TowerRaider } from '../../../models';
+import { FULL_HEALTH_HEART_EMOJI } from '../../consts/emojis';
+import {
+  SlackBlockKitCompositionOption,
+  SlackBlockKitLayoutElement,
+} from '../../model/SlackBlockKit';
 import { generateEndGameConfirmationBlockKit } from '../../utils/generators/games';
 import {
   blockKitAction,
@@ -125,5 +129,29 @@ export function generateTowerTargetRaiderPickerBlock(
 
   const actionLayout = blockKitAction([slackSelectTargetMenu]);
 
+  return [blockKitDividerSection, mainMessageSection, actionLayout];
+}
+
+function generateEnemyDropdownEntry(battlefieldEnemy: TowerFloorBattlefieldEnemy) {
+  return `${battlefieldEnemy._towerFloorEnemy?._enemy?.emoji!} ${battlefieldEnemy._towerFloorEnemy
+    ?._enemy?.name!} ( ${FULL_HEALTH_HEART_EMOJI} ${battlefieldEnemy.health})`;
+}
+
+export function generateTowerTargetEnemyPickerBlock(
+  enemies: TowerFloorBattlefieldEnemy[],
+  action: string,
+  displayText = 'Please select a target'
+): SlackBlockKitLayoutElement[] {
+  const blockKitDividerSection = blockKitDivider();
+  const mainMessageSection = blockKitMrkdwnSection(displayText);
+  const enemiesToDropdownOptions: SlackBlockKitCompositionOption[] = enemies.map((enemy) =>
+    blockKitCompositionOption(generateEnemyDropdownEntry(enemy), `${enemy._towerFloorEnemyId}`)
+  );
+  const slackSelectTargetMenu = blockKitSelectMenu(
+    `${action}`,
+    'Choose your target',
+    enemiesToDropdownOptions
+  );
+  const actionLayout = blockKitAction([slackSelectTargetMenu]);
   return [blockKitDividerSection, mainMessageSection, actionLayout];
 }

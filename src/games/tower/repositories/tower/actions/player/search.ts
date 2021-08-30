@@ -14,7 +14,7 @@ import {
 } from '../../../../utils';
 import { towerCommandReply } from '../../replies';
 
-async function evaluateSearchForItem(
+export async function evaluateSearchForItem(
   { raider, round, actionId }: TowerRaiderInteraction & { actionId: TOWER_ACTIONS_TYPE },
   transaction: Transaction
 ) {

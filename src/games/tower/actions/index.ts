@@ -59,7 +59,6 @@ export const actionReply = {
 };
 
 function towerPlayerSwitchActions(action: string, selectedId: number, userRequesting: User) {
-  logger.debug({ selectedId });
   switch (action) {
     // // RAIDER
     case TOWER_SLACK_COMMANDS.PROGRESS_BUTTON:
@@ -80,8 +79,14 @@ function towerPlayerSwitchActions(action: string, selectedId: number, userReques
       return theTower.reviveOther(userRequesting);
     case TOWER_SLACK_COMMANDS.HEAL_OR_REVIVE_SELF:
       return theTower.reviveSelf(userRequesting);
-    // case TOWER_SLACK_COMMANDS.HUNT:
-    //   return theTower.hunt(userRequesting);
+    case TOWER_SECONDARY_SLACK_ACTIONS.HEAL_OR_REVIVE_CHOOSE_TARGET:
+      return theTower.completeRevive(userRequesting, selectedId);
+    case TOWER_SLACK_COMMANDS.HUNT:
+      return theTower.hunt(userRequesting);
+    case TOWER_SECONDARY_SLACK_ACTIONS.HUNT_CHOOSE_WEAPON:
+      return theTower.chooseWeapon(userRequesting, selectedId);
+    case TOWER_SECONDARY_SLACK_ACTIONS.HUNT_CHOOSE_TARGET:
+      return theTower.chooseTarget(userRequesting, selectedId);
     // case TOWER_SLACK_COMMANDS.REPEAT_LAST_ACTION:
     //   return theTower.repeatLastAction(userRequesting);
     // case TOWER_SLACK_COMMANDS.START_ROUND_FROM_QUESTION:
@@ -89,12 +94,6 @@ function towerPlayerSwitchActions(action: string, selectedId: number, userReques
     //     handleException({ error, plugin: 'slack' });
     //   });
     //   return getEphemeralText('Starting Round');
-    // case TOWER_SECONDARY_SLACK_ACTIONS.HUNT_CHOOSE_WEAPON:
-    //   return theTower.chooseWeapon(userRequesting, selectedId);
-    // case TOWER_SECONDARY_SLACK_ACTIONS.HEAL_OR_REVIVE_CHOOSE_TARGET:
-    //   return theTower.completeRevive(userRequesting, selectedId);
-    // case TOWER_SECONDARY_SLACK_ACTIONS.HUNT_CHOOSE_TARGET:
-    //   return theTower.chooseTarget(userRequesting, selectedId);
     // ADMIN
     case TOWER_SECONDARY_SLACK_ACTIONS.CONFIRM_END_GAME:
       return theTower.endGame(userRequesting);
