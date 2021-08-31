@@ -87,8 +87,8 @@ function towerPlayerSwitchActions(action: string, selectedId: number, userReques
       return theTower.chooseWeapon(userRequesting, selectedId);
     case TOWER_SECONDARY_SLACK_ACTIONS.HUNT_CHOOSE_TARGET:
       return theTower.chooseTarget(userRequesting, selectedId);
-    // case TOWER_SLACK_COMMANDS.REPEAT_LAST_ACTION:
-    //   return theTower.repeatLastAction(userRequesting);
+    case TOWER_SLACK_COMMANDS.REPEAT_LAST_ACTION:
+      return theTower.repeatLastAction(userRequesting);
     // case TOWER_SLACK_COMMANDS.START_ROUND_FROM_QUESTION:
     //   theTower.startRound(userRequesting).catch((error) => {
     //     handleException({ error, plugin: 'slack' });

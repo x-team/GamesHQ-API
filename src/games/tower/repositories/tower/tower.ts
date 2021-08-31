@@ -26,6 +26,7 @@ import { enterTheTower } from './actions/player/enter';
 import { exitTheTower } from './actions/player/exit';
 import { hide } from './actions/player/hide';
 import { chooseTarget, chooseWeapon, hunt } from './actions/player/hunt';
+import { repeatLastAction } from './actions/player/repeat-last-action';
 import { completeRevive, reviveOther, reviveSelf } from './actions/player/revive';
 import { searchForArmors, searchForHealthkits, searchForWeapons } from './actions/player/search';
 import type { TowerEngine } from './engine';
@@ -60,6 +61,7 @@ interface TowerRepositoryMethods {
   chooseTarget(userRequesting: User, selectedTargetId: number): Promise<GameResponse>;
 
   // PLAYERS: REPEAT LAST ACTION OPERATION /////////////////////////////////////////////////
+  repeatLastAction(userRequesting: User): Promise<GameResponse>;
 
   /////////////////////////////////////////////////////////////////// ADMIN ///////////////////////////////////////////////////////////////////
 
@@ -137,6 +139,7 @@ export class TowerRepository implements TowerRepositoryMethods {
   public chooseTarget = chooseTarget.bind(this);
 
   // PLAYERS: REPEAT LAST ACTION OPERATION /////////////////////////////////////////////////
+  public repeatLastAction = repeatLastAction.bind(this);
 
   /////////////////////////////////////////////////////////////////// ADMIN ///////////////////////////////////////////////////////////////////
 

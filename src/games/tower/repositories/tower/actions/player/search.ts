@@ -14,7 +14,7 @@ import {
 } from '../../../../utils';
 import { towerCommandReply } from '../../replies';
 
-export async function evaluateSearchForItem(
+export async function searchForItemHelper(
   { raider, round, actionId }: TowerRaiderInteraction & { actionId: TOWER_ACTIONS_TYPE },
   transaction: Transaction
 ) {
@@ -39,7 +39,7 @@ export async function searchForWeapons(userRequesting: User) {
       return raiderActions as GameResponse;
     }
     const { raider, round } = raiderActions as TowerRaiderInteraction;
-    return evaluateSearchForItem(
+    return searchForItemHelper(
       {
         interfaceName: 'TowerRaiderInteraction',
         raider,
@@ -58,7 +58,7 @@ export async function searchForArmors(userRequesting: User) {
       return raiderActions as GameResponse;
     }
     const { raider, round } = raiderActions as TowerRaiderInteraction;
-    return evaluateSearchForItem(
+    return searchForItemHelper(
       {
         interfaceName: 'TowerRaiderInteraction',
         raider,
@@ -86,7 +86,7 @@ export async function searchForHealthkits(userRequesting: User) {
       );
       return getGameResponse(actionBlockkit);
     }
-    return evaluateSearchForItem(
+    return searchForItemHelper(
       {
         interfaceName: 'TowerRaiderInteraction',
         raider,

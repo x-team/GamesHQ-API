@@ -67,7 +67,7 @@ export async function chooseHuntTargetHelper(
   return getGameResponse(blocks);
 }
 
-async function huntHelper(
+export async function huntHelper(
   { raider, round, weapon }: TowerRaiderInteraction & { weapon: Item },
   transaction: Transaction
 ) {
