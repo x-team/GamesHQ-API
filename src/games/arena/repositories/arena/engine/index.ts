@@ -103,10 +103,10 @@ export class ArenaEngine {
   private processSearchWeapons = processSearchWeapons.bind(this);
 
   // CHANGE LOCATION OPERATIONS /////////////////////////////////////////////////
-  private processHealOrRevive = processHealOrRevive.bind(this);
+  public processChangeLocation = processChangeLocation.bind(this);
 
   // HEAL OR REVIVE OPERATIONS /////////////////////////////////////////////////
-  public processChangeLocation = processChangeLocation.bind(this);
+  private processHealOrRevive = processHealOrRevive.bind(this);
 
   // HIDE OPERATIONS /////////////////////////////////////////////////
   private processHide = processHide.bind(this);

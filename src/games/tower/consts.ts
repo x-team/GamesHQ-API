@@ -79,7 +79,7 @@ export enum TOWER_FLOOR_HIDING {
 }
 
 export enum TOWER_LOOT_PRIZES {
-  ITEM = 'item',
+  HEALTH_KIT = 'healthkit',
   WEAPON = 'weapon',
   ARMOR = 'armor',
 }
@@ -97,7 +97,7 @@ export const DEFAULT_LUNA_PRIZE = 5;
 export const DEFAULT_COIN_PRIZE = 5;
 export const LOOT_PRIZE_WEAPON_CHANCE = 0.5;
 export const LOOT_PRIZE_ARMOR_CHANCE = 0.25;
-export const LOOT_PRIZE_ITEM_CHANCE = 0.25;
+export const LOOT_PRIZE_HEALTH_KIT_CHANCE = 0.25;
 export const HEALTHKIT_ITEM_CHANCE = 0.95;
 export const LUCKELIXIR_ITEM_CHANCE = 0.05;
 export const LOSE_ACTION_RATE = 0.6;

@@ -429,7 +429,7 @@ export class TowerRaider
 
   // HEALTHKITS
   async addHealthkit(itemId: number, quantity: number, transaction: Transaction) {
-    const currentQuantity = await this.healthkitQty(itemId);
+    const currentQuantity = this.healthkitQty(itemId);
     return setRaiderrHealthkitQuantity(this, itemId, currentQuantity + quantity, transaction);
   }
 
@@ -441,7 +441,7 @@ export class TowerRaider
   }
 
   async subtractHealthkit(itemId: number, quantity: number, transaction: Transaction) {
-    const currentQuantity = await this.healthkitQty(itemId);
+    const currentQuantity = this.healthkitQty(itemId);
     return setRaiderrHealthkitQuantity(this, itemId, currentQuantity - quantity, transaction);
   }
 

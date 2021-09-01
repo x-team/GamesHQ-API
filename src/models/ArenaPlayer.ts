@@ -436,7 +436,7 @@ export class ArenaPlayer
 
   // HEALTHKITS
   async addHealthkit(itemId: number, quantity: number, transaction: Transaction) {
-    const currentQuantity = await this.healthkitQty(itemId);
+    const currentQuantity = this.healthkitQty(itemId);
     return setPlayerHealthkitQuantity(this, itemId, currentQuantity + quantity, transaction);
   }
 
@@ -448,7 +448,7 @@ export class ArenaPlayer
   }
 
   async subtractHealthkit(itemId: number, quantity: number, transaction: Transaction) {
-    const currentQuantity = await this.healthkitQty(itemId);
+    const currentQuantity = this.healthkitQty(itemId);
     return setPlayerHealthkitQuantity(this, itemId, currentQuantity - quantity, transaction);
   }
 

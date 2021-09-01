@@ -28,7 +28,7 @@ import { RollSearchRarityParams, weightedChance } from '../../utils/rollRarity';
 import {
   LUCK_ELIXIR_BOOST,
   TOWER_ACTIONS,
-  LOOT_PRIZE_ITEM_CHANCE,
+  LOOT_PRIZE_HEALTH_KIT_CHANCE,
   LOOT_PRIZE_ARMOR_CHANCE,
   LOOT_PRIZE_WEAPON_CHANCE,
   HEALTHKIT_ITEM_CHANCE,
@@ -230,7 +230,7 @@ export function rollLootPrize(
   lootPrizesAvailable?: TOWER_LOOT_PRIZES[]
 ): TOWER_LOOT_PRIZES | undefined {
   const defaultPrizes = [
-    { chance: LOOT_PRIZE_ITEM_CHANCE, result: TOWER_LOOT_PRIZES.ITEM },
+    { chance: LOOT_PRIZE_HEALTH_KIT_CHANCE, result: TOWER_LOOT_PRIZES.HEALTH_KIT },
     { chance: LOOT_PRIZE_ARMOR_CHANCE, result: TOWER_LOOT_PRIZES.ARMOR },
     { chance: LOOT_PRIZE_WEAPON_CHANCE, result: TOWER_LOOT_PRIZES.WEAPON },
   ];
@@ -242,10 +242,10 @@ export function rollLootPrize(
   const customPrizesAvailable: Array<{ chance: number; result: TOWER_LOOT_PRIZES }> = [];
 
   lootPrizesAvailable.forEach((lootPrize) => {
-    if (lootPrize === TOWER_LOOT_PRIZES.ITEM) {
+    if (lootPrize === TOWER_LOOT_PRIZES.HEALTH_KIT) {
       customPrizesAvailable.push({
-        chance: LOOT_PRIZE_ITEM_CHANCE,
-        result: TOWER_LOOT_PRIZES.ITEM,
+        chance: LOOT_PRIZE_HEALTH_KIT_CHANCE,
+        result: TOWER_LOOT_PRIZES.HEALTH_KIT,
       });
     }
     if (lootPrize === TOWER_LOOT_PRIZES.ARMOR) {

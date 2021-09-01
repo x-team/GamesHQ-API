@@ -4,7 +4,7 @@ import { User } from '../../../models';
 import { getUserBySlackId } from '../../../models/User';
 import { gameResponseToSlackHandler } from '../../../modules/slack/utils';
 import { parseEscapedSlackId } from '../../../utils/slack';
-import { SAD_PARROT } from '../../consts/emojis';
+import { SAD_PARROT, SPINNER_EMOJI } from '../../consts/emojis';
 import { TEN, ZERO } from '../../consts/global';
 
 import { randomSkinColor } from '../../helpers';
@@ -13,11 +13,15 @@ import type {
   SlackBlockKitSelectMenuElement,
 } from '../../model/SlackBlockKit';
 import { SlackBlockKitPayload } from '../../model/SlackBlockKitPayload';
-import { getEphemeralText, getGameError, slackRequest } from '../../utils';
+import { getEphemeralText, getGameError, getGameResponse, slackRequest } from '../../utils';
 import { TOWER_SECONDARY_SLACK_ACTIONS, TOWER_SLACK_COMMANDS } from '../consts';
 import { TowerEngine } from '../repositories/tower/engine';
 import { TowerRepository } from '../repositories/tower/tower';
-import { isTowerConfigAction, isTowerRaiderWithParamsAction } from '../utils';
+import {
+  isTowerConfigAction,
+  isTowerRaiderWithParamsAction,
+  theTowerNotifyEphemeral,
+} from '../utils';
 import { towerConfigActionHandler } from './towerConfig';
 
 const theTower = new TowerRepository(TowerEngine.getInstance());
@@ -89,11 +93,27 @@ function towerPlayerSwitchActions(action: string, selectedId: number, userReques
       return theTower.chooseTarget(userRequesting, selectedId);
     case TOWER_SLACK_COMMANDS.REPEAT_LAST_ACTION:
       return theTower.repeatLastAction(userRequesting);
-    // case TOWER_SLACK_COMMANDS.START_ROUND_FROM_QUESTION:
-    //   theTower.startRound(userRequesting).catch((error) => {
-    //     handleException({ error, plugin: 'slack' });
-    //   });
-    //   return getEphemeralText('Starting Round');
+    case TOWER_SLACK_COMMANDS.START_ROUND_FROM_QUESTION:
+      theTower
+        .startRoundCommand(userRequesting)
+        .then(async (reply) => {
+          const slackResponseBody = gameResponseToSlackHandler(reply);
+          await theTowerNotifyEphemeral(
+            slackResponseBody.text ?? 'Something went wrong',
+            userRequesting.slackId!,
+            userRequesting.slackId!
+          );
+        })
+        .catch(async (e) => {
+          logger.error('Error in Slack Command: The Tower');
+          logger.error(e);
+          await theTowerNotifyEphemeral(
+            'Something went wrong',
+            userRequesting.slackId!,
+            userRequesting.slackId!
+          );
+        });
+      return Promise.resolve(getGameResponse(`Starting Round ${SPINNER_EMOJI}`));
     // ADMIN
     case TOWER_SECONDARY_SLACK_ACTIONS.CONFIRM_END_GAME:
       return theTower.endGame(userRequesting);

@@ -29,6 +29,7 @@ import { chooseTarget, chooseWeapon, hunt } from './actions/player/hunt';
 import { repeatLastAction } from './actions/player/repeat-last-action';
 import { completeRevive, reviveOther, reviveSelf } from './actions/player/revive';
 import { searchForArmors, searchForHealthkits, searchForWeapons } from './actions/player/search';
+import { startRoundCommand } from './actions/player/start-round';
 import type { TowerEngine } from './engine';
 
 interface TowerRepositoryMethods {
@@ -62,6 +63,9 @@ interface TowerRepositoryMethods {
 
   // PLAYERS: REPEAT LAST ACTION OPERATION /////////////////////////////////////////////////
   repeatLastAction(userRequesting: User): Promise<GameResponse>;
+
+  // PLAYERS: START ROUND OPERATION /////////////////////////////////////////////////
+  startRoundCommand(userRequesting: User): Promise<GameResponse>;
 
   /////////////////////////////////////////////////////////////////// ADMIN ///////////////////////////////////////////////////////////////////
 
@@ -140,6 +144,9 @@ export class TowerRepository implements TowerRepositoryMethods {
 
   // PLAYERS: REPEAT LAST ACTION OPERATION /////////////////////////////////////////////////
   public repeatLastAction = repeatLastAction.bind(this);
+
+  // PLAYERS: START ROUND OPERATION /////////////////////////////////////////////////
+  public startRoundCommand = startRoundCommand.bind(this);
 
   /////////////////////////////////////////////////////////////////// ADMIN ///////////////////////////////////////////////////////////////////
 

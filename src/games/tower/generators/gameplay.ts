@@ -1,5 +1,7 @@
-import { TowerFloorBattlefieldEnemy, TowerRaider } from '../../../models';
-import { FULL_HEALTH_HEART_EMOJI } from '../../consts/emojis';
+import { Item, Perk, TowerFloorBattlefieldEnemy, TowerRaider } from '../../../models';
+import { FULL_HEALTH_HEART_EMOJI, HEALTH_KIT_EMOJI } from '../../consts/emojis';
+import { ZERO } from '../../consts/global';
+import { generateRarityColorEmoji } from '../../helpers';
 import {
   SlackBlockKitCompositionOption,
   SlackBlockKitLayoutElement,
@@ -14,7 +16,12 @@ import {
   blockKitMrkdwnSection,
   blockKitSelectMenu,
 } from '../../utils/generators/slack';
-import { TOWER_SECONDARY_SLACK_ACTIONS, TOWER_SLACK_COMMANDS } from '../consts';
+import {
+  MAX_RAIDER_HEALTH,
+  TOWER_HEALTHKITS,
+  TOWER_SECONDARY_SLACK_ACTIONS,
+  TOWER_SLACK_COMMANDS,
+} from '../consts';
 
 // ADMIN ////////////////////////////////////////////////////////////////////////////////////////////////
 export function generateTowerEndGameConfirmationBlockKit(
@@ -154,4 +161,61 @@ export function generateTowerTargetEnemyPickerBlock(
   );
   const actionLayout = blockKitAction([slackSelectTargetMenu]);
   return [blockKitDividerSection, mainMessageSection, actionLayout];
+}
+
+export function generateReEnterTowerQuestionSection(displayText: string) {
+  const blockKitDividerSection = blockKitDivider();
+  const mainMessageSection = blockKitMrkdwnSection(displayText);
+  const questionText = `Want to *continue (re-enter The Tower)* now?`;
+  const slackMainMessageSection = blockKitMrkdwnSection(questionText);
+  const slackActionLayout = blockKitAction([
+    blockKitButton('YES!', TOWER_SLACK_COMMANDS.RE_ENTER_BUTTON, undefined, 'primary'),
+  ]);
+  return [
+    blockKitDividerSection,
+    mainMessageSection,
+    blockKitDividerSection,
+    slackMainMessageSection,
+    slackActionLayout,
+  ];
+}
+
+export function generateTowerPerkPickerSection(perks: Perk[], item: Item, itemType: string) {
+  const blockKitDividerSection = blockKitDivider();
+  const matchParentheses = new RegExp(/\(([^)]+)\)/, 'g');
+  const perksInfo =
+    `:watchman: *Watchman's Helmet Implementation* :watchman:\n\n` +
+    perks
+      .map(
+        (perk) =>
+          `${generateRarityColorEmoji(perk._itemRarityId)}${perk.emoji} *${
+            perk.name
+          }:* ${perk.description.replace(matchParentheses, `_($1)_`)}\n`
+      )
+      .join('\n') +
+    `${
+      item.name === TOWER_HEALTHKITS.COMMON
+        ? `\n${HEALTH_KIT_EMOJI} *${item.name}:* Gain +${
+            item._healthkit?.healingPower ?? ZERO
+          }HP. ` + `It will be _auto-applied_ if you have less than ${MAX_RAIDER_HEALTH} HP.\n`
+        : ''
+    }` +
+    `\nWhat perk _(or item)_ do you want to implement, Watchman?`;
+  const slackMainMessageSection = blockKitMrkdwnSection(perksInfo);
+
+  const perksButtons = perks.map((perk) =>
+    blockKitButton(perk.name, `${TOWER_SECONDARY_SLACK_ACTIONS.CHOOSE_PERK}-${perk.id}`)
+  );
+
+  const itemButton = blockKitButton(
+    `${generateRarityColorEmoji(item._itemRarityId, true)} ` +
+      `${item.emoji} ` +
+      `${/*item.name === TOWER_ITEMS.LUCK_ELIXIR ? 'Edlixir' : */ item.name}`,
+    `${TOWER_SECONDARY_SLACK_ACTIONS.CHOOSE_ITEM}-${itemType}-${item.id}`,
+    undefined,
+    'primary'
+  );
+
+  const perksAndItemActionsLayout = blockKitAction([...perksButtons, itemButton]);
+  return [blockKitDividerSection, slackMainMessageSection, perksAndItemActionsLayout];
 }
