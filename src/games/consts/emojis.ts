@@ -9,6 +9,7 @@ export const PLAYER_HIDE_EMOJI = ':pepescared:';
 export const PLAYER_VISIBLE_EMOJI = ':eyes:';
 export const HEALTH_KIT_EMOJI = ':medkit:';
 export const SPINNER_EMOJI = ':spinner:';
+export const SCREAM_EMOJI = ':scream:';
 export const LOOT_CRATE_EMOJI = ':loot-crate:';
 export const INFINITY_GIF_EMOJI = ':arena-infinity-gif:';
 export const PUBLIC_FAVOURITE_EMOJI = ':star2:';

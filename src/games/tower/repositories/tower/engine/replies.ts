@@ -9,6 +9,7 @@ import {
   PERK_IMPLEMENTATION_EMOJI,
   PLAYER_HIDE_EMOJI,
   PLAYER_VISIBLE_EMOJI,
+  SCREAM_EMOJI,
   SPINNER_EMOJI,
   WEAPON_INVENTORY_EMOJI,
 } from '../../../../consts/emojis';
@@ -35,6 +36,11 @@ export const towerEngineReply = {
   raiderFoundNoHealthKit: (slackId: string, health: number) =>
     `:medkit: <@${slackId}> searched for a health kit and *found... nothing* :grimacing:\n` +
     `${playerAndHealthDisplay([{ slackId, health }])}`,
+
+  playerTryReviveButFailed: (targetSlackId: string, health: number) =>
+    `${FULL_HEALTH_HEART_EMOJI} <@${targetSlackId}> *tried* to use a health kit` +
+    `but failed ${SCREAM_EMOJI}\n` +
+    `${playerAndHealthDisplay([{ slackId: targetSlackId, health }])}`,
 
   raiderSelfRevive: (slackId: string, health: number) =>
     `${FULL_HEALTH_HEART_EMOJI} <@${slackId}> used a health kit.\n` +

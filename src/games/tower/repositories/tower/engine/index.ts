@@ -6,7 +6,8 @@ import { awardPrize } from './helpers/award-prize';
 import { generateEnemiesActions } from './helpers/generate-enemies-actions';
 import { generateLoot } from './helpers/generate-loot';
 import { generatePerksAndItem } from './helpers/generate-perks-and-items';
-import { processSearchHealth } from './processSearchHealth';
+import { processHealOrRevive } from './processHealOrRevive';
+import { processSearchArmors, processSearchHealth, processSearchWeapons } from './processSearch';
 
 export class TowerEngine {
   static getInstance(): TowerEngine {
@@ -29,7 +30,7 @@ export class TowerEngine {
 
   public generatePerksAndItem = generatePerksAndItem.bind(this);
 
-  async runRound(_round: TowerRound, actions: TowerRoundAction[], transaction: Transaction) {
+  async runRound(round: TowerRound, actions: TowerRoundAction[], transaction: Transaction) {
     // const raidersToNotify = await findRaidersByFloorBattlefield(
     //   round._towerFloorBattlefieldId,
     //   false,
@@ -41,11 +42,11 @@ export class TowerEngine {
       transaction
     );
 
-    // await this.processHealOrRevive(
-    //   round,
-    //   filterActionsById(actions, TOWER_ACTIONS.REVIVE),
-    //   transaction
-    // );
+    await this.processHealOrRevive(
+      round,
+      filterActionsById(actions, TOWER_ACTIONS.REVIVE),
+      transaction
+    );
 
     // await this.processLuckElixirUse(
     //   round,
@@ -59,17 +60,17 @@ export class TowerEngine {
     //   transaction
     // );
 
-    // await this.processSearchArmors(
-    //   round,
-    //   filterActionsById(actions, TOWER_ACTIONS.SEARCH_ARMOR),
-    //   transaction
-    // );
+    await this.processSearchArmors(
+      round,
+      filterActionsById(actions, TOWER_ACTIONS.SEARCH_ARMOR),
+      transaction
+    );
 
-    // await this.processSearchWeapons(
-    //   round,
-    //   filterActionsById(actions, TOWER_ACTIONS.SEARCH_WEAPONS),
-    //   transaction
-    // );
+    await this.processSearchWeapons(
+      round,
+      filterActionsById(actions, TOWER_ACTIONS.SEARCH_WEAPONS),
+      transaction
+    );
 
     // await this.processCharge(
     //   filterActionsById(actions, TOWER_ACTIONS.CHARGE),
@@ -87,11 +88,11 @@ export class TowerEngine {
 
   // SEARCH OPERATIONS /////////////////////////////////////////////////
   private processSearchHealth = processSearchHealth.bind(this);
-  // private processSearchArmors = processSearchArmors.bind(this);
-  // private processSearchWeapons = processSearchWeapons.bind(this);
+  private processSearchArmors = processSearchArmors.bind(this);
+  private processSearchWeapons = processSearchWeapons.bind(this);
 
   // HEAL OR REVIVE OPERATIONS /////////////////////////////////////////////////
-  // private processHealOrRevive = processHealOrRevive.bind(this);
+  private processHealOrRevive = processHealOrRevive.bind(this);
 
   // HIDE OPERATIONS /////////////////////////////////////////////////
   // private processHide = processHide.bind(this);

@@ -21,7 +21,7 @@ export async function processHealOrRevive(
         await player.setVisibility(true, transaction);
       }
       const healthKitQty = await player.healthkitQty(healthKit?.id ?? ZERO);
-      healthKitQtyStatement: if (healthKitQty > 0) {
+      healthKitQtyStatement: if (healthKitQty > ZERO) {
         if (!healthKit) {
           await publishArenaMessage(
             arenaEngineReply.playerFoundNoHealthKit(player._user!.slackId!, player.health)
@@ -43,14 +43,14 @@ export async function processHealOrRevive(
         } else {
           if (!targetPlayerId) {
             await publishArenaMessage(
-              arenaEngineReply.playerFoundNoHealthKit(player._user!.slackId!, player.health)
+              arenaEngineReply.playerTryReviveButFailed(player._user!.slackId!, player.health)
             );
             break targetStatement;
           }
           const targetPlayer = await findPlayerById(targetPlayerId, true, transaction);
           if (!targetPlayer) {
             await publishArenaMessage(
-              arenaEngineReply.playerFoundNoHealthKit(player._user!.slackId!, player.health)
+              arenaEngineReply.playerTryReviveButFailed(player._user!.slackId!, player.health)
             );
             break targetStatement;
           }
