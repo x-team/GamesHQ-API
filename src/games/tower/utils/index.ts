@@ -8,7 +8,7 @@ import { findActiveRound } from '../../../models/TowerRound';
 import { TOWER_ACTIONS_TYPE } from '../../../models/TowerRoundAction';
 import { TOWER_HEALTHKITS, TOWER_REPOSITORY_NAME } from '../../tower/consts';
 
-import { ONE, HUNDRED, ITEM_RARITY } from '../../consts/global';
+import { ONE, HUNDRED, ITEM_RARITY, ZERO } from '../../consts/global';
 import { roundActionMessageBuilder, RoundActionMessageBuilderParams } from '../../helpers';
 import type { SlackBlockKitLayoutElement } from '../../model/SlackBlockKit';
 import {
@@ -156,11 +156,11 @@ export function initiativeSort(actionA: TowerRoundAction, actionB: TowerRoundAct
     characterA instanceof TowerRaider
       ? hasLuck(DEFAULT_SORT_INITIATIVE_SUCCESS_RATE, characterA.luckBoost)
       : hasLuck(ENEMY_DEFAULT_SORT_INITIATIVE_SUCCESS_RATE);
-  return characterB.abilitiesJSON.initiative - characterA.abilitiesJSON.initiative !== 0
+  return characterB.abilitiesJSON.initiative - characterA.abilitiesJSON.initiative !== ZERO
     ? characterB.abilitiesJSON.initiative - characterA.abilitiesJSON.initiative
     : randomInitiative
-    ? -1
-    : 1;
+    ? -ONE
+    : ONE;
 }
 
 export function defineSearchRarityParamsByFloor(floorNumber: number): RollSearchRarityParams {

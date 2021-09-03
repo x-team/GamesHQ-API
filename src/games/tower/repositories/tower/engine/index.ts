@@ -1,12 +1,16 @@
 import type { Transaction } from 'sequelize';
 import { TowerRound, TowerRoundAction } from '../../../../../models';
+import { findRaidersByFloorBattlefield } from '../../../../../models/TowerRaider';
 import { TOWER_ACTIONS } from '../../../consts';
 import { filterActionsById } from '../../../utils';
 import { awardPrize } from './helpers/award-prize';
 import { generateEnemiesActions } from './helpers/generate-enemies-actions';
 import { generateLoot } from './helpers/generate-loot';
 import { generatePerksAndItem } from './helpers/generate-perks-and-items';
+import { processCharge } from './processCharge';
 import { processHealOrRevive } from './processHealOrRevive';
+import { processHide } from './processHide';
+import { processHunt } from './processHunt';
 import { processSearchArmors, processSearchHealth, processSearchWeapons } from './processSearch';
 
 export class TowerEngine {
@@ -31,11 +35,11 @@ export class TowerEngine {
   public generatePerksAndItem = generatePerksAndItem.bind(this);
 
   async runRound(round: TowerRound, actions: TowerRoundAction[], transaction: Transaction) {
-    // const raidersToNotify = await findRaidersByFloorBattlefield(
-    //   round._towerFloorBattlefieldId,
-    //   false,
-    //   transaction
-    // );
+    const raidersToNotify = await findRaidersByFloorBattlefield(
+      round._towerFloorBattlefieldId,
+      false,
+      transaction
+    );
 
     await this.processSearchHealth(
       filterActionsById(actions, TOWER_ACTIONS.SEARCH_HEALTH),
@@ -54,11 +58,11 @@ export class TowerEngine {
     //   transaction
     // );
 
-    // await this.processHide(
-    //   filterActionsById(actions, TOWER_ACTIONS.HIDE),
-    //   raidersToNotify,
-    //   transaction
-    // );
+    await this.processHide(
+      filterActionsById(actions, TOWER_ACTIONS.HIDE),
+      raidersToNotify,
+      transaction
+    );
 
     await this.processSearchArmors(
       round,
@@ -72,18 +76,18 @@ export class TowerEngine {
       transaction
     );
 
-    // await this.processCharge(
-    //   filterActionsById(actions, TOWER_ACTIONS.CHARGE),
-    //   raidersToNotify,
-    //   transaction
-    // );
+    await this.processCharge(
+      filterActionsById(actions, TOWER_ACTIONS.CHARGE),
+      raidersToNotify,
+      transaction
+    );
 
-    // await this.processHunt(
-    //   round,
-    //   filterActionsById(actions, TOWER_ACTIONS.HUNT),
-    //   raidersToNotify,
-    //   transaction
-    // );
+    await this.processHunt(
+      round,
+      filterActionsById(actions, TOWER_ACTIONS.HUNT),
+      raidersToNotify,
+      transaction
+    );
   }
 
   // SEARCH OPERATIONS /////////////////////////////////////////////////
@@ -94,15 +98,15 @@ export class TowerEngine {
   // HEAL OR REVIVE OPERATIONS /////////////////////////////////////////////////
   private processHealOrRevive = processHealOrRevive.bind(this);
 
-  // HIDE OPERATIONS /////////////////////////////////////////////////
-  // private processHide = processHide.bind(this);
+  // LUCK ELIXIR OPERATIONS /////////////////////////////////////////////////
+  // private processRingSystemPenalty = processRingSystemPenalty.bind(this);
 
-  // HUNT OPERATIONS /////////////////////////////////////////////////
-  // private processHunt = processHunt.bind(this);
+  // HIDE OPERATIONS /////////////////////////////////////////////////
+  private processHide = processHide.bind(this);
 
   // CHARGE OPERATIONS /////////////////////////////////////////////////
-  // private processCharge = processCharge.bind(this);
+  private processCharge = processCharge.bind(this);
 
-  // RING SYSTEM OPERATIONS /////////////////////////////////////////////////
-  // private processRingSystemPenalty = processRingSystemPenalty.bind(this);
+  // HUNT OPERATIONS /////////////////////////////////////////////////
+  private processHunt = processHunt.bind(this);
 }

@@ -17,6 +17,7 @@ import { TowerFloorEnemy, TowerFloorBattlefield, Perk, PerkInventory } from '.';
 import { Ability, AbilityProperty, AbilityPropertyKeys } from '../games/classes/GameAbilities';
 import { ONE, TRAIT, ZERO } from '../games/consts/global';
 import { INITIATIVE_DECREASE, INITIATIVE_INCREASE } from '../games/tower/consts';
+import { Enemy } from './Enemy';
 
 interface TowerFloorBattlefieldEnemyAttributes {
   id: number;
@@ -158,7 +159,7 @@ export class TowerFloorBattlefieldEnemy
     );
   }
 
-  async addOrSubtractEnemyInitiative(operation: string = 'add' || 'sub', transaction: Transaction) {
+  async addOrSubtractInitiative(operation: string = 'add' || 'sub', transaction: Transaction) {
     const DECIMAL_PLACES = 2;
     const newAbility = new Ability({
       initiative: operation === 'add' ? INITIATIVE_INCREASE : INITIATIVE_DECREASE,
@@ -180,7 +181,12 @@ export class TowerFloorBattlefieldEnemy
       include: [
         {
           association: TowerFloorBattlefieldEnemy.associations._towerFloorEnemy,
-          include: [TowerFloorEnemy.associations._enemy],
+          include: [
+            {
+              association: TowerFloorEnemy.associations._enemy,
+              include: [Enemy.associations._traits],
+            },
+          ],
         },
       ],
       transaction,

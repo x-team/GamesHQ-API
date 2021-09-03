@@ -1,3 +1,4 @@
+import { TowerFloorBattlefieldEnemy, TowerRaider } from '../../models';
 import { SHARED_ACTIONS } from '../consts/global';
 import { generateEnemyPatterns } from '../enemy/helpers/enemyPatterns';
 
@@ -135,3 +136,21 @@ export const LEGENDARY_ARMOR_CHANCE = 0.05;
 export const EPIC_ARMOR_CHANCE = 0.15;
 export const RARE_ARMOR_CHANCE = 0.3;
 export const COMMON_ARMOR_CHANCE = 0.5;
+
+export interface HuntParams {
+  floorBattlefieldId: number;
+  isEveryoneVisible: boolean;
+  raidersToNotify: TowerRaider[];
+}
+
+export interface HuntPlayerParams extends HuntParams {
+  battlefieldEnemy: TowerFloorBattlefieldEnemy;
+  huntableRaiders: TowerRaider[];
+}
+
+export interface HuntEnemyParams extends HuntParams {
+  raider: TowerRaider;
+  selectedWeaponId?: number | null;
+  targetFloorBattlefieldEnemyId?: number | null;
+  huntableEnemies: TowerFloorBattlefieldEnemy[];
+}

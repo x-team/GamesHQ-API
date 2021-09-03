@@ -20,6 +20,7 @@ import {
   TowerFloorBattlefieldEnemy,
   TowerFloorEnemy,
 } from '.';
+import { ITEM_TYPE } from '../games/consts/global';
 import { TOWER_ACTIONS } from '../games/tower/consts';
 import { TowerAction } from './AvailableAction';
 
@@ -56,16 +57,28 @@ function includeRaiderInventory() {
     {
       association: TowerRaider.associations._healthkits,
       include: [Item.associations._healthkit],
+      where: {
+        type: ITEM_TYPE.HEALTH_KIT,
+      },
+      required: false,
       as: '_healthkits',
     },
     {
       association: TowerRaider.associations._weapons,
       include: [Item.associations._weapon, Item.associations._traits],
+      where: {
+        type: ITEM_TYPE.WEAPON,
+      },
+      required: false,
       as: '_weapons',
     },
     {
       association: TowerRaider.associations._armors,
       include: [Item.associations._armor],
+      where: {
+        type: ITEM_TYPE.ARMOR,
+      },
+      required: false,
       as: '_armors',
     },
   ];
