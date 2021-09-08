@@ -1,5 +1,5 @@
 import type { ServerRoute } from '@hapi/hapi';
-import { getCurrentArenaGameState } from './adminHandlers';
+import { getCurrentArenaGameState, getWeapons } from './adminHandlers';
 
 export const adminRoutes: ServerRoute[] = [
   {
