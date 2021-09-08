@@ -11,4 +11,14 @@ export const adminRoutes: ServerRoute[] = [
     },
     handler: getCurrentArenaGameState,
   },
+
+  {
+    method: 'GET',
+    path: '/dashboard/admin/arena/getWeapons',
+    options: {
+      description: 'Get list of weapons',
+      tags: ['api'],
+    },
+    handler: getWeapons,
+  },
 ];

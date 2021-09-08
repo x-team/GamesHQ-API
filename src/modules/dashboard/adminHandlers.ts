@@ -28,3 +28,7 @@ export const getCurrentArenaGameState: Lifecycle.Method = async (_request, h) =>
 
   return h.response({ arenaGame: activeGame }).code(200);
 };
+
+export const getWeapons: Lifecycle.Method = async (_request, h) => {
+  // return h.response({ arenaGame: activeGame }).code(200);
+};
