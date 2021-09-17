@@ -54,7 +54,11 @@ export class PerkInventory
   @Column(DataType.TEXT)
   _perkId!: PERK;
 
-  @BelongsTo(() => Perk, '_perkId')
+  @BelongsTo(() => Perk, {
+    foreignKey: '_perkId',
+    onUpdate: 'CASCADE',
+    onDelete: 'CASCADE',
+  })
   _perk?: Perk;
 
   @ForeignKey(() => TowerRaider)
@@ -62,7 +66,11 @@ export class PerkInventory
   @Column(DataType.INTEGER)
   _towerRaiderId!: number;
 
-  @BelongsTo(() => TowerRaider, '_towerRaiderId')
+  @BelongsTo(() => TowerRaider, {
+    foreignKey: '_towerRaiderId',
+    onUpdate: 'CASCADE',
+    onDelete: 'CASCADE',
+  })
   _raider?: TowerRaider;
 
   @ForeignKey(() => TowerFloorBattlefieldEnemy)

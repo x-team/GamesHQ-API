@@ -88,14 +88,22 @@ export class TowerFloorBattlefieldEnemy
   @Column(DataType.INTEGER)
   _towerFloorEnemyId!: number;
 
-  @BelongsTo(() => TowerFloorEnemy)
+  @BelongsTo(() => TowerFloorEnemy, {
+    foreignKey: '_towerFloorEnemyId',
+    onUpdate: 'CASCADE',
+    onDelete: 'CASCADE',
+  })
   _towerFloorEnemy?: TowerFloorEnemy;
 
   @ForeignKey(() => TowerFloorBattlefield)
   @Column(DataType.INTEGER)
   _towerFloorBattlefieldId!: number;
 
-  @BelongsTo(() => TowerFloorBattlefield, '_towerFloorBattlefieldId')
+  @BelongsTo(() => TowerFloorBattlefield, {
+    foreignKey: '_towerFloorBattlefieldId',
+    onUpdate: 'CASCADE',
+    onDelete: 'CASCADE',
+  })
   _currentTowerFloorBattlefield?: TowerFloorBattlefield;
 
   @BelongsToMany(() => Perk, {

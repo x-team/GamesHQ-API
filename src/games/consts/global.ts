@@ -97,7 +97,6 @@ export const SHARED_ACTIONS = {
 export enum GAME_ACTION_MAPPING {
   HUNT = 'A', // Attack
   HIDE = 'H', // Hide
-  CHARGE = 'C', // Charge
 }
 
 export const SORT_ACTION_ARRAY_RATE = 0.5;

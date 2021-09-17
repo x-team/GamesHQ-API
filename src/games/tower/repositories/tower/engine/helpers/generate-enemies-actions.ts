@@ -3,7 +3,7 @@ import { TowerFloorBattlefieldEnemy, TowerRound } from '../../../../../../models
 import { setRoundAction, TOWER_ACTIONS_TYPE } from '../../../../../../models/TowerRoundAction';
 import { GAME_ACTION_MAPPING } from '../../../../../consts/global';
 import { parseSymbolToEnemyAction } from '../../../../../enemy/helpers/enemyPatterns';
-import { TOWER_ACTIONS } from '../../../../consts';
+import { TOWER_ACTIONS, TOWER_ACTION_MAPPING } from '../../../../consts';
 import { rollEnemyAction } from '../../../../utils';
 
 export async function generateEnemiesActions(
@@ -20,8 +20,8 @@ export async function generateEnemiesActions(
       const enemyPattern = enemy._towerFloorEnemy?._enemy?._enemyPatternId!;
       if (enemyPatternCounter < MAX_REPETITIONS) {
         mutableAction = parseSymbolToEnemyAction(
-          enemyPattern[enemyPatternCursor] as GAME_ACTION_MAPPING
-        )!;
+          enemyPattern[enemyPatternCursor] as GAME_ACTION_MAPPING & TOWER_ACTION_MAPPING
+        )! as TOWER_ACTIONS_TYPE;
         await enemy.incrementCursor(enemyPattern.length, transaction);
       } else {
         mutableAction = round.isEveryoneVisible ? TOWER_ACTIONS.HUNT : rollEnemyAction()!;

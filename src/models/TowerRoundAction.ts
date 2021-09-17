@@ -115,7 +115,11 @@ export class TowerRoundAction
   @Column(DataType.INTEGER)
   _towerRaiderId!: number;
 
-  @BelongsTo(() => TowerRaider, '_towerRaiderId')
+  @BelongsTo(() => TowerRaider, {
+    foreignKey: '_towerRaiderId',
+    onUpdate: 'CASCADE',
+    onDelete: 'CASCADE',
+  })
   _raider?: TowerRaider;
 
   @ForeignKey(() => TowerFloorBattlefieldEnemy)
@@ -123,14 +127,22 @@ export class TowerRoundAction
   @Column(DataType.INTEGER)
   _towerFloorBattlefieldEnemyId!: number;
 
-  @BelongsTo(() => TowerFloorBattlefieldEnemy, '_towerFloorBattlefieldEnemyId')
+  @BelongsTo(() => TowerFloorBattlefieldEnemy, {
+    foreignKey: '_towerFloorBattlefieldEnemyId',
+    onUpdate: 'CASCADE',
+    onDelete: 'CASCADE',
+  })
   _enemy?: TowerFloorBattlefieldEnemy;
 
   @ForeignKey(() => TowerRound)
   @Column(DataType.INTEGER)
   _towerRoundId!: number;
 
-  @BelongsTo(() => TowerRound, '_towerRoundId')
+  @BelongsTo(() => TowerRound, {
+    foreignKey: '_towerRoundId',
+    onUpdate: 'CASCADE',
+    onDelete: 'CASCADE',
+  })
   _round?: TowerRound;
 
   @Default(false)

@@ -134,14 +134,22 @@ export class TowerRound
   @Column(DataType.INTEGER)
   _towerFloorBattlefieldId!: number;
 
-  @BelongsTo(() => TowerFloorBattlefield, '_towerFloorBattlefieldId')
+  @BelongsTo(() => TowerFloorBattlefield, {
+    foreignKey: '_towerFloorBattlefieldId',
+    onUpdate: 'CASCADE',
+    onDelete: 'CASCADE',
+  })
   _floorBattlefield?: TowerFloorBattlefield;
 
   @ForeignKey(() => User)
   @Column(DataType.INTEGER)
   _createdById!: number;
 
-  @BelongsTo(() => User, '_createdById')
+  @BelongsTo(() => User, {
+    foreignKey: '_createdById',
+    onUpdate: 'CASCADE',
+    onDelete: 'SET NULL',
+  })
   _createdBy?: User;
 
   @HasMany(() => TowerRoundAction, '_towerRoundId')

@@ -7,6 +7,10 @@ export const ARENA_ACTIONS = {
   STAY_ON_LOCATION: 'idleStayOnLocation',
 } as const;
 
+export enum ARENA_ACTION_MAPPING {
+  STAY_ON_LOCATION = 'L', // STAY ON LOCATION
+}
+
 export enum ARENA_PERK {
   ATTACK_PERK,
   DEFENSE_PERK,

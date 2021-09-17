@@ -1,5 +1,5 @@
 import { TowerFloorBattlefieldEnemy, TowerRaider } from '../../models';
-import { SHARED_ACTIONS } from '../consts/global';
+import { GAME_TYPE, SHARED_ACTIONS } from '../consts/global';
 import { generateEnemyPatterns } from '../enemy/helpers/enemyPatterns';
 
 export const TOWER_GIF_URL = 'https://xhq-bucket-campaigns.s3.amazonaws.com/gifs/';
@@ -17,6 +17,10 @@ export const TOWER_ACTIONS = {
   LUCK_ELIXIR: 'luckElixir',
   CHARGE: 'charge',
 } as const;
+
+export enum TOWER_ACTION_MAPPING {
+  CHARGE = 'C', // Charge
+}
 
 export enum TOWER_SLACK_COMMANDS {
   // ADMIN
@@ -123,7 +127,10 @@ export const ENEMY_HUNT_CHANCE = 0.8;
 export const ENEMY_HIDE_CHANCE = 0.2;
 export const ENEMY_DEFAULT_SORT_INITIATIVE_SUCCESS_RATE = 0.4;
 const TOWER_ENEMY_PATTERN_LENGTH = 4;
-export const TOWER_ENEMY_PATTERNS = generateEnemyPatterns(TOWER_ENEMY_PATTERN_LENGTH);
+export const TOWER_ENEMY_PATTERNS = generateEnemyPatterns(
+  TOWER_ENEMY_PATTERN_LENGTH,
+  GAME_TYPE.TOWER
+);
 
 // WEAPON
 export const LEGENDARY_WEAPON_CHANCE = 0.1;

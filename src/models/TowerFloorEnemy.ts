@@ -28,7 +28,11 @@ export class TowerFloorEnemy
   @Column(DataType.INTEGER)
   _enemyId!: number;
 
-  @BelongsTo(() => Enemy)
+  @BelongsTo(() => Enemy, {
+    foreignKey: '_enemyId',
+    onUpdate: 'CASCADE',
+    onDelete: 'CASCADE',
+  })
   _enemy?: Enemy;
 
   @ForeignKey(() => TowerFloor)
