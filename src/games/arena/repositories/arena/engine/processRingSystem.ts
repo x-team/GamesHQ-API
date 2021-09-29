@@ -12,6 +12,9 @@ export async function processRingSystemPenalty(
   const penaltyDamage = Math.pow(RING_SYSTEM_BASE_DAMAGE, inactiveZonePenaltyPower);
   for (const action of actions) {
     const targetPlayer = action._player!;
+    if (!targetPlayer.isAlive()) {
+      continue;
+    }
     await targetPlayer.damageAndHide(
       penaltyDamage,
       true, // Players won't hide with the penalty damage

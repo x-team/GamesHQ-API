@@ -7,6 +7,10 @@ export async function processHide(actions: ArenaRoundAction[], transaction: Tran
   await Promise.all(
     actions.map(async (action) => {
       const player = action._player!;
+      if (!player.isAlive()) {
+        await publishArenaMessage(arenaEngineReply.playerLostAction(player._user!.slackId!, true));
+        return;
+      }
       await player.setVisibility(false, transaction);
       await publishArenaMessage(
         arenaEngineReply.playerWillHide(player._user!.slackId!, player.health)

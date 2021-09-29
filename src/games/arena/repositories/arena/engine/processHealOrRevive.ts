@@ -17,6 +17,10 @@ export async function processHealOrRevive(
   await Promise.all(
     actions.map(async (action) => {
       const player = action._player!;
+      if (!player.isAlive()) {
+        await publishArenaMessage(arenaEngineReply.playerLostAction(player._user!.slackId!, true));
+        return;
+      }
       if (round.isEveryoneVisible) {
         await player.setVisibility(true, transaction);
       }
