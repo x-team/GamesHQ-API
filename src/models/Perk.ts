@@ -18,7 +18,7 @@ import {
   PERK_MULTIPLIERS,
 } from '../games/consts/global';
 import { PERK, PERK_ARCHETYPE } from '../games/consts/global';
-import { ItemRarity, TowerRaider } from '.';
+import { ItemRarity, Organization, TowerRaider } from '.';
 
 interface PerkAttributes {
   id: PERK;
@@ -75,8 +75,21 @@ export class Perk extends Model<PerkAttributes, PerkCreationAttributes> implemen
   @BelongsTo(() => ItemRarity, '_itemRarityId')
   _rarity?: ItemRarity;
 
+  @ForeignKey(() => Organization)
+  @Column(DataType.INTEGER)
+  _organizationId!: string;
+
+  @BelongsTo(() => Organization, {
+    foreignKey: '_organizationId',
+    onDelete: 'CASCADE',
+    onUpdate: 'CASCADE',
+    as: '_organization',
+  })
+  _organization?: Organization;
+
   static associations: {
     _rarity: Association<Perk, ItemRarity>;
+    _organization: Association<Perk, Organization>;
   };
 }
 

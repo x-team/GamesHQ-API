@@ -35,6 +35,7 @@ import {
   ArenaItemInventory,
   GameItemAvailability,
 } from './';
+import { Organization } from './Organization';
 
 interface ItemAttributes {
   id: number;
@@ -103,6 +104,18 @@ export class Item extends Model<ItemAttributes, ItemCreationAttributes> implemen
   @BelongsTo(() => ItemRarity, '_itemRarityId')
   _rarity?: ItemRarity;
 
+  @ForeignKey(() => Organization)
+  @Column(DataType.INTEGER)
+  _organizationId!: string;
+
+  @BelongsTo(() => Organization, {
+    foreignKey: '_organizationId',
+    onDelete: 'CASCADE',
+    onUpdate: 'CASCADE',
+    as: '_organization',
+  })
+  _organization?: Organization;
+
   @BelongsToMany(() => ArenaPlayer, {
     through: () => ArenaItemInventory,
     foreignKey: '_itemId',
@@ -144,6 +157,7 @@ export class Item extends Model<ItemAttributes, ItemCreationAttributes> implemen
     _towerRaiders: Association<Item, TowerRaider>;
     _gameItemAvailability: Association<Item, GameItemAvailability>;
     _rarity: Association<Item, ItemRarity>;
+    _organization: Association<Item, Organization>;
     _traits: Association<Item, Trait>;
     _armor: Association<Item, ItemArmor>;
     _weapon: Association<Item, ItemWeapon>;

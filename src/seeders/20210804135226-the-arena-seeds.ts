@@ -108,9 +108,37 @@ function queryItemByName(
   });
 }
 
+const firstOrganizationName = 'x-team';
+
+interface LightEntity {
+  id: number;
+}
+
+function queryByProp(
+  table: string,
+  prop: string,
+  value: string,
+  queryInterface: QueryInterface,
+  transaction: Transaction
+): Promise<LightEntity[]> {
+  const queryString = `SELECT id, "${prop}" FROM "${table}" WHERE "${prop}" = '${value}';`;
+  return queryInterface.sequelize.query(queryString, {
+    transaction,
+    type: QueryTypes.SELECT,
+  });
+}
+
 module.exports = {
   async up({ context: { queryInterface } }: SequelizeContext) {
     return queryInterface.sequelize.transaction(async (transaction) => {
+      const [firstOrganization] = (await queryByProp(
+        'Organization',
+        'name',
+        firstOrganizationName,
+        queryInterface,
+        transaction
+      )) as LightEntity[];
+
       const items: Item[] = [];
       //        WEAPONS        ///////////////////////////////////////////////////////////
       const itemWeapons: Item[] = (await queryInterface.bulkInsert(
@@ -122,6 +150,7 @@ module.exports = {
             usageLimit: 4,
             type: ITEM_TYPE.WEAPON,
             _itemRarityId: RARITY.COMMON,
+            _organizationId: firstOrganization.id,
           },
           {
             name: ITEM_NAME_TO_ADD.DMITREVNAS_SHOTGUN,
@@ -129,6 +158,7 @@ module.exports = {
             usageLimit: 4,
             type: ITEM_TYPE.WEAPON,
             _itemRarityId: RARITY.COMMON,
+            _organizationId: firstOrganization.id,
           },
           {
             name: ITEM_NAME_TO_ADD.WATCHMANS_CHRONOGUN,
@@ -136,6 +166,7 @@ module.exports = {
             usageLimit: null,
             type: ITEM_TYPE.WEAPON,
             _itemRarityId: RARITY.COMMON,
+            _organizationId: firstOrganization.id,
           },
           {
             name: ITEM_NAME_TO_ADD.BR58_BATTLE_RIFLE,
@@ -143,6 +174,7 @@ module.exports = {
             usageLimit: 4,
             type: ITEM_TYPE.WEAPON,
             _itemRarityId: RARITY.RARE,
+            _organizationId: firstOrganization.id,
           },
           {
             name: ITEM_NAME_TO_ADD.FLARE_BLASTERS_M21,
@@ -150,6 +182,7 @@ module.exports = {
             usageLimit: 2,
             type: ITEM_TYPE.WEAPON,
             _itemRarityId: RARITY.RARE,
+            _organizationId: firstOrganization.id,
           },
           {
             name: ITEM_NAME_TO_ADD.KOBOLS_THUNDERBOLT,
@@ -157,6 +190,7 @@ module.exports = {
             usageLimit: 2,
             type: ITEM_TYPE.WEAPON,
             _itemRarityId: RARITY.RARE,
+            _organizationId: firstOrganization.id,
           },
           {
             name: ITEM_NAME_TO_ADD.INTERCEPTOR_VIII,
@@ -164,6 +198,7 @@ module.exports = {
             usageLimit: 2,
             type: ITEM_TYPE.WEAPON,
             _itemRarityId: RARITY.RARE,
+            _organizationId: firstOrganization.id,
           },
           {
             name: ITEM_NAME_TO_ADD.FLAMERS_FIRESTARTERS,
@@ -171,6 +206,7 @@ module.exports = {
             usageLimit: 4,
             type: ITEM_TYPE.WEAPON,
             _itemRarityId: RARITY.RARE,
+            _organizationId: firstOrganization.id,
           },
           {
             name: ITEM_NAME_TO_ADD.VEES_OATHKEEPER,
@@ -178,6 +214,7 @@ module.exports = {
             usageLimit: 2,
             type: ITEM_TYPE.WEAPON,
             _itemRarityId: RARITY.EPIC,
+            _organizationId: firstOrganization.id,
           },
           {
             name: ITEM_NAME_TO_ADD.LOADER_GUN_GAMMA_26,
@@ -185,6 +222,7 @@ module.exports = {
             usageLimit: 3,
             type: ITEM_TYPE.WEAPON,
             _itemRarityId: RARITY.EPIC,
+            _organizationId: firstOrganization.id,
           },
           {
             name: ITEM_NAME_TO_ADD.DAMETRICS_EXECUTIONER,
@@ -192,6 +230,7 @@ module.exports = {
             usageLimit: 3,
             type: ITEM_TYPE.WEAPON,
             _itemRarityId: RARITY.EPIC,
+            _organizationId: firstOrganization.id,
           },
           {
             name: ITEM_NAME_TO_ADD.CETRAAHS_FIREHAWK,
@@ -199,6 +238,7 @@ module.exports = {
             usageLimit: 3,
             type: ITEM_TYPE.WEAPON,
             _itemRarityId: RARITY.EPIC,
+            _organizationId: firstOrganization.id,
           },
           {
             name: ITEM_NAME_TO_ADD.PYROS_DOUBLEBARREL,
@@ -206,6 +246,7 @@ module.exports = {
             usageLimit: 3,
             type: ITEM_TYPE.WEAPON,
             _itemRarityId: RARITY.EPIC,
+            _organizationId: firstOrganization.id,
           },
           {
             name: ITEM_NAME_TO_ADD.CETRAAHS_EXECUTIONER,
@@ -213,6 +254,7 @@ module.exports = {
             usageLimit: 3,
             type: ITEM_TYPE.WEAPON,
             _itemRarityId: RARITY.LEGENDARY,
+            _organizationId: firstOrganization.id,
           },
           {
             name: ITEM_NAME_TO_ADD.RC06_ENVISIONER,
@@ -220,6 +262,7 @@ module.exports = {
             usageLimit: 2,
             type: ITEM_TYPE.WEAPON,
             _itemRarityId: RARITY.LEGENDARY,
+            _organizationId: firstOrganization.id,
           },
           {
             name: ITEM_NAME_TO_ADD.NBL8_LEVIATHAN,
@@ -227,6 +270,7 @@ module.exports = {
             usageLimit: 3,
             type: ITEM_TYPE.WEAPON,
             _itemRarityId: RARITY.LEGENDARY,
+            _organizationId: firstOrganization.id,
           },
           {
             name: ITEM_NAME_TO_ADD.HELLFIRE_SHOTGUN,
@@ -234,6 +278,7 @@ module.exports = {
             usageLimit: 2,
             type: ITEM_TYPE.WEAPON,
             _itemRarityId: RARITY.LEGENDARY,
+            _organizationId: firstOrganization.id,
           },
         ],
         { transaction, returning: true } as QueryOptions
@@ -526,6 +571,7 @@ module.exports = {
             usageLimit: null,
             type: ITEM_TYPE.ARMOR,
             _itemRarityId: RARITY.COMMON,
+            _organizationId: firstOrganization.id,
           },
           {
             name: ITEM_NAME_TO_ADD.RARE_ARMOR,
@@ -533,6 +579,7 @@ module.exports = {
             usageLimit: null,
             type: ITEM_TYPE.ARMOR,
             _itemRarityId: RARITY.RARE,
+            _organizationId: firstOrganization.id,
           },
           {
             name: ITEM_NAME_TO_ADD.EPIC_ARMOR,
@@ -540,6 +587,7 @@ module.exports = {
             usageLimit: null,
             type: ITEM_TYPE.ARMOR,
             _itemRarityId: RARITY.EPIC,
+            _organizationId: firstOrganization.id,
           },
           {
             name: ITEM_NAME_TO_ADD.LEGENDARY_ARMOR,
@@ -547,6 +595,7 @@ module.exports = {
             usageLimit: null,
             type: ITEM_TYPE.ARMOR,
             _itemRarityId: RARITY.LEGENDARY,
+            _organizationId: firstOrganization.id,
           },
         ],
         { transaction, returning: true } as QueryOptions
@@ -609,6 +658,7 @@ module.exports = {
             usageLimit: 1,
             type: ITEM_TYPE.HEALTH_KIT,
             _itemRarityId: RARITY.COMMON,
+            _organizationId: firstOrganization.id,
           },
           {
             name: ITEM_NAME_TO_ADD.TOWER_HEALTH_KIT,
@@ -616,6 +666,7 @@ module.exports = {
             usageLimit: 1,
             type: ITEM_TYPE.HEALTH_KIT,
             _itemRarityId: RARITY.COMMON,
+            _organizationId: firstOrganization.id,
           },
         ],
         { transaction, returning: true } as QueryOptions
@@ -692,72 +743,84 @@ module.exports = {
             emoji: ':arena-closed-gate:',
             ring: ARENA_ZONE_RING.ONE_A,
             isActive: true,
+            _organizationId: firstOrganization.id,
           },
           {
             name: 'Obsidian Tower',
             emoji: ':arena-obsidian-tower:',
             ring: ARENA_ZONE_RING.ONE_D,
             isActive: true,
+            _organizationId: firstOrganization.id,
           },
           {
             name: 'White Fortress',
             emoji: ':arena-white-fortress:',
             ring: ARENA_ZONE_RING.THREE_A,
             isActive: true,
+            _organizationId: firstOrganization.id,
           },
           {
             name: 'Shrine of Time',
             emoji: ':arena-shrine-of-time:',
             ring: ARENA_ZONE_RING.ONE_B,
             isActive: true,
+            _organizationId: firstOrganization.id,
           },
           {
             name: 'Bamboo Forest',
             emoji: ':arena-bamboo-forest:',
             ring: ARENA_ZONE_RING.ONE_C,
             isActive: true,
+            _organizationId: firstOrganization.id,
           },
           {
             name: 'Pridelands',
             emoji: ':arena-pridelands:',
             ring: ARENA_ZONE_RING.TWO_B,
             isActive: true,
+            _organizationId: firstOrganization.id,
           },
           {
             name: 'Ursine Darkwoods',
             emoji: ':arena-ursine-darkwoods:',
             ring: ARENA_ZONE_RING.FOUR_A,
             isActive: true,
+            _organizationId: firstOrganization.id,
           },
           {
             name: 'Phoenix Pyramids',
             emoji: ':arena-phoenix-pyramids:',
             ring: ARENA_ZONE_RING.TWO_C,
             isActive: true,
+            _organizationId: firstOrganization.id,
           },
           {
             name: 'Canine Mansion',
             emoji: ':arena-canine-mansion:',
             ring: ARENA_ZONE_RING.ONE_C,
             isActive: true,
+            _organizationId: firstOrganization.id,
           },
           {
             name: 'Viking Watchtower',
             emoji: ':arena-viking-watchtower:',
             ring: ARENA_ZONE_RING.FOUR_C,
             isActive: true,
+            _organizationId: firstOrganization.id,
           },
           {
             name: 'Streaming Zone',
             emoji: ':arena-streaming:',
             isActive: false,
             ring: ARENA_ZONE_RING.ONE_A,
+            _organizationId: firstOrganization.id,
           },
           {
             name: 'Portal',
             emoji: ':arena-portal:',
-            ring: ARENA_ZONE_RING.FIVE,
             isActive: true,
+            ring: ARENA_ZONE_RING.FIVE,
+            _organizationId: firstOrganization.id,
           },
         ],
         { transaction }

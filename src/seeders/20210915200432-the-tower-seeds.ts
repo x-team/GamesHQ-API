@@ -160,9 +160,37 @@ function queryEnemyByName(
   });
 }
 
+const firstOrganizationName = 'x-team';
+
+interface LightEntity {
+  id: number;
+}
+
+function queryByProp(
+  table: string,
+  prop: string,
+  value: string,
+  queryInterface: QueryInterface,
+  transaction: Transaction
+): Promise<LightEntity[]> {
+  const queryString = `SELECT id, "${prop}" FROM "${table}" WHERE "${prop}" = '${value}';`;
+  return queryInterface.sequelize.query(queryString, {
+    transaction,
+    type: QueryTypes.SELECT,
+  });
+}
+
 module.exports = {
   async up({ context: { queryInterface } }: SequelizeContext) {
     return queryInterface.sequelize.transaction(async (transaction) => {
+      const [firstOrganization] = (await queryByProp(
+        'Organization',
+        'name',
+        firstOrganizationName,
+        queryInterface,
+        transaction
+      )) as LightEntity[];
+
       //////////////////////////////////////////////////
       // Create All Patterns
       const patternLength = 4;
@@ -181,6 +209,7 @@ module.exports = {
         [
           {
             name: ENEMY_NAME_TO_ADD.HUNTRESS,
+            _organizationId: firstOrganization.id,
             emoji: ':huntress:',
             minorDamageRate: 10,
             majorDamageRate: 12,
@@ -209,6 +238,7 @@ module.exports = {
           },
           {
             name: ENEMY_NAME_TO_ADD.KAGE,
+            _organizationId: firstOrganization.id,
             emoji: ':kage:',
             minorDamageRate: 20,
             majorDamageRate: 25,
@@ -237,6 +267,7 @@ module.exports = {
           },
           {
             name: ENEMY_NAME_TO_ADD.SPYDERBOT,
+            _organizationId: firstOrganization.id,
             emoji: ':spyderbot:',
             minorDamageRate: 20,
             majorDamageRate: 25,
@@ -265,6 +296,7 @@ module.exports = {
           },
           {
             name: ENEMY_NAME_TO_ADD.HIKARI,
+            _organizationId: firstOrganization.id,
             emoji: ':hikari:',
             minorDamageRate: 20,
             majorDamageRate: 25,
@@ -293,6 +325,7 @@ module.exports = {
           },
           {
             name: ENEMY_NAME_TO_ADD.HUNTSMAN,
+            _organizationId: firstOrganization.id,
             emoji: ':huntsman:',
             minorDamageRate: 16,
             majorDamageRate: 20,
@@ -321,6 +354,7 @@ module.exports = {
           },
           {
             name: ENEMY_NAME_TO_ADD.CYTTHRAX,
+            _organizationId: firstOrganization.id,
             emoji: 'cythrax',
             minorDamageRate: 40,
             majorDamageRate: 120,
@@ -349,6 +383,7 @@ module.exports = {
           },
           {
             name: ENEMY_NAME_TO_ADD.INQUISITOR,
+            _organizationId: firstOrganization.id,
             emoji: ':inquisitor:',
             minorDamageRate: 25,
             majorDamageRate: 30,
@@ -377,6 +412,7 @@ module.exports = {
           },
           {
             name: ENEMY_NAME_TO_ADD.PYRO,
+            _organizationId: firstOrganization.id,
             emoji: ':pyro:',
             minorDamageRate: 30,
             majorDamageRate: 50,
@@ -405,6 +441,7 @@ module.exports = {
           },
           {
             name: ENEMY_NAME_TO_ADD.FLAMER,
+            _organizationId: firstOrganization.id,
             emoji: ':flamer:',
             minorDamageRate: 20,
             majorDamageRate: 40,
@@ -433,6 +470,7 @@ module.exports = {
           },
           {
             name: ENEMY_NAME_TO_ADD.KNIGHT,
+            _organizationId: firstOrganization.id,
             emoji: ':cyberknight:',
             minorDamageRate: 20,
             majorDamageRate: 25,
@@ -461,6 +499,7 @@ module.exports = {
           },
           {
             name: ENEMY_NAME_TO_ADD.CAPITAIN,
+            _organizationId: firstOrganization.id,
             emoji: ':capitain:',
             minorDamageRate: 18,
             majorDamageRate: 20,
@@ -489,6 +528,7 @@ module.exports = {
           },
           {
             name: ENEMY_NAME_TO_ADD.PALADIN,
+            _organizationId: firstOrganization.id,
             emoji: ':paladin:',
             minorDamageRate: 30,
             majorDamageRate: 35,
@@ -517,6 +557,7 @@ module.exports = {
           },
           {
             name: ENEMY_NAME_TO_ADD.SOLDIER,
+            _organizationId: firstOrganization.id,
             emoji: ':soldier:',
             minorDamageRate: 16,
             majorDamageRate: 20,
@@ -545,6 +586,7 @@ module.exports = {
           },
           {
             name: ENEMY_NAME_TO_ADD.GENERAL,
+            _organizationId: firstOrganization.id,
             emoji: ':general:',
             minorDamageRate: 20,
             majorDamageRate: 20,
@@ -573,6 +615,7 @@ module.exports = {
           },
           {
             name: ENEMY_NAME_TO_ADD.RAITO,
+            _organizationId: firstOrganization.id,
             emoji: ':raito:',
             minorDamageRate: 20,
             majorDamageRate: 25,
@@ -601,6 +644,7 @@ module.exports = {
           },
           {
             name: ENEMY_NAME_TO_ADD.DROGO,
+            _organizationId: firstOrganization.id,
             emoji: ':drogo:',
             minorDamageRate: 16,
             majorDamageRate: 24,

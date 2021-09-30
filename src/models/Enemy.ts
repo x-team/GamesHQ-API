@@ -15,7 +15,7 @@ import {
   AutoIncrement,
   AllowNull,
 } from 'sequelize-typescript';
-import { EnemyPattern, EnemyTrait, Trait } from '.';
+import { EnemyPattern, EnemyTrait, Organization, Trait } from '.';
 import { logger } from '../config';
 import { Ability, AbilityProperty } from '../games/classes/GameAbilities';
 import { TRAIT } from '../games/consts/global';
@@ -96,6 +96,10 @@ export class Enemy
   @Column(DataType.TEXT)
   gifUrl?: string;
 
+  @Default(Ability.defaultProps())
+  @Column(DataType.JSONB)
+  abilitiesJSON!: AbilityProperty;
+
   @ForeignKey(() => EnemyPattern)
   @Column(DataType.TEXT)
   _enemyPatternId!: string;
@@ -107,9 +111,17 @@ export class Enemy
   })
   _enemyPattern?: EnemyPattern;
 
-  @Default(Ability.defaultProps())
-  @Column(DataType.JSONB)
-  abilitiesJSON!: AbilityProperty;
+  @ForeignKey(() => Organization)
+  @Column(DataType.INTEGER)
+  _organizationId!: string;
+
+  @BelongsTo(() => Organization, {
+    foreignKey: '_organizationId',
+    onDelete: 'CASCADE',
+    onUpdate: 'CASCADE',
+    as: '_organization',
+  })
+  _organization?: Organization;
 
   @BelongsToMany(() => Trait, {
     through: () => EnemyTrait,
@@ -122,6 +134,7 @@ export class Enemy
   static associations: {
     _enemyPattern: Association<Enemy, EnemyPattern>;
     _traits: Association<Enemy, EnemyTrait>;
+    _organization: Association<Enemy, Organization>;
   };
 
   hasTrait(trait: TRAIT) {

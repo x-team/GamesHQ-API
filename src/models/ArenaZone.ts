@@ -12,13 +12,15 @@ import {
   Sequelize,
   PrimaryKey,
   AutoIncrement,
+  ForeignKey,
+  BelongsTo,
 } from 'sequelize-typescript';
 
 import { ARENA_ZONE_RING, RING_SYSTEM_MAX_PENALTY_NUMBER } from '../games/arena/consts';
 import { arenaZoneCapacity } from '../games/arena/utils';
 import { ONE, SORT_ACTION_ARRAY_RATE, ZERO } from '../games/consts/global';
 
-import type { ArenaGame } from '.';
+import { ArenaGame, Organization } from '.';
 import { ArenaPlayer } from '.';
 
 interface ArenaZoneAttributes {
@@ -75,11 +77,24 @@ export class ArenaZone
   @Column(DataType.TEXT)
   ring!: ARENA_ZONE_RING;
 
+  @ForeignKey(() => Organization)
+  @Column(DataType.INTEGER)
+  _organizationId!: string;
+
+  @BelongsTo(() => Organization, {
+    foreignKey: '_organizationId',
+    onDelete: 'CASCADE',
+    onUpdate: 'CASCADE',
+    as: '_organization',
+  })
+  _organization?: Organization;
+
   @HasMany(() => ArenaPlayer, '_arenaZoneId')
   _players?: ArenaPlayer[];
 
   static associations: {
     _players: Association<ArenaZone, ArenaPlayer>;
+    _organization: Association<ArenaZone, Organization>;
   };
 }
 
