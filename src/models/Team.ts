@@ -13,6 +13,8 @@ import {
   AllowNull,
   PrimaryKey,
   AutoIncrement,
+  BelongsTo,
+  ForeignKey,
 } from 'sequelize-typescript';
 
 import { USER_ROLE_NAME } from '../consts/model';
@@ -23,6 +25,7 @@ import {
   TeamGeneral,
   // Legend,
 } from './';
+import { Organization } from './Organization';
 
 interface TeamAttributes {
   id: number;
@@ -109,6 +112,10 @@ export class Team extends Model<TeamAttributes, TeamCreationAttributes> implemen
   @Column(DataType.BOOLEAN)
   isActive!: boolean;
 
+  @ForeignKey(() => Organization)
+  @Column(DataType.INTEGER)
+  _organizationId!: number;
+
   @HasMany(() => User, {
     foreignKey: '_teamId',
     as: '_members',
@@ -123,12 +130,21 @@ export class Team extends Model<TeamAttributes, TeamCreationAttributes> implemen
   })
   _generals?: User[];
 
+  @BelongsTo(() => Organization, {
+    foreignKey: '_organizationId',
+    onDelete: 'CASCADE',
+    onUpdate: 'CASCADE',
+    as: '_organization',
+  })
+  _organization?: Organization;
+
   // @HasMany(() => Legend, { foreignKey: '_teamId' })
   // _legends?: Legend[];
 
   static associations: {
     _members: Association<Team, User>;
     _generals: Association<Team, User>;
+    _organization: Association<Team, Organization>;
   };
 }
 

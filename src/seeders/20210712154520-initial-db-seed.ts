@@ -1,6 +1,7 @@
 import { isNumber } from 'lodash';
-import type { QueryInterface, Sequelize } from 'sequelize';
-import { Op } from 'sequelize';
+import type { QueryInterface, Sequelize, Transaction } from 'sequelize';
+import { Op, QueryTypes } from 'sequelize';
+import { generateSecret } from '../utils/cryptography';
 
 enum AVAILABLE_ACTION {
   // SHARED
@@ -72,6 +73,9 @@ enum GAME_TYPE {
   ARENA = 'The Arena',
 }
 
+const firstUserEmail = 'cristian.cmj@x-team.com';
+const firstOrganizationName = 'x-team';
+
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 function enumToIds(enumerable: any): Array<{ id: string }> {
   return Object.values<string>(enumerable).map((t) => ({ id: t }));
@@ -86,6 +90,24 @@ interface SequelizeContext {
     queryInterface: QueryInterface;
     Sequelize: Sequelize;
   };
+}
+
+interface LightEntity {
+  id: number;
+}
+
+function queryByProp(
+  table: string,
+  prop: string,
+  value: string,
+  queryInterface: QueryInterface,
+  transaction: Transaction
+): Promise<LightEntity[]> {
+  const queryString = `SELECT id, "${prop}" FROM "${table}" WHERE "${prop}" = '${value}';`;
+  return queryInterface.sequelize.query(queryString, {
+    transaction,
+    type: QueryTypes.SELECT,
+  });
 }
 
 module.exports = {
@@ -179,6 +201,117 @@ module.exports = {
         ],
         { transaction }
       );
+
+      ////////////////////////////////////////   ORGANIZATION   ////////////////////////////////////////
+      await queryInterface.bulkInsert(
+        'Organization',
+        [
+          {
+            name: firstOrganizationName,
+            domain: `https://www.${firstOrganizationName}.com`,
+            isActive: true,
+            clientSecret: await generateSecret(),
+            signingSecret: await generateSecret(),
+          },
+        ],
+        { transaction }
+      );
+
+      const [firstOrganization] = (await queryByProp(
+        'Organization',
+        'name',
+        firstOrganizationName,
+        queryInterface,
+        transaction
+      )) as LightEntity[];
+
+      ////////////////////////////////////////   USER   ////////////////////////////////////////
+      await queryInterface.bulkInsert(
+        'User',
+        [
+          {
+            displayName: 'Cristian Morales',
+            email: firstUserEmail,
+            slackId: 'UBZ9PC0SK',
+            createdAt: new Date(),
+            updatedAt: new Date(),
+            profilePictureUrl: 'https://ca.slack-edge.com/T0257R0RP-UBZ9PC0SK-1c4146b874d1-512',
+            _roleId: USER_ROLE_LEVEL.SUPER_ADMIN,
+            _organizationId: firstOrganization.id,
+          },
+        ],
+        { transaction }
+      );
+
+      // const [firstUser] = (await queryByProp(
+      //   'User',
+      //   'email',
+      //   firstUserEmail,
+      //   queryInterface,
+      //   transaction
+      // )) as LightEntity[];
+
+      ////////////////////////////////////////   TEAM   ////////////////////////////////////////
+      await queryInterface.bulkInsert(
+        'Team',
+        [
+          {
+            name: 'House Nascent Fire',
+            emoji: ':nascent-fire:',
+            health: 500,
+            isActive: true,
+            slackWebhook:
+              'https://hooks.slack.com/services/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',
+            _organizationId: firstOrganization.id,
+          },
+          {
+            name: 'House Panda',
+            emoji: ':pandablob:',
+            health: 500,
+            isActive: true,
+            slackWebhook:
+              'https://hooks.slack.com/services/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',
+            _organizationId: firstOrganization.id,
+          },
+          {
+            name: 'House of Corgi',
+            emoji: ':corgi:',
+            health: 500,
+            isActive: true,
+            slackWebhook:
+              'https://hooks.slack.com/services/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',
+            _organizationId: firstOrganization.id,
+          },
+          {
+            name: 'House Ragnar',
+            emoji: ':ragnar:',
+            health: 500,
+            isActive: true,
+            slackWebhook:
+              'https://hooks.slack.com/services/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',
+            _organizationId: firstOrganization.id,
+          },
+          {
+            name: 'House Nightclaw',
+            emoji: ':nightclaw:',
+            health: 500,
+            isActive: true,
+            slackWebhook:
+              'https://hooks.slack.com/services/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',
+            _organizationId: firstOrganization.id,
+          },
+          {
+            name: 'The Lions Pride',
+            emoji: ':lions-pride:',
+            health: 500,
+            isActive: true,
+            slackWebhook:
+              'https://hooks.slack.com/services/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',
+            _organizationId: firstOrganization.id,
+          },
+        ],
+        { transaction }
+      );
     });
   },
 
@@ -199,6 +332,26 @@ module.exports = {
               .filter((t) => isNumber(t)),
           },
         },
+        { transaction }
+      );
+      const [firstOrganization] = (await queryByProp(
+        'Organization',
+        'name',
+        firstOrganizationName,
+        queryInterface,
+        transaction
+      )) as LightEntity[];
+      const [firstUser] = (await queryByProp(
+        'User',
+        'email',
+        firstUserEmail,
+        queryInterface,
+        transaction
+      )) as LightEntity[];
+      await queryInterface.bulkDelete('User', { id: firstUser.id }, { transaction });
+      await queryInterface.bulkDelete(
+        'Organization',
+        { id: firstOrganization.id },
         { transaction }
       );
     });
