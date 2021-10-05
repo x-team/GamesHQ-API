@@ -51,7 +51,7 @@ enum ENEMY_NAME_TO_ADD {
   FLAMER = 'Flamer',
   // END OF THE ENEMIES WITH TRAITS
   KNIGHT = 'Knight',
-  CAPITAIN = 'Capitain',
+  CAPTAIN = 'Captain',
   PALADIN = 'Paladin',
   SOLDIER = 'Soldier',
   GENERAL = 'General',
@@ -355,7 +355,7 @@ module.exports = {
           {
             name: ENEMY_NAME_TO_ADD.CYTTHRAX,
             _organizationId: firstOrganization.id,
-            emoji: 'cythrax',
+            emoji: ':cythrax:',
             minorDamageRate: 40,
             majorDamageRate: 120,
             health: 500,
@@ -498,9 +498,9 @@ module.exports = {
             }),
           },
           {
-            name: ENEMY_NAME_TO_ADD.CAPITAIN,
+            name: ENEMY_NAME_TO_ADD.CAPTAIN,
             _organizationId: firstOrganization.id,
-            emoji: ':capitain:',
+            emoji: ':captain:',
             minorDamageRate: 18,
             majorDamageRate: 20,
             health: 30,
@@ -558,7 +558,7 @@ module.exports = {
           {
             name: ENEMY_NAME_TO_ADD.SOLDIER,
             _organizationId: firstOrganization.id,
-            emoji: ':soldier:',
+            emoji: ':cybersoldier:',
             minorDamageRate: 16,
             majorDamageRate: 20,
             health: 20,
