@@ -6,7 +6,7 @@ import { listActiveHealthkitsByGameType } from '../../../../../../models/ItemHea
 import { listActiveWeaponsByGameType } from '../../../../../../models/ItemWeapon';
 import { findPerksByRarities } from '../../../../../../models/Perk';
 import { filterItemsByRarity } from '../../../../../arena/utils';
-import { GAME_TYPE, ITEM_RARITY, TRAIT, ZERO } from '../../../../../consts/global';
+import { GAME_TYPE, ITEM_RARITY, ONE, TRAIT, ZERO } from '../../../../../consts/global';
 import { rarityWeight } from '../../../../../utils/rollRarity';
 import {
   MAX_AMOUNT_HEALTHKITS_ALLOWED,
@@ -42,7 +42,7 @@ export async function generatePerksAndItem(
       break;
   }
 
-  const rolledRarity = mutableRarityArray[random(mutableRarityArray.length)];
+  const rolledRarity = mutableRarityArray[random(mutableRarityArray.length - ONE)];
   const allPerks = await findPerksByRarities(mutableRarityArray, transaction);
   const randomPerks = sampleSize(allPerks, PERKS_TO_DISPLAY);
 
@@ -85,16 +85,17 @@ export async function generatePerksAndItem(
   let mutableItemType: string;
   switch (lootElement) {
     case TOWER_LOOT_PRIZES.HEALTH_KIT:
-      mutableItemPicked = healthkitsFiltered[random(healthkitsFiltered.length)];
+      mutableItemPicked = healthkitsFiltered[random(healthkitsFiltered.length - ONE)];
       mutableItemType = 'item';
       break;
     case TOWER_LOOT_PRIZES.ARMOR:
-      mutableItemPicked = mutableActiveArmorsFiltered[random(mutableActiveArmorsFiltered.length)];
+      mutableItemPicked =
+        mutableActiveArmorsFiltered[random(mutableActiveArmorsFiltered.length - ONE)];
       mutableItemType = 'armor';
       break;
     case TOWER_LOOT_PRIZES.WEAPON:
       const noInitialWeapons = weaponsFiltered.filter((w) => !w.hasTrait(TRAIT.INITIAL));
-      mutableItemPicked = noInitialWeapons[random(noInitialWeapons.length)];
+      mutableItemPicked = noInitialWeapons[random(noInitialWeapons.length - ONE)];
       mutableItemType = 'weapon';
       break;
     default:
@@ -103,7 +104,7 @@ export async function generatePerksAndItem(
       );
       mutableItemPicked =
         noInitialWeaponsFallbackWeaponsFiltered[
-          random(noInitialWeaponsFallbackWeaponsFiltered.length)
+          random(noInitialWeaponsFallbackWeaponsFiltered.length - ONE)
         ];
       mutableItemType = 'weapon';
       break;

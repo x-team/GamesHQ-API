@@ -55,7 +55,7 @@ export class TowerFloor
   _towerGameId!: number;
 
   @BelongsTo(() => TowerGame, {
-    foreignKey: '_gameId',
+    foreignKey: '_towerGameId',
     onUpdate: 'CASCADE',
     onDelete: 'CASCADE',
   })

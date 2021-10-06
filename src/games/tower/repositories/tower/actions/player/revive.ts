@@ -7,7 +7,7 @@ import {
   findRaidersByFloorBattlefield,
 } from '../../../../../../models/TowerRaider';
 import { setRoundAction } from '../../../../../../models/TowerRoundAction';
-import { ZERO } from '../../../../../consts/global';
+import { ONE, ZERO } from '../../../../../consts/global';
 import { GameResponse, getGameResponse } from '../../../../../utils';
 import { MAX_RAIDER_HEALTH, TOWER_ACTIONS, TOWER_HEALTHKITS } from '../../../../consts';
 import {
@@ -101,7 +101,7 @@ export async function reviveOther(userRequesting: User) {
       const raidersToDropdown = allRaiders.filter((r) => r.id !== raider.id);
       const slackBlocks = generateTowerTargetRaiderPickerBlock(
         raidersToDropdown,
-        raidersToDropdown[random(raidersToDropdown.length)]._user?.slackId!,
+        raidersToDropdown[random(raidersToDropdown.length - ONE)]._user?.slackId!,
         'tower-reviveother'
       );
       return getGameResponse(slackBlocks);

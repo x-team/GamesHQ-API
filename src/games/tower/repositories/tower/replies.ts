@@ -168,9 +168,7 @@ export const towerCommandReply = {
         (prize) =>
           `\t${generateRarityColorEmoji(prize._itemRarityId)} ${prize.emoji} ` +
           `${
-            prize.name !== TOWER_HEALTHKITS.COMMON
-              ? 'Edlixir (Auto-applied)'
-              : prize.name === TOWER_HEALTHKITS.COMMON && Math.max(healthKitsAutoApplied--, ZERO)
+            prize.name === TOWER_HEALTHKITS.COMMON && Math.max(healthKitsAutoApplied--, ZERO)
               ? `${prize.name} (Auto-applied)`
               : `${prize.name}`
           }`

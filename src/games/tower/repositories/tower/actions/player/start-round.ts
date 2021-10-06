@@ -1,3 +1,4 @@
+import { logger } from '../../../../../../config';
 import { User } from '../../../../../../models';
 import { findTowerFloorById } from '../../../../../../models/TowerFloor';
 import {
@@ -147,6 +148,7 @@ export async function startRoundCommand(userRequesting: User) {
           raider._user?.slackId!
         );
 
+        logger.info({ towerFloor });
         const nextFloor = towerFloor._towerGame?._floors!.find(
           (floor) => floor.number === nextFloorNumber
         )!;

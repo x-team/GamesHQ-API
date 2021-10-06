@@ -9,7 +9,7 @@ import { MAX_AMOUNT_HEALTHKITS_ALLOWED } from '../../../../../arena/consts';
 import { filterItemsByRarity } from '../../../../../arena/utils';
 import { GAME_TYPE, ITEM_RARITY, ONE, TRAIT, ZERO } from '../../../../../consts/global';
 import { hasLuck } from '../../../../../utils';
-import { rarityWeight } from '../../../../../utils/rollRarity';
+import { randomizeItems, rarityWeight } from '../../../../../utils/rollRarity';
 import { MAX_RAIDER_HEALTH, TOWER_LOOT_PRIZES } from '../../../../consts';
 import { rollLootPrize } from '../../../../utils';
 
@@ -59,11 +59,12 @@ export async function generateLoot(
       availableItemPrizes.push(TOWER_LOOT_PRIZES.HEALTH_KIT);
     }
     const lootElement = rollLootPrize(availableItemPrizes);
-    const rolledRarity = mutableRarityArray[random(mutableRarityArray.length)];
+    const rolledRarity = mutableRarityArray[random(mutableRarityArray.length - ONE)];
+
     switch (lootElement) {
       case TOWER_LOOT_PRIZES.HEALTH_KIT:
         const healthkitsFiltered = filterItemsByRarity(activeHealthKits, rolledRarity);
-        const healthkitRolled = healthkitsFiltered[random(healthkitsFiltered.length)];
+        const healthkitRolled = randomizeItems(healthkitsFiltered);
         // if (itemToAdd?.name === TOWER_ITEMS.HEALTH_KIT) {
         if (raider.health < MAX_RAIDER_HEALTH) {
           await raider.reviveOrHeal(
@@ -81,7 +82,7 @@ export async function generateLoot(
         break;
       case TOWER_LOOT_PRIZES.ARMOR:
         const armorsFiltered = filterItemsByRarity(activeArmors, rolledRarity);
-        const armorToAdd = armorsFiltered[random(armorsFiltered.length)];
+        const armorToAdd = randomizeItems(armorsFiltered);
 
         const currentArmor = raider.itemsAvailable(raider._armors)[ZERO];
         if (currentArmor) {
@@ -101,7 +102,7 @@ export async function generateLoot(
           activeWeapons.filter((w) => !w.hasTrait(TRAIT.INITIAL)),
           rolledRarity
         );
-        const weaponToAdd = weaponsFiltered[random(weaponsFiltered.length)];
+        const weaponToAdd = randomizeItems(weaponsFiltered);
         const raiderWeapon = raider._weapons?.find((w) => w.id === weaponToAdd.id);
         if (raiderWeapon?.TowerItemInventory?.remainingUses != null) {
           await addAmmoToItemInInventory({ item: raiderWeapon, raider }, transaction);
