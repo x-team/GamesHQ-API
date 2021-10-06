@@ -148,7 +148,6 @@ export async function startRoundCommand(userRequesting: User) {
           raider._user?.slackId!
         );
 
-        logger.info({ towerFloor });
         const nextFloor = towerFloor._towerGame?._floors!.find(
           (floor) => floor.number === nextFloorNumber
         )!;

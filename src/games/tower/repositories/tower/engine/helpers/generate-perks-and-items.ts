@@ -7,7 +7,7 @@ import { listActiveWeaponsByGameType } from '../../../../../../models/ItemWeapon
 import { findPerksByRarities } from '../../../../../../models/Perk';
 import { filterItemsByRarity } from '../../../../../arena/utils';
 import { GAME_TYPE, ITEM_RARITY, ONE, TRAIT, ZERO } from '../../../../../consts/global';
-import { rarityWeight } from '../../../../../utils/rollRarity';
+import { randomizeItems, rarityWeight } from '../../../../../utils/rollRarity';
 import {
   MAX_AMOUNT_HEALTHKITS_ALLOWED,
   TOWER_HEALTHKITS,
@@ -85,17 +85,16 @@ export async function generatePerksAndItem(
   let mutableItemType: string;
   switch (lootElement) {
     case TOWER_LOOT_PRIZES.HEALTH_KIT:
-      mutableItemPicked = healthkitsFiltered[random(healthkitsFiltered.length - ONE)];
+      mutableItemPicked = randomizeItems(healthkitsFiltered);
       mutableItemType = 'item';
       break;
     case TOWER_LOOT_PRIZES.ARMOR:
-      mutableItemPicked =
-        mutableActiveArmorsFiltered[random(mutableActiveArmorsFiltered.length - ONE)];
+      mutableItemPicked = randomizeItems(mutableActiveArmorsFiltered);
       mutableItemType = 'armor';
       break;
     case TOWER_LOOT_PRIZES.WEAPON:
       const noInitialWeapons = weaponsFiltered.filter((w) => !w.hasTrait(TRAIT.INITIAL));
-      mutableItemPicked = noInitialWeapons[random(noInitialWeapons.length - ONE)];
+      mutableItemPicked = randomizeItems(noInitialWeapons);
       mutableItemType = 'weapon';
       break;
     default:
