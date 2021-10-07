@@ -1,4 +1,3 @@
-import { logger } from '../../../../../../config';
 import { User } from '../../../../../../models';
 import { findTowerFloorById } from '../../../../../../models/TowerFloor';
 import {
