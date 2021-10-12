@@ -24,7 +24,7 @@ interface GameItemAvailabilityAttributes {
 
 export interface GameItemAvailabilityCreationAttributes {
   _gameTypeId: GAME_TYPE;
-  _itemId: number;
+  _itemId?: number;
   isActive: boolean;
   isArchived: boolean;
 }

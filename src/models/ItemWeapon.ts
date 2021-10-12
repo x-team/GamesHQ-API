@@ -33,7 +33,7 @@ interface ItemWeaponAttributes {
 interface ItemWeaponCreationAttributes {
   minorDamageRate: number;
   majorDamageRate: number;
-  _itemId: number;
+  _itemId?: number;
 }
 
 @Table

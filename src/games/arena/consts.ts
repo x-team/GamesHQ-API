@@ -110,6 +110,7 @@ export enum ARENA_HEALTHKITS {
 // REPOSITORIEs
 export const ARENA_REPOSITORY_NAME = 'arena-repository';
 export const ZONE_REPOSITORY_NAME = 'zone-repository';
+export const WEAPON_REPOSITORY_NAME = 'weapon-repository';
 
 // GAME
 export const SEARCH_WEAPONS_SUCCESS_RATE = 0.8;

@@ -182,6 +182,14 @@ export async function createOrUpdateItem(
   itemsAvailability: GameItemAvailabilityCreationAttributes[],
   transaction: Transaction
 ) {
+  logger.info('Creating item...');
+  logger.info({
+    name,
+    emoji,
+    usageLimit,
+    _itemRarityId,
+    type,
+  });
   const [item] = await Item.upsert(
     {
       name,
@@ -192,6 +200,7 @@ export async function createOrUpdateItem(
     },
     { transaction }
   );
+  logger.info('Item upserted, creating item availability');
   await Promise.all(
     itemsAvailability.map(({ _gameTypeId, isArchived }) =>
       createOrUpdateItemAvailability(
