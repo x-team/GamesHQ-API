@@ -135,3 +135,12 @@ export async function disableItems(
     }
   );
 }
+
+export async function removeAllGameItemAvailability(itemId: number, transaction: Transaction) {
+  return GameItemAvailability.destroy({
+    where: {
+      _itemId: itemId,
+    },
+    transaction,
+  });
+}

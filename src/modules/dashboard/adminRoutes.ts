@@ -1,5 +1,10 @@
 import type { ServerRoute } from '@hapi/hapi';
-import { getCurrentArenaGameState, getWeapons, newWeapon } from './adminHandlers';
+import {
+  getCurrentArenaGameState,
+  getWeapon,
+  getWeapons,
+  upsertWeaponHandler,
+} from './adminHandlers';
 
 export const adminRoutes: ServerRoute[] = [
   {
@@ -23,12 +28,22 @@ export const adminRoutes: ServerRoute[] = [
   },
 
   {
+    method: 'GET',
+    path: '/dashboard/admin/weapons/{weaponId}',
+    options: {
+      description: 'Get information on a specific weapon',
+      tags: ['api'],
+    },
+    handler: getWeapon,
+  },
+
+  {
     method: 'POST',
-    path: '/dashboard/admin/newWeapon',
+    path: '/dashboard/admin/upsertWeapon',
     options: {
       description: 'Adds a new weapon',
       tags: ['api'],
     },
-    handler: newWeapon,
+    handler: upsertWeaponHandler,
   },
 ];

@@ -19,7 +19,10 @@ import { logger } from '../config';
 import type { GAME_TYPE, TRAIT } from '../games/consts/global';
 import { ITEM_RARITY, ITEM_TYPE } from '../games/consts/global';
 
-import type { GameItemAvailabilityCreationAttributes } from './GameItemAvailability';
+import {
+  GameItemAvailabilityCreationAttributes,
+  removeAllGameItemAvailability,
+} from './GameItemAvailability';
 import { createOrUpdateItemAvailability } from './GameItemAvailability';
 
 import {
@@ -36,6 +39,7 @@ import {
   GameItemAvailability,
 } from './';
 import { Organization } from './Organization';
+import { createOrUpdateItemTrait, removeAllItemTraits } from './Trait';
 
 interface ItemAttributes {
   id: number;
@@ -47,11 +51,13 @@ interface ItemAttributes {
 }
 
 export interface ItemCreationAttributes {
+  id?: number;
   name: string;
   emoji: string;
   usageLimit: number | null;
   type: ITEM_TYPE;
   _itemRarityId: ITEM_RARITY;
+  traits?: TRAIT[];
 }
 
 function itemTypeToAssociation(itemType: ITEM_TYPE) {
@@ -178,20 +184,13 @@ export class Item extends Model<ItemAttributes, ItemCreationAttributes> implemen
 }
 
 export async function createOrUpdateItem(
-  { name, emoji, usageLimit, _itemRarityId, type }: ItemCreationAttributes,
+  { id, name, emoji, usageLimit, _itemRarityId, type, traits }: ItemCreationAttributes,
   itemsAvailability: GameItemAvailabilityCreationAttributes[],
   transaction: Transaction
 ) {
-  logger.info('Creating item...');
-  logger.info({
-    name,
-    emoji,
-    usageLimit,
-    _itemRarityId,
-    type,
-  });
   const [item] = await Item.upsert(
     {
+      ...(id && { id }),
       name,
       emoji,
       usageLimit,
@@ -200,7 +199,12 @@ export async function createOrUpdateItem(
     },
     { transaction }
   );
-  logger.info('Item upserted, creating item availability');
+
+  if (id) {
+    await removeAllItemTraits(id, transaction);
+    await removeAllGameItemAvailability(id, transaction);
+  }
+
   await Promise.all(
     itemsAvailability.map(({ _gameTypeId, isArchived }) =>
       createOrUpdateItemAvailability(
@@ -209,12 +213,21 @@ export async function createOrUpdateItem(
       )
     )
   );
+
+  if (traits) {
+    traits.map((trait) => createOrUpdateItemTrait({ itemId: item.id, trait }, transaction));
+  }
+
   return item;
 }
 
 export async function findItemById(itemId: number, itemType: ITEM_TYPE, transaction?: Transaction) {
   return Item.findByPk(itemId, {
-    include: [itemTypeToAssociation(itemType), Item.associations._traits],
+    include: [
+      itemTypeToAssociation(itemType),
+      Item.associations._traits,
+      Item.associations._gameItemAvailability,
+    ],
     transaction,
   });
 }

@@ -23,6 +23,7 @@ import {
 } from './Item';
 
 import { Item } from '.';
+import { logger } from '../config';
 
 interface ItemWeaponAttributes {
   minorDamageRate: number;
@@ -65,18 +66,20 @@ export class ItemWeapon
 }
 
 export async function createOrUpdateWeapon(
-  { name, emoji, usageLimit, _itemRarityId, type }: ItemCreationAttributes,
+  { id, name, emoji, usageLimit, _itemRarityId, type, traits }: ItemCreationAttributes,
   { minorDamageRate, majorDamageRate }: ItemWeaponCreationAttributes,
   itemsAvailability: GameItemAvailabilityCreationAttributes[],
   transaction: Transaction
 ) {
   const item = await createOrUpdateItem(
     {
+      ...(id && { id }),
       name,
       emoji,
       usageLimit,
       _itemRarityId,
       type,
+      traits,
     },
     itemsAvailability,
     transaction

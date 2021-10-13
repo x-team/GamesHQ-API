@@ -1,13 +1,12 @@
 import { Lifecycle } from '@hapi/hapi';
-import { logger } from '../../config';
 import { GAME_TYPE } from '../../games/consts/global';
 import {
-  creteWeapon,
   IWeaponEditorData,
+  upsertWeapon,
 } from '../../games/tower/repositories/universal/weaponRepository';
 import { ArenaPlayer, Item } from '../../models';
 import { ArenaGame, findActiveArenaGame } from '../../models/ArenaGame';
-import { listActiveWeaponsByGameType } from '../../models/ItemWeapon';
+import { findWeaponById, listActiveWeaponsByGameType } from '../../models/ItemWeapon';
 
 export interface ArenaState {
   players: ArenaPlayer[];
@@ -45,11 +44,20 @@ export const getWeapons: Lifecycle.Method = async (_request, h) => {
   return h.response({ weapons: [...towerWeapons, ...arenaWeapons] }).code(200);
 };
 
-export const newWeapon: Lifecycle.Method = async (_request, h) => {
+export const getWeapon: Lifecycle.Method = async (_request, h) => {
+  const weapon = await findWeaponById(_request.params.weaponId);
+
+  return h
+    .response({
+      weapon,
+    })
+    .code(200);
+};
+
+export const upsertWeaponHandler: Lifecycle.Method = async (_request, h) => {
   const { payload } = _request;
   const weaponCreationData = payload as IWeaponEditorData;
-  await creteWeapon(weaponCreationData);
-  logger.info('Added');
+  await upsertWeapon(weaponCreationData);
 
   return h.response({ success: true }).code(200);
 };

@@ -2,10 +2,10 @@ import { logger } from '../../../../config';
 import { GameItemAvailabilityCreationAttributes } from '../../../../models/GameItemAvailability';
 import { createOrUpdateWeapon } from '../../../../models/ItemWeapon';
 import { withWeaponTransaction } from '../../../arena/utils';
-import { GAME_TYPE, ITEM_RARITY, ITEM_TYPE } from '../../../consts/global';
+import { GAME_TYPE, ITEM_RARITY, ITEM_TYPE, TRAIT } from '../../../consts/global';
 
 export interface IWeaponEditorData {
-  id?: string;
+  id?: number;
   name: string;
   emoji: string;
   rarity: ITEM_RARITY;
@@ -17,8 +17,7 @@ export interface IWeaponEditorData {
   gameAvailability: GAME_TYPE[];
 }
 
-export const creteWeapon = async (data: IWeaponEditorData) => {
-  logger.debug(data);
+export const upsertWeapon = async (data: IWeaponEditorData) => {
   return withWeaponTransaction((transaction) => {
     const gameAvailability: GameItemAvailabilityCreationAttributes[] = data.gameAvailability.map(
       (gameAvailability) => ({
@@ -28,15 +27,15 @@ export const creteWeapon = async (data: IWeaponEditorData) => {
       })
     );
 
-    logger.debug(gameAvailability);
-
     return createOrUpdateWeapon(
       {
+        ...(data.id && { id: data.id }),
         _itemRarityId: data.rarity,
         emoji: data.emoji,
         usageLimit: data.usageLimit,
         name: data.name,
         type: ITEM_TYPE.WEAPON,
+        traits: data.traits as TRAIT[],
       },
       {
         minorDamageRate: data.minorDamageRate,
