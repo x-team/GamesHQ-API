@@ -30,7 +30,7 @@ interface TowerFloorCreationAttributes {
 @Table({
   indexes: [
     {
-      fields: ['_gameId'],
+      fields: ['_towerGameId'],
     },
   ],
 })

@@ -22,6 +22,7 @@ import {
 } from './actions/admin/tower-floors-operations';
 import { updateTowerBasicInfo, updateTowerBasicInfoForm } from './actions/admin/update-config-game';
 import { displayProgress, raiderActions } from './actions/player/actions-menu';
+import { completeChoosePerkOrItem } from './actions/player/choose-perk-or-item';
 import { enterTheTower } from './actions/player/enter';
 import { exitTheTower } from './actions/player/exit';
 import { hide } from './actions/player/hide';
@@ -67,6 +68,12 @@ interface TowerRepositoryMethods {
   // PLAYERS: START ROUND OPERATION /////////////////////////////////////////////////
   startRoundCommand(userRequesting: User): Promise<GameResponse>;
 
+  // PLAYERS: PERK OR ITEM OPERATIONS ///////////////////////////////////////////////////////////////////
+  completeChoosePerkOrItem(
+    userRequesting: User,
+    perkOrHealthkitId: string | number,
+    selection: string
+  ): Promise<GameResponse>;
   /////////////////////////////////////////////////////////////////// ADMIN ///////////////////////////////////////////////////////////////////
 
   // ADMIN: CREATE AND SETUP OPERATIONS ////////////////////////////////////////////
@@ -147,6 +154,9 @@ export class TowerRepository implements TowerRepositoryMethods {
 
   // PLAYERS: START ROUND OPERATION /////////////////////////////////////////////////
   public startRoundCommand = startRoundCommand.bind(this);
+
+  // PLAYERS: PERK OR ITEM OPERATIONS ///////////////////////////////////////////////////////////////////
+  public completeChoosePerkOrItem = completeChoosePerkOrItem.bind(this);
 
   /////////////////////////////////////////////////////////////////// ADMIN ///////////////////////////////////////////////////////////////////
 

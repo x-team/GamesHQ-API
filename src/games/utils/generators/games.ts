@@ -1,5 +1,7 @@
-import { Item } from '../../../models';
+import { ArenaItemInventory, Item, TowerItemInventory } from '../../../models';
 import type { ARENA_SECONDARY_ACTIONS } from '../../arena/consts';
+import { INFINITY_GIF_EMOJI } from '../../consts/emojis';
+import { generateRarityColorEmoji } from '../../helpers';
 import { SlackBlockKitCompositionOption } from '../../model/SlackBlockKit';
 import { TOWER_SECONDARY_SLACK_ACTIONS } from '../../tower/consts';
 
@@ -28,15 +30,50 @@ export function generateEndGameConfirmationBlockKit(
   return [blockKitDividerSection, slackMainMessageSection, slackActionLayout];
 }
 
-const genericWeaponsOptionBuilder = (weapon: Item) => {
-  const weaponText = `${weapon.emoji} ${weapon.name} `;
-  return blockKitCompositionOption(weaponText, `${weapon.id}`);
+const genericWeaponsOptionBuilder = (
+  weapon:
+    | Item
+    | (Item &
+        ({ ArenaItemInventory: ArenaItemInventory } | { TowerItemInventory: TowerItemInventory }))
+) => {
+  const arenaWeapon = weapon as Item & {
+    ArenaItemInventory: ArenaItemInventory;
+  };
+  const towerWeapon = weapon as Item & {
+    TowerItemInventory: TowerItemInventory;
+  };
+
+  if (!arenaWeapon.ArenaItemInventory && !towerWeapon.TowerItemInventory) {
+    const weaponText =
+      `${generateRarityColorEmoji(weapon._itemRarityId)}${weapon.emoji} ` +
+      `${weapon.name} x${weapon.usageLimit ?? ` ${INFINITY_GIF_EMOJI}`}`;
+    return blockKitCompositionOption(weaponText, `${weapon.id}`);
+  } else {
+    const isArenaWeapon = arenaWeapon.ArenaItemInventory ? true : false;
+    const weaponText =
+      `${generateRarityColorEmoji(weapon._itemRarityId)}${weapon.emoji} ` +
+      `${weapon.name} x${
+        isArenaWeapon
+          ? arenaWeapon.ArenaItemInventory.remainingUses ?? ` ${INFINITY_GIF_EMOJI}`
+          : towerWeapon.TowerItemInventory.remainingUses ?? ` ${INFINITY_GIF_EMOJI}`
+      }`;
+    return blockKitCompositionOption(weaponText, `${weapon.id}`);
+  }
 };
 
 export function generateGenericWeaponPickerBlock(
   displayText: string,
-  weapons: Item[],
-  defaultWeapon: Item | null,
+  weapons:
+    | Array<
+        Item &
+          ({ ArenaItemInventory: ArenaItemInventory } | { TowerItemInventory: TowerItemInventory })
+      >
+    | Item[],
+  defaultWeapon:
+    | (Item &
+        ({ ArenaItemInventory: ArenaItemInventory } | { TowerItemInventory: TowerItemInventory }))
+    | null
+    | Item,
   action: string
 ) {
   const blockKitDividerSection = blockKitDivider();

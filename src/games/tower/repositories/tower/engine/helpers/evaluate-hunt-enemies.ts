@@ -1,5 +1,6 @@
 import { random } from 'lodash';
 import type { Transaction } from 'sequelize';
+import { logger } from '../../../../../../config';
 import { Item, TowerFloorBattlefieldEnemy } from '../../../../../../models';
 import { perkImpactCalculator } from '../../../../../../models/Perk';
 import { TRAIT, ZERO } from '../../../../../consts/global';

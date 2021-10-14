@@ -180,48 +180,50 @@ export function towerConfigActionHandler(
       break;
     // RAIDER
     case TOWER_SECONDARY_SLACK_ACTIONS.CHOOSE_PERK:
-      // const perkSelection = actionParsed.split('-').pop()!;
-      // if (!selectedId) {
-      //   const replyErrorBody = getEphemeralText(actionReply.raiderNeedsToPickPerk);
-      //   slackRequest(responseUrl, replyErrorBody).catch((error) => {
-      //     logger.error('Error in Slack Action: The Tower');
-      //     logger.error(error);
-      //     return getGameError(actionReply.somethingWentWrong);
-      //   });
-      // }
-      // theTower
-      //   .completeChoosePerkOrItem(userRequesting, selectedId, perkSelection)
-      //   .then((gameActionResponse) => {
-      //      const replyToPlayerBody = gameResponseToSlackHandler(gameActionResponse);
-      //      return slackRequest(responseUrl, replyToPlayerBody);
-      //   }).catch((error) => {
-      //     logger.error('Error in Slack Action: The Tower');
-      //     logger.error(error);
-      //     return getGameError(actionReply.somethingWentWrong);
-      //   });
+      const perkSelection = actionParsed.split('-').pop()!;
+      if (!selectedId) {
+        const replyErrorBody = getEphemeralText(actionReply.raiderNeedsToPickPerk);
+        slackRequest(responseUrl, replyErrorBody).catch((error) => {
+          logger.error('Error in Slack Action: The Tower');
+          logger.error(error);
+          return getGameError(actionReply.somethingWentWrong);
+        });
+        break;
+      }
+      theTower
+        .completeChoosePerkOrItem(userRequesting, selectedId, perkSelection)
+        .then((gameActionResponse) => {
+          const replyToPlayerBody = gameResponseToSlackHandler(gameActionResponse);
+          return slackRequest(responseUrl, replyToPlayerBody);
+        })
+        .catch((error) => {
+          logger.error('Error in Slack Action: The Tower');
+          logger.error(error);
+          return getGameError(actionReply.somethingWentWrong);
+        });
       break;
     case TOWER_SECONDARY_SLACK_ACTIONS.CHOOSE_ITEM.concat('-', itemPerkSelected || ''):
-      // const itemSelection = actionParsed.split('-').pop()!;
-      // const selectedItemId = selectedId ? parseInt(selectedId, TEN) : ZERO;
-      // if (!selectedItemId) {
-      //   const replyErrorBody = getEphemeralText(actionReply.raiderNeedsToPickItem);
-      //   slackRequest(responseUrl, replyErrorBody).catch((error) => {
-      //     logger.error('Error in Slack Action: The Tower');
-      //     logger.error(error);
-      //     return getGameError(actionReply.somethingWentWrong);
-      //   });
-      // }
-      // theTower
-      //   .completeChoosePerkOrItem(userRequesting, selectedItemId, itemSelection)
-      //   .then((gameActionResponse) => {
-      //      const replyToPlayerBody = gameResponseToSlackHandler(gameActionResponse);
-      //      return slackRequest(responseUrl, replyToPlayerBody);
-      //   })
-      //   .catch((error) => {
-      //     logger.error('Error in Slack Action: The Tower');
-      //     logger.error(error);
-      //     return getGameError(actionReply.somethingWentWrong);
-      //   });
+      const itemSelection = actionParsed.split('-').pop()!;
+      const selectedItemId = selectedId ? parseInt(selectedId, TEN) : ZERO;
+      if (!selectedItemId) {
+        const replyErrorBody = getEphemeralText(actionReply.raiderNeedsToPickItem);
+        slackRequest(responseUrl, replyErrorBody).catch((error) => {
+          logger.error('Error in Slack Action: The Tower');
+          logger.error(error);
+          return getGameError(actionReply.somethingWentWrong);
+        });
+      }
+      theTower
+        .completeChoosePerkOrItem(userRequesting, selectedItemId, itemSelection)
+        .then((gameActionResponse) => {
+          const replyToPlayerBody = gameResponseToSlackHandler(gameActionResponse);
+          return slackRequest(responseUrl, replyToPlayerBody);
+        })
+        .catch((error) => {
+          logger.error('Error in Slack Action: The Tower');
+          logger.error(error);
+          return getGameError(actionReply.somethingWentWrong);
+        });
       break;
     default:
       break;

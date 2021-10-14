@@ -14,7 +14,7 @@ export function targetsPicker(
 } {
   let hits = 1;
   const targets: HuntableEntity[] = [];
-  const mutableHuntableEnemies: HuntableEntity[] = [...huntableEnemies];
+  let mutableHuntableEnemies: HuntableEntity[] = [...huntableEnemies];
   const entityHuntableIndex = mutableHuntableEnemies.findIndex(
     (huntable) => huntable.id === initialHuntableId
   );
@@ -26,14 +26,26 @@ export function targetsPicker(
     initialHuntableId = null;
   }
 
+  const deletePossibleTargets = (huntableTarget: HuntableEntity) => {
+    const entityTargetableIndex = mutableHuntableEnemies.findIndex(
+      (huntable) => huntable.id === huntableTarget.id
+    );
+    if (entityTargetableIndex >= ZERO) {
+      mutableHuntableEnemies.splice(entityHuntableIndex, ONE);
+    }
+  };
+
   if (weaponOrEnemy.hasTrait(TRAIT.BLAST_ALL)) {
     targets.push(...mutableHuntableEnemies);
+    mutableHuntableEnemies = [];
   } else if (weaponOrEnemy.hasTrait(TRAIT.BLAST_3)) {
     const newTargets = sampleSize(mutableHuntableEnemies, TWO);
     targets.push(...newTargets);
+    newTargets.forEach(deletePossibleTargets);
   } else if (weaponOrEnemy.hasTrait(TRAIT.BLAST_2)) {
     const newTargets = sampleSize(mutableHuntableEnemies, ONE);
     targets.push(...newTargets);
+    newTargets.forEach(deletePossibleTargets);
   }
 
   if (!initialHuntableId) {

@@ -8,12 +8,15 @@ import {
   BelongsTo,
   Default,
   AllowNull,
+  PrimaryKey,
+  AutoIncrement,
 } from 'sequelize-typescript';
 
 import { Perk, TowerRaider, TowerFloorBattlefieldEnemy } from '.';
 import { ONE, PERK } from '../games/consts/global';
 
 interface PerkInventoryAttributes {
+  id: number;
   _perkId: PERK;
   _towerRaiderId?: number | null;
   _towerFloorBattlefieldEnemyId?: number | null;
@@ -50,6 +53,11 @@ export class PerkInventory
   extends Model<PerkInventoryAttributes, PerkInventoryCreationAttributes>
   implements PerkInventoryAttributes
 {
+  @PrimaryKey
+  @AutoIncrement
+  @Column(DataType.INTEGER)
+  id!: number;
+
   @ForeignKey(() => Perk)
   @Column(DataType.TEXT)
   _perkId!: PERK;

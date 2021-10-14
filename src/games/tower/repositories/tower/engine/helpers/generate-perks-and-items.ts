@@ -53,7 +53,9 @@ export async function generatePerksAndItem(
   const weaponsFiltered = filterItemsByRarity(activeWeapons, rolledRarity);
 
   const activeHealthkits = await listActiveHealthkitsByGameType(GAME_TYPE.TOWER, transaction);
-  const healthkitsFiltered = filterItemsByRarity(activeHealthkits, rolledRarity);
+  const healthkitsFiltered = activeHealthkits;
+  // uncomment next line (and delete previous one) when we have more than just COMMON healthkits
+  // const healthkitsFiltered = filterItemsByRarity(activeHealthkits, rolledRarity);
   const raidersHealthkit = raider._healthkits?.find(
     (healthkit) => healthkit.name === TOWER_HEALTHKITS.COMMON
   );
@@ -86,7 +88,7 @@ export async function generatePerksAndItem(
   switch (lootElement) {
     case TOWER_LOOT_PRIZES.HEALTH_KIT:
       mutableItemPicked = randomizeItems(healthkitsFiltered);
-      mutableItemType = 'item';
+      mutableItemType = 'healthkit';
       break;
     case TOWER_LOOT_PRIZES.ARMOR:
       mutableItemPicked = randomizeItems(mutableActiveArmorsFiltered);

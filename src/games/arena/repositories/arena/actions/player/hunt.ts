@@ -22,7 +22,6 @@ import {
   playerActionsParams,
   withArenaTransaction,
 } from '../../../../utils';
-import { randomizeItems } from '../../../../../utils/rollRarity';
 import { arenaCommandReply } from '../../replies';
 
 export async function hunt(userRequesting: User) {
@@ -117,14 +116,11 @@ export async function hunt(userRequesting: User) {
       return getGameResponse(actionBlockkit);
     }
 
-    if (weaponQty > 1) {
-      // select random target from group
-      const randomWeapon = randomizeItems(player._weapons!);
-
+    if (weaponQty > ONE) {
       const slackBlocks = generateGenericWeaponPickerBlock(
         arenaCommandReply.playerChooseWeapon(),
-        player._weapons!,
-        randomWeapon,
+        weapons,
+        null,
         ARENA_SECONDARY_ACTIONS.HUNT_CHOOSE_WEAPON
       );
       return getGameResponse(slackBlocks);

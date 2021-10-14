@@ -54,6 +54,7 @@ interface TowerRoundActionCreationAttributes {
 function includeRaiderInventory() {
   return [
     TowerRaider.associations._user,
+    TowerRaider.associations._perks,
     {
       association: TowerRaider.associations._healthkits,
       include: [Item.associations._healthkit],

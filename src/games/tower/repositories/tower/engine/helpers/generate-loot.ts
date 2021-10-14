@@ -93,7 +93,7 @@ export async function generateLoot(
             await raider.addArmor(armorToAdd, transaction);
           }
         } else {
-          await raider.removeArmor(armorToAdd, transaction);
+          await raider.addArmor(armorToAdd, transaction);
         }
         loot[mutableI] = armorToAdd;
         break;
