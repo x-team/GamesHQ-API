@@ -23,7 +23,6 @@ import {
 } from './Item';
 
 import { Item } from '.';
-import { logger } from '../config';
 
 interface ItemWeaponAttributes {
   minorDamageRate: number;

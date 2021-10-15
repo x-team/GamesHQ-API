@@ -1,12 +1,25 @@
 import { Lifecycle } from '@hapi/hapi';
-import { GAME_TYPE } from '../../games/consts/global';
 import {
+  deleteZone,
+  IZoneEditorData,
+  upsertZone,
+} from '../../games/tower/repositories/arena/zonesRepository';
+import {
+  deleteEnemy,
+  IEnemyEditorData,
+  upsertEnemy,
+} from '../../games/tower/repositories/tower/enemyRepository';
+import {
+  deleteWeapon,
   IWeaponEditorData,
   upsertWeapon,
 } from '../../games/tower/repositories/universal/weaponRepository';
 import { ArenaPlayer, Item } from '../../models';
 import { ArenaGame, findActiveArenaGame } from '../../models/ArenaGame';
-import { findWeaponById, listActiveWeaponsByGameType } from '../../models/ItemWeapon';
+import { findAllArenaZones, findArenaZoneById } from '../../models/ArenaZone';
+import { findAllEnemies, findEnemyById } from '../../models/Enemy';
+import { listAllWeapons } from '../../models/Item';
+import { findWeaponById } from '../../models/ItemWeapon';
 
 export interface ArenaState {
   players: ArenaPlayer[];
@@ -35,16 +48,13 @@ export const getCurrentArenaGameState: Lifecycle.Method = async (_request, h) =>
   return h.response({ arenaGame: activeGame }).code(200);
 };
 
-export const getWeapons: Lifecycle.Method = async (_request, h) => {
-  const [towerWeapons, arenaWeapons] = await Promise.all([
-    listActiveWeaponsByGameType(GAME_TYPE.TOWER),
-    listActiveWeaponsByGameType(GAME_TYPE.ARENA),
-  ]);
+export const getWeaponsHandler: Lifecycle.Method = async (_request, h) => {
+  const weapons = await listAllWeapons();
 
-  return h.response({ weapons: [...towerWeapons, ...arenaWeapons] }).code(200);
+  return h.response({ weapons }).code(200);
 };
 
-export const getWeapon: Lifecycle.Method = async (_request, h) => {
+export const getWeaponHandler: Lifecycle.Method = async (_request, h) => {
   const weapon = await findWeaponById(_request.params.weaponId);
 
   return h
@@ -60,4 +70,69 @@ export const upsertWeaponHandler: Lifecycle.Method = async (_request, h) => {
   await upsertWeapon(weaponCreationData);
 
   return h.response({ success: true }).code(200);
+};
+
+export const deleteWeaponHandler: Lifecycle.Method = async (_request, h) => {
+  await deleteWeapon(_request.params.itemId);
+  return h.response({ success: true }).code(200);
+};
+
+export const getEnemyHandler: Lifecycle.Method = async (_request, h) => {
+  const enemy = await findEnemyById(_request.params.enemyId);
+
+  return h
+    .response({
+      enemy,
+    })
+    .code(200);
+};
+
+export const getEnemiesHandler: Lifecycle.Method = async (_request, h) => {
+  const enemies = await findAllEnemies();
+
+  return h.response({ enemies }).code(200);
+};
+
+export const upsertEnemyHandler: Lifecycle.Method = async (_request, h) => {
+  const { payload } = _request;
+  const enemyCreationData = payload as IEnemyEditorData;
+  await upsertEnemy(enemyCreationData);
+
+  return h.response({ success: true }).code(200);
+};
+
+export const deleteEnemyHandler: Lifecycle.Method = async (_request, h) => {
+  await deleteEnemy(_request.params.enemyId);
+
+  return h
+    .response({
+      success: true,
+    })
+    .code(200);
+};
+
+// 🏠 Zones
+
+export const getZoneHandler: Lifecycle.Method = async (_request, h) => {
+  const zone = await findArenaZoneById(_request.params.zoneId);
+
+  return h.response({ zone }).code(200);
+};
+
+export const getZonesHandler: Lifecycle.Method = async (_request, h) => {
+  const zones = await findAllArenaZones();
+  return h.response({ zones }).code(200);
+};
+
+export const upsertZoneHandler: Lifecycle.Method = async (_request, h) => {
+  const { payload } = _request;
+  const zoneCreationData = payload as IZoneEditorData;
+  await upsertZone(zoneCreationData);
+
+  return h.response({ success: true }).code(200);
+};
+
+export const deleteZoneHandler: Lifecycle.Method = async (_request, h) => {
+  await deleteZone(_request.params.zoneId);
+  return h.response({}).code(200);
 };

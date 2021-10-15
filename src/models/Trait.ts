@@ -1,7 +1,6 @@
 import { Column, DataType, Model, PrimaryKey, Table } from 'sequelize-typescript';
 import { Transaction } from 'sequelize/types';
 import { ItemTrait } from '.';
-import { logger } from '../config';
 
 import { TRAIT } from '../games/consts/global';
 

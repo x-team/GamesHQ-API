@@ -1,5 +1,5 @@
-import { logger } from '../../../../config';
 import { GameItemAvailabilityCreationAttributes } from '../../../../models/GameItemAvailability';
+import { deleteItem } from '../../../../models/Item';
 import { createOrUpdateWeapon } from '../../../../models/ItemWeapon';
 import { withWeaponTransaction } from '../../../arena/utils';
 import { GAME_TYPE, ITEM_RARITY, ITEM_TYPE, TRAIT } from '../../../consts/global';
@@ -44,5 +44,11 @@ export const upsertWeapon = async (data: IWeaponEditorData) => {
       gameAvailability,
       transaction
     );
+  });
+};
+
+export const deleteWeapon = async (itemId: number) => {
+  return withWeaponTransaction(async (transaction) => {
+    return deleteItem(itemId, transaction);
   });
 };

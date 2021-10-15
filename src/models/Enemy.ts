@@ -31,6 +31,7 @@ import {
 } from '../games/tower/consts';
 
 export interface EnemyCreationAttributes {
+  id?: number;
   name: string;
   emoji: string;
   gifUrl: string;
@@ -250,6 +251,7 @@ export async function deleteEnemyById(id: number, transaction: Transaction) {
 
 export async function createOrUpdateEnemy(
   {
+    id,
     name,
     emoji,
     gifUrl,
@@ -277,6 +279,7 @@ export async function createOrUpdateEnemy(
   }
   return Enemy.upsert(
     {
+      ...(id && { id }),
       name,
       emoji,
       gifUrl,

@@ -263,6 +263,26 @@ export async function findItemByName(
   });
 }
 
+export function listAllWeapons(transaction?: Transaction) {
+  return Item.findAll({
+    where: { type: ITEM_TYPE.WEAPON },
+    include: [
+      {
+        association: Item.associations._gameItemAvailability,
+        include: [
+          {
+            association: GameItemAvailability.associations._gameType,
+            where: { id: ITEM_TYPE.WEAPON },
+          },
+        ],
+      },
+      itemTypeToAssociation(ITEM_TYPE.WEAPON),
+      Item.associations._traits,
+    ],
+    transaction,
+  });
+}
+
 export function listActiveItemsByGameType(
   gameType: GAME_TYPE,
   itemType: ITEM_TYPE,

@@ -33,6 +33,7 @@ interface ArenaZoneAttributes {
 }
 
 export interface ArenaZoneCreationAttributes {
+  id?: number;
   name: string;
   emoji: string;
   ring: ARENA_ZONE_RING;
@@ -276,9 +277,10 @@ export async function activateAllArenaZones(transaction?: Transaction) {
 }
 
 export async function createOrUpdateArenaZone(zoneData: ArenaZoneCreationAttributes) {
-  const { name, emoji, ring, isArchived } = zoneData;
+  const { id, name, emoji, ring, isArchived } = zoneData;
 
   return ArenaZone.upsert({
+    ...(id && { id }),
     name,
     emoji,
     ring,
