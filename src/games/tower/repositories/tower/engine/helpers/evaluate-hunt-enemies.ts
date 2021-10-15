@@ -61,7 +61,7 @@ export async function huntEnemies(
         raider._user?.slackId!,
         weapon.emoji
       );
-      return Promise.all(
+      await Promise.all(
         raidersToNotify.map((raiderToNotify) =>
           theTowerNotifyInPrivate(nobodyToHuntMessage, raiderToNotify._user!.slackId!)
         )
