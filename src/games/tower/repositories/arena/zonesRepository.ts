@@ -12,7 +12,6 @@ export interface IZoneEditorData {
 }
 
 export const upsertZone = async (data: IZoneEditorData) => {
-  logger.info({ data });
   return withZoneTransaction(async () => {
     const values = {
       ...(data.id && { id: data.id }),
@@ -22,7 +21,6 @@ export const upsertZone = async (data: IZoneEditorData) => {
       ring: data.ring as ARENA_ZONE_RING,
       isActive: data.isArchived,
     };
-    logger.info({ values });
     return createOrUpdateArenaZone(values);
   });
 };
