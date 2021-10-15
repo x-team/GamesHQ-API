@@ -21,9 +21,6 @@ export function targetsPicker(
   if (entityHuntableIndex >= ZERO) {
     targets.push(mutableHuntableEnemies[entityHuntableIndex]);
     mutableHuntableEnemies.splice(entityHuntableIndex, ONE);
-  } else {
-    // Initial huntable id was invalid
-    initialHuntableId = null;
   }
 
   const deletePossibleTargets = (huntableTarget: HuntableEntity) => {

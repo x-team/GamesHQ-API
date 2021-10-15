@@ -2,7 +2,7 @@ import { random } from 'lodash';
 import type { Transaction } from 'sequelize';
 import { Item, TowerFloorBattlefieldEnemy } from '../../../../../../models';
 import { perkImpactCalculator } from '../../../../../../models/Perk';
-import { TRAIT, ZERO } from '../../../../../consts/global';
+import { ONE, TRAIT, ZERO } from '../../../../../consts/global';
 import { hasLuck } from '../../../../../utils';
 import { HuntEnemyParams, HUNT_SUCCESS_RATE } from '../../../../consts';
 import { theTowerNotifyInPrivate } from '../../../../utils';
@@ -47,13 +47,23 @@ export async function huntEnemies(
       huntableEnemies,
       targetFloorBattlefieldEnemyId
     ) as { targets: TowerFloorBattlefieldEnemy[]; hits: number };
-    if (targets.length > 1) {
+    if (targets.length > ONE) {
       await Promise.all(
         raidersToNotify.map((raiderToNotify) =>
           theTowerNotifyInPrivate(
             towerEngineReply.weaponBlastDamage(),
             raiderToNotify._user!.slackId!
           )
+        )
+      );
+    } else if (targets.length === ZERO) {
+      const nobodyToHuntMessage = towerEngineReply.raiderHasNobodyToHunt(
+        raider._user?.slackId!,
+        weapon.emoji
+      );
+      return Promise.all(
+        raidersToNotify.map((raiderToNotify) =>
+          theTowerNotifyInPrivate(nobodyToHuntMessage, raiderToNotify._user!.slackId!)
         )
       );
     }

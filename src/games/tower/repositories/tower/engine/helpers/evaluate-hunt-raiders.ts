@@ -36,7 +36,7 @@ export async function huntRaiders(
     hits: number;
   };
 
-  if (huntableRaiders.length > 0) {
+  if (huntableRaiders.length > ZERO && randomTargetRaiders.length > ZERO) {
     for (const randomTargetRaider of randomTargetRaiders) {
       for (let i = 0; i < hits; i++) {
         const generatedAbilities = perkImpactCalculator({ raider: randomTargetRaider }).toJSON();
