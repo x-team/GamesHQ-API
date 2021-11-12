@@ -27,7 +27,7 @@ phases:
       - export SENTRY_VERSION=${ENV}-${PKG_VERSION}_BUILD_${CODEBUILD_RESOLVED_SOURCE_VERSION}
       - echo $APP_BUILD_VERSION > ./src/.version
       - cat ./src/.version
-      - aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin $DOCKER_DOCKER_REPOSITORY_URI
+      - aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin $DOCKER_REPOSITORY_URI
       - IMAGE_TAG=$(echo $CODEBUILD_RESOLVED_SOURCE_VERSION | cut -c 1-7)
   build:
     commands:
