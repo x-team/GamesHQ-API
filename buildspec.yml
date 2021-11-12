@@ -41,10 +41,10 @@ phases:
       - docker push $DOCKER_REPOSITORY_URI:latest
       - docker push $DOCKER_REPOSITORY_URI:$IMAGE_TAG
       - printf '[{"name":"%s","imageUri":"%s"}]' $CONTAINER_NAME $DOCKER_REPOSITORY_URI:$IMAGE_TAG > build.json
-      - sentry-cli releases --org=x-team --project=xhq-api new $SENTRY_VERSION
-      - sentry-cli releases --org=x-team --project=xhq-api set-commits --auto $SENTRY_VERSION
-      - sentry-cli releases --org=x-team --project=xhq-api finalize $SENTRY_VERSION
-      - sentry-cli releases --org=x-team --project=xhq-api deploys $SENTRY_VERSION new -e $ENV
+      - sentry-cli releases --org=x-team --project=gameshq-api new $SENTRY_VERSION
+      #- sentry-cli releases --org=x-team --project=gameshq-api set-commits --auto $SENTRY_VERSION
+      - sentry-cli releases --org=x-team --project=gameshq-api finalize $SENTRY_VERSION
+      - sentry-cli releases --org=x-team --project=gameshq-api deploys $SENTRY_VERSION new -e $ENV
 artifacts:
   files:
     - build.json
