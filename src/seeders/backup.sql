@@ -1,42 +1,3 @@
-DROP TABLE IF EXISTS "TowerStatistics" CASCADE;
-DROP TABLE IF EXISTS "TowerRoundAction" CASCADE;
-DROP TABLE IF EXISTS "TowerRound" CASCADE;
-DROP TABLE IF EXISTS "TowerItemInventory" CASCADE;
-DROP TABLE IF EXISTS "TeamGeneral" CASCADE;
-DROP TABLE IF EXISTS "PerkInventory" CASCADE;
-DROP TABLE IF EXISTS "TowerFloorBattlefieldEnemy" CASCADE;
-DROP TABLE IF EXISTS "TowerFloorEnemy" CASCADE;
-DROP TABLE IF EXISTS "TowerRaider" CASCADE;
-DROP TABLE IF EXISTS "TowerFloorBattlefield" CASCADE;
-DROP TABLE IF EXISTS "TowerFloor" CASCADE;
-DROP TABLE IF EXISTS "TowerGame" CASCADE;
-DROP TABLE IF EXISTS "Perk" CASCADE;
-DROP TABLE IF EXISTS "ItemWeapon" CASCADE;
-DROP TABLE IF EXISTS "ItemTrait" CASCADE;
-DROP TABLE IF EXISTS "ItemHealthKit" CASCADE;
-DROP TABLE IF EXISTS "ItemArmor" CASCADE;
-DROP TABLE IF EXISTS "GameItemAvailability" CASCADE;
-DROP TABLE IF EXISTS "EnemyTrait" CASCADE;
-DROP TABLE IF EXISTS "Trait" CASCADE;
-DROP TABLE IF EXISTS "Enemy" CASCADE;
-DROP TABLE IF EXISTS "EnemyPattern" CASCADE;
-DROP TABLE IF EXISTS "ArenaRoundAction" CASCADE;
-DROP TABLE IF EXISTS "AvailableAction" CASCADE;
-DROP TABLE IF EXISTS "ArenaRound" CASCADE;
-DROP TABLE IF EXISTS "ArenaPlayerPerformance" CASCADE;
-DROP TABLE IF EXISTS "ArenaItemInventory" CASCADE;
-DROP TABLE IF EXISTS "Item" CASCADE;
-DROP TABLE IF EXISTS "ItemRarity" CASCADE;
-DROP TABLE IF EXISTS "ArenaPlayer" CASCADE;
-DROP TABLE IF EXISTS "ArenaZone" CASCADE;
-DROP TABLE IF EXISTS "ArenaGame" CASCADE;
-DROP TABLE IF EXISTS "Game" CASCADE;
-DROP TABLE IF EXISTS "USER" CASCADE;
-DROP TABLE IF EXISTS "Team" CASCADE;
-DROP TABLE IF EXISTS "Organization" CASCADE;
-DROP TABLE IF EXISTS "UserRole" CASCADE;
-DROP TABLE IF EXISTS "GameType" CASCADE;
-DROP TABLE IF EXISTS "GameType" CASCADE;
 CREATE TABLE IF NOT EXISTS "GameType" ("id" TEXT, PRIMARY KEY ("id"));
 SELECT
   i.relname AS name,
@@ -65,7 +26,7 @@ GROUP BY
   ix.indkey
 ORDER BY
   i.relname;
-DROP TABLE IF EXISTS "UserRole" CASCADE;
+
 CREATE TABLE IF NOT EXISTS "UserRole" (
   "id" INTEGER UNIQUE,
   "name" TEXT UNIQUE,
@@ -98,8 +59,8 @@ GROUP BY
   ix.indkey
 ORDER BY
   i.relname;
-CREATE UNIQUE INDEX "user_role_name" ON "UserRole" ("name");
-DROP TABLE IF EXISTS "Organization" CASCADE;
+CREATE UNIQUE INDEX IF NOT EXISTS"user_role_name" ON "UserRole" ("name");
+
 CREATE TABLE IF NOT EXISTS "Organization" (
   "id" SERIAL,
   "name" TEXT UNIQUE,
@@ -137,9 +98,9 @@ GROUP BY
   ix.indkey
 ORDER BY
   i.relname;
-CREATE UNIQUE INDEX "organization_name" ON "Organization" ("name");
-CREATE INDEX "organization_domain" ON "Organization" ("domain");
-DROP TABLE IF EXISTS "Team" CASCADE;
+CREATE UNIQUE INDEX IF NOT EXISTS"organization_name" ON "Organization" ("name");
+CREATE INDEX IF NOT EXISTS"organization_domain" ON "Organization" ("domain");
+
 CREATE TABLE IF NOT EXISTS "Team" (
   "id" SERIAL,
   "name" TEXT UNIQUE,
@@ -178,9 +139,9 @@ GROUP BY
   ix.indkey
 ORDER BY
   i.relname;
-CREATE INDEX "team_name" ON "Team" ("name");
-DROP TABLE IF EXISTS "USER" CASCADE;
-CREATE TABLE IF NOT EXISTS "USER" (
+CREATE INDEX IF NOT EXISTS"team_name" ON "Team" ("name");
+
+CREATE TABLE IF NOT EXISTS "User" (
   "id" SERIAL,
   "displayName" TEXT,
   "email" TEXT UNIQUE,
@@ -213,7 +174,7 @@ WHERE
   AND i.oid = ix.indexrelid
   AND a.attrelid = t.oid
   AND t.relkind = 'r'
-  AND t.relname = 'USER'
+  AND t.relname = 'User'
 GROUP BY
   i.relname,
   ix.indexrelid,
@@ -222,12 +183,12 @@ GROUP BY
   ix.indkey
 ORDER BY
   i.relname;
-CREATE UNIQUE INDEX "user_email" ON "USER" ("email");
-CREATE UNIQUE INDEX "user_slack_id" ON "USER" ("slackId");
-CREATE INDEX "user_created_at" ON "USER" ("createdAt");
-CREATE INDEX "user__role_id" ON "USER" ("_roleId");
-CREATE INDEX "user__team_id" ON "USER" ("_teamId");
-DROP TABLE IF EXISTS "Game" CASCADE;
+CREATE UNIQUE INDEX IF NOT EXISTS"user_email" ON "User" ("email");
+CREATE UNIQUE INDEX IF NOT EXISTS"user_slack_id" ON "User" ("slackId");
+CREATE INDEX IF NOT EXISTS"user_created_at" ON "User" ("createdAt");
+CREATE INDEX IF NOT EXISTS"user__role_id" ON "User" ("_roleId");
+CREATE INDEX IF NOT EXISTS"user__team_id" ON "User" ("_teamId");
+
 CREATE TABLE IF NOT EXISTS "Game" (
   "id" SERIAL,
   "name" TEXT,
@@ -235,7 +196,7 @@ CREATE TABLE IF NOT EXISTS "Game" (
   "startedAt" TIMESTAMP WITH TIME ZONE,
   "endedAt" TIMESTAMP WITH TIME ZONE DEFAULT NULL,
   "_gameTypeId" TEXT REFERENCES "GameType" ("id") ON DELETE CASCADE ON UPDATE CASCADE,
-  "_createdById" INTEGER REFERENCES "USER" ("id") ON DELETE CASCADE ON UPDATE CASCADE,
+  "_createdById" INTEGER REFERENCES "User" ("id") ON DELETE CASCADE ON UPDATE CASCADE,
   PRIMARY KEY ("id")
 );
 SELECT
@@ -265,9 +226,9 @@ GROUP BY
   ix.indkey
 ORDER BY
   i.relname;
-CREATE INDEX "game_name" ON "Game" ("name");
-CREATE INDEX "game_is_active" ON "Game" ("isActive");
-DROP TABLE IF EXISTS "ArenaGame" CASCADE;
+CREATE INDEX IF NOT EXISTS"game_name" ON "Game" ("name");
+CREATE INDEX IF NOT EXISTS"game_is_active" ON "Game" ("isActive");
+
 CREATE TABLE IF NOT EXISTS "ArenaGame" (
   "id" SERIAL,
   "hasZoneDeactivation" BOOLEAN DEFAULT TRUE,
@@ -305,8 +266,8 @@ GROUP BY
   ix.indkey
 ORDER BY
   i.relname;
-CREATE UNIQUE INDEX "arena_game__game_id" ON "ArenaGame" ("_gameId");
-DROP TABLE IF EXISTS "ArenaZone" CASCADE;
+CREATE UNIQUE INDEX IF NOT EXISTS"arena_game__game_id" ON "ArenaGame" ("_gameId");
+
 CREATE TABLE IF NOT EXISTS "ArenaZone" (
   "id" SERIAL,
   "name" TEXT UNIQUE,
@@ -344,9 +305,9 @@ GROUP BY
   ix.indkey
 ORDER BY
   i.relname;
-CREATE INDEX "arena_zone_name" ON "ArenaZone" ("name");
-CREATE INDEX "arena_zone_ring" ON "ArenaZone" ("ring");
-DROP TABLE IF EXISTS "ArenaPlayer" CASCADE;
+CREATE INDEX IF NOT EXISTS"arena_zone_name" ON "ArenaZone" ("name");
+CREATE INDEX IF NOT EXISTS"arena_zone_ring" ON "ArenaZone" ("ring");
+
 CREATE TABLE IF NOT EXISTS "ArenaPlayer" (
   "id" SERIAL,
   "health" INTEGER DEFAULT 100,
@@ -355,7 +316,7 @@ CREATE TABLE IF NOT EXISTS "ArenaPlayer" (
   "isBoss" BOOLEAN DEFAULT false,
   "luckBoost" DOUBLE PRECISION DEFAULT '0',
   "abilitiesJSON" JSONB DEFAULT '{"rarityRateBonus":0,"searchRate":0,"healthkitSearchRate":0,"armorSearchRate":0,"weaponSearchRate":0,"accuracy":0,"flatAttackBonus":0,"flatDefenseBonus":0,"attackRate":0,"defenseRate":0,"stunBlockRate":0,"stunOthersRate":0,"evadeRate":0,"initiative":1,"initiativeBonus":0,"flatHealingBoost":0}',
-  "_userId" INTEGER REFERENCES "USER" ("id") ON DELETE CASCADE ON UPDATE CASCADE,
+  "_userId" INTEGER REFERENCES "User" ("id") ON DELETE CASCADE ON UPDATE CASCADE,
   "_teamId" INTEGER REFERENCES "Team" ("id") ON DELETE
   SET
     NULL ON UPDATE CASCADE,
@@ -392,9 +353,9 @@ GROUP BY
   ix.indkey
 ORDER BY
   i.relname;
-CREATE UNIQUE INDEX "arena_player__game_id__user_id" ON "ArenaPlayer" ("_gameId", "_userId");
-CREATE INDEX "arena_player__arena_zone_id" ON "ArenaPlayer" ("_arenaZoneId");
-DROP TABLE IF EXISTS "ItemRarity" CASCADE;
+CREATE UNIQUE INDEX IF NOT EXISTS"arena_player__game_id__user_id" ON "ArenaPlayer" ("_gameId", "_userId");
+CREATE INDEX IF NOT EXISTS"arena_player__arena_zone_id" ON "ArenaPlayer" ("_arenaZoneId");
+
 CREATE TABLE IF NOT EXISTS "ItemRarity" ("id" TEXT, PRIMARY KEY ("id"));
 SELECT
   i.relname AS name,
@@ -423,13 +384,13 @@ GROUP BY
   ix.indkey
 ORDER BY
   i.relname;
-DROP TABLE IF EXISTS "Item" CASCADE;
+
 CREATE TABLE IF NOT EXISTS "Item" (
   "id" SERIAL,
   "name" TEXT UNIQUE,
   "emoji" TEXT,
   "usageLimit" INTEGER,
-  "TYPE" TEXT,
+  "type" TEXT,
   "_itemRarityId" TEXT REFERENCES "ItemRarity" ("id") ON DELETE NO ACTION ON UPDATE CASCADE,
   "_organizationId" INTEGER REFERENCES "Organization" ("id") ON DELETE CASCADE ON UPDATE CASCADE,
   PRIMARY KEY ("id")
@@ -461,9 +422,9 @@ GROUP BY
   ix.indkey
 ORDER BY
   i.relname;
-CREATE INDEX "item_name" ON "Item" ("name");
-CREATE INDEX "item__item_rarity_id" ON "Item" ("_itemRarityId");
-DROP TABLE IF EXISTS "ArenaItemInventory" CASCADE;
+CREATE INDEX IF NOT EXISTS"item_name" ON "Item" ("name");
+CREATE INDEX IF NOT EXISTS"item__item_rarity_id" ON "Item" ("_itemRarityId");
+
 CREATE TABLE IF NOT EXISTS "ArenaItemInventory" (
   "id" SERIAL,
   "_arenaPlayerId" INTEGER REFERENCES "ArenaPlayer" ("id") ON DELETE NO ACTION ON UPDATE CASCADE,
@@ -499,8 +460,8 @@ GROUP BY
   ix.indkey
 ORDER BY
   i.relname;
-CREATE UNIQUE INDEX "arena_item_inventory__arena_player_id__item_id" ON "ArenaItemInventory" ("_arenaPlayerId", "_itemId");
-DROP TABLE IF EXISTS "ArenaPlayerPerformance" CASCADE;
+CREATE UNIQUE INDEX IF NOT EXISTS"arena_item_inventory__arena_player_id__item_id" ON "ArenaItemInventory" ("_arenaPlayerId", "_itemId");
+
 CREATE TABLE IF NOT EXISTS "ArenaPlayerPerformance" (
   "_arenaPlayerId" INTEGER REFERENCES "ArenaPlayer" ("id") ON DELETE NO ACTION ON UPDATE CASCADE,
   "_gameId" INTEGER REFERENCES "Game" ("id") ON DELETE NO ACTION ON UPDATE CASCADE,
@@ -540,7 +501,7 @@ GROUP BY
   ix.indkey
 ORDER BY
   i.relname;
-DROP TABLE IF EXISTS "ArenaRound" CASCADE;
+
 CREATE TABLE IF NOT EXISTS "ArenaRound" (
   "id" SERIAL,
   "isActive" BOOLEAN DEFAULT TRUE,
@@ -548,7 +509,7 @@ CREATE TABLE IF NOT EXISTS "ArenaRound" (
   "startedAt" TIMESTAMP WITH TIME ZONE,
   "endedAt" TIMESTAMP WITH TIME ZONE DEFAULT NULL,
   "_gameId" INTEGER REFERENCES "ArenaGame" ("id") ON DELETE CASCADE ON UPDATE CASCADE,
-  "_createdById" INTEGER REFERENCES "USER" ("id") ON DELETE NO ACTION ON UPDATE CASCADE,
+  "_createdById" INTEGER REFERENCES "User" ("id") ON DELETE NO ACTION ON UPDATE CASCADE,
   PRIMARY KEY ("id")
 );
 SELECT
@@ -578,7 +539,7 @@ GROUP BY
   ix.indkey
 ORDER BY
   i.relname;
-DROP TABLE IF EXISTS "AvailableAction" CASCADE;
+
 CREATE TABLE IF NOT EXISTS "AvailableAction" ("id" TEXT, PRIMARY KEY ("id"));
 SELECT
   i.relname AS name,
@@ -607,7 +568,7 @@ GROUP BY
   ix.indkey
 ORDER BY
   i.relname;
-DROP TABLE IF EXISTS "ArenaRoundAction" CASCADE;
+
 CREATE TABLE IF NOT EXISTS "ArenaRoundAction" (
   "_arenaPlayerId" INTEGER REFERENCES "ArenaPlayer" ("id") ON DELETE NO ACTION ON UPDATE CASCADE,
   "_arenaRoundId" INTEGER REFERENCES "ArenaRound" ("id") ON DELETE CASCADE ON UPDATE CASCADE,
@@ -645,7 +606,7 @@ GROUP BY
   ix.indkey
 ORDER BY
   i.relname;
-DROP TABLE IF EXISTS "EnemyPattern" CASCADE;
+
 CREATE TABLE IF NOT EXISTS "EnemyPattern" ("id" TEXT, PRIMARY KEY ("id"));
 SELECT
   i.relname AS name,
@@ -674,7 +635,7 @@ GROUP BY
   ix.indkey
 ORDER BY
   i.relname;
-DROP TABLE IF EXISTS "Enemy" CASCADE;
+
 CREATE TABLE IF NOT EXISTS "Enemy" (
   "id" SERIAL,
   "name" TEXT UNIQUE,
@@ -718,8 +679,8 @@ GROUP BY
   ix.indkey
 ORDER BY
   i.relname;
-CREATE UNIQUE INDEX "enemy_name" ON "Enemy" ("name");
-DROP TABLE IF EXISTS "Trait" CASCADE;
+CREATE UNIQUE INDEX IF NOT EXISTS"enemy_name" ON "Enemy" ("name");
+
 CREATE TABLE IF NOT EXISTS "Trait" (
   "id" TEXT,
   "displayName" TEXT,
@@ -753,8 +714,8 @@ GROUP BY
   ix.indkey
 ORDER BY
   i.relname;
-CREATE INDEX "trait_display_name" ON "Trait" ("displayName")
-DROP TABLE IF EXISTS "EnemyTrait" CASCADE;
+CREATE INDEX IF NOT EXISTS"trait_display_name" ON "Trait" ("displayName");
+
 CREATE TABLE IF NOT EXISTS "EnemyTrait" (
   "_enemyId" INTEGER REFERENCES "Enemy" ("id") ON DELETE CASCADE ON UPDATE CASCADE,
   "_traitId" TEXT REFERENCES "Trait" ("id") ON DELETE CASCADE ON UPDATE CASCADE,
@@ -787,8 +748,8 @@ GROUP BY
   ix.indkey
 ORDER BY
   i.relname;
-CREATE INDEX "enemy_trait__enemy_id__trait_id" ON "EnemyTrait" ("_enemyId", "_traitId");
-DROP TABLE IF EXISTS "GameItemAvailability" CASCADE;
+CREATE INDEX IF NOT EXISTS"enemy_trait__enemy_id__trait_id" ON "EnemyTrait" ("_enemyId", "_traitId");
+
 CREATE TABLE IF NOT EXISTS "GameItemAvailability" (
   "_gameTypeId" TEXT REFERENCES "GameType" ("id") ON DELETE CASCADE ON UPDATE CASCADE,
   "_itemId" INTEGER REFERENCES "Item" ("id") ON DELETE CASCADE ON UPDATE CASCADE,
@@ -823,9 +784,9 @@ GROUP BY
   ix.indkey
 ORDER BY
   i.relname;
-CREATE INDEX "game_item_availability_is_archived" ON "GameItemAvailability" ("isArchived")
-CREATE INDEX "game_item_availability_is_active" ON "GameItemAvailability" ("isActive")
-DROP TABLE IF EXISTS "ItemArmor" CASCADE;
+CREATE INDEX IF NOT EXISTS"game_item_availability_is_archived" ON "GameItemAvailability" ("isArchived");
+CREATE INDEX IF NOT EXISTS"game_item_availability_is_active" ON "GameItemAvailability" ("isActive");
+
 CREATE TABLE IF NOT EXISTS "ItemArmor" (
   "_itemId" INTEGER REFERENCES "Item" ("id") ON DELETE CASCADE ON UPDATE CASCADE,
   "reductionRate" DOUBLE PRECISION,
@@ -858,7 +819,7 @@ GROUP BY
   ix.indkey
 ORDER BY
   i.relname;
-DROP TABLE IF EXISTS "ItemHealthKit" CASCADE;
+
 CREATE TABLE IF NOT EXISTS "ItemHealthKit" (
   "healingPower" INTEGER,
   "_itemId" INTEGER REFERENCES "Item" ("id") ON DELETE CASCADE ON UPDATE CASCADE,
@@ -891,7 +852,7 @@ GROUP BY
   ix.indkey
 ORDER BY
   i.relname;
-DROP TABLE IF EXISTS "ItemTrait" CASCADE;
+
 CREATE TABLE IF NOT EXISTS "ItemTrait" (
   "_itemId" INTEGER REFERENCES "Item" ("id") ON DELETE CASCADE ON UPDATE CASCADE,
   "_traitId" TEXT REFERENCES "Trait" ("id") ON DELETE CASCADE ON UPDATE CASCADE,
@@ -925,8 +886,8 @@ GROUP BY
   ix.indkey
 ORDER BY
   i.relname;
-CREATE UNIQUE INDEX "item_trait__item_id__trait_id" ON "ItemTrait" ("_itemId", "_traitId");
-DROP TABLE IF EXISTS "ItemWeapon" CASCADE;
+CREATE UNIQUE INDEX IF NOT EXISTS"item_trait__item_id__trait_id" ON "ItemTrait" ("_itemId", "_traitId");
+
 CREATE TABLE IF NOT EXISTS "ItemWeapon" (
   "minorDamageRate" INTEGER,
   "majorDamageRate" INTEGER,
@@ -960,7 +921,7 @@ GROUP BY
   ix.indkey
 ORDER BY
   i.relname;
-DROP TABLE IF EXISTS "Perk" CASCADE;
+
 CREATE TABLE IF NOT EXISTS "Perk" (
   "id" TEXT,
   "archetype" TEXT NOT NULL,
@@ -999,8 +960,8 @@ GROUP BY
   ix.indkey
 ORDER BY
   i.relname;
-CREATE UNIQUE INDEX "perk_name" ON "Perk" ("name");
-DROP TABLE IF EXISTS "TowerGame" CASCADE;
+CREATE UNIQUE INDEX IF NOT EXISTS"perk_name" ON "Perk" ("name");
+
 CREATE TABLE IF NOT EXISTS "TowerGame" (
   "id" SERIAL,
   "lunaPrize" INTEGER,
@@ -1037,8 +998,8 @@ GROUP BY
   ix.indkey
 ORDER BY
   i.relname;
-CREATE INDEX "tower_game_is_open" ON "TowerGame" ("isOpen");
-DROP TABLE IF EXISTS "TowerFloor" CASCADE;
+CREATE INDEX IF NOT EXISTS"tower_game_is_open" ON "TowerGame" ("isOpen");
+
 CREATE TABLE IF NOT EXISTS "TowerFloor" (
   "id" SERIAL,
   "number" INTEGER,
@@ -1073,8 +1034,8 @@ GROUP BY
   ix.indkey
 ORDER BY
   i.relname;
-CREATE INDEX "tower_floor__tower_game_id" ON "TowerFloor" ("_towerGameId");
-DROP TABLE IF EXISTS "TowerFloorBattlefield" CASCADE;
+CREATE INDEX IF NOT EXISTS"tower_floor__tower_game_id" ON "TowerFloor" ("_towerGameId");
+
 CREATE TABLE IF NOT EXISTS "TowerFloorBattlefield" (
   "id" SERIAL,
   "createdAt" TIMESTAMP WITH TIME ZONE,
@@ -1108,14 +1069,14 @@ GROUP BY
   ix.indkey
 ORDER BY
   i.relname;
-CREATE INDEX "tower_floor_battlefield__tower_floor_id" ON "TowerFloorBattlefield" ("_towerFloorId");
-DROP TABLE IF EXISTS "TowerRaider" CASCADE;
+CREATE INDEX IF NOT EXISTS"tower_floor_battlefield__tower_floor_id" ON "TowerFloorBattlefield" ("_towerFloorId");
+
 CREATE TABLE IF NOT EXISTS "TowerRaider" (
   "id" SERIAL,
   "health" INTEGER,
   "isVisible" BOOLEAN DEFAULT TRUE,
   "luckBoost" DOUBLE PRECISION DEFAULT '0',
-  "_userId" INTEGER REFERENCES "USER" ("id") ON DELETE CASCADE ON UPDATE CASCADE,
+  "_userId" INTEGER REFERENCES "User" ("id") ON DELETE CASCADE ON UPDATE CASCADE,
   "_towerFloorBattlefieldId" INTEGER REFERENCES "TowerFloorBattlefield" ("id") ON DELETE CASCADE ON UPDATE CASCADE,
   "abilitiesJSON" JSONB DEFAULT '{"rarityRateBonus":0,"searchRate":0,"healthkitSearchRate":0,"armorSearchRate":0,"weaponSearchRate":0,"accuracy":0,"flatAttackBonus":0,"flatDefenseBonus":0,"attackRate":0,"defenseRate":0,"stunBlockRate":0,"stunOthersRate":0,"evadeRate":0,"initiative":1,"initiativeBonus":0,"flatHealingBoost":0}',
   PRIMARY KEY ("id")
@@ -1147,10 +1108,10 @@ GROUP BY
   ix.indkey
 ORDER BY
   i.relname;
-CREATE INDEX "tower_raider__tower_floor_battlefield_id__user_id" ON "TowerRaider" ("_towerFloorBattlefieldId", "_userId");
-CREATE INDEX "tower_raider__tower_floor_battlefield_id" ON "TowerRaider" ("_towerFloorBattlefieldId");
-CREATE INDEX "tower_raider__user_id" ON "TowerRaider" ("_userId");
-DROP TABLE IF EXISTS "TowerFloorEnemy" CASCADE;
+CREATE INDEX IF NOT EXISTS"tower_raider__tower_floor_battlefield_id__user_id" ON "TowerRaider" ("_towerFloorBattlefieldId", "_userId");
+CREATE INDEX IF NOT EXISTS"tower_raider__tower_floor_battlefield_id" ON "TowerRaider" ("_towerFloorBattlefieldId");
+CREATE INDEX IF NOT EXISTS"tower_raider__user_id" ON "TowerRaider" ("_userId");
+
 CREATE TABLE IF NOT EXISTS "TowerFloorEnemy" (
   "id" SERIAL,
   "_enemyId" INTEGER REFERENCES "Enemy" ("id") ON DELETE CASCADE ON UPDATE CASCADE,
@@ -1184,8 +1145,8 @@ GROUP BY
   ix.indkey
 ORDER BY
   i.relname;
-CREATE INDEX "tower_floor_enemy__tower_floor_id__enemy_id" ON "TowerFloorEnemy" ("_towerFloorId", "_enemyId")
-DROP TABLE IF EXISTS "TowerFloorBattlefieldEnemy" CASCADE;
+CREATE INDEX IF NOT EXISTS"tower_floor_enemy__tower_floor_id__enemy_id" ON "TowerFloorEnemy" ("_towerFloorId", "_enemyId");
+
 CREATE TABLE IF NOT EXISTS "TowerFloorBattlefieldEnemy" (
   "id" SERIAL,
   "health" INTEGER,
@@ -1224,10 +1185,10 @@ GROUP BY
   ix.indkey
 ORDER BY
   i.relname;
-CREATE UNIQUE INDEX "tower_floor_battlefield_enemy__tower_floor_battlefield_id__tower_floor_enemy_id" ON "TowerFloorBattlefieldEnemy" ("_towerFloorBattlefieldId", "_towerFloorEnemyId");
-CREATE INDEX "tower_floor_battlefield_enemy_is_visible" ON "TowerFloorBattlefieldEnemy" ("isVisible");
-CREATE INDEX "tower_floor_battlefield_enemy__tower_floor_battlefield_id" ON "TowerFloorBattlefieldEnemy" ("_towerFloorBattlefieldId");
-DROP TABLE IF EXISTS "PerkInventory" CASCADE;
+CREATE UNIQUE INDEX IF NOT EXISTS"tower_floor_battlefield_enemy__tower_floor_battlefield_id__tower_floor_enemy_id" ON "TowerFloorBattlefieldEnemy" ("_towerFloorBattlefieldId", "_towerFloorEnemyId");
+CREATE INDEX IF NOT EXISTS"tower_floor_battlefield_enemy_is_visible" ON "TowerFloorBattlefieldEnemy" ("isVisible");
+CREATE INDEX IF NOT EXISTS"tower_floor_battlefield_enemy__tower_floor_battlefield_id" ON "TowerFloorBattlefieldEnemy" ("_towerFloorBattlefieldId");
+
 CREATE TABLE IF NOT EXISTS "PerkInventory" (
   "id" SERIAL,
   "_perkId" TEXT REFERENCES "Perk" ("id") ON DELETE CASCADE ON UPDATE CASCADE,
@@ -1268,18 +1229,18 @@ GROUP BY
   ix.indkey
 ORDER BY
   i.relname;
-CREATE INDEX "perk_inventory__perk_id" ON "PerkInventory" ("_perkId");
-CREATE INDEX "perk_inventory__tower_raider_id" ON "PerkInventory" ("_towerRaiderId");
-CREATE INDEX "perk_inventory__tower_floor_battlefield_enemy_id" ON "PerkInventory" ("_towerFloorBattlefieldEnemyId");
-CREATE UNIQUE INDEX "perk_inventory__perk_id__tower_raider_id__tower_floor_battlefield_enemy_id" ON "PerkInventory" (
+CREATE INDEX IF NOT EXISTS"perk_inventory__perk_id" ON "PerkInventory" ("_perkId");
+CREATE INDEX IF NOT EXISTS"perk_inventory__tower_raider_id" ON "PerkInventory" ("_towerRaiderId");
+CREATE INDEX IF NOT EXISTS"perk_inventory__tower_floor_battlefield_enemy_id" ON "PerkInventory" ("_towerFloorBattlefieldEnemyId");
+CREATE UNIQUE INDEX IF NOT EXISTS"perk_inventory__perk_id__tower_raider_id__tower_floor_battlefield_enemy_id" ON "PerkInventory" (
   "_perkId",
   "_towerRaiderId",
   "_towerFloorBattlefieldEnemyId"
 );
-DROP TABLE IF EXISTS "TeamGeneral" CASCADE;
+
 CREATE TABLE IF NOT EXISTS "TeamGeneral" (
   "_teamId" INTEGER REFERENCES "Team" ("id") ON DELETE CASCADE ON UPDATE CASCADE,
-  "_userId" INTEGER REFERENCES "USER" ("id") ON DELETE CASCADE ON UPDATE CASCADE,
+  "_userId" INTEGER REFERENCES "User" ("id") ON DELETE CASCADE ON UPDATE CASCADE,
   UNIQUE ("_teamId", "_userId"),
   PRIMARY KEY ("_teamId", "_userId")
 );
@@ -1310,8 +1271,8 @@ GROUP BY
   ix.indkey
 ORDER BY
   i.relname;
-CREATE UNIQUE INDEX "team_general__team_id__user_id" ON "TeamGeneral" ("_teamId", "_userId");
-DROP TABLE IF EXISTS "TowerItemInventory" CASCADE;
+CREATE UNIQUE INDEX IF NOT EXISTS"team_general__team_id__user_id" ON "TeamGeneral" ("_teamId", "_userId");
+
 CREATE TABLE IF NOT EXISTS "TowerItemInventory" (
   "id" SERIAL,
   "_towerRaiderId" INTEGER REFERENCES "TowerRaider" ("id") ON DELETE CASCADE ON UPDATE CASCADE,
@@ -1347,8 +1308,8 @@ GROUP BY
   ix.indkey
 ORDER BY
   i.relname;
-CREATE UNIQUE INDEX "tower_item_inventory__tower_raider_id__item_id" ON "TowerItemInventory" ("_towerRaiderId", "_itemId");
-DROP TABLE IF EXISTS "TowerRound" CASCADE;
+CREATE UNIQUE INDEX IF NOT EXISTS"tower_item_inventory__tower_raider_id__item_id" ON "TowerItemInventory" ("_towerRaiderId", "_itemId");
+
 CREATE TABLE IF NOT EXISTS "TowerRound" (
   "id" SERIAL,
   "isActive" BOOLEAN DEFAULT TRUE,
@@ -1356,7 +1317,7 @@ CREATE TABLE IF NOT EXISTS "TowerRound" (
   "startedAt" TIMESTAMP WITH TIME ZONE,
   "endedAt" TIMESTAMP WITH TIME ZONE DEFAULT NULL,
   "_towerFloorBattlefieldId" INTEGER REFERENCES "TowerFloorBattlefield" ("id") ON DELETE CASCADE ON UPDATE CASCADE,
-  "_createdById" INTEGER REFERENCES "USER" ("id") ON DELETE
+  "_createdById" INTEGER REFERENCES "User" ("id") ON DELETE
   SET
     NULL ON UPDATE CASCADE,
     PRIMARY KEY ("id")
@@ -1388,9 +1349,9 @@ GROUP BY
   ix.indkey
 ORDER BY
   i.relname;
-CREATE INDEX "tower_round_is_active__tower_floor_battlefield_id" ON "TowerRound" ("isActive", "_towerFloorBattlefieldId");
-CREATE INDEX "tower_round__tower_floor_battlefield_id" ON "TowerRound" ("_towerFloorBattlefieldId");
-DROP TABLE IF EXISTS "TowerRoundAction" CASCADE;
+CREATE INDEX IF NOT EXISTS"tower_round_is_active__tower_floor_battlefield_id" ON "TowerRound" ("isActive", "_towerFloorBattlefieldId");
+CREATE INDEX IF NOT EXISTS"tower_round__tower_floor_battlefield_id" ON "TowerRound" ("_towerFloorBattlefieldId");
+
 CREATE TABLE IF NOT EXISTS "TowerRoundAction" (
   "id" SERIAL,
   "_towerRaiderId" INTEGER REFERENCES "TowerRaider" ("id") ON DELETE CASCADE ON UPDATE CASCADE,
@@ -1430,17 +1391,17 @@ GROUP BY
   ix.indkey
 ORDER BY
   i.relname;
-CREATE INDEX "tower_round_action__tower_raider_id" ON "TowerRoundAction" ("_towerRaiderId");
-CREATE INDEX "tower_round_action__tower_round_id" ON "TowerRoundAction" ("_towerRoundId");
-CREATE INDEX "tower_round_action__tower_floor_battlefield_enemy_id" ON "TowerRoundAction" ("_towerFloorBattlefieldEnemyId");
-CREATE UNIQUE INDEX "tower_round_action__tower_round_id__tower_raider_id__tower_floor_battlefield_enemy_id" ON "TowerRoundAction" (
+CREATE INDEX IF NOT EXISTS"tower_round_action__tower_raider_id" ON "TowerRoundAction" ("_towerRaiderId");
+CREATE INDEX IF NOT EXISTS"tower_round_action__tower_round_id" ON "TowerRoundAction" ("_towerRoundId");
+CREATE INDEX IF NOT EXISTS"tower_round_action__tower_floor_battlefield_enemy_id" ON "TowerRoundAction" ("_towerFloorBattlefieldEnemyId");
+CREATE UNIQUE INDEX IF NOT EXISTS"tower_round_action__tower_round_id__tower_raider_id__tower_floor_battlefield_enemy_id" ON "TowerRoundAction" (
   "_towerRoundId",
   "_towerRaiderId",
   "_towerFloorBattlefieldEnemyId"
 );
-DROP TABLE IF EXISTS "TowerStatistics" CASCADE;
+
 CREATE TABLE IF NOT EXISTS "TowerStatistics" (
-  "_userId" INTEGER REFERENCES "USER" ("id") ON DELETE CASCADE ON UPDATE CASCADE,
+  "_userId" INTEGER REFERENCES "User" ("id") ON DELETE CASCADE ON UPDATE CASCADE,
   "_towerGameId" INTEGER REFERENCES "TowerGame" ("id") ON DELETE CASCADE ON UPDATE CASCADE,
   "attempts" INTEGER,
   "completed" INTEGER,
@@ -1474,4 +1435,4 @@ GROUP BY
   ix.indkey
 ORDER BY
   i.relname;
-CREATE UNIQUE INDEX "tower_statistics__user_id__game_id" ON "TowerStatistics" ("_userId", "_gameId");
+CREATE UNIQUE INDEX IF NOT EXISTS"tower_statistics__user_id__game_id" ON "TowerStatistics" ("_userId", "_gameId");
