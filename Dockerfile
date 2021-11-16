@@ -17,6 +17,7 @@ RUN apk add --no-cache python3 py-pip py-setuptools groff less openssl ca-certif
 #Download aws-env
 RUN wget https://github.com/Droplr/aws-env/raw/master/bin/aws-env-linux-amd64 -O /bin/aws-env && chmod +x /bin/aws-env
 
-RUN npm install
+#Install dependencies and build
+RUN npm install && npm run build
 
-CMD eval $(aws-env) && NODE_ENV=production npm start
+CMD eval $(aws-env) && npm start
