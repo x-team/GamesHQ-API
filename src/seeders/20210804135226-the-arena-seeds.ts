@@ -831,6 +831,8 @@ module.exports = {
   async down({ context: { queryInterface } }: SequelizeContext) {
     return queryInterface.sequelize.transaction(async (transaction) => {
       await queryInterface.bulkDelete('Item', toDelete(ITEM_NAME_TO_ADD), { transaction });
+      await queryInterface.bulkDelete('ArenaZone', {}, { transaction });
+      await queryInterface.bulkDelete('GameItemAvailability', {}, { transaction });
     });
   },
 };

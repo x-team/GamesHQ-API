@@ -53,7 +53,7 @@ function displayPlayers(players: ArenaPlayer[]) {
         ? `${PLAYER_VISIBLE_EMOJI} Visible`
         : `${PLAYER_HIDE_EMOJI} Not Visible`;
       const hunterMessage = `${
-        player.isBoss ? BOSS_HOUSE_EMOJI : generateTeamEmoji(player._user?._team?.emoji)
+        player.isBoss ? BOSS_HOUSE_EMOJI : generateTeamEmoji(player._team?.emoji)
       } | <@${player._user?.slackId}>`;
       const healthMessage = `${FULL_HEALTH_HEART_EMOJI} ${player.health}`;
       return `${index + 1}. ${hunterMessage} | ${healthMessage} | ${visibilityMessage}`;
@@ -66,7 +66,7 @@ function displaySpectators(spectators: ArenaPlayer[]) {
   const parsedSpectatorsInfo = spectators
     .map((spectator, index) => {
       const hunterMessage = `${
-        spectator.isBoss ? BOSS_HOUSE_EMOJI : generateTeamEmoji(spectator._user?._team?.emoji)
+        spectator.isBoss ? BOSS_HOUSE_EMOJI : generateTeamEmoji(spectator._team?.emoji)
       } | <@${spectator._user?.slackId}>`;
       return `${index + 1}. ${hunterMessage}`;
     })

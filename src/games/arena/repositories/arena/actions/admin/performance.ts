@@ -35,7 +35,7 @@ export async function performance(userRequesting: User) {
     const firstBloodPerformance = await findFirstBlood(lastGame.id, transaction);
     const firstBloodHeader = PLAYER_PERFORMANCE_HEADER.FIRST_BLOOD;
     const firstBloodMessage =
-      `\t1. ${generateTeamEmoji(firstBloodPerformance?._player?._user?._team?.emoji)} ` +
+      `\t1. ${generateTeamEmoji(firstBloodPerformance?._player?._team?.emoji)} ` +
       `| <@${firstBloodPerformance?._player?._user?.slackId}>`;
     let mutableTopRankings = `${firstBloodHeader}\n${firstBloodMessage}`;
     for (const performanceField of Object.values(ARENA_PLAYER_PERFORMANCE)) {

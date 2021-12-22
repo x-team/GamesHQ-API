@@ -137,7 +137,6 @@ export function findTowerStatisticsByGame(gameId: number, transaction: Transacti
     include: [
       {
         association: TowerStatistics.associations._user,
-        include: [User.associations._team],
       },
     ],
     transaction,
