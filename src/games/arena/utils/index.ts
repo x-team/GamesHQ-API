@@ -104,10 +104,9 @@ export function topPlayerPerformance(
   for (let mutableIndex = 1; mutableIndex <= maxPlayersInTop; mutableIndex++) {
     const playerPerformance = playersPerformance[mutableIndex - 1];
     mutableTopPerformance += playerPerformance
-      ? `\t${mutableIndex}. ${generateTeamEmoji(
-          playerPerformance._player?._user?._team?.emoji
-        )} | <@${playerPerformance._player?._user?.slackId}> ` +
-        `*[${playerPerformance[performanceField]}]*\n`
+      ? `\t${mutableIndex}. ${generateTeamEmoji(playerPerformance._player?._team?.emoji)} | <@${
+          playerPerformance._player?._user?.slackId
+        }> ` + `*[${playerPerformance[performanceField]}]*\n`
       : '';
   }
   return mutableTopPerformance;
@@ -125,7 +124,7 @@ export async function processWinner(round: ArenaRound, transaction: Transaction)
     if (sameTeamPlayers.length === playersAlive.length) {
       // All the players are from the same team
       await publishArenaMessage(
-        arenaCommandReply.teamWinGame(playersAlive[ZERO]._user?._team?.name ?? 'No Team')
+        arenaCommandReply.teamWinGame(playersAlive[ZERO]._team?.name ?? 'No Team')
       );
     }
   }

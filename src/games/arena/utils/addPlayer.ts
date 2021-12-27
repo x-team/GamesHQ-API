@@ -1,16 +1,10 @@
-import Boom from '@hapi/boom';
 import type { Transaction } from 'sequelize';
-
-import { logger } from '../../../config';
 import type { ArenaPlayer, User } from '../../../models';
 import { findActiveArenaGame } from '../../../models/ArenaGame';
 import { addArenaPlayers, addArenaPlayersToZones } from '../../../models/ArenaPlayer';
 import { findArenaZoneByName } from '../../../models/ArenaZone';
 import { findUsersBySlackIds } from '../../../models/User';
 import { parseCommandTextToSlackIds } from '../../utils';
-import { arenaCommandReply } from '../repositories/arena/replies';
-
-import { arenaNotifyEphemeral } from '.';
 
 export function parseBossAndGuestCommandText(commandtext: string) {
   const bracesRegExp = new RegExp(/\{(.*?)\}/, 'g');
@@ -24,11 +18,9 @@ export function parseBossAndGuestCommandText(commandtext: string) {
 
 export async function addSpectator(
   commandText: string,
-  userRequesting: User,
-  channelId: string,
   transaction: Transaction
 ): Promise<ArenaPlayer[]> {
-  const { arenaPlayers } = await addPlayers(commandText, userRequesting, channelId, transaction);
+  const { arenaPlayers } = await addPlayers(commandText, transaction);
   for (let i = 0; i < arenaPlayers.length; i++) {
     await arenaPlayers[i].update(
       {
@@ -54,8 +46,6 @@ export async function addSpectator(
 
 export async function addPlayers(
   commandText: string,
-  userRequesting: User,
-  channelId: string,
   transaction: Transaction
 ): Promise<{
   arenaPlayers: ArenaPlayer[];
@@ -77,29 +67,7 @@ export async function addPlayers(
   }
   const uniqueSlackIds = new Set<string>();
   slackIds.forEach((id) => uniqueSlackIds.add(id));
-  const usersWithNoTeamSet = users.filter((user) => !user._teamId);
-  if (usersWithNoTeamSet.length && game._arena?.teamBased) {
-    const reply = arenaCommandReply.playerDontHaveTeam();
-    usersWithNoTeamSet.map((userToNotify) => {
-      arenaNotifyEphemeral(reply, userToNotify.slackId!, channelId).catch((error) => {
-        if (Boom.isBoom(error)) {
-          const {
-            output: {
-              payload: { message },
-            },
-          } = error;
-          logger.error(message);
-        } else {
-          logger.error(arenaCommandReply.somethingWentWrong('Notify Ephemeral'));
-        }
-      });
-    });
-    await arenaNotifyEphemeral(
-      arenaCommandReply.playersWithoutTeam(usersWithNoTeamSet),
-      userRequesting.slackId!,
-      channelId
-    );
-  }
+
   const arenaPlayers = await addArenaPlayers(
     {
       gameId: game.id,

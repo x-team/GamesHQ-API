@@ -23,7 +23,6 @@ export { Organization } from './Organization';
 export { Perk } from './Perk';
 export { PerkInventory } from './PerkInventory';
 export { Team } from './Team';
-export { TeamGeneral } from './TeamGeneral';
 export { TowerFloor } from './TowerFloor';
 export { TowerFloorBattlefield } from './TowerFloorBattlefield';
 export { TowerFloorBattlefieldEnemy } from './TowerFloorBattlefieldEnemy';

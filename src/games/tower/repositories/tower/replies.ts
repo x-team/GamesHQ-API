@@ -24,7 +24,6 @@ import {
   basicHealthDisplay,
   basicHealthDisplayInParentheses,
   generateRarityColorEmoji,
-  generateTeamEmoji,
   randomSkinColor,
 } from '../../../helpers';
 import { rateToPercentage } from '../../../utils';
@@ -60,9 +59,7 @@ function usefulCommands() {
 function towerBasicScoreboard(towerStatistics: TowerStatistics[]) {
   return `${towerStatistics
     .map((raiderStats) => {
-      const teamEmoji = generateTeamEmoji(raiderStats._user?._team?.emoji);
       return (
-        `${teamEmoji === ':the-wolf:' ? `${FREE_AGENT_EMOJI}` : teamEmoji} *|* ` +
         `<@${raiderStats._user?.slackId}>\t*=>*\t` +
         `_${raiderStats.completed} *completed*_ ~ ` +
         `_${raiderStats.attempts} *attempts*_`
