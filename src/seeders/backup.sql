@@ -1,3 +1,4 @@
+CREATE TABLE IF NOT EXISTS "GameType" ("id" TEXT, PRIMARY KEY ("id"));
 SELECT
   i.relname AS name,
   ix.indisprimary AS PRIMARY,
