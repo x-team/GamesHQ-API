@@ -387,7 +387,7 @@ CREATE TABLE IF NOT EXISTS "Item" (
   "name" TEXT UNIQUE,
   "emoji" TEXT,
   "usageLimit" INTEGER,
-  "TYPE" TEXT,
+  "type" TEXT,
   "_itemRarityId" TEXT REFERENCES "ItemRarity" ("id") ON DELETE NO ACTION ON UPDATE CASCADE,
   "_organizationId" INTEGER REFERENCES "Organization" ("id") ON DELETE CASCADE ON UPDATE CASCADE,
   PRIMARY KEY ("id")
