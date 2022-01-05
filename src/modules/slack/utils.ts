@@ -13,12 +13,15 @@ import { slackActionsPayloadSchema } from '../../games/model/SlackActionPayload'
 import type { SlackActionsPayload } from '../../games/model/SlackActionPayload';
 import { slackBlockPayloadSchema } from '../../games/model/SlackBlockKit';
 import type { SlackBlockKitPayload } from '../../games/model/SlackBlockKitPayload';
-import type { SlackChallengesPayload } from '../../games/model/SlackChallengePayload';
+import {
+  SlackChallengesPayload,
+  slackChallengesPayloadSchema,
+} from '../../games/model/SlackChallengePayload';
 import type { SlackDialogSubmissionPayload } from '../../games/model/SlackDialogObject';
 import { slackSSDialogSubmissionPayloadSchema } from '../../games/model/SlackDialogObject';
 import type { SlackDialogsPayload } from '../../games/model/SlackDialogPayload';
 import { slackDialogsPayloadSchema } from '../../games/model/SlackDialogPayload';
-import type { SlackEventsPayload } from '../../games/model/SlackEventPayload';
+import { SlackEventsPayload, slackEventsPayloadSchema } from '../../games/model/SlackEventPayload';
 import type { SlackShortcutPayload } from '../../games/model/SlackShortcutPayload';
 import { slackSShortcutPayloadSchema } from '../../games/model/SlackShortcutPayload';
 import type { SlackSlashCommandPayload } from '../../games/model/SlackSlashCommandPayload';
@@ -180,6 +183,25 @@ export function parseSlackActionPayload(request: Request): Lifecycle.Method {
   checkForSlackErrors(mutableSlackPayload, parsed);
   return mutableSlackPayload.value;
 }
+
+export const parseSlackEventPayload: Lifecycle.Method = (request) => {
+  if (!Buffer.isBuffer(request.payload)) {
+    throw Boom.internal('Payload is not a Buffer');
+  }
+
+  const body = request.payload.toString('utf-8');
+  const { payload } = Querystring.parse(body);
+
+  const parsed: SlackChallengesPayload | SlackEventsPayload = JSON.parse(payload as string);
+
+  const slackEventPayload = parsed.challenge
+    ? slackChallengesPayloadSchema.validate(parsed, { stripUnknown: true })
+    : slackEventsPayloadSchema.validate(parsed, { stripUnknown: true });
+
+  checkForSlackErrors(slackEventPayload, parsed);
+
+  return slackEventPayload.value;
+};
 
 export function gameResponseToSlackHandler(response: GameResponse | void) {
   if (!response) {

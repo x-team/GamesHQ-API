@@ -211,7 +211,6 @@ export class ArenaPlayer
   @BelongsTo(() => ArenaZone)
   _zone?: ArenaZone;
 
-  // PENDING:
   @BelongsToMany(() => Item, {
     through: () => ArenaItemInventory,
     foreignKey: '_arenaPlayerId',
