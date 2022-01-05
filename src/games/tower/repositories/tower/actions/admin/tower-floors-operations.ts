@@ -1,4 +1,3 @@
-import { logger } from '../../../../../../config';
 import { Game, User } from '../../../../../../models';
 import { findAllEnemies, findEnemyById } from '../../../../../../models/Enemy';
 import { findTowerFloorById } from '../../../../../../models/TowerFloor';
