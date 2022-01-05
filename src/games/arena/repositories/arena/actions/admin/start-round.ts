@@ -1,4 +1,5 @@
 import { User } from '../../../../../../models';
+import { findLivingPlayersByGame } from '../../../../../../models/ArenaPlayer';
 import {
   countRoundsCompleted,
   findActiveRound,
@@ -44,8 +45,9 @@ export async function startRoundCommand(userRequesting: User) {
     // 2. Movement: Players Location
     await arenaGameEngine.processChangeLocation(round._actions ?? [], transaction);
 
-    const amountOfPlayersAlive =
-      (await round._game?._arena?.totalPlayersAlive(transaction)) ?? ZERO;
+    const playersAlive = await findLivingPlayersByGame(round._gameId, false, transaction);
+    const amountOfPlayersAlive = playersAlive.length;
+
     await publishArenaMessage(arenaCommandReply.channelTotalPlayersAlive(amountOfPlayersAlive));
 
     // Search for a winner
