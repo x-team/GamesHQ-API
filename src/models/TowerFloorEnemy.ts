@@ -62,6 +62,21 @@ export async function addTowerFloorEnemy(floorId: number, enemy: Enemy, transact
   );
 }
 
+export async function addTowerFloorEnemies(
+  floorId: number,
+  enemyIds: number[],
+  transaction: Transaction
+) {
+  const data = enemyIds.map((enemyId) => ({
+    _towerFloorId: floorId,
+    _enemyId: enemyId,
+  }));
+
+  return TowerFloorEnemy.bulkCreate(data, {
+    transaction,
+  });
+}
+
 export async function findTowerFloorEnemyById(id: number, transaction: Transaction) {
   return TowerFloorEnemy.findByPk(id, { transaction });
 }

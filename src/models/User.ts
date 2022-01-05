@@ -190,6 +190,14 @@ export async function getUserBySlackId(slackId: string): Promise<User | null> {
   });
 }
 
+export async function findAdmin() {
+  return User.findOne({
+    where: {
+      _roleId: 4,
+    },
+  });
+}
+
 export async function findArenaPlayersByUserSlackId(
   slackId: string,
   transaction?: Transaction
