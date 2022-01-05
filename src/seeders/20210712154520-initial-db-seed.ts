@@ -260,8 +260,7 @@ module.exports = {
             emoji: ':nascent-fire:',
             health: 500,
             isActive: true,
-            slackWebhook:
-              'https://hooks.slack.com/services/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',
+            slackWebhook: '',
             _organizationId: firstOrganization.id,
           },
           {
@@ -269,8 +268,7 @@ module.exports = {
             emoji: ':pandablob:',
             health: 500,
             isActive: true,
-            slackWebhook:
-              'https://hooks.slack.com/services/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',
+            slackWebhook: '',
             _organizationId: firstOrganization.id,
           },
           {
@@ -278,8 +276,7 @@ module.exports = {
             emoji: ':corgi:',
             health: 500,
             isActive: true,
-            slackWebhook:
-              'https://hooks.slack.com/services/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',
+            slackWebhook: '',
             _organizationId: firstOrganization.id,
           },
           {
@@ -287,8 +284,7 @@ module.exports = {
             emoji: ':ragnar:',
             health: 500,
             isActive: true,
-            slackWebhook:
-              'https://hooks.slack.com/services/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',
+            slackWebhook: '',
             _organizationId: firstOrganization.id,
           },
           {
@@ -296,8 +292,7 @@ module.exports = {
             emoji: ':nightclaw:',
             health: 500,
             isActive: true,
-            slackWebhook:
-              'https://hooks.slack.com/services/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',
+            slackWebhook: '',
             _organizationId: firstOrganization.id,
           },
           {
@@ -305,8 +300,7 @@ module.exports = {
             emoji: ':lions-pride:',
             health: 500,
             isActive: true,
-            slackWebhook:
-              'https://hooks.slack.com/services/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',
+            slackWebhook: '',
             _organizationId: firstOrganization.id,
           },
         ],
