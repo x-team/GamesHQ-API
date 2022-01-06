@@ -1,7 +1,16 @@
 import type { ServerRoute } from '@hapi/hapi';
 
-import { slackCommandHandler, towerSlackActionHandler } from './slackHandlers';
-import { parseSlackActionPayload, parseSlashCommandPayload, verifySlackRequest } from './utils';
+import {
+  slackCommandHandler,
+  towerSlackActionHandler,
+  towerSlackEventHandler,
+} from './slackHandlers';
+import {
+  parseSlackActionPayload,
+  parseSlackEventPayload,
+  parseSlashCommandPayload,
+  verifySlackRequest,
+} from './utils';
 
 const routePrefix = '/slack-integrations/';
 
@@ -59,5 +68,32 @@ export const slackTowerRoutes: ServerRoute[] = [
       ],
     },
     handler: towerSlackActionHandler,
+  },
+  {
+    method: 'POST',
+    path: `${routePrefix}tower-events`,
+    options: {
+      auth: false,
+      payload: {
+        parse: false,
+        output: 'data',
+      },
+      description: 'The Tower Slack Events route',
+      tags: ['api', 'slack', 'action commands', 'arena'],
+      response: {
+        emptyStatusCode: 200,
+      },
+      pre: [
+        {
+          method: verifySlackRequest,
+          assign: 'verifySlackRequest',
+        },
+        {
+          method: parseSlackEventPayload,
+          assign: 'slackActionPayload',
+        },
+      ],
+    },
+    handler: towerSlackEventHandler,
   },
 ];

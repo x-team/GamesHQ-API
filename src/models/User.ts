@@ -20,12 +20,7 @@ import { USER_ROLE_NAME } from '../consts/model';
 import { GameError } from '../games/utils/GameError';
 import { isScopeRole } from '../utils/permissions';
 
-import {
-  Team,
-  UserRole,
-  Organization,
-  // Legend,
-} from './';
+import { UserRole, Organization } from './';
 
 interface UserAttributes {
   id: number;
@@ -37,7 +32,6 @@ interface UserAttributes {
   profilePictureUrl: string | null;
   _roleId: number | null;
   _organizationId: number;
-  _teamId: number | null;
 }
 
 interface UserCreationAttributes {
@@ -49,7 +43,6 @@ interface UserCreationAttributes {
   profilePictureUrl: string | null;
   _roleId: number | null;
   _organizationId: number;
-  _teamId: number | null;
 }
 
 @DefaultScope(() => ({
@@ -61,17 +54,16 @@ interface UserCreationAttributes {
     'displayName',
     'profilePictureUrl',
     '_roleId',
-    '_teamId',
   ],
-  include: [User.associations._role, User.associations._team],
+  include: [User.associations._role],
 }))
 @Scopes(() => ({
   forRole(scope: string[]) {
     const isAdminOrSuperAdmin =
       isScopeRole(scope, USER_ROLE_NAME.ADMIN) || isScopeRole(scope, USER_ROLE_NAME.SUPER_ADMIN);
     const adminParams = {
-      attributes: ['id', 'updatedAt', '_teamId', '_roleId', '_organizationId'],
-      include: [User.associations._team, User.associations._role, User.associations._organization],
+      attributes: ['id', 'updatedAt', '_roleId', '_organizationId'],
+      include: [User.associations._role, User.associations._organization],
     };
 
     return isAdminOrSuperAdmin ? adminParams : {};
@@ -92,9 +84,6 @@ interface UserCreationAttributes {
     },
     {
       fields: ['_roleId'],
-    },
-    {
-      fields: ['_teamId'],
     },
   ],
 })
@@ -136,17 +125,6 @@ export class User extends Model<UserAttributes, UserCreationAttributes> implemen
   })
   _role?: UserRole | null;
 
-  @ForeignKey(() => Team)
-  @Column(DataType.INTEGER)
-  _teamId!: number | null;
-
-  @BelongsTo(() => Team, {
-    foreignKey: '_teamId',
-    onUpdate: 'CASCADE',
-    onDelete: 'SET NULL',
-  })
-  _team?: Team | null;
-
   @ForeignKey(() => Organization)
   @Column(DataType.INTEGER)
   _organizationId!: number;
@@ -161,7 +139,6 @@ export class User extends Model<UserAttributes, UserCreationAttributes> implemen
   static associations: {
     _role: Association<User, UserRole>;
     _organization: Association<User, Organization>;
-    _team: Association<User, Team>;
   };
 
   isAdmin(): boolean {
@@ -174,11 +151,6 @@ export class User extends Model<UserAttributes, UserCreationAttributes> implemen
 
   isCommunityTeam(): boolean {
     return Boolean(this._role && this._role.name === USER_ROLE_NAME.COMMUNITY_TEAM);
-  }
-
-  setTeam(team: Team, transaction: Transaction) {
-    // @ts-ignore
-    return this.$set('_team', team, { save: true, transaction });
   }
 }
 
@@ -195,7 +167,7 @@ export async function findArenaPlayersByUserSlackId(
   transaction?: Transaction
 ): Promise<User | null> {
   return User.unscoped().findOne({
-    attributes: ['id', 'email', 'slackId', '_teamId'],
+    attributes: ['id', 'email', 'slackId'],
     where: {
       slackId,
     },

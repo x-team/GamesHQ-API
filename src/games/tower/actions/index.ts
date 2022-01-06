@@ -136,27 +136,6 @@ export const handleTowerBlockAction = async (payload: SlackBlockKitPayload) => {
   if (!userRequesting) {
     return getGameError(actionReply.userNotFound(userSlackId));
   }
-  // const [action, argumentId] = value?.split('_') ?? [];
-  // switch (action) {
-  //   case 'deleteweapon':
-  //     await weaponRepository
-  //       .deleteArenaWeapon(mutableUserRequesting, argumentId)
-  //       .catch((error) => handleException({ error, plugin: 'slack' }));
-  //     break;
-  //   case 'editweapon':
-  //     await weaponRepository.openCreateOrUpdateModal(trigger_id, parseInt(argumentId));
-  //     break;
-  //   case 'Edit':
-  //     enemyBot
-  //       .createOrUpdateEnemyModal(mutableUserRequesting, trigger_id, argumentId)
-  //       .catch((error) => handleException({ error, plugin: 'slack' }));
-  //     break;
-  //   case 'Delete':
-  //     enemyBot
-  //       .deleteEnemy(mutableUserRequesting, argumentId)
-  //       .catch((error) => handleException({ error, plugin: 'slack' }));
-  //     break;
-  // }
   const isConfigAction = isTowerConfigAction(action_id);
   const isRaiderWithParamsAction = isTowerRaiderWithParamsAction(action_id);
   if (isConfigAction || isRaiderWithParamsAction) {

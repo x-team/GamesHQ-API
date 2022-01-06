@@ -19,7 +19,7 @@ import { createArenaRound } from './ArenaRound';
 import { pickRingSystemAlgorithm } from './ArenaZone';
 import { findActiveGame, findLastActiveGame, startGame } from './Game';
 
-import { ArenaPlayer, Game, ArenaRound, User } from './';
+import { Game, ArenaRound, User } from './';
 
 interface ArenaGameAttributes {
   id: number;
@@ -93,11 +93,7 @@ export class ArenaGame
   @HasMany(() => ArenaRound, '_gameId')
   _rounds?: ArenaRound[];
 
-  @HasMany(() => ArenaPlayer, '_gameId')
-  _players?: ArenaPlayer[];
-
   static associations: {
-    _players: Association<ArenaGame, ArenaPlayer>;
     _rounds: Association<ArenaGame, ArenaRound>;
     _game: Association<ArenaGame, Game>;
   };
@@ -130,20 +126,6 @@ export class ArenaGame
   resetCurrentRingDeactivation(transaction: Transaction) {
     const RESET_BY = 1;
     return this.update({ currentRingDeactivation: RESET_BY }, { transaction });
-  }
-
-  async totalPlayersAlive(transaction?: Transaction) {
-    await this.reload({
-      include: [
-        {
-          association: ArenaGame.associations._players,
-        },
-      ],
-      transaction,
-    });
-    const reduceTotalAlive = (acc: number, player: ArenaPlayer) =>
-      player.isAlive() ? acc + ONE : acc;
-    return this._players ? this._players.reduce(reduceTotalAlive, ZERO) : ZERO;
   }
 }
 

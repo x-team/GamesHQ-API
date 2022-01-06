@@ -1,0 +1,47 @@
+version: 0.2
+
+env:
+  git-credential-helper: yes
+  parameter-store:
+    DOCKER_HUB_USER: '/devops/shared/DOCKER_HUB_USER'
+    DOCKER_HUB_PASSWORD: '/devops/shared/DOCKER_HUB_PASSWORD'
+
+phases:
+  install:
+    runtime-versions:
+      nodejs: 14
+    commands:
+      - n 16
+      - npm update -g npm
+      - curl -sL https://sentry.io/get-cli/ | bash
+      - aws --version
+      - node -v
+      - sentry-cli --version
+  pre_build:
+    commands:
+      - export APP_BUILD_VERSION=${CODEBUILD_RESOLVED_SOURCE_VERSION}__$(date -u '+%Y-%m-%dT%T+00:00')
+      - export PKG_VERSION=$(node -p "require('./package.json').version")
+      - export SENTRY_VERSION=${ENV}-${PKG_VERSION}_BUILD_${CODEBUILD_RESOLVED_SOURCE_VERSION}
+      - echo $APP_BUILD_VERSION > ./src/.version
+      - cat ./src/.version
+      - aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin $DOCKER_REPOSITORY_URI
+      - IMAGE_TAG=$(echo $CODEBUILD_RESOLVED_SOURCE_VERSION | cut -c 1-7)
+  build:
+    commands:
+      #- chmod +x ./codebuild-git-wrapper.sh
+      #- ./codebuild-git-wrapper.sh "$REPO_URL" "$REPO_BRANCH"
+      - echo $DOCKER_HUB_PASSWORD | docker login --username $DOCKER_HUB_USER --password-stdin
+      - docker build -t $DOCKER_REPOSITORY_URI:latest .
+      - docker tag $DOCKER_REPOSITORY_URI:latest $DOCKER_REPOSITORY_URI:$IMAGE_TAG
+  post_build:
+    commands:
+      - docker push $DOCKER_REPOSITORY_URI:latest
+      - docker push $DOCKER_REPOSITORY_URI:$IMAGE_TAG
+      - printf '[{"name":"%s","imageUri":"%s"}]' $CONTAINER_NAME $DOCKER_REPOSITORY_URI:$IMAGE_TAG > imagedefinitions.json
+      - sentry-cli releases --org=x-team --project=gameshq-api new $SENTRY_VERSION
+      #- sentry-cli releases --org=x-team --project=gameshq-api set-commits --auto $SENTRY_VERSION
+      - sentry-cli releases --org=x-team --project=gameshq-api finalize $SENTRY_VERSION
+      - sentry-cli releases --org=x-team --project=gameshq-api deploys $SENTRY_VERSION new -e $ENV
+artifacts:
+  files:
+    - imagedefinitions.json

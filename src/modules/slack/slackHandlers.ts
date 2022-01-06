@@ -1,11 +1,18 @@
 import Boom from '@hapi/boom';
 import type { Lifecycle } from '@hapi/hapi';
+import { random } from 'lodash';
 
-import { SLACK_COMMAND_TESTING_PREFIX } from '../../consts/api';
+import { SLACK_COMMAND_LOCAL_PREFIX, SLACK_COMMAND_STAGING_PREFIX } from '../../consts/api';
 import { handleArenaAction, handleViewSubmissionAction } from '../../games/arena/actions';
+import { HUNDRED, ZERO } from '../../games/consts/global';
+import { SlackChallengesPayload } from '../../games/model/SlackChallengePayload';
+import { SlackChatUnfurlUrl } from '../../games/model/SlackChatUnfurlPayload';
+import { SlackEventsPayload } from '../../games/model/SlackEventPayload';
 import type { SlackSlashCommandPayload } from '../../games/model/SlackSlashCommandPayload';
 import { handleTowerBlockAction } from '../../games/tower/actions';
 import { handleTowerAction } from '../../games/tower/actions/towerAction';
+import { theTowerUnfurlLink } from '../../games/tower/utils';
+import { blockKitCompositionImage } from '../../games/utils/generators/slack';
 
 import { slackCommandSwitcher } from './utils';
 
@@ -20,7 +27,11 @@ export const testRouteHandler: Lifecycle.Method = async () => {
 export const slackCommandHandler: Lifecycle.Method = async (request, _h) => {
   const slashCommandPayload: SlackSlashCommandPayload = request.pre.slashCommandPayload;
   slashCommandPayload.command = slashCommandPayload.command?.replace(
-    SLACK_COMMAND_TESTING_PREFIX,
+    SLACK_COMMAND_STAGING_PREFIX,
+    '/'
+  );
+  slashCommandPayload.command = slashCommandPayload.command?.replace(
+    SLACK_COMMAND_LOCAL_PREFIX,
     '/'
   );
 
@@ -63,6 +74,52 @@ export const towerSlackActionHandler: Lifecycle.Method = async (request, _h) => 
     }
   } catch (err) {
     err.data = slackActionPayload;
+    throw err;
+  }
+};
+
+export const towerSlackEventHandler: Lifecycle.Method = async (request, _h) => {
+  const { challenge, type }: SlackChallengesPayload | SlackEventsPayload =
+    request.pre.slackEventsPayload;
+  try {
+    if (type === 'event_callback') {
+      const payload = request.pre.slackEventsPayload;
+      switch (payload.event.type) {
+        case 'link_shared':
+          const eventLinks = payload.event.links as { domain: string; url: string }[];
+          const unfurlUrlInfo: SlackChatUnfurlUrl = {
+            channel: payload.event.channel,
+            ts: payload.event.message_ts,
+            unfurls: Object.assign(
+              {},
+              ...eventLinks.map((link) => ({
+                [link.url]: {
+                  blocks: [
+                    blockKitCompositionImage(
+                      link.url,
+                      `The Tower Gif ${random(ZERO, HUNDRED)}.${random(ZERO, HUNDRED)}`
+                    ),
+                  ],
+                },
+              }))
+            ),
+          };
+          const response: { ok: boolean; error?: string | undefined } = await theTowerUnfurlLink(
+            unfurlUrlInfo
+          );
+          if (!response.ok) {
+            throw Boom.internal(response.error || 'Error in ChatUnfurl');
+          }
+          return null;
+        default:
+          return null;
+      }
+    }
+    return {
+      challenge,
+    };
+  } catch (err) {
+    err.data = request.pre.slackEventsPayload;
     throw err;
   }
 };

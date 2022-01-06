@@ -21,11 +21,7 @@ import {
 } from '../../../../utils/addPlayer';
 import { arenaCommandReply } from '../../replies';
 
-export async function addPlayerCommand(
-  commandText: string,
-  userRequesting: User,
-  channelId: string
-) {
+export async function addPlayerCommand(commandText: string, userRequesting: User) {
   return withArenaTransaction(async (transaction) => {
     const isAdmin = adminAction(userRequesting);
     if (!isAdmin) {
@@ -39,22 +35,13 @@ export async function addPlayerCommand(
       return getGameError(arenaCommandReply.noActiveGame());
     }
 
-    const { uniqueSlackIds } = await addPlayers(
-      commandText,
-      userRequesting,
-      channelId,
-      transaction
-    );
+    const { uniqueSlackIds } = await addPlayers(commandText, transaction);
 
     return getGameResponse(arenaCommandReply.adminAddedPlayers(Array.from(uniqueSlackIds)));
   });
 }
 
-export async function addSpectatorCommand(
-  commandText: string,
-  userRequesting: User,
-  channelId: string
-) {
+export async function addSpectatorCommand(commandText: string, userRequesting: User) {
   return withArenaTransaction(async (transaction) => {
     const isAdmin = adminAction(userRequesting);
     if (!isAdmin) {
@@ -68,7 +55,7 @@ export async function addSpectatorCommand(
       return getGameError(arenaCommandReply.noActiveGame());
     }
 
-    const spectatorsAdded = await addSpectator(commandText, userRequesting, channelId, transaction);
+    const spectatorsAdded = await addSpectator(commandText, transaction);
     return getGameResponse(arenaCommandReply.adminAddedSpectators(spectatorsAdded));
   });
 }
@@ -101,7 +88,6 @@ export async function addBossOrGuestCommand(
 
     const users = await getOrCreateBossesOrGuests({
       fullSlackIds: completeSlackIds,
-      teamName,
       isBoss,
       transaction,
     });
