@@ -1,4 +1,3 @@
-import { logger } from '../../../../config';
 import { createOrUpdateArenaZone, deleteZoneById } from '../../../../models/ArenaZone';
 import { ARENA_ZONE_RING } from '../../../arena/consts';
 import { withZoneTransaction } from '../../../arena/utils';

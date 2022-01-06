@@ -1,4 +1,6 @@
 import { Lifecycle } from '@hapi/hapi';
+import fetch from 'node-fetch';
+import { getConfig, logger } from '../../config';
 import {
   deleteZone,
   IZoneEditorData,
@@ -9,6 +11,13 @@ import {
   IEnemyEditorData,
   upsertEnemy,
 } from '../../games/tower/repositories/tower/enemyRepository';
+import { addEnemies } from '../../games/tower/repositories/tower/floorRepository';
+import {
+  createTowerGame,
+  endCurrentTowerGame,
+  ICreateTowerGameData,
+  openOrCloseTower,
+} from '../../games/tower/repositories/tower/towerRepository';
 import {
   deleteWeapon,
   IWeaponEditorData,
@@ -20,10 +29,23 @@ import { findAllArenaZones, findArenaZoneById } from '../../models/ArenaZone';
 import { findAllEnemies, findEnemyById } from '../../models/Enemy';
 import { listAllWeapons } from '../../models/Item';
 import { findWeaponById } from '../../models/ItemWeapon';
+import { findActiveTowerGame } from '../../models/TowerGame';
 
 export interface ArenaState {
   players: ArenaPlayer[];
 }
+
+export const getEmojis: Lifecycle.Method = async (_request, h) => {
+  const url = 'https://slack.com/api/emoji.list';
+  const frontendBotToken = getConfig('FRONT_END_APP_BOT_TOKEN');
+  const { emoji } = await fetch(url, {
+    headers: {
+      Authorization: `Bearer ${frontendBotToken}`,
+    },
+  }).then((response) => response.json());
+
+  return h.response({ emoji }).code(200);
+};
 
 export const getCurrentArenaGameState: Lifecycle.Method = async (_request, h) => {
   const activeGame = await findActiveArenaGame();
@@ -50,7 +72,6 @@ export const getCurrentArenaGameState: Lifecycle.Method = async (_request, h) =>
 
 export const getWeaponsHandler: Lifecycle.Method = async (_request, h) => {
   const weapons = await listAllWeapons();
-
   return h.response({ weapons }).code(200);
 };
 
@@ -135,4 +156,43 @@ export const upsertZoneHandler: Lifecycle.Method = async (_request, h) => {
 export const deleteZoneHandler: Lifecycle.Method = async (_request, h) => {
   await deleteZone(_request.params.zoneId);
   return h.response({}).code(200);
+};
+
+// 🏯 TOWER GAMES
+
+export const getTowerGameStatusHandler: Lifecycle.Method = async (_request, h) => {
+  const towerGame = await findActiveTowerGame();
+  return h.response({ towerGame }).code(200);
+};
+
+export const newTowerGameHandler: Lifecycle.Method = async (_request, h) => {
+  const { payload } = _request;
+  const towerCreationData = payload as ICreateTowerGameData;
+
+  await createTowerGame(towerCreationData);
+  return h.response({ success: true }).code(200);
+};
+
+export const endCurrentTowerGameHandler: Lifecycle.Method = async (_request, h) => {
+  await endCurrentTowerGame();
+  return h.response({ success: true }).code(200);
+};
+
+export const openOrCloseCurrentTowerHandler: Lifecycle.Method = async (_request, h) => {
+  const { payload } = _request;
+  const { open } = payload as { open: boolean };
+
+  await openOrCloseTower(open);
+
+  return h.response({ success: true }).code(200);
+};
+
+export const addEnemyToFloorHandler: Lifecycle.Method = async (_request, h) => {
+  const floorId = parseInt(_request.params.floorId);
+  const { payload } = _request;
+  const { enemies } = payload as { enemies: number[] };
+
+  await addEnemies(floorId, enemies);
+
+  return h.response({ success: true }).code(200);
 };

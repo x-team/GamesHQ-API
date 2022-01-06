@@ -6,6 +6,7 @@ import {
   removeEnemyFromFloorBattlefields,
 } from '../../../../../../models/TowerFloorBattlefieldEnemy';
 import {
+  addTowerFloorEnemies,
   addTowerFloorEnemy,
   findTowerFloorEnemyById,
 } from '../../../../../../models/TowerFloorEnemy';
@@ -132,6 +133,29 @@ export async function removeEnemyFromFloor(userRequesting: User, towerEnemyId: n
     await removeEnemyFromFloorBattlefields(towerFloorEnemy.id, transaction);
     await towerFloorEnemy.destroy({ transaction });
     return getGameResponse(towerCommandReply.setTowerFloorEnemiesFinished());
+  });
+}
+
+export async function addEnemiesToFloor(
+  userRequesting: User,
+  floorNumber: number,
+  enemyIds: number[]
+) {
+  return withTowerTransaction(async (transaction) => {
+    const isAdmin = adminAction(userRequesting);
+    if (!isAdmin) {
+      return getGameError(towerCommandReply.adminsOnly());
+    }
+    const activeTower = await activeTowerHandler(transaction);
+    if (!(activeTower instanceof Game)) {
+      return activeTower as GameResponse;
+    }
+    const towerFloor = activeTower._tower?._floors?.find((floor) => floor.number === floorNumber);
+    if (!towerFloor) {
+      return getGameError(towerCommandReply.floorNumberNotValid());
+    }
+    await addTowerFloorEnemies(towerFloor.id, enemyIds, transaction);
+    return;
   });
 }
 
