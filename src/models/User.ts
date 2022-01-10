@@ -47,6 +47,7 @@ interface UserCreationAttributes {
   updatedAt: Date;
   displayName: string;
   profilePictureUrl: string | null;
+  firebaseUserUid: string | null;
   _roleId: number | null;
   _organizationId: number;
   _teamId: number | null;
@@ -114,6 +115,10 @@ export class User extends Model<UserAttributes, UserCreationAttributes> implemen
   @AllowNull(true)
   @Column(DataType.TEXT)
   slackId!: string | null;
+
+  @AllowNull(false)
+  @Column(DataType.TEXT)
+  firebaseUserUid!: string | null;
 
   @AllowNull(true)
   @Column(DataType.TEXT)
@@ -221,4 +226,29 @@ export async function findUsersBySlackIds(slackIds: string[]): Promise<User[]> {
   }
 
   return users;
+}
+
+export async function createUser(data: UserCreationAttributes) {
+  const {
+    email,
+    displayName,
+    firebaseUserUid,
+    slackId,
+    profilePictureUrl,
+    _roleId,
+    _teamId,
+    _organizationId,
+  } = data;
+  await User.create({
+    email,
+    displayName,
+    firebaseUserUid,
+    slackId,
+    profilePictureUrl,
+    _roleId,
+    _teamId,
+    _organizationId,
+    createdAt: new Date(),
+    updatedAt: new Date(),
+  });
 }

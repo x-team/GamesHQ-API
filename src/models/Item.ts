@@ -19,11 +19,13 @@ import { logger } from '../config';
 import type { GAME_TYPE, TRAIT } from '../games/consts/global';
 import { ITEM_RARITY, ITEM_TYPE } from '../games/consts/global';
 
+import type { AnonymousGameItemAvailabilityCreationAttributes } from './GameItemAvailability';
 import {
-  GameItemAvailabilityCreationAttributes,
   removeAllGameItemAvailability,
+  createOrUpdateItemAvailability,
 } from './GameItemAvailability';
-import { createOrUpdateItemAvailability } from './GameItemAvailability';
+import { createOrUpdateItemTrait, removeAllItemTraits } from './ItemTrait';
+import { Organization } from './Organization';
 
 import {
   ArenaPlayer,
@@ -38,8 +40,6 @@ import {
   ArenaItemInventory,
   GameItemAvailability,
 } from './';
-import { Organization } from './Organization';
-import { createOrUpdateItemTrait, removeAllItemTraits } from './Trait';
 
 interface ItemAttributes {
   id: number;
@@ -185,7 +185,7 @@ export class Item extends Model<ItemAttributes, ItemCreationAttributes> implemen
 
 export async function createOrUpdateItem(
   { id, name, emoji, usageLimit, _itemRarityId, type, traits }: ItemCreationAttributes,
-  itemsAvailability: GameItemAvailabilityCreationAttributes[],
+  itemsAvailability: AnonymousGameItemAvailabilityCreationAttributes[],
   transaction: Transaction
 ) {
   const [item] = await Item.upsert(

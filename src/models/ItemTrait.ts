@@ -14,6 +14,10 @@ import { TRAIT } from '../games/consts/global';
 
 import { Item, Trait } from './';
 
+interface ItemTraitCreationAttributes {
+  itemId: number;
+  trait: TRAIT;
+}
 interface TraitAttributes {
   _itemId: number;
   _traitId: TRAIT;
@@ -55,6 +59,30 @@ export class ItemTrait
 
   @BelongsTo(() => Trait)
   _trait?: Trait;
+}
+
+export async function createOrUpdateItemTrait(
+  { itemId, trait }: ItemTraitCreationAttributes,
+  transaction: Transaction
+) {
+  return ItemTrait.upsert(
+    {
+      _itemId: itemId,
+      _traitId: trait,
+    },
+    {
+      transaction,
+    }
+  );
+}
+
+export async function removeAllItemTraits(itemId: number, transaction: Transaction) {
+  return ItemTrait.destroy({
+    where: {
+      _itemId: itemId,
+    },
+    transaction,
+  });
 }
 
 export async function refreshItemTraits(item: Item, traits: string[], transaction?: Transaction) {
