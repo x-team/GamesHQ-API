@@ -22,11 +22,16 @@ interface GameItemAvailabilityAttributes {
   isArchived: boolean;
 }
 
-export interface GameItemAvailabilityCreationAttributes {
+export interface AnonymousGameItemAvailabilityCreationAttributes {
   _gameTypeId: GAME_TYPE;
   _itemId?: number;
   isActive: boolean;
   isArchived: boolean;
+}
+
+export interface GameItemAvailabilityCreationAttributes
+  extends AnonymousGameItemAvailabilityCreationAttributes {
+  _itemId: number;
 }
 
 @Table({

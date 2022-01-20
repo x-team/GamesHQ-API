@@ -1,26 +1,21 @@
-import { Lifecycle } from '@hapi/hapi';
+import type { Lifecycle } from '@hapi/hapi';
 import fetch from 'node-fetch';
-import { getConfig, logger } from '../../config';
-import {
-  deleteZone,
-  IZoneEditorData,
-  upsertZone,
-} from '../../games/tower/repositories/arena/zonesRepository';
-import {
-  deleteEnemy,
-  IEnemyEditorData,
-  upsertEnemy,
-} from '../../games/tower/repositories/tower/enemyRepository';
+
+import { getConfig } from '../../config';
+import type { IZoneEditorData } from '../../games/tower/repositories/arena/zonesRepository';
+import { deleteZone, upsertZone } from '../../games/tower/repositories/arena/zonesRepository';
+import type { IEnemyEditorData } from '../../games/tower/repositories/tower/enemyRepository';
+import { deleteEnemy, upsertEnemy } from '../../games/tower/repositories/tower/enemyRepository';
 import { addEnemies } from '../../games/tower/repositories/tower/floorRepository';
+import type { ICreateTowerGameData } from '../../games/tower/repositories/tower/towerRepository';
 import {
   createTowerGame,
   endCurrentTowerGame,
-  ICreateTowerGameData,
   openOrCloseTower,
 } from '../../games/tower/repositories/tower/towerRepository';
+import type { IWeaponEditorData } from '../../games/tower/repositories/universal/weaponRepository';
 import {
   deleteWeapon,
-  IWeaponEditorData,
   upsertWeapon,
 } from '../../games/tower/repositories/universal/weaponRepository';
 import { ArenaPlayer, Item } from '../../models';

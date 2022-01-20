@@ -1,6 +1,4 @@
 import { Column, DataType, Model, PrimaryKey, Table } from 'sequelize-typescript';
-import { Transaction } from 'sequelize/types';
-import { ItemTrait } from '.';
 
 import { TRAIT } from '../games/consts/global';
 
@@ -13,11 +11,6 @@ interface TraitAttributes {
 interface TraitCreationAttributes {
   displayName: string;
   shortDescription: string;
-}
-
-interface ItemTraitCreationAttributes {
-  itemId: number;
-  trait: TRAIT;
 }
 
 @Table({
@@ -40,28 +33,4 @@ export class Trait
 
   @Column(DataType.TEXT)
   shortDescription!: string;
-}
-
-export async function createOrUpdateItemTrait(
-  { itemId, trait }: ItemTraitCreationAttributes,
-  transaction: Transaction
-) {
-  return ItemTrait.upsert(
-    {
-      _itemId: itemId,
-      _traitId: trait,
-    },
-    {
-      transaction,
-    }
-  );
-}
-
-export async function removeAllItemTraits(itemId: number, transaction: Transaction) {
-  return ItemTrait.destroy({
-    where: {
-      _itemId: itemId,
-    },
-    transaction,
-  });
 }

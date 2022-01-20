@@ -8,6 +8,19 @@ const firebaseApp = admin.initializeApp({
   credential: admin.credential.cert(getConfig('GOOGLE_APPLICATION_CREDENTIALS')),
 });
 
+const setupInitialFirestoreUserData = async (firebaseUserUid: string) => {
+  const firestore = firebaseApp.firestore();
+
+  await firestore
+    .collection('users')
+    .doc(firebaseUserUid)
+    .set({
+      gamesHq: {
+        capabilities: [],
+      },
+    });
+};
+
 export const firebasePlugin = {
   name: 'Firebase Plugin',
   version: '1.0.0',
@@ -23,6 +36,7 @@ export const firebasePlugin = {
           const token = await firebaseApp.auth().verifyIdToken(firebaseIdToken);
           return token;
         } catch (error) {
+          console.error(error);
           return null;
         }
       },
@@ -51,14 +65,7 @@ export const firebasePlugin = {
         ).data();
 
         if (!firebaseUserData) {
-          await firestore
-            .collection('users')
-            .doc(firebaseUser.uid)
-            .set({
-              gamesHq: {
-                capabilities: [],
-              },
-            });
+          await setupInitialFirestoreUserData(firebaseUser.uid);
           firebaseUserData = {};
         }
 
