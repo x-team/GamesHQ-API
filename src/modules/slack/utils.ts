@@ -28,8 +28,9 @@ import { getEphemeralBlock, getEphemeralText } from '../../games/utils';
 import { getUserBySlackId } from '../../models/User';
 import type { SlackConfigKey } from '../../utils/cryptography';
 import { validateSlackSignatures } from '../../utils/cryptography';
-import { isTowerCommand } from '../../games/tower/utils';
+import { isGamesHQCommand, isTowerCommand } from '../../games/tower/utils';
 import { towerSwitchCommand } from '../../games/tower/commands';
+import { gamesSwitchCommand } from '../../games/general/commands';
 
 export const isRequestFresh = (timestamp: number): boolean => {
   const SIXTY_SECONDS = 60;
@@ -47,6 +48,7 @@ const getAppSigningSecretKeyForPath = (request: Request): SlackConfigKey | undef
   const isTowerEvents = endsWith(request.path, '/tower-events');
   const isArenaCommand = endsWith(request.path, '/arena-commands');
   const isArenaAction = endsWith(request.path, '/arena-actions');
+  const isGamesHqCommand = endsWith(request.path, '/gameshq-commands');
 
   if (isCampaignCommand || isCampaignAction) {
     return 'SLACK_CAMPAIGN_SIGNING_SECRET';
@@ -56,6 +58,9 @@ const getAppSigningSecretKeyForPath = (request: Request): SlackConfigKey | undef
   }
   if (isArenaCommand || isArenaAction) {
     return 'SLACK_ARENA_SIGNING_SECRET';
+  }
+  if (isGamesHqCommand) {
+    return 'FRONT_END_SIGNING_SECRET';
   }
 
   return undefined;
@@ -202,14 +207,32 @@ export function gameResponseToSlackHandler(response: GameResponse | void) {
 export const slackCommandSwitcher = async (
   payload: SlackSlashCommandPayload
 ): Promise<Lifecycle.ReturnValue> => {
+  const guestCommands = ['/games-register'];
   const { command, user_id, /*response_url,*/ text, trigger_id, channel_id } = payload;
 
   let mutableResponse: void | GameResponse;
   const errorMessage = `${SAD_PARROT} User with slack ID: <@${user_id}> not found`;
   const userRequesting = await getUserBySlackId(user_id);
+  if (!userRequesting && !guestCommands.includes(command)) {
+    return getEphemeralText(errorMessage);
+  }
+
+  if (isGamesHQCommand(command)) {
+    mutableResponse = await gamesSwitchCommand({
+      command,
+      slackId: user_id,
+      commandText: text,
+      channelId: channel_id,
+      triggerId: trigger_id,
+    });
+
+    return gameResponseToSlackHandler(mutableResponse);
+  }
+
   if (!userRequesting) {
     return getEphemeralText(errorMessage);
   }
+
   if (isArenaCommand(command)) {
     mutableResponse = await arenaSwitchCommand({
       command,
