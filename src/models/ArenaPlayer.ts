@@ -32,7 +32,6 @@ import { addAmmoToItemInInventory, getPlayerItemCount } from './ArenaItemInvento
 import { findAvailableArenaZonesToLand } from './ArenaZone';
 import { listActiveWeaponsByGameType } from './ItemWeapon';
 import { findOrganizationByName } from './Organization';
-import { findActiveTeamByName } from './Team';
 import { findArenaPlayersByUserSlackId } from './User';
 
 import type { ArenaRoundAction } from '.';
@@ -212,7 +211,6 @@ export class ArenaPlayer
   @BelongsTo(() => ArenaZone)
   _zone?: ArenaZone;
 
-  // PENDING:
   @BelongsToMany(() => Item, {
     through: () => ArenaItemInventory,
     foreignKey: '_arenaPlayerId',
@@ -612,11 +610,9 @@ interface FindOrCreateBossOrGuestParams {
 export async function getOrCreateBossesOrGuests({
   fullSlackIds,
   isBoss,
-  teamName,
   transaction,
 }: FindOrCreateBossOrGuestParams): Promise<User[]> {
   const bossOrGuestUsers: User[] = [];
-  const team = teamName ? await findActiveTeamByName(teamName) : null;
   for (const fullSlackId of fullSlackIds) {
     const slackId = parseEscapedSlackUserValues(fullSlackId);
     const [slackDisplayedName] = parseEscapedSlackUserValues(fullSlackId, ['username']);
@@ -636,16 +632,10 @@ export async function getOrCreateBossesOrGuests({
         slackId: slackId as string,
         profilePictureUrl: 'http://some.url.localhost/avatar.jpg',
         _roleId: USER_ROLE_LEVEL.USER,
-        _teamId: team ? team.id : null,
         _organizationId: organization.id,
         createdAt: new Date(),
         updatedAt: new Date(),
       });
-    } else {
-      if (!mutableUser._teamId && team) {
-        await mutableUser.setTeam(team, transaction);
-        await mutableUser.reload({ transaction });
-      }
     }
     bossOrGuestUsers.push(mutableUser);
   }
@@ -664,7 +654,7 @@ export async function getOrCreatePlayer(
     defaults: {
       _gameId: gameId,
       _userId: user.id,
-      _teamId: user._teamId,
+      _teamId: null, // teamId,
       _arenaZoneId: null,
       health: isBoss ? MAX_BOSS_HEALTH : MAX_PLAYER_HEALTH,
       isBoss,

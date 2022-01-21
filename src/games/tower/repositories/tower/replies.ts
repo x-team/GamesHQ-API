@@ -11,6 +11,7 @@ import {
 import { TOWER_ACTIONS_TYPE } from '../../../../models/TowerRoundAction';
 import {
   APPROVE_SIGN,
+  FREE_AGENT_EMOJI,
   FULL_HEALTH_HEART_EMOJI,
   HEALTH_KIT_EMOJI,
   INFINITY_GIF_EMOJI,
@@ -24,7 +25,6 @@ import {
   basicHealthDisplay,
   basicHealthDisplayInParentheses,
   generateRarityColorEmoji,
-  generateTeamEmoji,
   randomSkinColor,
 } from '../../../helpers';
 import { rateToPercentage } from '../../../utils';
@@ -44,7 +44,6 @@ import {
 const FILL_WITH_EMOJIS_PARTY = 18;
 const FILL_WITH_EMOJIS_TADA = 8;
 const FILL_WITH_EMOJIS_RAIDER_RUNNING = 16;
-const FREE_AGENT_EMOJI = ':dove_of_peace:';
 
 function usefulCommands() {
   return (
@@ -60,9 +59,7 @@ function usefulCommands() {
 function towerBasicScoreboard(towerStatistics: TowerStatistics[]) {
   return `${towerStatistics
     .map((raiderStats) => {
-      const teamEmoji = generateTeamEmoji(raiderStats._user?._team?.emoji);
       return (
-        `${teamEmoji === ':the-wolf:' ? `${FREE_AGENT_EMOJI}` : teamEmoji} *|* ` +
         `<@${raiderStats._user?.slackId}>\t*=>*\t` +
         `_${raiderStats.completed} *completed*_ ~ ` +
         `_${raiderStats.attempts} *attempts*_`
