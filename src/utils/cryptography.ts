@@ -21,7 +21,8 @@ export function signMessage(message: string, secret: string) {
 export type SlackConfigKey =
   | 'SLACK_ARENA_SIGNING_SECRET'
   | 'SLACK_CAMPAIGN_SIGNING_SECRET'
-  | 'SLACK_TOWER_SIGNING_SECRET';
+  | 'SLACK_TOWER_SIGNING_SECRET'
+  | 'FRONT_END_SIGNING_SECRET';
 
 export function validateSlackSignatures(
   secretKey: SlackConfigKey,

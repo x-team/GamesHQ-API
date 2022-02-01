@@ -122,6 +122,10 @@ export function isTowerCommand(command: string) {
   return command.startsWith('/tower');
 }
 
+export function isGamesHQCommand(command: string) {
+  return command.startsWith('/games');
+}
+
 export const isTowerConfigAction = (action: string) => {
   const actionArr = action.split('-');
   actionArr.pop();

@@ -2,6 +2,7 @@ import { WebClient } from '@slack/client';
 import { random } from 'lodash';
 import fetch from 'node-fetch';
 import type { Transaction } from 'sequelize';
+import { URLSearchParams } from 'url';
 
 import { getConfig, logger } from '../../config';
 import { sequelize } from '../../db';
@@ -158,6 +159,28 @@ export async function chatUnfurl(requestBody: object, bearer: string = getConfig
     return response;
   } catch (error) {
     logger.error('Error in chatUnfurl()');
+    logger.error(error);
+    throw error;
+  }
+}
+
+export async function getSlackUserInfo(slackId: string) {
+  try {
+    const url = 'https://slack.com/api/users.info';
+    const options = {
+      method: 'POST',
+      headers: {
+        'Content-type': 'application/x-www-form-urlencoded',
+        Authorization: `Bearer ${getConfig('FRONT_END_APP_BOT_TOKEN')}`,
+      },
+      body: new URLSearchParams({
+        user: slackId,
+      }),
+    };
+    const response = await fetch(url, options);
+    return response.json();
+  } catch (error) {
+    logger.error('Error in getSlackUserInfo()');
     logger.error(error);
     throw error;
   }

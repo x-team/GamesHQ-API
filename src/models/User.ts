@@ -17,6 +17,7 @@ import {
 } from 'sequelize-typescript';
 
 import { USER_ROLE_NAME } from '../consts/model';
+import { ZERO } from '../games/consts/global';
 import { GameError } from '../games/utils/GameError';
 import { isScopeRole } from '../utils/permissions';
 
@@ -37,10 +38,11 @@ interface UserAttributes {
 interface UserCreationAttributes {
   slackId: string | null;
   email: string;
-  createdAt: Date;
-  updatedAt: Date;
+  createdAt?: Date;
+  updatedAt?: Date;
   displayName: string;
   profilePictureUrl: string | null;
+  firebaseUserUid: string | null;
   _roleId: number | null;
   _organizationId: number;
 }
@@ -106,6 +108,10 @@ export class User extends Model<UserAttributes, UserCreationAttributes> implemen
 
   @AllowNull(true)
   @Column(DataType.TEXT)
+  firebaseUserUid!: string | null;
+
+  @AllowNull(true)
+  @Column(DataType.TEXT)
   profilePictureUrl!: string | null;
 
   @CreatedAt
@@ -162,6 +168,14 @@ export async function getUserBySlackId(slackId: string): Promise<User | null> {
   });
 }
 
+export async function findAdmin() {
+  return User.findOne({
+    where: {
+      _roleId: 4,
+    },
+  });
+}
+
 export async function findArenaPlayersByUserSlackId(
   slackId: string,
   transaction?: Transaction
@@ -185,4 +199,40 @@ export async function findUsersBySlackIds(slackIds: string[]): Promise<User[]> {
   }
 
   return users;
+}
+
+export async function userExists(slackId: string, transaction?: Transaction) {
+  const count = await User.count({
+    where: {
+      slackId,
+    },
+    transaction,
+  });
+
+  return count > ZERO;
+}
+
+export async function createUser(data: UserCreationAttributes) {
+  const {
+    email,
+    displayName,
+    firebaseUserUid,
+    slackId,
+    profilePictureUrl,
+    _roleId,
+    _teamId,
+    _organizationId,
+  } = data;
+  await User.create({
+    email,
+    displayName,
+    firebaseUserUid,
+    slackId,
+    profilePictureUrl,
+    _roleId,
+    _teamId,
+    _organizationId,
+    createdAt: new Date(),
+    updatedAt: new Date(),
+  });
 }

@@ -107,6 +107,7 @@ CREATE TABLE IF NOT EXISTS "User" (
   "email" TEXT UNIQUE,
   "slackId" TEXT,
   "profilePictureUrl" TEXT,
+  "firebaseUserUid" TEXT,
   "_roleId" INTEGER REFERENCES "UserRole" ("id") ON DELETE
   SET
     NULL ON UPDATE CASCADE,
