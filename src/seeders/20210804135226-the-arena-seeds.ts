@@ -494,6 +494,10 @@ module.exports = {
             _traitId: TRAIT.UNSEARCHABLE,
           },
           {
+            _itemId: watchmansChronogun!.id,
+            _traitId: TRAIT.INITIAL,
+          },
+          {
             _itemId: flareBlasterM21!.id,
             _traitId: TRAIT.PIERCING,
           },

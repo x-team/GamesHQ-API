@@ -628,6 +628,7 @@ export async function getOrCreateBossesOrGuests({
       mutableUser = await User.create({
         email: `${emailAdress}-game-${isBoss ? 'boss' : 'guest'}@${organization.domain}`,
         displayName: slackDisplayedName,
+        firebaseUserUid: null,
         slackId: slackId as string,
         profilePictureUrl: 'http://some.url.localhost/avatar.jpg',
         _roleId: USER_ROLE_LEVEL.USER,

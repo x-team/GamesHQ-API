@@ -12,7 +12,7 @@ import {
 import type { GAME_TYPE, ITEM_RARITY } from '../games/consts/global';
 import { ITEM_TYPE } from '../games/consts/global';
 
-import type { GameItemAvailabilityCreationAttributes } from './GameItemAvailability';
+import type { AnonymousGameItemAvailabilityCreationAttributes } from './GameItemAvailability';
 import type { ItemCreationAttributes } from './Item';
 import {
   listActiveItemsByGameType,
@@ -33,7 +33,7 @@ interface ItemWeaponAttributes {
 interface ItemWeaponCreationAttributes {
   minorDamageRate: number;
   majorDamageRate: number;
-  _itemId: number;
+  _itemId?: number;
 }
 
 @Table
@@ -65,18 +65,20 @@ export class ItemWeapon
 }
 
 export async function createOrUpdateWeapon(
-  { name, emoji, usageLimit, _itemRarityId, type }: ItemCreationAttributes,
+  { id, name, emoji, usageLimit, _itemRarityId, type, traits }: ItemCreationAttributes,
   { minorDamageRate, majorDamageRate }: ItemWeaponCreationAttributes,
-  itemsAvailability: GameItemAvailabilityCreationAttributes[],
+  itemsAvailability: AnonymousGameItemAvailabilityCreationAttributes[],
   transaction: Transaction
 ) {
   const item = await createOrUpdateItem(
     {
+      ...(id && { id }),
       name,
       emoji,
       usageLimit,
       _itemRarityId,
       type,
+      traits,
     },
     itemsAvailability,
     transaction

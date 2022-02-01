@@ -22,11 +22,16 @@ interface GameItemAvailabilityAttributes {
   isArchived: boolean;
 }
 
-export interface GameItemAvailabilityCreationAttributes {
+export interface AnonymousGameItemAvailabilityCreationAttributes {
   _gameTypeId: GAME_TYPE;
-  _itemId: number;
+  _itemId?: number;
   isActive: boolean;
   isArchived: boolean;
+}
+
+export interface GameItemAvailabilityCreationAttributes
+  extends AnonymousGameItemAvailabilityCreationAttributes {
+  _itemId: number;
 }
 
 @Table({
@@ -134,4 +139,13 @@ export async function disableItems(
       transaction,
     }
   );
+}
+
+export async function removeAllGameItemAvailability(itemId: number, transaction: Transaction) {
+  return GameItemAvailability.destroy({
+    where: {
+      _itemId: itemId,
+    },
+    transaction,
+  });
 }

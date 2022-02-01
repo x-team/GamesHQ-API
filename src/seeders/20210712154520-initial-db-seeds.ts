@@ -232,6 +232,7 @@ module.exports = {
           {
             displayName: 'Cristian Morales',
             email: firstUserEmail,
+            firebaseUserUid: null,
             slackId: 'UBZ9PC0SK',
             createdAt: new Date(),
             updatedAt: new Date(),

@@ -1,4 +1,5 @@
 import Boom from '@hapi/boom';
+import CatboxMemory from '@hapi/catbox-memory';
 import { Server } from '@hapi/hapi';
 import Inert from '@hapi/inert';
 import Vision from '@hapi/vision';
@@ -8,6 +9,7 @@ import Joi from 'joi';
 import pkg from '../package.json';
 
 import { getConfig, isProd, logger } from './config';
+import { firebasePlugin } from './plugins/firebasePlugin';
 import { routes } from './routes';
 import { routeToLabel } from './utils/api';
 
@@ -15,6 +17,14 @@ const getServer = () =>
   new Server({
     host: getConfig('HOST'),
     port: getConfig('PORT'),
+    cache: [
+      {
+        name: 'firebase_token_cache',
+        provider: {
+          constructor: CatboxMemory,
+        },
+      },
+    ],
     routes: {
       response: {
         modify: true,
@@ -115,6 +125,7 @@ export async function getServerWithPlugins() {
       plugin: HapiSwagger,
       options: swaggerOptions,
     },
+    { plugin: firebasePlugin },
   ]);
 
   // await server.register(

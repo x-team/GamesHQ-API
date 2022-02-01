@@ -25,6 +25,9 @@ interface NameToType {
   SLACK_TOWER_SIGNING_SECRET: string;
   SLACK_CAMPAIGN_SIGNING_SECRET: string;
   SLACK_THE_TOWER_CHANNEL: string;
+  FRONT_END_APP_BOT_TOKEN: string;
+  FRONT_END_SIGNING_SECRET: string;
+  GOOGLE_APPLICATION_CREDENTIALS: string;
 }
 
 export function getConfig<T extends keyof NameToType>(name: T): NameToType[T];

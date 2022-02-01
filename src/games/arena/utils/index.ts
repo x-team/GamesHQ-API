@@ -35,6 +35,8 @@ import {
   ARENA_PLAYER_PERFORMANCE,
   ARENA_SECONDARY_ACTIONS,
   ChangeLocationParams,
+  ENEMY_REPOSITORY_NAME,
+  WEAPON_REPOSITORY_NAME,
   ZONE_REPOSITORY_NAME,
 } from '../consts';
 import {
@@ -237,6 +239,28 @@ export function withArenaTransaction<T>(fn: (transaction: Transaction) => Promis
     return fn(transaction).catch(async (error) => {
       if (error instanceof GameError) {
         error.addRepository(ARENA_REPOSITORY_NAME);
+      }
+      throw error;
+    });
+  });
+}
+
+export function withWeaponTransaction<T>(fn: (transaction: Transaction) => Promise<T>) {
+  return withTransaction((transaction) => {
+    return fn(transaction).catch(async (error) => {
+      if (error instanceof GameError) {
+        error.addRepository(WEAPON_REPOSITORY_NAME);
+      }
+      throw error;
+    });
+  });
+}
+
+export function withEnemyTransaction<T>(fn: (transaction: Transaction) => Promise<T>) {
+  return withTransaction((transaction) => {
+    return fn(transaction).catch(async (error) => {
+      if (error instanceof GameError) {
+        error.addRepository(ENEMY_REPOSITORY_NAME);
       }
       throw error;
     });
