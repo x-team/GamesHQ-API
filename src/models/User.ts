@@ -17,6 +17,7 @@ import {
 } from 'sequelize-typescript';
 
 import { USER_ROLE_NAME } from '../consts/model';
+import { ZERO } from '../games/consts/global';
 import { GameError } from '../games/utils/GameError';
 import { isScopeRole } from '../utils/permissions';
 
@@ -201,7 +202,6 @@ export async function findUsersBySlackIds(slackIds: string[]): Promise<User[]> {
 }
 
 export async function userExists(slackId: string, transaction?: Transaction) {
-  const ZERO = 0;
   const count = await User.count({
     where: {
       slackId,
