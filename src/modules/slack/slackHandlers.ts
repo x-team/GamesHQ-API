@@ -37,7 +37,7 @@ export const slackCommandHandler: Lifecycle.Method = async (request, _h) => {
 
   try {
     return slackCommandSwitcher(slashCommandPayload);
-  } catch (err) {
+  } catch (err: any) {
     err.data = slashCommandPayload;
     throw err;
   }
@@ -53,7 +53,7 @@ export const arenaSlackActionHandler: Lifecycle.Method = async (request, _h) => 
       default:
         return handleArenaAction(slackActionPayload);
     }
-  } catch (err) {
+  } catch (err: any) {
     err.data = slackActionPayload;
     throw err;
   }
@@ -72,7 +72,7 @@ export const towerSlackActionHandler: Lifecycle.Method = async (request, _h) => 
       default:
         throw Boom.internal('Unknown payload');
     }
-  } catch (err) {
+  } catch (err: any) {
     err.data = slackActionPayload;
     throw err;
   }
@@ -118,7 +118,7 @@ export const towerSlackEventHandler: Lifecycle.Method = async (request, _h) => {
     return {
       challenge,
     };
-  } catch (err) {
+  } catch (err: any) {
     err.data = request.pre.slackEventsPayload;
     throw err;
   }

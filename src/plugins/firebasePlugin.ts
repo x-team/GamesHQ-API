@@ -55,7 +55,6 @@ const linkFirestoreUserIdToDatabaseUser = async (firebaseUser: DecodedIdToken) =
       firebaseUserUid: uid,
       profilePictureUrl: null,
       slackId: null,
-      _teamId: null,
       _roleId: USER_ROLE_LEVEL.USER,
       _organizationId: xteamOrganization?.id,
     });

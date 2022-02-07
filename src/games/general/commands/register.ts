@@ -26,7 +26,6 @@ export const register = async (slackUserId: string) => {
     firebaseUserUid: null,
     profilePictureUrl: image_512,
     slackId: user.id,
-    _teamId: null,
     _roleId: USER_ROLE_LEVEL.USER,
     _organizationId: xteamOrganization?.id,
   });

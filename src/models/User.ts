@@ -220,7 +220,6 @@ export async function createUser(data: UserCreationAttributes) {
     slackId,
     profilePictureUrl,
     _roleId,
-    _teamId,
     _organizationId,
   } = data;
   await User.create({
@@ -230,7 +229,6 @@ export async function createUser(data: UserCreationAttributes) {
     slackId,
     profilePictureUrl,
     _roleId,
-    _teamId,
     _organizationId,
     createdAt: new Date(),
     updatedAt: new Date(),
