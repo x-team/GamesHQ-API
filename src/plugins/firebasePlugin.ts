@@ -1,7 +1,7 @@
 import Boom from '@hapi/boom';
 import type { PluginSpecificConfiguration, Server } from '@hapi/hapi';
 import admin from 'firebase-admin';
-import { DecodedIdToken } from 'firebase-admin/lib/auth/token-verifier';
+import type { DecodedIdToken } from 'firebase-admin/lib/auth/token-verifier';
 
 import { getConfig } from '../config';
 import { USER_ROLE_LEVEL } from '../consts/model';
@@ -12,24 +12,6 @@ import { createUser } from '../models/User';
 const firebaseApp = admin.initializeApp({
   credential: admin.credential.cert(getConfig('GOOGLE_APPLICATION_CREDENTIALS')),
 });
-
-const setupInitialFirestoreUserData = async (firebaseUserUid: string) => {
-  const firestore = firebaseApp.firestore();
-
-  await firestore
-    .collection('users')
-    .doc(firebaseUserUid)
-    .set(
-      {
-        gamesHq: {
-          capabilities: [],
-        },
-      },
-      {
-        merge: true,
-      }
-    );
-};
 
 const linkFirestoreUserIdToDatabaseUser = async (firebaseUser: DecodedIdToken) => {
   // TODO this should not be hardcoded to x-team in the future?
@@ -90,7 +72,7 @@ export const firebasePlugin = {
       if (!firebasePlugin) {
         return h.continue;
       }
-      const { requiresAuth, requiredCapabilities } = firebasePlugin;
+      const { requiresAuth } = firebasePlugin;
 
       const {
         query: { firebaseIdToken },
@@ -108,16 +90,13 @@ export const firebasePlugin = {
         ).data();
 
         if (!firebaseUserData) {
-          await setupInitialFirestoreUserData(firebaseUser.uid);
           firebaseUserData = {};
         }
 
-        const userCapabilities = firebaseUserData.gamesHq.capabilities || [];
-        const meetsAllCapabilityChecks = requiredCapabilities.every((capability) =>
-          userCapabilities.includes(capability)
-        );
+        const userRole = firebaseUserData.role || 'user';
+        const isAdmin = userRole === 'admin';
 
-        if (!meetsAllCapabilityChecks) {
+        if (!isAdmin) {
           throw Boom.badRequest('Lacking capabilities');
         }
         const firebaseUserRequestData = {
