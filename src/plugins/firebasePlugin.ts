@@ -9,8 +9,10 @@ import { User } from '../models';
 import { findOrganizationByName } from '../models/Organization';
 import { createUser } from '../models/User';
 
+const googleApplicationCredentials = JSON.parse(getConfig('GOOGLE_APPLICATION_CREDENTIALS'));
+
 const firebaseApp = admin.initializeApp({
-  credential: admin.credential.cert(getConfig('GOOGLE_APPLICATION_CREDENTIALS')),
+  credential: admin.credential.cert(googleApplicationCredentials),
 });
 
 const linkFirestoreUserIdToDatabaseUser = async (firebaseUser: DecodedIdToken) => {
@@ -81,6 +83,7 @@ export const firebasePlugin = {
       const firebaseUser: any = await firebaseTokenCache.get({
         id: firebaseIdToken,
       });
+
       if (!firebaseUser && requiresAuth) {
         throw Boom.badRequest('Invalid Firebase ID token.');
       } else {
