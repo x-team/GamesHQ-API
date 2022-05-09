@@ -32,6 +32,7 @@ const linkFirestoreUserIdToDatabaseUser = async (firebaseUser: DecodedIdToken) =
 
   if (existingDbUser && !existingDbUser.firebaseUserUid) {
     existingDbUser.firebaseUserUid = uid;
+    await existingDbUser.save();
   } else if (!existingDbUser) {
     await createUser({
       email: email,
