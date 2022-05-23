@@ -37,6 +37,7 @@
   "author": "X-Team Community",
   "license": "ISC",
   "dependencies": {
+    "@hapi/bell": "12.3.0",
     "@hapi/boom": "9.1.2",
     "@hapi/catbox": "11.1.1",
     "@hapi/catbox-memory": "5.0.1",

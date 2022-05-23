@@ -66,7 +66,7 @@ module.exports = {
 
       await queryInterface.addColumn(
         'GameType',
-        '_createdBy',
+        '_createdById',
         {
           type: DataTypes.INTEGER,
           allowNull: false,

@@ -160,6 +160,14 @@ export class User extends Model<UserAttributes, UserCreationAttributes> implemen
   }
 }
 
+export async function getUserByEmail(email: string): Promise<User | null> {
+  return User.findOne({
+    where: {
+      email,
+    },
+  });
+}
+
 export async function getUserBySlackId(slackId: string): Promise<User | null> {
   return User.findOne({
     where: {

@@ -1,4 +1,6 @@
 // PLEASE keep this file alphabetically ordered
+export { Achievement } from './Achievements';
+export { AchievementUnlocked } from './AchievementUnlocked';
 export { ArenaGame } from './ArenaGame';
 export { ArenaItemInventory } from './ArenaItemInventory';
 export { ArenaPlayer } from './ArenaPlayer';
