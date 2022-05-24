@@ -1,4 +1,5 @@
 import Boom from '@hapi/boom';
+import Bell from '@hapi/bell';
 import CatboxMemory from '@hapi/catbox-memory';
 import { Server } from '@hapi/hapi';
 import Inert from '@hapi/inert';
@@ -128,115 +129,15 @@ export async function getServerWithPlugins() {
     { plugin: firebasePlugin },
   ]);
 
-  // await server.register(
-  //   {
-  //     plugin: slackSlashCommands,
-  //   },
-  //   {
-  //     routes: {
-  //       prefix: '/integrations/slack',
-  //     },
-  //   }
-  // );
+  await server.register(Bell);
 
-  // await server.register(
-  //   {
-  //     plugin: slackCampaignCommands,
-  //   },
-  //   {
-  //     routes: {
-  //       prefix: '/integrations/slack',
-  //     },
-  //   }
-  // );
-
-  // await server.register(
-  //   {
-  //     plugin: slackTowerCommands,
-  //   },
-  //   {
-  //     routes: {
-  //       prefix: '/integrations/slack',
-  //     },
-  //   }
-  // );
-
-  // await server.register(
-  //   {
-  //     plugin: slackCampaignActions,
-  //   },
-  //   {
-  //     routes: {
-  //       prefix: '/integrations/slack',
-  //     },
-  //   }
-  // );
-
-  // await server.register(
-  //   {
-  //     plugin: slackTowerActions,
-  //   },
-  //   {
-  //     routes: {
-  //       prefix: '/integrations/slack',
-  //     },
-  //   }
-  // );
-
-  // await server.register(
-  //   {
-  //     plugin: slackArenaCommands,
-  //   },
-  //   {
-  //     routes: {
-  //       prefix: '/integrations/slack',
-  //     },
-  //   }
-  // );
-
-  // await server.register(
-  //   {
-  //     plugin: slackVersusCommands,
-  //   },
-  //   {
-  //     routes: {
-  //       prefix: '/integrations/slack',
-  //     },
-  //   }
-  // );
-
-  // await server.register(
-  //   {
-  //     plugin: slackActions,
-  //   },
-  //   {
-  //     routes: {
-  //       prefix: '/integrations/slack',
-  //     },
-  //   }
-  // );
-
-  // await server.register(
-  //   {
-  //     plugin: slackArenaActions,
-  //   },
-  //   {
-  //     routes: {
-  //       prefix: '/integrations/slack',
-  //     },
-  //   }
-  // );
-
-  // await server.register(
-  //   {
-  //     plugin: slackEvents,
-  //   },
-  //   {
-  //     routes: {
-  //       prefix: '/integrations/slack',
-  //     },
-  //   }
-  // );
+  server.auth.strategy('google', 'bell', {
+    provider: 'google',
+    password: 'cookie_encryption_password_secure',
+    clientId: getConfig('GOOGLE_APPLICATION_CLIENT_ID'),
+    clientSecret: getConfig('GOOGLE_APPLICATION_CLIENT_SECRET'),
+    isSecure: isProd() ? true : false,
+  });
 
   // await server.register(
   //   {
@@ -248,11 +149,6 @@ export async function getServerWithPlugins() {
   //     },
   //   }
   // );
-
-  // await server.register({
-  //   plugin: permissions,
-  //   options: {},
-  // });
 
   await server.route(routes);
   // await server.method(methods);

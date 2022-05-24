@@ -230,7 +230,7 @@ export async function createUser(data: UserCreationAttributes) {
     _roleId,
     _organizationId,
   } = data;
-  await User.create({
+  return User.create({
     email,
     displayName,
     firebaseUserUid,
