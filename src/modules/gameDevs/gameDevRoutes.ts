@@ -1,11 +1,15 @@
 import type { ServerRoute } from '@hapi/hapi';
+
 import { getAuthUser } from '../../api-utils/getAuthUser';
 import { CAPABILITIES } from '../../utils/firebase';
+
 import {
   deleteGameTypeHandler,
   getGameTypeHandler,
   getGameTypesHandler,
   upsertGameTypeHandler,
+  getLeaderboardHandler,
+  upsertLeaderboardHandler,
 } from './gameDevHandlers';
 
 declare module '@hapi/hapi' {
@@ -62,7 +66,48 @@ export const gameDevRoutes: ServerRoute[] = [
     },
     handler: deleteGameTypeHandler,
   },
-
+  {
+    method: 'GET',
+    path: '/dashboard/game-dev/games/{gameTypeId}/leaderboard',
+    options: {
+      description: 'Fetch game`s leaderboardEntries',
+      tags: ['api'],
+      plugins: {
+        firebasePlugin: {
+          requiresAuth: true,
+          requiredCapabilities: [CAPABILITIES.ACCESS_ADMIN_ACTIONS],
+        },
+      },
+      pre: [
+        {
+          method: getAuthUser,
+          assign: 'getAuthUser',
+        },
+      ],
+    },
+    handler: getLeaderboardHandler,
+  },
+  {
+    method: 'POST',
+    path: '/dashboard/game-dev/games/{gameTypeId}/leaderboard',
+    options: {
+      description: 'Add or update a game`s leaderboardEntry',
+      tags: ['api'],
+      plugins: {
+        firebasePlugin: {
+          requiresAuth: true,
+          requiredCapabilities: [CAPABILITIES.ACCESS_ADMIN_ACTIONS],
+        },
+      },
+      pre: [
+        {
+          method: getAuthUser,
+          assign: 'getAuthUser',
+        },
+      ],
+    },
+    handler: upsertLeaderboardHandler,
+  },
   {
     method: 'GET',
     path: '/dashboard/game-dev/games',

@@ -12,7 +12,7 @@ module.exports = {
   async up({ context: { queryInterface } }: SequelizeContext) {
     return queryInterface.sequelize.transaction(async (transaction) => {
       await queryInterface.createTable(
-        'Achievement',
+        'LeaderboardEntry',
         {
           id: {
             allowNull: false,
@@ -21,26 +21,27 @@ module.exports = {
             type: DataTypes.INTEGER,
           },
           _gameTypeId: {
-            type: DataTypes.TEXT,
+            type: DataTypes.TEXT, // gameType Id as INTEGER?
             allowNull: false,
+            unique: true, // should it be unique?
             references: {
               model: 'GameType',
               key: 'id',
             },
           },
-          description: {
+          name: {
             allowNull: false,
             type: DataTypes.TEXT,
           },
-          isEnabled: {
+          scoreStrategy: {
             allowNull: false,
-            defaultValue: true,
-            type: DataTypes.BOOLEAN,
+            type: DataTypes.ENUM('highest', 'lowest', 'sum', 'latest'),
+            defaultValue: 'highest',
           },
-          targetValue: {
+          resetStrategy: {
             allowNull: false,
-            defaultValue: 0,
-            type: DataTypes.INTEGER,
+            type: DataTypes.ENUM('daily', 'weekly', 'monthly', 'never'),
+            defaultValue: 'never',
           },
           createdAt: {
             allowNull: false,
@@ -53,36 +54,39 @@ module.exports = {
         },
         { transaction }
       );
+
       await queryInterface.createTable(
-        'AchievementUnlocked',
+        'LeaderboardResults',
         {
+          id: {
+            allowNull: false,
+            autoIncrement: true,
+            primaryKey: true,
+            type: DataTypes.INTEGER,
+          },
+          _leaderboardEntryId: {
+            type: DataTypes.INTEGER,
+            allowNull: false,
+            references: {
+              model: 'LeaderboardEntry',
+              key: 'id',
+            },
+          },
           _userId: {
             type: DataTypes.INTEGER,
             allowNull: false,
-            primaryKey: true,
             references: {
               model: 'User',
               key: 'id',
             },
           },
-          _achievementId: {
+          score: {
+            allowNull: false,
             type: DataTypes.INTEGER,
-            allowNull: false,
-            primaryKey: true,
-            references: {
-              model: 'Achievement',
-              key: 'id',
-            },
           },
-          isUnlocked: {
-            allowNull: false,
-            defaultValue: false,
-            type: DataTypes.BOOLEAN,
-          },
-          progress: {
-            allowNull: false,
-            defaultValue: 0,
-            type: DataTypes.INTEGER,
+          meta: {
+            allowNull: true,
+            type: DataTypes.JSON, //perhaps a LeaderboardResults table?
           },
           createdAt: {
             allowNull: false,
@@ -100,8 +104,8 @@ module.exports = {
 
   async down({ context: { queryInterface } }: SequelizeContext) {
     return queryInterface.sequelize.transaction(async (transaction) => {
-      await queryInterface.dropTable('AchievementUnlocked', { transaction });
-      await queryInterface.dropTable('Achievement', { transaction });
+      await queryInterface.dropTable('LeaderboardResults', { transaction });
+      await queryInterface.dropTable('LeaderboardEntry', { transaction });
     });
   },
 };

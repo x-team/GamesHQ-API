@@ -15,6 +15,8 @@ export { EnemyTrait } from './EnemyTrait';
 export { Game } from './Game';
 export { GameItemAvailability } from './GameItemAvailability';
 export { GameType } from './GameType';
+export { LeaderboardEntry } from './LeaderboardEntry';
+export { LeaderboardResults } from './LeaderboardResults';
 export { Item } from './Item';
 export { ItemArmor } from './ItemArmor';
 export { ItemHealthKit } from './ItemHealthKit';
