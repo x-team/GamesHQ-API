@@ -24,6 +24,7 @@ export { ItemWeapon } from './ItemWeapon';
 export { Organization } from './Organization';
 export { Perk } from './Perk';
 export { PerkInventory } from './PerkInventory';
+export { Session } from './Session';
 export { Team } from './Team';
 export { TowerFloor } from './TowerFloor';
 export { TowerFloorBattlefield } from './TowerFloorBattlefield';

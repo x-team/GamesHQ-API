@@ -60,6 +60,7 @@
     "sequelize": "6.6.4",
     "sequelize-typescript": "2.1.0",
     "sql-log-prettifier": "^0.1.2",
+    "uuid": "8.3.2",
     "winston": "3.3.3"
   },
   "devDependencies": {
@@ -78,6 +79,7 @@
     "@types/node-fetch": "2.5.11",
     "@types/sinon": "10.0.2",
     "@types/sinon-chai": "3.2.5",
+    "@types/uuid": "8.3.4",
     "@types/validator": "13.1.4",
     "@typescript-eslint/eslint-plugin": "4.28.1",
     "@typescript-eslint/parser": "4.28.1",
