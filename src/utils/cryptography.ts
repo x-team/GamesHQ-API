@@ -1,13 +1,10 @@
 import { generateKey, createHmac } from 'crypto';
 import { promisify } from 'util';
 
-import { getConfig, logger } from '../config';
-
 const generateKeyAsync = promisify(generateKey);
 
 export async function generateSecret() {
   const secret = await generateKeyAsync('hmac', { length: 256 });
-  logger.info(secret.export().toString('hex'));
   return secret.export().toString('hex');
 }
 
@@ -24,17 +21,12 @@ export type SlackConfigKey =
   | 'SLACK_TOWER_SIGNING_SECRET'
   | 'FRONT_END_SIGNING_SECRET';
 
-export function validateSlackSignatures(
-  secretKey: SlackConfigKey,
-  slackSignature: string,
+export function validateWebhookSignatures(
+  secretSignature: string,
+  hashedSignature: string,
   signatureBase: string,
   version: string
 ) {
-  const secret = getConfig(secretKey);
-
-  const hmac = createHmac('sha256', secret);
-  hmac.update(signatureBase);
-  const sha = hmac.digest('hex');
-
-  return slackSignature === `${version}=${sha}`;
+  const sha = signMessage(signatureBase, secretSignature);
+  return hashedSignature === `${version}=${sha}`;
 }

@@ -5,7 +5,7 @@ import type { Lifecycle, Request, ResponseToolkit } from '@hapi/hapi';
 import type { ValidationResult } from 'joi';
 import { endsWith } from 'lodash';
 
-import { logger } from '../../config';
+import { getConfig, logger } from '../../config';
 import { arenaSwitchCommand } from '../../games/arena/commands';
 import { isArenaCommand } from '../../games/arena/utils';
 import { SAD_PARROT } from '../../games/consts/emojis';
@@ -30,17 +30,17 @@ import type { GameResponse } from '../../games/utils';
 import { getEphemeralBlock, getEphemeralText } from '../../games/utils';
 import { getUserBySlackId } from '../../models/User';
 import type { SlackConfigKey } from '../../utils/cryptography';
-import { validateSlackSignatures } from '../../utils/cryptography';
+import { validateWebhookSignatures } from '../../utils/cryptography';
 import { isGamesHQCommand, isTowerCommand } from '../../games/tower/utils';
 import { towerSwitchCommand } from '../../games/tower/commands';
 import { gamesSwitchCommand } from '../../games/general/commands';
 
-export const isRequestFresh = (timestamp: number): boolean => {
+export const isRequestFresh = (timestamp: number, freshMinutes?: number): boolean => {
   const SIXTY_SECONDS = 60;
   const FIVE = 5;
   const MILLIS_TO_SECONDS = 1000;
-  const FIVE_MINUTES = SIXTY_SECONDS * FIVE;
-  return Date.now() / MILLIS_TO_SECONDS - timestamp < FIVE_MINUTES;
+  const FRESH_MINUTES = SIXTY_SECONDS * (freshMinutes ?? FIVE);
+  return Date.now() / MILLIS_TO_SECONDS - timestamp < FRESH_MINUTES;
 };
 
 const getAppSigningSecretKeyForPath = (request: Request): SlackConfigKey | undefined => {
@@ -91,7 +91,14 @@ export function verifySlackRequest(request: Request, h: ResponseToolkit) {
   if (!appSecretKey) {
     throw Boom.notAcceptable('APP SIGNING SECRET not acceptable');
   }
-  const isValid = validateSlackSignatures(appSecretKey, slackSignature, signatureBase, version);
+
+  const appSecretKeyHash = getConfig(appSecretKey);
+  const isValid = validateWebhookSignatures(
+    appSecretKeyHash,
+    slackSignature,
+    signatureBase,
+    version
+  );
 
   if (!isValid) {
     throw Boom.unauthorized('Invalid signature');

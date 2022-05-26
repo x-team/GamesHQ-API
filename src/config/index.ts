@@ -28,6 +28,8 @@ interface NameToType {
   FRONT_END_APP_BOT_TOKEN: string;
   FRONT_END_SIGNING_SECRET: string;
   GOOGLE_APPLICATION_CREDENTIALS: string;
+  GOOGLE_APPLICATION_CLIENT_ID: string;
+  GOOGLE_APPLICATION_CLIENT_SECRET: string;
 }
 
 export function getConfig<T extends keyof NameToType>(name: T): NameToType[T];
