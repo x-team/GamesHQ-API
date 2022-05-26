@@ -17,7 +17,7 @@
     "rootDir": ".",
     "sourceMap": true,
     "resolveJsonModule": true,
-    "typeRoots": ["./node_modules/@types", "./typings"]
+    "typeRoots": ["./typings", "./node_modules/@types"]
   },
   "exclude": ["dist"]
 }

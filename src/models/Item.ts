@@ -269,12 +269,7 @@ export function listAllWeapons(transaction?: Transaction) {
     include: [
       {
         association: Item.associations._gameItemAvailability,
-        include: [
-          {
-            association: GameItemAvailability.associations._gameType,
-            where: { id: ITEM_TYPE.WEAPON },
-          },
-        ],
+        include: [GameItemAvailability.associations._gameType],
       },
       itemTypeToAssociation(ITEM_TYPE.WEAPON),
       Item.associations._traits,

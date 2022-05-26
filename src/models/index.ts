@@ -1,4 +1,6 @@
 // PLEASE keep this file alphabetically ordered
+export { Achievement } from './Achievements';
+export { AchievementUnlocked } from './AchievementUnlocked';
 export { ArenaGame } from './ArenaGame';
 export { ArenaItemInventory } from './ArenaItemInventory';
 export { ArenaPlayer } from './ArenaPlayer';
@@ -22,6 +24,7 @@ export { ItemWeapon } from './ItemWeapon';
 export { Organization } from './Organization';
 export { Perk } from './Perk';
 export { PerkInventory } from './PerkInventory';
+export { Session } from './Session';
 export { Team } from './Team';
 export { TowerFloor } from './TowerFloor';
 export { TowerFloorBattlefield } from './TowerFloorBattlefield';

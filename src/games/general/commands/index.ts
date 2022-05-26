@@ -13,10 +13,8 @@ interface GamesHQSwitchCommandOptions {
 
 export function gamesSwitchCommand({ command, slackId }: GamesHQSwitchCommandOptions) {
   switch (command) {
-    // ADMIN
     case GAMES_SLACK_COMMANDS.REGISTER:
       return register(slackId);
-
     default:
       return getGameResponse('Invalid command.');
   }

@@ -4,6 +4,7 @@ import admin from 'firebase-admin';
 import type { DecodedIdToken } from 'firebase-admin/lib/auth/token-verifier';
 
 import { getConfig } from '../config';
+import { SECONDS_IN_A_WEEK } from '../consts/api';
 import { USER_ROLE_LEVEL } from '../consts/model';
 import { User } from '../models';
 import { findOrganizationByName } from '../models/Organization';
@@ -32,6 +33,7 @@ const linkFirestoreUserIdToDatabaseUser = async (firebaseUser: DecodedIdToken) =
 
   if (existingDbUser && !existingDbUser.firebaseUserUid) {
     existingDbUser.firebaseUserUid = uid;
+    await existingDbUser.save();
   } else if (!existingDbUser) {
     await createUser({
       email: email,
@@ -49,7 +51,6 @@ export const firebasePlugin = {
   name: 'Firebase Plugin',
   version: '1.0.0',
   register: (server: Server, _options: any) => {
-    const SECONDS_IN_A_WEEK = 604800000;
     const firebaseTokenCache = server.cache({
       cache: 'firebase_token_cache',
       expiresIn: SECONDS_IN_A_WEEK,
