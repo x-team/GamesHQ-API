@@ -1,5 +1,5 @@
-import Boom from '@hapi/boom';
 import Bell from '@hapi/bell';
+import Boom from '@hapi/boom';
 import CatboxMemory from '@hapi/catbox-memory';
 import { Server } from '@hapi/hapi';
 import Inert from '@hapi/inert';
@@ -54,6 +54,7 @@ const getServer = () =>
         },
       },
     },
+    debug: { request: ['error'] },
   });
 
 export async function getServerWithPlugins() {

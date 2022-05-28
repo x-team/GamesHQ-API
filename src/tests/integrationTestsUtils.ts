@@ -23,13 +23,13 @@ before(async function () {
     return;
   }
   this.test?.parent?.suites.forEach((suite) => {
-    if (suite.gameshqDontClearDBAfterEach) {
-      // this means after each "describe"
-      // much faster!
-      suite.afterAll(clearDB);
-    } else {
-      suite.afterEach(clearDB);
-    }
+    // if (suite.gameshqDontClearDBAfterEach) {
+    //   // this means after each "describe"
+    //   // much faster!
+    //   suite.afterAll(clearDB);
+    // } else {
+    //   suite.afterEach(clearDB);
+    // }
   });
 });
 
@@ -42,9 +42,9 @@ before(async function () {
   }
 
   await initDb();
-  await sequelize.sync({ match: /_test$/, logging: false });
+  // await sequelize.sync({ match: /_test$/, logging: false });
 
-  await clearDB();
+  // await clearDB();
 });
 
 afterEach(async () => {

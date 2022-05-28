@@ -1,4 +1,4 @@
-import { User } from '../../../../../../models';
+import type { User } from '../../../../../../models';
 import { findActiveArenaGame, startArenaGame } from '../../../../../../models/ArenaGame';
 import { activateAllArenaZones } from '../../../../../../models/ArenaZone';
 import { enableAllItems } from '../../../../../../models/GameItemAvailability';

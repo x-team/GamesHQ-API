@@ -1,6 +1,8 @@
 import type { ServerRoute } from '@hapi/hapi';
+
 import { getAuthUser } from '../../api-utils/getAuthUser';
 import { CAPABILITIES } from '../../utils/firebase';
+
 import {
   deleteGameTypeHandler,
   getGameTypeHandler,

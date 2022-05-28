@@ -1,12 +1,13 @@
 import Boom from '@hapi/boom';
-import { Lifecycle } from '@hapi/hapi';
+import type { Lifecycle } from '@hapi/hapi';
 
+import type { IGameEditorData } from '../../models/GameType';
 import {
+  findGameTypeByName,
   createOrUpdateGameType,
   deleteGameTypeById,
   findAllGameTypesByCreator,
   findGameTypeById,
-  IGameEditorData,
 } from '../../models/GameType';
 
 // 🎮 Games
@@ -29,13 +30,14 @@ export const upsertGameTypeHandler: Lifecycle.Method = async (request, h) => {
   const authUser = request.pre.getAuthUser;
   const { payload } = request;
   const gameDataPayload = payload as IGameEditorData;
-  const gameTypeId = gameDataPayload.id;
-  const game = await findGameTypeById(gameTypeId);
+  const gameTypeName = gameDataPayload.id;
+  const game = await findGameTypeByName(gameTypeName);
   if (game && authUser.id !== game._createdById) {
     throw Boom.forbidden('User is not the owner of the game');
   }
   const gameCreationData: IGameEditorData = {
     ...(payload as IGameEditorData),
+    name: gameTypeName,
     _createdById: authUser.id,
   };
   await createOrUpdateGameType(gameCreationData);

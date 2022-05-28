@@ -17,10 +17,12 @@ import { GAME_TYPE } from '../games/consts/global';
 import { generateRandomNameForGame } from '../games/utils';
 import { GameError } from '../games/utils/GameError';
 
+import { findGameTypeByName } from './GameType';
+
 import { User, ArenaGame, GameType, TowerGame, TowerFloor, TowerFloorEnemy } from './';
 
-function includeArrayByGameType(type: GAME_TYPE) {
-  return type === GAME_TYPE.ARENA
+function includeArrayByGameType(gameTypeName: string) {
+  return gameTypeName === GAME_TYPE.ARENA
     ? [
         {
           association: Game.associations._arena,
@@ -52,7 +54,7 @@ interface GameAttributes {
   isActive: boolean;
   startedAt: Date;
   endedAt: Date | null;
-  _gameTypeId: GAME_TYPE;
+  _gameTypeId: number;
   _createdById: number;
 }
 
@@ -62,7 +64,7 @@ interface GameCreationAttributes {
   startedAt: Date;
   endedAt?: Date | null;
   _createdById: number;
-  _gameTypeId: GAME_TYPE;
+  _gameTypeId: number;
 }
 
 @Table({
@@ -97,8 +99,8 @@ export class Game extends Model<GameAttributes, GameCreationAttributes> implemen
   endedAt!: Date | null;
 
   @ForeignKey(() => GameType)
-  @Column(DataType.TEXT)
-  _gameTypeId!: GAME_TYPE;
+  @Column(DataType.INTEGER)
+  _gameTypeId!: number;
 
   @BelongsTo(() => GameType, {
     foreignKey: '_gameTypeId',
@@ -157,7 +159,7 @@ const basicUserInfo = ['id', 'displayName', 'slackId', 'email'];
 
 export async function createGame(
   { name, _createdById, startedAt, _gameTypeId }: GameCreationAttributes,
-  transaction: Transaction
+  transaction?: Transaction
 ) {
   const newGame = Game.build({
     name,
@@ -178,48 +180,75 @@ export async function createGame(
   });
 }
 
-export async function findActiveGame(gameType: GAME_TYPE, transaction?: Transaction) {
+export async function findActiveGame(gameTypeName: GAME_TYPE | string, transaction?: Transaction) {
   return Game.findOne({
     include: [
       {
         model: User.unscoped(),
         attributes: basicUserInfo,
       },
-      ...includeArrayByGameType(gameType),
+      {
+        model: GameType,
+        where: {
+          name: gameTypeName,
+        },
+      },
+      ...includeArrayByGameType(gameTypeName),
     ],
-    where: { isActive: true, _gameTypeId: gameType },
+    where: {
+      isActive: true,
+    },
     order: [['startedAt', 'DESC']],
     transaction,
   });
 }
 
-export async function findLastActiveGame(gameType: GAME_TYPE, transaction?: Transaction) {
+export async function findLastActiveGame(
+  gameTypeName: GAME_TYPE | string,
+  transaction?: Transaction
+) {
   return Game.findOne({
     include: [
       {
         model: User.unscoped(),
         attributes: basicUserInfo,
       },
-      ...includeArrayByGameType(gameType),
+      {
+        model: GameType,
+        where: {
+          name: gameTypeName,
+        },
+      },
+      ...includeArrayByGameType(gameTypeName),
     ],
-    where: { isActive: false, _gameTypeId: gameType },
+    where: { isActive: false },
     order: [['endedAt', 'DESC']],
     transaction,
   });
 }
 
 export async function startGame(
-  { name, _createdById, _gameTypeId, startedAt }: GameCreationAttributes,
+  gameTypeName: GAME_TYPE | string,
+  name: string,
+  _createdById: number,
+  startedAt: Date,
   transaction: Transaction
 ) {
   if (!name || !name.trim()) {
-    name = generateRandomNameForGame(_gameTypeId);
+    name = generateRandomNameForGame(gameTypeName);
   }
-  const activeGame = await findActiveGame(_gameTypeId, transaction);
+  const activeGame = await findActiveGame(gameTypeName, transaction);
   if (activeGame) {
     throw GameError.activeGameRunning(
       'There is an active game running. End it first (Use /arena-endgame command), then try to create a new one.'
     );
   }
-  return createGame({ name, _createdById, _gameTypeId, startedAt }, transaction);
+
+  const gameType = await findGameTypeByName(gameTypeName, transaction);
+
+  if (!gameType) {
+    throw GameError.notFound('GameType not found');
+  }
+
+  return createGame({ name, _createdById, _gameTypeId: gameType.id, startedAt }, transaction);
 }
