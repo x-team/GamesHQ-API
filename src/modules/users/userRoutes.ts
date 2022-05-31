@@ -1,16 +1,17 @@
 import Boom from '@hapi/boom';
-import admin from 'firebase-admin';
 import type { ServerRoute } from '@hapi/hapi';
-import { getConfig, logger } from '../../config';
-import { createUser, getUserByEmail } from '../../models/User';
+import { logger } from '../../config';
+import { createUser, findUserById, getUserByEmail } from '../../models/User';
 import { USER_ROLE_LEVEL } from '../../consts/model';
 import { findOrganizationByName } from '../../models/Organization';
 import {
   createSession,
+  findSessionById,
   findSessionByToken,
   findSessionByUserEmail,
   updateSession,
 } from '../../models/Session';
+import { firebaseApp } from '../../plugins/firebasePlugin';
 
 interface GoogleAuthCredentials {
   provider: 'google';
@@ -56,8 +57,8 @@ export const userRoutes: ServerRoute[] = [
         logger.error({ error: req.auth.error });
         return Boom.forbidden(`You can't access if you're not authenticated`);
       }
+
       const { profile: googleProfile } = req.auth.credentials as unknown as GoogleAuthCredentials;
-      const googleApplicationCredentials = JSON.parse(getConfig('GOOGLE_APPLICATION_CREDENTIALS'));
 
       const fastSession = await findSessionByUserEmail(googleProfile.email);
 
@@ -68,18 +69,29 @@ export const userRoutes: ServerRoute[] = [
             id: fastSession.id,
             _userId: fastSession._userId,
           });
-          // Something happening up here or down here
-          return h.response({
-            success: true,
-            session: {
-              token: fastSession.token,
-              expireTime: fastSession.expireTime,
+          const updatedSession = await findSessionById(fastSession.id);
+          if (!updatedSession) {
+            return Boom.notFound('Session not found');
+          }
+          return h.view('successfullAuth', {
+            userSession: {
+              success: true,
+              session: {
+                token: updatedSession.token,
+                expireTime: updatedSession.expireTime,
+              },
             },
           });
         } else {
           await fastSession.destroy();
         }
       }
+
+      if (!googleProfile.raw.email_verified) {
+        return Boom.forbidden('Only validated emails can login');
+      }
+
+      req.cookieAuth.set({ id: googleProfile.id });
 
       let mutableUserFound = await getUserByEmail(googleProfile.email);
 
@@ -98,13 +110,6 @@ export const userRoutes: ServerRoute[] = [
           _organizationId: xteamOrganization?.id,
         });
       }
-
-      const firebaseApp = admin.initializeApp(
-        {
-          credential: admin.credential.cert(googleApplicationCredentials),
-        },
-        'loginFirebaseApp'
-      );
       if (!mutableUserFound.firebaseUserUid) {
         const firebaseUser = await firebaseApp.auth().getUserByEmail(googleProfile.email);
 
@@ -119,15 +124,17 @@ export const userRoutes: ServerRoute[] = [
         }
       }
 
-      const session = await createSession({
+      const newSession = await createSession({
         _userId: mutableUserFound.id,
       });
 
-      return h.response({
-        success: true,
-        session: {
-          token: session.token,
-          expireTime: session.expireTime,
+      return h.view('successfullAuth', {
+        userSession: {
+          success: true,
+          session: {
+            token: newSession.token,
+            expireTime: newSession.expireTime,
+          },
         },
       });
     },
@@ -136,30 +143,54 @@ export const userRoutes: ServerRoute[] = [
     method: ['GET'],
     path: '/general/login/session',
     options: {
-      description: 'Login into Games API with Google',
+      description: 'check if user is already logged in',
       tags: ['api', 'login', 'google'],
     },
     handler: async (req, h) => {
       const sessionToken = req.headers['xtu-session-token'];
 
       if (!sessionToken) {
-        return Boom.forbidden('xtu-session-token Header needed');
+        return h.response({
+          success: false,
+          message: 'xtu-session-token Header needed',
+        });
       }
       const fastSession = await findSessionByToken(sessionToken);
 
       if (fastSession) {
         const THOUSAND = 1000;
         if (Date.now() / THOUSAND < fastSession.expireTime / THOUSAND) {
-          await updateSession({
-            id: fastSession.id,
-            _userId: fastSession._userId,
-          });
-          // Something happening up here or down here
+          await updateSession(
+            {
+              id: fastSession.id,
+              _userId: fastSession._userId,
+            },
+            false
+          );
+          const updatedSession = await findSessionById(fastSession.id);
+          if (!updatedSession) {
+            return Boom.notFound('Session not found');
+          }
+          const user = await findUserById(updatedSession._userId);
+          if (!user) {
+            return Boom.notFound('User not found');
+          }
           return h.response({
             success: true,
             session: {
-              token: fastSession.token,
-              expireTime: fastSession.expireTime,
+              token: updatedSession.token,
+              expireTime: updatedSession.expireTime,
+            },
+            user: {
+              displayName: user.displayName,
+              email: user.email,
+              slackId: user.slackId,
+              firebaseUserUid: user.firebaseUserUid,
+              profilePictureUrl: user.profilePictureUrl,
+              role: user._roleId,
+              isAdmin:
+                user._roleId === USER_ROLE_LEVEL.ADMIN ||
+                user._roleId === USER_ROLE_LEVEL.SUPER_ADMIN,
             },
           });
         } else {
@@ -170,6 +201,31 @@ export const userRoutes: ServerRoute[] = [
       return h.response({
         success: false,
         message: 'User needs to login',
+      });
+    },
+  },
+  {
+    method: ['GET'],
+    path: '/general/logout',
+    options: {
+      description: 'Logout the user',
+      tags: ['api', 'login', 'google'],
+    },
+    handler: async (req, h) => {
+      const sessionToken = req.headers['xtu-session-token'];
+
+      if (!sessionToken) {
+        return Boom.unauthorized('xtu-session-token Header needed');
+      }
+      const fastSession = await findSessionByToken(sessionToken);
+
+      if (fastSession) {
+        await fastSession.destroy();
+      }
+
+      return h.response({
+        success: true,
+        message: 'User logged out successfully',
       });
     },
   },

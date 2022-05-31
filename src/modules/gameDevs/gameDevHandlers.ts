@@ -1,5 +1,6 @@
 import Boom from '@hapi/boom';
-import { Lifecycle } from '@hapi/hapi';
+import { Lifecycle, Request, ResponseToolkit } from '@hapi/hapi';
+import { CustomRequestThis } from '../../api-utils/interfaceAndTypes';
 
 import {
   createOrUpdateGameType,
@@ -19,11 +20,15 @@ export const getGameTypeHandler: Lifecycle.Method = async (request, h) => {
   return h.response({ game }).code(200);
 };
 
-export const getGameTypesHandler: Lifecycle.Method = async (request, h) => {
+export async function getGameTypesHandler(
+  this: CustomRequestThis,
+  request: Request,
+  h: ResponseToolkit
+) {
   const authUser = request.pre.getAuthUser;
   const games = await findAllGameTypesByCreator(authUser.id);
   return h.response({ games }).code(200);
-};
+}
 
 export const upsertGameTypeHandler: Lifecycle.Method = async (request, h) => {
   const authUser = request.pre.getAuthUser;

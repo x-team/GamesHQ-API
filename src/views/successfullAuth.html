@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+  <body>
+    <h2>You logged in successfully. Return to main page now {{ title }}</h2>
+    <p hidden id="session-token" sessionToken="{{userSession.session.token}}">
+      {{ userSession.session.token }}
+    </p>
+    <p
+      hidden
+      id="session-token-expireTime"
+      sessionTokenExpireTime="{{userSession.session.expireTime}}"
+    >
+      {{ userSession.session.expireTime }}
+    </p>
+
+    <script>
+      const sessionTokenP = document.getElementById('session-token');
+      const sessionTokenExpireTimeP = document.getElementById('session-token-expireTime');
+      const session = {
+        token: sessionTokenP.getAttribute('sessionToken'),
+        expireTime: sessionTokenExpireTimeP.getAttribute('sessionTokenExpireTime'),
+      };
+      if (window.opener) {
+        window.opener.postMessage(session, '*');
+      }
+      window.close();
+    </script>
+  </body>
+</html>
