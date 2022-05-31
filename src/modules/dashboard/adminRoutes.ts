@@ -1,5 +1,6 @@
 import type { ServerRoute } from '@hapi/hapi';
-import { CAPABILITIES } from '../../utils/firebase';
+import { getAuthUser } from '../../api-utils/getAuthUser';
+import { CAPABILITIES } from '../../api-utils/interfaceAndTypes';
 
 import {
   getCurrentArenaGameState,
@@ -39,12 +40,15 @@ export const adminRoutes: ServerRoute[] = [
     options: {
       description: 'Get all emojis and their respective URLs (from the X-Team slack)',
       tags: ['api'],
-      plugins: {
-        firebasePlugin: {
-          requiresAuth: true,
-          requiredCapabilities: [CAPABILITIES.ACCESS_ADMIN_ACTIONS],
-        },
+      bind: {
+        requiredCapabilities: [CAPABILITIES.ADMIN_ACTIONS],
       },
+      pre: [
+        {
+          method: getAuthUser,
+          assign: 'getAuthUser',
+        },
+      ],
     },
     handler: getEmojis,
   },
@@ -55,12 +59,15 @@ export const adminRoutes: ServerRoute[] = [
     options: {
       description: 'Get state of current arena game (if any)',
       tags: ['api'],
-      plugins: {
-        firebasePlugin: {
-          requiresAuth: true,
-          requiredCapabilities: [CAPABILITIES.ACCESS_ADMIN_ACTIONS],
-        },
+      bind: {
+        requiredCapabilities: [CAPABILITIES.ADMIN_ACTIONS],
       },
+      pre: [
+        {
+          method: getAuthUser,
+          assign: 'getAuthUser',
+        },
+      ],
     },
     handler: getCurrentArenaGameState,
   },
@@ -71,12 +78,15 @@ export const adminRoutes: ServerRoute[] = [
     options: {
       description: 'Get list of weapons',
       tags: ['api'],
-      plugins: {
-        firebasePlugin: {
-          requiresAuth: true,
-          requiredCapabilities: [CAPABILITIES.ACCESS_ADMIN_ACTIONS],
-        },
+      bind: {
+        requiredCapabilities: [CAPABILITIES.ADMIN_ACTIONS],
       },
+      pre: [
+        {
+          method: getAuthUser,
+          assign: 'getAuthUser',
+        },
+      ],
     },
     handler: getWeaponsHandler,
   },
@@ -87,12 +97,15 @@ export const adminRoutes: ServerRoute[] = [
     options: {
       description: 'Get information on a specific weapon',
       tags: ['api'],
-      plugins: {
-        firebasePlugin: {
-          requiresAuth: true,
-          requiredCapabilities: [CAPABILITIES.ACCESS_ADMIN_ACTIONS],
-        },
+      bind: {
+        requiredCapabilities: [CAPABILITIES.ADMIN_ACTIONS],
       },
+      pre: [
+        {
+          method: getAuthUser,
+          assign: 'getAuthUser',
+        },
+      ],
     },
     handler: getWeaponHandler,
   },
@@ -103,12 +116,15 @@ export const adminRoutes: ServerRoute[] = [
     options: {
       description: 'Add or update weapon',
       tags: ['api'],
-      plugins: {
-        firebasePlugin: {
-          requiresAuth: true,
-          requiredCapabilities: [CAPABILITIES.ACCESS_ADMIN_ACTIONS],
-        },
+      bind: {
+        requiredCapabilities: [CAPABILITIES.ADMIN_ACTIONS],
       },
+      pre: [
+        {
+          method: getAuthUser,
+          assign: 'getAuthUser',
+        },
+      ],
     },
     handler: upsertWeaponHandler,
   },
@@ -119,12 +135,15 @@ export const adminRoutes: ServerRoute[] = [
     options: {
       description: 'Delete a weapon by its item id.',
       tags: ['api'],
-      plugins: {
-        firebasePlugin: {
-          requiresAuth: true,
-          requiredCapabilities: [CAPABILITIES.ACCESS_ADMIN_ACTIONS],
-        },
+      bind: {
+        requiredCapabilities: [CAPABILITIES.ADMIN_ACTIONS],
       },
+      pre: [
+        {
+          method: getAuthUser,
+          assign: 'getAuthUser',
+        },
+      ],
     },
     handler: deleteWeaponHandler,
   },
@@ -135,12 +154,15 @@ export const adminRoutes: ServerRoute[] = [
     options: {
       description: 'Get information on a specific enemy',
       tags: ['api'],
-      plugins: {
-        firebasePlugin: {
-          requiresAuth: true,
-          requiredCapabilities: [CAPABILITIES.ACCESS_ADMIN_ACTIONS],
-        },
+      bind: {
+        requiredCapabilities: [CAPABILITIES.ADMIN_ACTIONS],
       },
+      pre: [
+        {
+          method: getAuthUser,
+          assign: 'getAuthUser',
+        },
+      ],
     },
     handler: getEnemyHandler,
   },
@@ -151,12 +173,15 @@ export const adminRoutes: ServerRoute[] = [
     options: {
       description: 'Delete an enemy.',
       tags: ['api'],
-      plugins: {
-        firebasePlugin: {
-          requiresAuth: true,
-          requiredCapabilities: [CAPABILITIES.ACCESS_ADMIN_ACTIONS],
-        },
+      bind: {
+        requiredCapabilities: [CAPABILITIES.ADMIN_ACTIONS],
       },
+      pre: [
+        {
+          method: getAuthUser,
+          assign: 'getAuthUser',
+        },
+      ],
     },
     handler: deleteEnemyHandler,
   },
@@ -167,12 +192,15 @@ export const adminRoutes: ServerRoute[] = [
     options: {
       description: 'Get all enemies',
       tags: ['api'],
-      plugins: {
-        firebasePlugin: {
-          requiresAuth: true,
-          requiredCapabilities: [CAPABILITIES.ACCESS_ADMIN_ACTIONS],
-        },
+      bind: {
+        requiredCapabilities: [CAPABILITIES.ADMIN_ACTIONS],
       },
+      pre: [
+        {
+          method: getAuthUser,
+          assign: 'getAuthUser',
+        },
+      ],
     },
     handler: getEnemiesHandler,
   },
@@ -183,12 +211,15 @@ export const adminRoutes: ServerRoute[] = [
     options: {
       description: 'Add or update enemy',
       tags: ['api'],
-      plugins: {
-        firebasePlugin: {
-          requiresAuth: true,
-          requiredCapabilities: [CAPABILITIES.ACCESS_ADMIN_ACTIONS],
-        },
+      bind: {
+        requiredCapabilities: [CAPABILITIES.ADMIN_ACTIONS],
       },
+      pre: [
+        {
+          method: getAuthUser,
+          assign: 'getAuthUser',
+        },
+      ],
     },
     handler: upsertEnemyHandler,
   },
@@ -201,12 +232,15 @@ export const adminRoutes: ServerRoute[] = [
     options: {
       description: 'Get specific zone by id',
       tags: ['api'],
-      plugins: {
-        firebasePlugin: {
-          requiresAuth: true,
-          requiredCapabilities: [CAPABILITIES.ACCESS_ADMIN_ACTIONS],
-        },
+      bind: {
+        requiredCapabilities: [CAPABILITIES.ADMIN_ACTIONS],
       },
+      pre: [
+        {
+          method: getAuthUser,
+          assign: 'getAuthUser',
+        },
+      ],
     },
     handler: getZoneHandler,
   },
@@ -217,12 +251,15 @@ export const adminRoutes: ServerRoute[] = [
     options: {
       description: 'Delete a zone.',
       tags: ['api'],
-      plugins: {
-        firebasePlugin: {
-          requiresAuth: true,
-          requiredCapabilities: [CAPABILITIES.ACCESS_ADMIN_ACTIONS],
-        },
+      bind: {
+        requiredCapabilities: [CAPABILITIES.ADMIN_ACTIONS],
       },
+      pre: [
+        {
+          method: getAuthUser,
+          assign: 'getAuthUser',
+        },
+      ],
     },
     handler: deleteZoneHandler,
   },
@@ -233,12 +270,15 @@ export const adminRoutes: ServerRoute[] = [
     options: {
       description: 'Get all zones',
       tags: ['api'],
-      plugins: {
-        firebasePlugin: {
-          requiresAuth: true,
-          requiredCapabilities: [CAPABILITIES.ACCESS_ADMIN_ACTIONS],
-        },
+      bind: {
+        requiredCapabilities: [CAPABILITIES.ADMIN_ACTIONS],
       },
+      pre: [
+        {
+          method: getAuthUser,
+          assign: 'getAuthUser',
+        },
+      ],
     },
     handler: getZonesHandler,
   },
@@ -249,12 +289,15 @@ export const adminRoutes: ServerRoute[] = [
     options: {
       description: 'Add or update a zone',
       tags: ['api'],
-      plugins: {
-        firebasePlugin: {
-          requiresAuth: true,
-          requiredCapabilities: [CAPABILITIES.ACCESS_ADMIN_ACTIONS],
-        },
+      bind: {
+        requiredCapabilities: [CAPABILITIES.ADMIN_ACTIONS],
       },
+      pre: [
+        {
+          method: getAuthUser,
+          assign: 'getAuthUser',
+        },
+      ],
     },
     handler: upsertZoneHandler,
   },
@@ -266,12 +309,15 @@ export const adminRoutes: ServerRoute[] = [
     options: {
       description: 'Get status of current tower game',
       tags: ['api'],
-      plugins: {
-        firebasePlugin: {
-          requiresAuth: true,
-          requiredCapabilities: [CAPABILITIES.ACCESS_ADMIN_ACTIONS],
-        },
+      bind: {
+        requiredCapabilities: [CAPABILITIES.ADMIN_ACTIONS],
       },
+      pre: [
+        {
+          method: getAuthUser,
+          assign: 'getAuthUser',
+        },
+      ],
     },
     handler: getTowerGameStatusHandler,
   },
@@ -282,12 +328,15 @@ export const adminRoutes: ServerRoute[] = [
     options: {
       description: 'Create new tower game.',
       tags: ['api'],
-      plugins: {
-        firebasePlugin: {
-          requiresAuth: true,
-          requiredCapabilities: [CAPABILITIES.ACCESS_ADMIN_ACTIONS],
-        },
+      bind: {
+        requiredCapabilities: [CAPABILITIES.ADMIN_ACTIONS],
       },
+      pre: [
+        {
+          method: getAuthUser,
+          assign: 'getAuthUser',
+        },
+      ],
     },
     handler: newTowerGameHandler,
   },
@@ -298,12 +347,15 @@ export const adminRoutes: ServerRoute[] = [
     options: {
       description: 'End current tower game.',
       tags: ['api'],
-      plugins: {
-        firebasePlugin: {
-          requiresAuth: true,
-          requiredCapabilities: [CAPABILITIES.ACCESS_ADMIN_ACTIONS],
-        },
+      bind: {
+        requiredCapabilities: [CAPABILITIES.ADMIN_ACTIONS],
       },
+      pre: [
+        {
+          method: getAuthUser,
+          assign: 'getAuthUser',
+        },
+      ],
     },
     handler: endCurrentTowerGameHandler,
   },
@@ -314,12 +366,15 @@ export const adminRoutes: ServerRoute[] = [
     options: {
       description: 'Open or close current tower game based on POST payload data.',
       tags: ['api'],
-      plugins: {
-        firebasePlugin: {
-          requiresAuth: true,
-          requiredCapabilities: [CAPABILITIES.ACCESS_ADMIN_ACTIONS],
-        },
+      bind: {
+        requiredCapabilities: [CAPABILITIES.ADMIN_ACTIONS],
       },
+      pre: [
+        {
+          method: getAuthUser,
+          assign: 'getAuthUser',
+        },
+      ],
     },
     handler: openOrCloseCurrentTowerHandler,
   },
@@ -332,12 +387,15 @@ export const adminRoutes: ServerRoute[] = [
     options: {
       description: 'Add ',
       tags: ['api'],
-      plugins: {
-        firebasePlugin: {
-          requiresAuth: true,
-          requiredCapabilities: [CAPABILITIES.ACCESS_ADMIN_ACTIONS],
-        },
+      bind: {
+        requiredCapabilities: [CAPABILITIES.ADMIN_ACTIONS],
       },
+      pre: [
+        {
+          method: getAuthUser,
+          assign: 'getAuthUser',
+        },
+      ],
     },
     handler: addEnemyToFloorHandler,
   },

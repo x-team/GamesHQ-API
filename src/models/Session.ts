@@ -148,24 +148,28 @@ export function createSession(
   );
 }
 
-export function updateSession(sessionData: SessionUpdateAttributes, transaction?: Transaction) {
+export function updateSession(
+  sessionData: SessionUpdateAttributes,
+  updateToken: boolean = true,
+  transaction?: Transaction
+) {
   const token = uuid4();
   const expireTimeDate = new Date();
   const expireTime = expireTimeDate.setMilliseconds(
     expireTimeDate.getMilliseconds() + MILLISECONDS_IN_A_MONTH
   );
+  const fieldsToUpdate: Partial<SessionAttributes> = {
+    expireTime,
+    updatedAt: new Date(),
+  };
+  if (updateToken) {
+    fieldsToUpdate.token = token;
+  }
   logger.info({ expireTime, updatedAt: expireTimeDate });
-  return Session.update(
-    {
-      token,
-      expireTime,
-      updatedAt: new Date(),
+  return Session.update(fieldsToUpdate, {
+    where: {
+      ...sessionData,
     },
-    {
-      where: {
-        ...sessionData,
-      },
-      transaction,
-    }
-  );
+    transaction,
+  });
 }
