@@ -38,7 +38,7 @@ export async function newGame(commandText: string, userRequesting: User) {
       transaction
     );
 
-    await enableAllItems(GAME_TYPE.ARENA, transaction);
+    await enableAllItems(game._gameTypeId, transaction);
     return getGameResponse(arenaCommandReply.adminCreatedGame(game));
   });
 }
@@ -68,7 +68,7 @@ export async function endGame(userRequesting: User) {
     if (!game) {
       return getGameError(arenaCommandReply.noActiveGame());
     }
-    await enableAllItems(GAME_TYPE.ARENA, transaction);
+    await enableAllItems(game._gameTypeId, transaction);
     await game.endGame(transaction);
     await activateAllArenaZones(transaction);
     await publishArenaMessage(arenaCommandReply.channelEndGame(game), true);

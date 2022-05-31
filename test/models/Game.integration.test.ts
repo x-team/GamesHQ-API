@@ -40,16 +40,19 @@ describe('Game', () => {
       const secondGameName = {
         name: '2_2_My_The_Tower_test_game_' + uuid(),
         _createdById: 1,
-        startedAt: new Date(),
+        startedAt: new Date(firstGameName.startedAt.getTime() + 1),
         _gameTypeId: 1,
       };
 
-      await createGame(firstGameName);
-      await createGame(secondGameName);
+      const firstTowerGame = await createGame(firstGameName);
+      const secondTowerGame = await createGame(secondGameName);
+
+      await firstTowerGame.endGame();
+      await secondTowerGame.endGame();
 
       const game = await findLastActiveGame('The Tower');
 
-      expect(game?.name).to.be.equal(firstGameName.name);
+      expect(game?.name).to.be.equal(secondTowerGame.name);
     });
   });
 });

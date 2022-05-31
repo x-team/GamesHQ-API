@@ -1,5 +1,5 @@
-import { Op } from 'sequelize';
 import type { Transaction, Association } from 'sequelize';
+import { Op } from 'sequelize';
 import {
   Table,
   Column,
@@ -83,7 +83,7 @@ export class GameItemAvailability
   };
 }
 
-export function createOrUpdateItemAvailability(
+export async function createOrUpdateItemAvailability(
   { _gameTypeId, _itemId, isArchived }: GameItemAvailabilityCreationAttributes,
   transaction: Transaction
 ) {
@@ -100,7 +100,7 @@ export function createOrUpdateItemAvailability(
   );
 }
 
-export async function enableAllItems(gameTypeId: number, transaction: Transaction) {
+export async function enableAllItems(_gameTypeId: number, transaction?: Transaction) {
   return GameItemAvailability.update(
     {
       isActive: true,
@@ -108,19 +108,20 @@ export async function enableAllItems(gameTypeId: number, transaction: Transactio
     {
       where: {
         isArchived: false,
-        _gameTypeId: gameTypeId,
+        _gameTypeId,
       },
+
       transaction,
     }
   );
 }
 
 export async function disableItems(
-  gameTypeId: number,
+  _gameTypeId: number,
   itemIds: number[],
-  transaction: Transaction
+  transaction?: Transaction
 ) {
-  await enableAllItems(gameTypeId, transaction);
+  await enableAllItems(_gameTypeId, transaction);
   return GameItemAvailability.update(
     {
       isActive: false,
@@ -131,7 +132,7 @@ export async function disableItems(
         _itemId: {
           [Op.notIn]: itemIds,
         },
-        _gameTypeId: gameTypeId,
+        _gameTypeId,
       },
       transaction,
     }

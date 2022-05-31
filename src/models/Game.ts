@@ -107,7 +107,7 @@ export class Game extends Model<GameAttributes, GameCreationAttributes> implemen
     onUpdate: 'CASCADE',
     onDelete: 'CASCADE',
   })
-  _gameType?: GameType;
+  _gameType!: GameType;
 
   @ForeignKey(() => User)
   @Column(DataType.INTEGER)
@@ -133,7 +133,7 @@ export class Game extends Model<GameAttributes, GameCreationAttributes> implemen
     _gameType: Association<Game, GameType>;
   };
 
-  async endGame(transaction: Transaction) {
+  async endGame(transaction?: Transaction) {
     await this.update(
       {
         isActive: false,

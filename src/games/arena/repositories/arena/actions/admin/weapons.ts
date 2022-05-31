@@ -1,5 +1,6 @@
 import { sampleSize } from 'lodash';
-import { User, Item } from '../../../../../../models';
+
+import type { User, Item } from '../../../../../../models';
 import { findActiveArenaGame } from '../../../../../../models/ArenaGame';
 import { findLivingPlayersByGame } from '../../../../../../models/ArenaPlayer';
 import { findActiveRound } from '../../../../../../models/ArenaRound';
@@ -24,7 +25,7 @@ export async function selectWeaponForEveryone(userRequesting: User) {
     if (!game) {
       return getGameError(arenaCommandReply.noActiveGame());
     }
-    const allWeapons = await listActiveWeaponsByGameType(game._gameTypeId, transaction);
+    const allWeapons = await listActiveWeaponsByGameType(game._gameType.name, transaction);
     const [randomWeapon] = sampleSize(allWeapons, ONE);
 
     const slackBlocks = generateGenericWeaponPickerBlock(
@@ -72,7 +73,7 @@ export async function startNarrowWeaponsQuestion(userRequesting: User) {
     if (!game) {
       return getGameError(arenaCommandReply.noActiveGame());
     }
-    const allWeapons = await listActiveWeaponsByGameType(game._gameTypeId, transaction);
+    const allWeapons = await listActiveWeaponsByGameType(game._gameType.name, transaction);
     const narrowWeaponsBlock = generateNarrowWeaponsBlock(allWeapons);
     return getGameResponse(narrowWeaponsBlock);
   });
