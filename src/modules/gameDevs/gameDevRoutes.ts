@@ -2,6 +2,11 @@ import type { ServerRoute } from '@hapi/hapi';
 import { getAuthUser } from '../../api-utils/getAuthUser';
 import { CAPABILITIES } from '../../api-utils/interfaceAndTypes';
 import {
+  gamedevGenericSchema,
+  multipleGamesSchema,
+  sigleGameItemSchema,
+} from '../../api-utils/responseSchemas/gamedev';
+import {
   deleteGameTypeHandler,
   getGameTypeHandler,
   getGameTypesHandler,
@@ -34,6 +39,9 @@ export const gameDevRoutes: ServerRoute[] = [
           assign: 'getAuthUser',
         },
       ],
+      response: {
+        schema: sigleGameItemSchema,
+      },
     },
     handler: getGameTypeHandler,
   },
@@ -53,6 +61,9 @@ export const gameDevRoutes: ServerRoute[] = [
           assign: 'getAuthUser',
         },
       ],
+      response: {
+        schema: gamedevGenericSchema,
+      },
     },
     handler: deleteGameTypeHandler,
   },
@@ -72,6 +83,9 @@ export const gameDevRoutes: ServerRoute[] = [
           assign: 'getAuthUser',
         },
       ],
+      response: {
+        schema: multipleGamesSchema,
+      },
     },
     handler: getGameTypesHandler,
   },
@@ -91,6 +105,9 @@ export const gameDevRoutes: ServerRoute[] = [
           assign: 'getAuthUser',
         },
       ],
+      response: {
+        schema: gamedevGenericSchema,
+      },
     },
     handler: upsertGameTypeHandler,
   },

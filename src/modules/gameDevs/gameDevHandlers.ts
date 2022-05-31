@@ -50,5 +50,5 @@ export const upsertGameTypeHandler: Lifecycle.Method = async (request, h) => {
 
 export const deleteGameTypeHandler: Lifecycle.Method = async (request, h) => {
   await deleteGameTypeById(request.params.gameTypeId);
-  return h.response({}).code(200);
+  return h.response({ success: true }).code(200);
 };
