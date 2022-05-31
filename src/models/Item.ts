@@ -269,7 +269,12 @@ export function listAllWeapons(transaction?: Transaction) {
     include: [
       {
         association: Item.associations._gameItemAvailability,
-        include: [GameItemAvailability.associations._gameType],
+        include: [
+          {
+            association: GameItemAvailability.associations._gameType,
+            attributes: ['id', 'name'],
+          },
+        ],
       },
       itemTypeToAssociation(ITEM_TYPE.WEAPON),
       Item.associations._traits,
@@ -292,6 +297,7 @@ export function listActiveItemsByGameType(
         include: [
           {
             association: GameItemAvailability.associations._gameType,
+            attributes: ['id', 'name'],
             where: { name: _gameTypeName },
           },
         ],
@@ -310,7 +316,12 @@ export async function listAllItems(transaction?: Transaction) {
       Item.associations._traits,
       {
         association: Item.associations._gameItemAvailability,
-        include: [GameItemAvailability.associations._gameType],
+        include: [
+          {
+            association: GameItemAvailability.associations._gameType,
+            attributes: ['id', 'name'],
+          },
+        ],
       },
     ],
     transaction,
