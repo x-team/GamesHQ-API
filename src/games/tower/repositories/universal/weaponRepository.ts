@@ -15,20 +15,19 @@ export interface IWeaponEditorData {
   majorDamageRate: number;
   usageLimit: number | null;
   traits: string[];
-  gameTypeId: number[]; // TBD change needed in FE
+  gameTypeIds: number[];
 }
 
 export const upsertWeapon = async (data: IWeaponEditorData) => {
   return withWeaponTransaction((transaction) => {
-    const gameAvailability: AnonymousGameItemAvailabilityCreationAttributes[] = data.gameTypeId.map(
-      (gameTypeId) => {
+    const gameAvailability: AnonymousGameItemAvailabilityCreationAttributes[] =
+      data.gameTypeIds.map((_gameTypeId) => {
         return {
-          _gameTypeId: gameTypeId,
+          _gameTypeId,
           isArchived: data.isArchived,
           isActive: !data.isArchived,
         };
-      }
-    );
+      });
 
     return createOrUpdateWeapon(
       {

@@ -226,7 +226,15 @@ export async function findItemById(itemId: number, itemType: ITEM_TYPE, transact
     include: [
       itemTypeToAssociation(itemType),
       Item.associations._traits,
-      Item.associations._gameItemAvailability,
+      {
+        association: Item.associations._gameItemAvailability,
+        include: [
+          {
+            association: GameItemAvailability.associations._gameType,
+            attributes: ['id', 'name'],
+          },
+        ],
+      },
     ],
     transaction,
   });

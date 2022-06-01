@@ -134,7 +134,7 @@ const basicUserInfo = ['id', 'displayName', 'slackId', 'email'];
 export async function createArenaGame(
   game: Game,
   { teamBased, hasZoneDeactivation }: ArenaGameCreationAttributes,
-  transaction: Transaction
+  transaction?: Transaction
 ) {
   const ringSystemAlgorithmPicked = await pickRingSystemAlgorithm(transaction);
   const newArenaGameBuild: ArenaGame = ArenaGame.build({
@@ -147,7 +147,7 @@ export async function createArenaGame(
   await createArenaRound(
     {
       _createdById: game._createdById,
-      _gameId: newArenaGame.id,
+      _arenaGameId: newArenaGame.id,
       isEveryoneVisible: false,
       isActive: true,
       startedAt: new Date(),

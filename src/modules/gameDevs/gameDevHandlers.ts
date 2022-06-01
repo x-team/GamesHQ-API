@@ -30,11 +30,17 @@ export const upsertGameTypeHandler: Lifecycle.Method = async (request, h) => {
   const authUser = request.pre.getAuthUser;
   const { payload } = request;
   const gameDataPayload = payload as IGameEditorData;
-  const gameTypeName = gameDataPayload.id;
+  const gameTypeName = gameDataPayload.name;
   const game = await findGameTypeByName(gameTypeName);
+
   if (game && authUser.id !== game._createdById) {
     throw Boom.forbidden('User is not the owner of the game');
   }
+
+  if (game && game.id !== gameDataPayload.id) {
+    throw Boom.forbidden('Game name already exists.');
+  }
+
   const gameCreationData: IGameEditorData = {
     ...(payload as IGameEditorData),
     name: gameTypeName,
@@ -47,5 +53,5 @@ export const upsertGameTypeHandler: Lifecycle.Method = async (request, h) => {
 
 export const deleteGameTypeHandler: Lifecycle.Method = async (request, h) => {
   await deleteGameTypeById(request.params.gameTypeId);
-  return h.response({}).code(200);
+  return h.response({ success: true }).code(200);
 };

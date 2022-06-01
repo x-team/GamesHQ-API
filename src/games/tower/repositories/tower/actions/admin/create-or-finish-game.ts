@@ -1,8 +1,10 @@
-import { Game, User } from '../../../../../../models';
+import type { User } from '../../../../../../models';
+import { Game } from '../../../../../../models';
 import { startTowerGame } from '../../../../../../models/TowerGame';
 import { findActiveRound } from '../../../../../../models/TowerRound';
 import { findTowerStatisticsByGame } from '../../../../../../models/TowerStatistics';
-import { adminAction, GameResponse, getGameError, getGameResponse } from '../../../../../utils';
+import type { GameResponse } from '../../../../../utils';
+import { adminAction, getGameError, getGameResponse } from '../../../../../utils';
 import { generateTowerEndGameConfirmationBlockKit } from '../../../../generators/gameplay';
 import { generateTowerInformation } from '../../../../generators/info-setup-and-config';
 import {

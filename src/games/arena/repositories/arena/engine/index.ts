@@ -1,11 +1,14 @@
 import type { Transaction } from 'sequelize/';
-import { ArenaRound } from '../../../../../models';
+
+import type { ArenaRound } from '../../../../../models';
 import { getIdlePlayers } from '../../../../../models/ArenaPlayer';
 import { setPlayerRoundAction } from '../../../../../models/ArenaRoundAction';
-import { ArenaZone, findArenaZoneById } from '../../../../../models/ArenaZone';
+import type { ArenaZone } from '../../../../../models/ArenaZone';
+import { findArenaZoneById } from '../../../../../models/ArenaZone';
 import { ZERO } from '../../../../consts/global';
 import { ARENA_ACTIONS } from '../../../consts';
 import { filterActionsById, filterActionsByZone, publishArenaMessage } from '../../../utils';
+
 import { processChangeLocation } from './processChangeLocation';
 import { processCheers } from './processCheer';
 import { processHealOrRevive } from './processHealOrRevive';
@@ -68,7 +71,7 @@ export class ArenaEngine {
     }
     if (!zone.isActive && zone.name !== 'Streaming Zone') {
       await this.processRingSystemPenalty(
-        round._game?._arena?.inactiveZonePenaltyPower ?? DEFAULT_INACTIVE_ZONE_PENALTY_POWER,
+        round._game?.inactiveZonePenaltyPower ?? DEFAULT_INACTIVE_ZONE_PENALTY_POWER,
         actions,
         transaction
       );

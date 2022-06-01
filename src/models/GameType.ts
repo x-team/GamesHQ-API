@@ -1,3 +1,4 @@
+import { Op } from 'sequelize';
 import type { Association, Transaction } from 'sequelize';
 import {
   Table,
@@ -71,7 +72,7 @@ export class GameType
 }
 
 export interface IGameEditorData {
-  id: GAME_TYPE | string;
+  id?: number;
   name: GAME_TYPE | string;
   clientSecret?: string;
   signingSecret?: string;
@@ -91,20 +92,35 @@ export function findGameTypeByName(name: string, transaction?: Transaction) {
 }
 
 export function findAllGameTypesByCreator(creatorId: number, transaction?: Transaction) {
-  return GameType.findAll({ where: { _createdById: creatorId }, transaction });
+  return GameType.findAll({
+    where: {
+      [Op.or]: [
+        { _createdById: creatorId },
+        { id: 1 }, // TBD : hack to return The Tower and Arena, Must chagne once creatorId logic is fixed in FR
+        { id: 2 },
+      ],
+    },
+    transaction,
+  });
 }
 
 export async function createOrUpdateGameType(
   gameTypeData: IGameEditorData,
   transaction?: Transaction
 ) {
-  const { name, clientSecret, signingSecret, _createdById } = gameTypeData;
+  const { id, name, clientSecret, signingSecret, _createdById } = gameTypeData;
+
   const valuesToUpdate: GameTypeCreationAttributes = {
+    id,
     name,
     clientSecret: clientSecret || (await generateSecret()),
     signingSecret: signingSecret || (await generateSecret()),
     _createdById: _createdById || 1, // TODO: Change this to something like request.user.id
   };
+
+  if (!id) {
+    delete valuesToUpdate.id;
+  }
 
   return GameType.upsert(valuesToUpdate, { transaction });
 }

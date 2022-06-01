@@ -1,5 +1,6 @@
 import { random } from 'lodash';
-import { User } from '../../../../../../models';
+
+import type { User } from '../../../../../../models';
 import { findPlayerByUser } from '../../../../../../models/ArenaPlayer';
 import { findSinglePlayerPerformance } from '../../../../../../models/ArenaPlayerPerformance';
 import {
@@ -9,19 +10,16 @@ import {
 import { findActiveArenaZones } from '../../../../../../models/ArenaZone';
 import { findWeaponById } from '../../../../../../models/ItemWeapon';
 import { ONE, TRAIT } from '../../../../../consts/global';
-import { GameResponse, getGameResponse } from '../../../../../utils';
+import type { GameResponse } from '../../../../../utils';
+import { getGameResponse } from '../../../../../utils';
 import { generateGenericWeaponPickerBlock } from '../../../../../utils/generators/games';
 import { ARENA_ACTIONS, ARENA_SECONDARY_ACTIONS } from '../../../../consts';
 import {
   generateArenaActionsBlockKit,
   generateArenaTargetPickerBlock,
 } from '../../../../generators/gameplay';
-import {
-  generateTargetGroup,
-  PlayerActionsDeadOrAlive,
-  playerActionsParams,
-  withArenaTransaction,
-} from '../../../../utils';
+import type { PlayerActionsDeadOrAlive } from '../../../../utils';
+import { generateTargetGroup, playerActionsParams, withArenaTransaction } from '../../../../utils';
 import { arenaCommandReply } from '../../replies';
 
 export async function hunt(userRequesting: User) {
@@ -47,11 +45,7 @@ export async function hunt(userRequesting: User) {
     const weaponQty = weapons.length;
 
     // find player's group
-    const targetGroup = generateTargetGroup(
-      player,
-      zone._players ?? [],
-      !!round._game?._arena?.teamBased
-    );
+    const targetGroup = generateTargetGroup(player, zone._players ?? [], !!round._game?.teamBased);
 
     if (targetGroup.length === 0) {
       const actionBlockkit = generateArenaActionsBlockKit(
@@ -202,11 +196,7 @@ export async function chooseWeapon(userRequesting: User, selectedWeapon: number,
       await player.setVisibility(true, transaction);
     }
     // find player's group
-    const targetGroup = generateTargetGroup(
-      player,
-      zone._players ?? [],
-      !!round._game?._arena?.teamBased
-    );
+    const targetGroup = generateTargetGroup(player, zone._players ?? [], !!round._game?.teamBased);
 
     const visiblePlayers = weapon?.hasTrait(TRAIT.DETECT)
       ? targetGroup

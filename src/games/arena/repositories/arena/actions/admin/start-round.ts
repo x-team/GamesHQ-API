@@ -1,4 +1,4 @@
-import { User } from '../../../../../../models';
+import type { User } from '../../../../../../models';
 import { findLivingPlayersByGame } from '../../../../../../models/ArenaPlayer';
 import {
   countRoundsCompleted,
@@ -57,12 +57,12 @@ export async function startRoundCommand(userRequesting: User) {
 
     const activeZonesForCurrentRound = await findActiveArenaZones(transaction);
 
-    if (round._game?._arena?.hasZoneDeactivation && activeZonesForCurrentRound.length > ONE) {
+    if (round._game?.hasZoneDeactivation && activeZonesForCurrentRound.length > ONE) {
       if ((roundsCompleted + ONE) % THREE === ZERO) {
         const zonesToDeactivate = await findRingSystemZonesToDeactivate(
           {
-            ringSystemAlgorithm: round._game?._arena?.ringSystemAlgorithm,
-            currentRingDeactivation: round._game?._arena?.currentRingDeactivation,
+            ringSystemAlgorithm: round._game?.ringSystemAlgorithm,
+            currentRingDeactivation: round._game?.currentRingDeactivation,
           },
           transaction
         );
@@ -71,7 +71,7 @@ export async function startRoundCommand(userRequesting: User) {
 
       if (roundsCompleted % THREE === ZERO) {
         await publishArenaMessage(arenaCommandReply.channelRunningRingSystem());
-        await ringDeactivationSystem(round._game._arena, transaction);
+        await ringDeactivationSystem(round._game, transaction);
       }
     }
 
