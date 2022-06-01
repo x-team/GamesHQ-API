@@ -2,7 +2,11 @@ import Joi from 'joi';
 
 const gameItemSchema = Joi.object({
   // Pending due to new table design
-}).required(); //.options({ stripUnknown: true });
+  id: Joi.string(),
+  clientSecret: Joi.string(),
+  signingSecret: Joi.string(),
+  _createdById: Joi.number(),
+}).optional(); //.options({ stripUnknown: true });
 
 export const sigleGameItemSchema = Joi.object({ game: gameItemSchema }).required(); //.options({ stripUnknown: true });
 

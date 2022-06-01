@@ -1,6 +1,7 @@
 import Boom from '@hapi/boom';
 import { Lifecycle, Request, ResponseToolkit } from '@hapi/hapi';
 import { CustomRequestThis } from '../../api-utils/interfaceAndTypes';
+import { arrayToJSON } from '../../api-utils/utils';
 
 import {
   createOrUpdateGameType,
@@ -17,7 +18,7 @@ export const getGameTypeHandler: Lifecycle.Method = async (request, h) => {
   if (authUser.id !== game?._createdById) {
     throw Boom.forbidden('User is not the owner of the game');
   }
-  return h.response({ game }).code(200);
+  return h.response({ game: game?.toJSON() }).code(200);
 };
 
 export async function getGameTypesHandler(
@@ -27,7 +28,7 @@ export async function getGameTypesHandler(
 ) {
   const authUser = request.pre.getAuthUser;
   const games = await findAllGameTypesByCreator(authUser.id);
-  return h.response({ games }).code(200);
+  return h.response({ games: arrayToJSON(games) }).code(200);
 }
 
 export const upsertGameTypeHandler: Lifecycle.Method = async (request, h) => {
