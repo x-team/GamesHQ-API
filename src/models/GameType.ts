@@ -1,4 +1,3 @@
-import { Op } from 'sequelize';
 import type { Association, Transaction } from 'sequelize';
 import {
   Table,
@@ -94,11 +93,7 @@ export function findGameTypeByName(name: string, transaction?: Transaction) {
 export function findAllGameTypesByCreator(creatorId: number, transaction?: Transaction) {
   return GameType.findAll({
     where: {
-      [Op.or]: [
-        { _createdById: creatorId },
-        { id: 1 }, // TBD : hack to return The Tower and Arena, Must chagne once creatorId logic is fixed in FR
-        { id: 2 },
-      ],
+      _createdById: creatorId,
     },
     transaction,
   });
