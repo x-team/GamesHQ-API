@@ -71,7 +71,7 @@ export class ArenaEngine {
     }
     if (!zone.isActive && zone.name !== 'Streaming Zone') {
       await this.processRingSystemPenalty(
-        round._game?.inactiveZonePenaltyPower ?? DEFAULT_INACTIVE_ZONE_PENALTY_POWER,
+        round._game?._arena?.inactiveZonePenaltyPower ?? DEFAULT_INACTIVE_ZONE_PENALTY_POWER,
         actions,
         transaction
       );

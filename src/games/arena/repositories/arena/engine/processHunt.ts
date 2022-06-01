@@ -77,7 +77,7 @@ export async function processHunt(
           player,
           gameId: round._gameId,
           selectedWeaponId: weaponId,
-          isTeamBasedGame: !!round._game?.teamBased,
+          isTeamBasedGame: !!round._game?._arena?.teamBased,
           targetPlayerId,
           isEveryoneVisible,
           // targets could be dead or hide

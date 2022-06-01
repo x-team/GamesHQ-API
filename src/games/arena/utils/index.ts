@@ -114,7 +114,7 @@ export async function processWinner(round: ArenaRound, transaction: Transaction)
     const [winner] = playersAlive;
     await publishArenaMessage(arenaCommandReply.playerWinsGame(winner._user?.slackId!));
   }
-  if (playersAlive.length > ONE && round._game?.teamBased) {
+  if (playersAlive.length > ONE && round._game?._arena?.teamBased) {
     const teamReference = playersAlive[ZERO]._teamId;
     const sameTeamPlayers = playersAlive.filter((p) => teamReference === p._teamId);
     if (sameTeamPlayers.length === playersAlive.length) {

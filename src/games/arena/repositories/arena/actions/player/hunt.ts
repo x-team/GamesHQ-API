@@ -45,7 +45,11 @@ export async function hunt(userRequesting: User) {
     const weaponQty = weapons.length;
 
     // find player's group
-    const targetGroup = generateTargetGroup(player, zone._players ?? [], !!round._game?.teamBased);
+    const targetGroup = generateTargetGroup(
+      player,
+      zone._players ?? [],
+      !!round._game?._arena?.teamBased
+    );
 
     if (targetGroup.length === 0) {
       const actionBlockkit = generateArenaActionsBlockKit(
@@ -196,7 +200,11 @@ export async function chooseWeapon(userRequesting: User, selectedWeapon: number,
       await player.setVisibility(true, transaction);
     }
     // find player's group
-    const targetGroup = generateTargetGroup(player, zone._players ?? [], !!round._game?.teamBased);
+    const targetGroup = generateTargetGroup(
+      player,
+      zone._players ?? [],
+      !!round._game?._arena?.teamBased
+    );
 
     const visiblePlayers = weapon?.hasTrait(TRAIT.DETECT)
       ? targetGroup

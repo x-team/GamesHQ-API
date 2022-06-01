@@ -188,8 +188,8 @@ export async function findActiveGame(gameTypeName: GAME_TYPE | string, transacti
         attributes: basicUserInfo,
       },
       {
-        model: GameType,
-        attributes: ['id, name'],
+        association: Game.associations._gameType,
+        attributes: ['id', 'name'],
         where: {
           name: gameTypeName,
         },
@@ -215,8 +215,8 @@ export async function findLastActiveGame(
         attributes: basicUserInfo,
       },
       {
-        model: GameType,
-        attributes: ['id, name'],
+        association: Game.associations._gameType,
+        attributes: ['id', 'name'],
         where: {
           name: gameTypeName,
         },

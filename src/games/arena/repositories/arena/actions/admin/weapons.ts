@@ -69,7 +69,7 @@ export async function startNarrowWeaponsQuestion(userRequesting: User) {
     if (!round) {
       return getGameError(arenaCommandReply.noActiveRound());
     }
-    const game = round._game?._game;
+    const game = round._game;
     if (!game) {
       return getGameError(arenaCommandReply.noActiveGame());
     }

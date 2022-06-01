@@ -14,11 +14,11 @@ import {
 
 import { GAME_TYPE, ITEM_TYPE } from '../games/consts/global';
 
-import { Game, Item, User, ArenaPlayer, ArenaGame, ArenaRoundAction } from './';
+import { Game, Item, User, ArenaPlayer, ArenaRoundAction } from './';
 
 interface ArenaRoundAttributes {
   id: number;
-  _arenaGameId: number;
+  _gameId: number;
   _createdById: number;
   isActive: boolean;
   isEveryoneVisible: boolean;
@@ -27,7 +27,7 @@ interface ArenaRoundAttributes {
 }
 
 interface ArenaRoundCreationAttributes {
-  _arenaGameId: number;
+  _gameId: number;
   _createdById: number;
   isEveryoneVisible: boolean;
   startedAt: Date;
@@ -105,12 +105,12 @@ export class ArenaRound
   @Column(DataType.DATE)
   endedAt!: Date | null;
 
-  @ForeignKey(() => ArenaGame)
+  @ForeignKey(() => Game)
   @Column(DataType.INTEGER)
-  _arenaGameId!: number;
+  _gameId!: number;
 
-  @BelongsTo(() => ArenaGame, '_gameId')
-  _arenaGame?: ArenaGame;
+  @BelongsTo(() => Game, '_gameId')
+  _game?: Game;
 
   @ForeignKey(() => User)
   @Column(DataType.INTEGER)
@@ -123,7 +123,7 @@ export class ArenaRound
   _actions?: ArenaRoundAction[];
 
   static associations: {
-    _arenaGame: Association<ArenaRound, ArenaGame>; // TBD association with ArenaGame?
+    _game: Association<ArenaRound, Game>; // TBD association with ArenaGame?
     _createdBy: Association<ArenaRound, User>;
     _actions: Association<ArenaRound, ArenaRoundAction>;
   };
@@ -147,20 +147,16 @@ export class ArenaRound
       include: [
         ArenaRound.associations._createdBy,
         {
-          association: ArenaRound.associations._arenaGame,
+          association: ArenaRound.associations._game,
+          where: { isActive: true },
           include: [
+            Game.associations._arena,
             {
-              association: ArenaGame.associations._game,
-              where: { isActive: true },
-              include: [
-                {
-                  association: Game.associations._gameType,
-                  attributes: ['id', 'name'],
-                  where: {
-                    name: GAME_TYPE.ARENA,
-                  },
-                },
-              ],
+              association: Game.associations._gameType,
+              attributes: ['id', 'name'],
+              where: {
+                name: GAME_TYPE.ARENA,
+              },
             },
           ],
         },
@@ -171,27 +167,23 @@ export class ArenaRound
   }
 }
 
-//TBD add logic findActiveRound by arenaGameId in order to allow many Arena Games to be played at the same time.
+//TBD this function has a bug if the api were to accept more than one Active Arena Game. It would return rounds from other ArenaGames. This can be fixed by adjusting the association to ArenaGame.
+
 export function findActiveRound(includeAll: boolean, transaction?: Transaction) {
   return ArenaRound.findOne({
     where: { isActive: true },
     include: [
       ArenaRound.associations._createdBy,
       {
-        association: ArenaRound.associations._arenaGame,
+        association: ArenaRound.associations._game,
+        where: { isActive: true },
         include: [
+          Game.associations._arena,
           {
-            association: ArenaGame.associations._game,
-            where: { isActive: true },
-            include: [
-              {
-                association: Game.associations._gameType,
-                attributes: ['id', 'name'],
-                where: {
-                  name: GAME_TYPE.ARENA,
-                },
-              },
-            ],
+            association: Game.associations._gameType,
+            where: {
+              name: GAME_TYPE.ARENA,
+            },
           },
         ],
       },
@@ -202,7 +194,7 @@ export function findActiveRound(includeAll: boolean, transaction?: Transaction) 
 }
 
 export async function startRound(
-  arenaGameId: number,
+  _gameId: number,
   createdById: number,
   isEveryoneVisible: boolean,
   transaction: Transaction
@@ -213,7 +205,7 @@ export async function startRound(
   }
   return createArenaRound(
     {
-      _arenaGameId: arenaGameId,
+      _gameId,
       _createdById: createdById,
       isEveryoneVisible,
       isActive: true,
@@ -226,7 +218,7 @@ export async function startRound(
 
 export async function createArenaRound(
   {
-    _arenaGameId,
+    _gameId,
     _createdById,
     isEveryoneVisible,
     startedAt,
@@ -237,7 +229,7 @@ export async function createArenaRound(
 ) {
   return ArenaRound.create(
     {
-      _arenaGameId,
+      _gameId,
       _createdById,
       isEveryoneVisible,
       startedAt,
@@ -252,8 +244,18 @@ export function countRoundsCompleted(transaction?: Transaction) {
   return ArenaRound.count({
     include: [
       {
-        association: ArenaRound.associations._arenaGame,
-        where: { isActive: true, _gameTypeId: GAME_TYPE.ARENA },
+        association: ArenaRound.associations._game,
+        where: { isActive: true },
+        include: [
+          Game.associations._arena,
+          {
+            association: Game.associations._gameType,
+            attributes: ['id', 'name'],
+            where: {
+              name: GAME_TYPE.ARENA,
+            },
+          },
+        ],
       },
     ],
     where: { isActive: false },

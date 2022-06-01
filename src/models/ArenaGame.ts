@@ -147,7 +147,7 @@ export async function createArenaGame(
   await createArenaRound(
     {
       _createdById: game._createdById,
-      _arenaGameId: newArenaGame.id,
+      _gameId: newArenaGame.id,
       isEveryoneVisible: false,
       isActive: true,
       startedAt: new Date(),
