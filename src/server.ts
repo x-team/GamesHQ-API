@@ -3,9 +3,11 @@ import Boom from '@hapi/boom';
 import CatboxMemory from '@hapi/catbox-memory';
 import { Server } from '@hapi/hapi';
 import Inert from '@hapi/inert';
+import Cookie from '@hapi/cookie';
 import Vision from '@hapi/vision';
 import HapiSwagger from 'hapi-swagger';
 import Joi from 'joi';
+import Handlebars from 'handlebars';
 
 import pkg from '../package.json';
 
@@ -37,6 +39,7 @@ const getServer = () =>
       },
       cors: {
         origin: ['*'],
+        headers: ['Accept', 'Authorization', 'Content-Type', 'If-None-Match', 'xtu-session-token'],
       },
       validate: {
         headers: Joi.object({
@@ -123,6 +126,7 @@ export async function getServerWithPlugins() {
   await server.register([
     { plugin: Inert },
     { plugin: Vision },
+    { plugin: Cookie },
     {
       plugin: HapiSwagger,
       options: swaggerOptions,
@@ -134,15 +138,39 @@ export async function getServerWithPlugins() {
 
   server.auth.strategy('google', 'bell', {
     provider: 'google',
-    password: 'cookie_encryption_password_secure',
+    password: getConfig('GOOGLE_APPLICATION_CLIENT_RANDOM_PASSWORD'),
     clientId: getConfig('GOOGLE_APPLICATION_CLIENT_ID'),
     clientSecret: getConfig('GOOGLE_APPLICATION_CLIENT_SECRET'),
     isSecure: isProd() ? true : false,
+    // providerParams: {
+    //   display: 'popup',
+    // },
+    // location: server.info.uri,
+  });
+
+  server.auth.strategy('session', 'cookie', {
+    cookie: {
+      name: 'XTU_GOOGLE',
+      password: getConfig('COOKIE_PASSWORD'),
+      isSecure: isProd() ? true : false,
+      path: '/',
+      isSameSite: false,
+    },
+    redirectTo: false,
+  });
+
+  server.views({
+    engines: {
+      html: Handlebars,
+    },
+    relativeTo: __dirname,
+    path: 'views',
+    // helpersPath: 'views/helpers',
   });
 
   // await server.register(
   //   {
-  //     plugin: slacTowerEvents,
+  //     plugin: slackTowerEvents,
   //   },
   //   {
   //     routes: {

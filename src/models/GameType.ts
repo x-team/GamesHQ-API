@@ -115,7 +115,7 @@ export async function createOrUpdateGameType(
     name,
     clientSecret: clientSecret || (await generateSecret()),
     signingSecret: signingSecret || (await generateSecret()),
-    _createdById: _createdById || 1, // TODO: Change this to something like request.user.id
+    _createdById: _createdById,
   };
 
   if (!id) {

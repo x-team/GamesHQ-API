@@ -1,7 +1,12 @@
 import type { ServerRoute } from '@hapi/hapi';
 
 import { getAuthUser } from '../../api-utils/getAuthUser';
-import { CAPABILITIES } from '../../utils/firebase';
+import { CAPABILITIES } from '../../api-utils/interfaceAndTypes';
+import {
+  gamedevGenericSchema,
+  multipleGamesSchema,
+  sigleGameItemSchema,
+} from '../../api-utils/responseSchemas/gamedev';
 
 import {
   deleteGameTypeHandler,
@@ -27,11 +32,8 @@ export const gameDevRoutes: ServerRoute[] = [
     options: {
       description: 'Get specific game by id',
       tags: ['api'],
-      plugins: {
-        firebasePlugin: {
-          requiresAuth: true,
-          requiredCapabilities: [CAPABILITIES.ACCESS_ADMIN_ACTIONS],
-        },
+      bind: {
+        requiredCapabilities: [CAPABILITIES.GAMEDEV_ACTIONS],
       },
       pre: [
         {
@@ -39,6 +41,9 @@ export const gameDevRoutes: ServerRoute[] = [
           assign: 'getAuthUser',
         },
       ],
+      response: {
+        schema: sigleGameItemSchema,
+      },
     },
     handler: getGameTypeHandler,
   },
@@ -49,11 +54,8 @@ export const gameDevRoutes: ServerRoute[] = [
     options: {
       description: 'Delete a game.',
       tags: ['api'],
-      plugins: {
-        firebasePlugin: {
-          requiresAuth: true,
-          requiredCapabilities: [CAPABILITIES.ACCESS_ADMIN_ACTIONS],
-        },
+      bind: {
+        requiredCapabilities: [CAPABILITIES.GAMEDEV_ACTIONS],
       },
       pre: [
         {
@@ -61,6 +63,9 @@ export const gameDevRoutes: ServerRoute[] = [
           assign: 'getAuthUser',
         },
       ],
+      response: {
+        schema: gamedevGenericSchema,
+      },
     },
     handler: deleteGameTypeHandler,
   },
@@ -71,11 +76,8 @@ export const gameDevRoutes: ServerRoute[] = [
     options: {
       description: 'Get all games',
       tags: ['api'],
-      plugins: {
-        firebasePlugin: {
-          requiresAuth: true,
-          requiredCapabilities: [CAPABILITIES.ACCESS_ADMIN_ACTIONS],
-        },
+      bind: {
+        requiredCapabilities: [CAPABILITIES.GAMEDEV_ACTIONS],
       },
       pre: [
         {
@@ -83,6 +85,9 @@ export const gameDevRoutes: ServerRoute[] = [
           assign: 'getAuthUser',
         },
       ],
+      response: {
+        schema: multipleGamesSchema,
+      },
     },
     handler: getGameTypesHandler,
   },
@@ -93,11 +98,8 @@ export const gameDevRoutes: ServerRoute[] = [
     options: {
       description: 'Add or update a game',
       tags: ['api'],
-      plugins: {
-        firebasePlugin: {
-          requiresAuth: true,
-          requiredCapabilities: [CAPABILITIES.ACCESS_ADMIN_ACTIONS],
-        },
+      bind: {
+        requiredCapabilities: [CAPABILITIES.GAMEDEV_ACTIONS],
       },
       pre: [
         {
@@ -105,6 +107,9 @@ export const gameDevRoutes: ServerRoute[] = [
           assign: 'getAuthUser',
         },
       ],
+      response: {
+        schema: gamedevGenericSchema,
+      },
     },
     handler: upsertGameTypeHandler,
   },

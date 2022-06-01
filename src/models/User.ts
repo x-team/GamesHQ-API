@@ -160,6 +160,10 @@ export class User extends Model<UserAttributes, UserCreationAttributes> implemen
   }
 }
 
+export function findUserById(id: number, transaction?: Transaction) {
+  return User.findByPk(id, { transaction });
+}
+
 export async function getUserByEmail(email: string): Promise<User | null> {
   return User.findOne({
     where: {
