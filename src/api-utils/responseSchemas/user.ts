@@ -12,22 +12,18 @@ const sessionTokenSchema = Joi.object({
 const userSessionSchema = Joi.object({
   displayName: Joi.string().required(),
   email: Joi.string().email().required(),
-  slackId: Joi.string().optional(),
-  firebaseUserUid: Joi.string().optional(),
-  profilePictureUrl: Joi.string().optional(),
+  slackId: Joi.string().allow(null).optional(),
+  firebaseUserUid: Joi.string().allow(null).optional(),
+  profilePictureUrl: Joi.string().allow(null).optional(),
   role: Joi.number().required(),
   isAdmin: Joi.boolean().required(),
-})
-  .required()
-  .options({ stripUnknown: true });
+}).options({ stripUnknown: true });
 
-const sessionSchema = Joi.object({
+export const sessionSchema = Joi.object({
   success: sessionStateSchema,
   session: sessionTokenSchema,
   user: userSessionSchema,
-})
-  .required()
-  .options({ stripUnknown: true });
+}).options({ stripUnknown: true });
 
 const sessionGenericSchema = Joi.object({
   success: sessionStateSchema,

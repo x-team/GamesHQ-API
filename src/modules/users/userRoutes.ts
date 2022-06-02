@@ -1,8 +1,7 @@
 import type { ServerRoute } from '@hapi/hapi';
-import {
-  checkAvailableSessionSchema,
-  logoutSessionSchema,
-} from '../../api-utils/responseSchemas/user';
+
+import { sessionSchema, logoutSessionSchema } from '../../api-utils/responseSchemas/user';
+
 import { checkAvailableSession, loginWithGoogle, logutFromAPI } from './userHandler';
 
 export const userRoutes: ServerRoute[] = [
@@ -27,7 +26,7 @@ export const userRoutes: ServerRoute[] = [
       description: 'check if user is already logged in',
       tags: ['api', 'login', 'google'],
       response: {
-        schema: checkAvailableSessionSchema,
+        schema: sessionSchema,
       },
     },
     handler: checkAvailableSession,
