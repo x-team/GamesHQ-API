@@ -21,9 +21,8 @@ module.exports = {
             type: DataTypes.INTEGER,
           },
           _gameTypeId: {
-            type: DataTypes.TEXT, // gameType Id as INTEGER?
+            type: DataTypes.INTEGER,
             allowNull: false,
-            unique: true, // should it be unique?
             references: {
               model: 'GameType',
               key: 'id',

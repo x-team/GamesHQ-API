@@ -18,16 +18,16 @@ import { GameType } from './GameType';
 
 interface LeaderboardEntryAttributes {
   id: number;
-  _gameTypeId: string;
+  _gameTypeId: number;
   name: string;
   scoreStrategy: ScoreStrategy;
   resetStrategy: ResetStrategy;
   createdAt: Date;
   updatedAt: Date;
 }
-
 export interface LeaderboardEntryCreationAttributes {
-  _gameTypeId: string;
+  id?: number;
+  _gameTypeId: number;
   name: string;
   scoreStrategy?: ScoreStrategy;
   resetStrategy?: ResetStrategy;
@@ -35,14 +35,14 @@ export interface LeaderboardEntryCreationAttributes {
   updatedAt?: Date;
 }
 
-enum ScoreStrategy {
+export enum ScoreStrategy {
   HIGHEST = 'highest',
   LOWEST = 'lowest',
   SUM = 'sum',
   LATEST = 'latest',
 }
 
-enum ResetStrategy {
+export enum ResetStrategy {
   DAILY = 'daily',
   WEEKLY = 'weekly',
   MONTHLY = 'monthly',
@@ -61,8 +61,8 @@ export class LeaderboardEntry extends Model<
 
   @ForeignKey(() => GameType)
   @AllowNull(false)
-  @Column(DataType.TEXT)
-  _gameTypeId!: string;
+  @Column(DataType.INTEGER)
+  _gameTypeId!: number;
 
   @BelongsTo(() => GameType, {
     foreignKey: '_gameTypeId',
@@ -100,20 +100,20 @@ export class LeaderboardEntry extends Model<
   updatedAt!: Date;
 }
 
-export function getLeaderBoardsByGameType(_gameTypeId: string, transaction?: Transaction) {
+export function getLeaderBoardById(id: number, transaction?: Transaction) {
+  return LeaderboardEntry.findByPk<LeaderboardEntry>(id, { transaction });
+}
+
+export function getLeaderBoardsByGameType(_gameTypeId: number, transaction?: Transaction) {
   return LeaderboardEntry.findAll({ where: { _gameTypeId }, transaction });
 }
 
-export function createLeaderBoard(
+export function createOrUpdateLeaderBoard(
   leaderBoardData: LeaderboardEntryCreationAttributes,
   transaction?: Transaction
 ) {
-  return LeaderboardEntry.create(
-    {
-      ...leaderBoardData,
-      createdAt: new Date(),
-      updatedAt: new Date(),
-    },
-    { transaction }
-  );
+  return LeaderboardEntry.upsert(leaderBoardData, {
+    transaction,
+    returning: true,
+  });
 }

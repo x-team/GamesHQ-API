@@ -12,7 +12,11 @@ import {
   findGameTypeById,
 } from '../../models/GameType';
 import type { LeaderboardEntryCreationAttributes } from '../../models/LeaderboardEntry';
-import { getLeaderBoardsByGameType, createLeaderBoard } from '../../models/LeaderboardEntry';
+import {
+  getLeaderBoardsByGameType,
+  getLeaderBoardById,
+  createOrUpdateLeaderBoard,
+} from '../../models/LeaderboardEntry';
 
 // 🎮 Games
 export const getGameTypeHandler: Lifecycle.Method = async (request, h) => {
@@ -71,8 +75,13 @@ export const getLeaderboardHandler: Lifecycle.Method = async (request, h) => {
     throw Boom.forbidden('User is not the owner of the game');
   }
 
-  const leaderboards = await getLeaderBoardsByGameType(request.params.gameTypeId);
-  return h.response(leaderboards).code(200);
+  if (request.params.leaderboardId) {
+    const leaderboard = await getLeaderBoardById(request.params.leaderboardId);
+    return h.response(leaderboard?.toJSON()).code(200);
+  } else {
+    const leaderboards = await getLeaderBoardsByGameType(request.params.gameTypeId);
+    return h.response(leaderboards).code(200);
+  }
 };
 
 export const upsertLeaderboardHandler: Lifecycle.Method = async (request, h) => {
@@ -86,10 +95,13 @@ export const upsertLeaderboardHandler: Lifecycle.Method = async (request, h) => 
 
   const payload = request.payload as LeaderboardEntryCreationAttributes;
 
-  await createLeaderBoard({
+  const [rslt] = await createOrUpdateLeaderBoard({
+    id: payload.id,
     name: payload.name,
     _gameTypeId: gameTypeId,
+    scoreStrategy: payload.scoreStrategy,
+    resetStrategy: payload.resetStrategy,
   });
 
-  return h.response({ success: true }).code(200);
+  return h.response(rslt).code(200);
 };

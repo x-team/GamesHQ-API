@@ -6,6 +6,7 @@ import {
   DataType,
   PrimaryKey,
   BelongsTo,
+  HasMany,
   AllowNull,
   ForeignKey,
   Unique,
@@ -13,6 +14,8 @@ import {
 
 import type { GAME_TYPE } from '../games/consts/global';
 import { generateSecret } from '../utils/cryptography';
+
+import { LeaderboardEntry } from './LeaderboardEntry';
 
 import { User } from './';
 
@@ -65,8 +68,12 @@ export class GameType
   })
   _createdBy?: User;
 
+  @HasMany(() => LeaderboardEntry, '_gameTypeId')
+  _leaderboards?: LeaderboardEntry[];
+
   static associations: {
     _createdBy: Association<GameType, User>;
+    _leaderboards: Association<LeaderboardEntry, User>;
   };
 }
 
@@ -95,6 +102,7 @@ export function findAllGameTypesByCreator(creatorId: number, transaction?: Trans
     where: {
       _createdById: creatorId,
     },
+    include: [GameType.associations._leaderboards],
     transaction,
   });
 }

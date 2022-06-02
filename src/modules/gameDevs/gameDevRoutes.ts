@@ -73,7 +73,7 @@ export const gameDevRoutes: ServerRoute[] = [
   },
   {
     method: 'GET',
-    path: '/dashboard/game-dev/games/{gameTypeId}/leaderboard',
+    path: '/dashboard/game-dev/games/{gameTypeId}/leaderboard/{leaderboardId?}',
     options: {
       description: 'Fetch game`s leaderboardEntries',
       tags: ['api'],
