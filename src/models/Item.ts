@@ -16,14 +16,14 @@ import {
 } from 'sequelize-typescript';
 
 import { logger } from '../config';
-import type { GAME_TYPE, TRAIT } from '../games/consts/global';
 import { ITEM_RARITY, ITEM_TYPE } from '../games/consts/global';
+import type { TRAIT } from '../games/consts/global';
 
-import type { AnonymousGameItemAvailabilityCreationAttributes } from './GameItemAvailability';
 import {
   removeAllGameItemAvailability,
   createOrUpdateItemAvailability,
 } from './GameItemAvailability';
+import type { AnonymousGameItemAvailabilityCreationAttributes } from './GameItemAvailability';
 import { createOrUpdateItemTrait, removeAllItemTraits } from './ItemTrait';
 import { Organization } from './Organization';
 
@@ -206,12 +206,12 @@ export async function createOrUpdateItem(
   }
 
   await Promise.all(
-    itemsAvailability.map(({ _gameTypeId, isArchived }) =>
-      createOrUpdateItemAvailability(
+    itemsAvailability.map(async ({ _gameTypeId, isArchived }) => {
+      return createOrUpdateItemAvailability(
         { _gameTypeId, _itemId: item.id, isArchived, isActive: !isArchived },
         transaction
-      )
-    )
+      );
+    })
   );
 
   if (traits) {
@@ -226,7 +226,15 @@ export async function findItemById(itemId: number, itemType: ITEM_TYPE, transact
     include: [
       itemTypeToAssociation(itemType),
       Item.associations._traits,
-      Item.associations._gameItemAvailability,
+      {
+        association: Item.associations._gameItemAvailability,
+        include: [
+          {
+            association: GameItemAvailability.associations._gameType,
+            attributes: ['id', 'name'],
+          },
+        ],
+      },
     ],
     transaction,
   });
@@ -269,7 +277,12 @@ export function listAllWeapons(transaction?: Transaction) {
     include: [
       {
         association: Item.associations._gameItemAvailability,
-        include: [GameItemAvailability.associations._gameType],
+        include: [
+          {
+            association: GameItemAvailability.associations._gameType,
+            attributes: ['id', 'name'],
+          },
+        ],
       },
       itemTypeToAssociation(ITEM_TYPE.WEAPON),
       Item.associations._traits,
@@ -279,7 +292,7 @@ export function listAllWeapons(transaction?: Transaction) {
 }
 
 export function listActiveItemsByGameType(
-  gameType: GAME_TYPE,
+  _gameTypeName: string,
   itemType: ITEM_TYPE,
   transaction?: Transaction
 ) {
@@ -292,7 +305,8 @@ export function listActiveItemsByGameType(
         include: [
           {
             association: GameItemAvailability.associations._gameType,
-            where: { id: gameType },
+            attributes: ['id', 'name'],
+            where: { name: _gameTypeName },
           },
         ],
       },
@@ -310,7 +324,12 @@ export async function listAllItems(transaction?: Transaction) {
       Item.associations._traits,
       {
         association: Item.associations._gameItemAvailability,
-        include: [GameItemAvailability.associations._gameType],
+        include: [
+          {
+            association: GameItemAvailability.associations._gameType,
+            attributes: ['id', 'name'],
+          },
+        ],
       },
     ],
     transaction,

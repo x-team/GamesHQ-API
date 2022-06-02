@@ -1,4 +1,4 @@
-import { Association, Transaction } from 'sequelize';
+import type { Association, Transaction } from 'sequelize';
 import {
   Table,
   Column,
@@ -8,21 +8,25 @@ import {
   BelongsTo,
   AllowNull,
   ForeignKey,
+  Unique,
 } from 'sequelize-typescript';
 
-import { GAME_TYPE } from '../games/consts/global';
+import type { GAME_TYPE } from '../games/consts/global';
 import { generateSecret } from '../utils/cryptography';
+
 import { User } from './';
 
 interface GameTypeAttributes {
-  id: GAME_TYPE | string;
+  id: number;
+  name: GAME_TYPE | string;
   clientSecret: string;
   signingSecret: string;
   _createdById: number;
 }
 
 interface GameTypeCreationAttributes {
-  id: GAME_TYPE | string;
+  id?: number;
+  name: GAME_TYPE | string;
   clientSecret: string;
   signingSecret: string;
   _createdById: number;
@@ -34,8 +38,13 @@ export class GameType
   implements GameTypeAttributes
 {
   @PrimaryKey
+  @Column(DataType.INTEGER)
+  id!: number;
+
+  @Unique(true)
+  @AllowNull(false)
   @Column(DataType.TEXT)
-  id!: GAME_TYPE | string;
+  name!: GAME_TYPE | string;
 
   @AllowNull(false)
   @Column(DataType.TEXT)
@@ -62,7 +71,8 @@ export class GameType
 }
 
 export interface IGameEditorData {
-  id: GAME_TYPE | string;
+  id?: number;
+  name: GAME_TYPE | string;
   clientSecret?: string;
   signingSecret?: string;
   _createdById: number;
@@ -72,25 +82,40 @@ export function findGameTypeByClientSecret(clientSecret: string, transaction?: T
   return GameType.findOne({ where: { clientSecret }, transaction });
 }
 
-export function findGameTypeById(id: string, transaction?: Transaction) {
+export function findGameTypeById(id: number, transaction?: Transaction) {
   return GameType.findByPk(id, { transaction });
 }
 
+export function findGameTypeByName(name: string, transaction?: Transaction) {
+  return GameType.findOne({ where: { name }, transaction });
+}
+
 export function findAllGameTypesByCreator(creatorId: number, transaction?: Transaction) {
-  return GameType.findAll({ where: { _createdById: creatorId }, transaction });
+  return GameType.findAll({
+    where: {
+      _createdById: creatorId,
+    },
+    transaction,
+  });
 }
 
 export async function createOrUpdateGameType(
   gameTypeData: IGameEditorData,
   transaction?: Transaction
 ) {
-  const { id, clientSecret, signingSecret, _createdById } = gameTypeData;
+  const { id, name, clientSecret, signingSecret, _createdById } = gameTypeData;
+
   const valuesToUpdate: GameTypeCreationAttributes = {
     id,
+    name,
     clientSecret: clientSecret || (await generateSecret()),
     signingSecret: signingSecret || (await generateSecret()),
-    _createdById: _createdById || 1, // TODO: Change this to something like request.user.id
+    _createdById: _createdById,
   };
+
+  if (!id) {
+    delete valuesToUpdate.id;
+  }
 
   return GameType.upsert(valuesToUpdate, { transaction });
 }

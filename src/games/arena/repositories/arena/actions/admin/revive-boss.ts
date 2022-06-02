@@ -1,4 +1,4 @@
-import { User } from '../../../../../../models';
+import type { User } from '../../../../../../models';
 import { findPlayerByUser } from '../../../../../../models/ArenaPlayer';
 import { findActiveRound } from '../../../../../../models/ArenaRound';
 import { getUserBySlackId } from '../../../../../../models/User';

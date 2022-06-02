@@ -9,11 +9,10 @@ import {
   BelongsTo,
 } from 'sequelize-typescript';
 
-import type { GAME_TYPE, ITEM_RARITY } from '../games/consts/global';
 import { ITEM_TYPE } from '../games/consts/global';
+import type { ITEM_RARITY } from '../games/consts/global';
 
 import type { AnonymousGameItemAvailabilityCreationAttributes } from './GameItemAvailability';
-import type { ItemCreationAttributes } from './Item';
 import {
   listActiveItemsByGameType,
   createOrUpdateItem,
@@ -21,6 +20,7 @@ import {
   findItemByName,
   findItemsByRarityAndType,
 } from './Item';
+import type { ItemCreationAttributes } from './Item';
 
 import { Item } from '.';
 
@@ -94,8 +94,8 @@ export async function createOrUpdateWeapon(
   );
 }
 
-export async function listActiveWeaponsByGameType(gameType: GAME_TYPE, transaction?: Transaction) {
-  return listActiveItemsByGameType(gameType, ITEM_TYPE.WEAPON, transaction);
+export async function listActiveWeaponsByGameType(gameTypeName: string, transaction?: Transaction) {
+  return listActiveItemsByGameType(gameTypeName, ITEM_TYPE.WEAPON, transaction);
 }
 
 export async function findWeaponsByRarity(rarityId: ITEM_RARITY, transaction?: Transaction) {

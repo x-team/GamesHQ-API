@@ -1,4 +1,5 @@
-import { Association, Op, Transaction } from 'sequelize';
+import type { Association, Transaction } from 'sequelize';
+import { Op } from 'sequelize';
 // import { Op } from 'sequelize';
 import {
   Table,
@@ -13,15 +14,18 @@ import {
   PrimaryKey,
   Unique,
 } from 'sequelize-typescript';
+
+import { GAME_TYPE } from '../games/consts/global';
 import {
   DEFAULT_COIN_PRIZE,
   DEFAULT_LUNA_PRIZE,
   DEFAULT_MAX_FLOOR_NUMBER,
 } from '../games/tower/consts';
-import { Game, User, TowerStatistics, TowerFloor, TowerRaider } from '.';
+
 import { findActiveGame, findLastActiveGame, startGame } from './Game';
-import { GAME_TYPE } from '../games/consts/global';
 import { addTowerFloors } from './TowerFloor';
+
+import { Game, User, TowerStatistics, TowerFloor, TowerRaider } from '.';
 
 interface TowerGameAttributes {
   id: number;
@@ -179,10 +183,8 @@ export async function startTowerGame(
   },
   transaction: Transaction
 ) {
-  const newGame = await startGame(
-    { name, _createdById, _gameTypeId: GAME_TYPE.TOWER, startedAt: new Date() },
-    transaction
-  );
+  const newGame = await startGame(GAME_TYPE.TOWER, name, _createdById, new Date(), transaction);
+
   return createTowerGame(
     newGame,
     { lunaPrize, coinPrize, height, isOpen, _gameId: newGame.id },

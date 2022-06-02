@@ -12,7 +12,7 @@ import { createUser } from '../models/User';
 
 const googleApplicationCredentials = JSON.parse(getConfig('GOOGLE_APPLICATION_CREDENTIALS'));
 
-const firebaseApp = admin.initializeApp({
+export const firebaseApp = admin.initializeApp({
   credential: admin.credential.cert(googleApplicationCredentials),
 });
 

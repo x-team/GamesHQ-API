@@ -20,8 +20,8 @@ import { ARENA_ZONE_RING, RING_SYSTEM_MAX_PENALTY_NUMBER } from '../games/arena/
 import { arenaZoneCapacity } from '../games/arena/utils';
 import { ONE, SORT_ACTION_ARRAY_RATE, ZERO } from '../games/consts/global';
 
-import { ArenaGame, Organization } from '.';
-import { ArenaPlayer } from '.';
+import type { ArenaGame } from '.';
+import { Organization, ArenaPlayer } from '.';
 
 interface ArenaZoneAttributes {
   id: number;
@@ -327,7 +327,7 @@ export async function ringDeactivationSystem(game: ArenaGame, transaction: Trans
   }
 }
 
-export async function pickRingSystemAlgorithm(transaction: Transaction) {
+export async function pickRingSystemAlgorithm(transaction?: Transaction) {
   const defaultAlgorithm = '5';
   const zonesByDistinctRings = await ArenaZone.findAll({
     attributes: [[Sequelize.literal('DISTINCT ring'), 'ring']],
