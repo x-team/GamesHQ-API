@@ -1,4 +1,6 @@
-import { DataTypes, QueryInterface, QueryTypes, Sequelize, Transaction } from 'sequelize';
+import type { QueryInterface, Sequelize, Transaction } from 'sequelize';
+import { DataTypes, QueryTypes } from 'sequelize';
+
 import { generateSecret } from '../utils/cryptography';
 
 interface SequelizeContext {

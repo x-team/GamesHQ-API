@@ -2,28 +2,25 @@ import { sampleSize } from 'lodash';
 import type { Transaction } from 'sequelize';
 
 import { getConfig } from '../../../config';
-import {
-  ArenaPlayer,
+import type {
   ArenaPlayerPerformance,
   ArenaRound,
   ArenaRoundAction,
-  ArenaZone,
   Item,
   User,
 } from '../../../models';
+import { ArenaPlayer, ArenaZone } from '../../../models';
 import { findLivingPlayersByGame, findPlayerByUser } from '../../../models/ArenaPlayer';
 import { findActiveRound } from '../../../models/ArenaRound';
-import { ARENA_ACTIONS_TYPE } from '../../../models/ArenaRoundAction';
+import type { ARENA_ACTIONS_TYPE } from '../../../models/ArenaRoundAction';
 import { parseEscapedSlackUserValues } from '../../../utils/slack';
-import { ITEM_RARITY, ONE, ZERO } from '../../consts/global';
-import {
-  generateTeamEmoji,
-  roundActionMessageBuilder,
-  RoundActionMessageBuilderParams,
-} from '../../helpers';
+import type { ITEM_RARITY } from '../../consts/global';
+import { ONE, ZERO } from '../../consts/global';
+import type { RoundActionMessageBuilderParams } from '../../helpers';
+import { generateTeamEmoji, roundActionMessageBuilder } from '../../helpers';
 import type { SlackBlockKitLayoutElement } from '../../model/SlackBlockKit';
+import type { GameResponse } from '../../utils';
 import {
-  GameResponse,
   getGameError,
   notifyEphemeral,
   openView,
@@ -31,15 +28,12 @@ import {
   withTransaction,
 } from '../../utils';
 import { GameError } from '../../utils/GameError';
+import type { ARENA_PLAYER_PERFORMANCE, ChangeLocationParams } from '../consts';
 import {
-  ARENA_PLAYER_PERFORMANCE,
   ARENA_SECONDARY_ACTIONS,
-  ChangeLocationParams,
   ENEMY_REPOSITORY_NAME,
   WEAPON_REPOSITORY_NAME,
   ZONE_REPOSITORY_NAME,
-} from '../consts';
-import {
   ADRENALINE_THRESHOLD,
   ARENA_PERK,
   ARENA_REPOSITORY_NAME,

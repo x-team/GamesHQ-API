@@ -1,8 +1,8 @@
 import Joi from 'joi';
 
 const gameItemSchema = Joi.object({
-  // Pending due to new table design
-  id: Joi.string(),
+  id: Joi.number(),
+  name: Joi.string(),
   clientSecret: Joi.string(),
   signingSecret: Joi.string(),
   _createdById: Joi.number(),

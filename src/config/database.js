@@ -1,7 +1,9 @@
 const dotenv = require('dotenv');
 const { getConfig } = require('./index');
 
-if (getConfig('NODE_ENV') !== 'production') {
+if (getConfig('NODE_ENV') === 'test') {
+  dotenv.config({ path: '.env.test' });
+} else if (getConfig('NODE_ENV') !== 'production') {
   dotenv.config({ path: '.env.dev' });
 }
 
@@ -19,7 +21,6 @@ module.exports = {
   development: config,
   test: {
     ...config,
-    database: `${config.database}_test`,
     seederStorage: 'none',
   },
   production: config,

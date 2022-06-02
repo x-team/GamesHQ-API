@@ -1,5 +1,6 @@
-import { Transaction } from 'sequelize/types';
-import { TowerRound, TowerRoundAction } from '../../../../../models';
+import type { Transaction } from 'sequelize/types';
+
+import type { TowerRound, TowerRoundAction } from '../../../../../models';
 import { listActiveArmorsByGameType } from '../../../../../models/ItemArmor';
 import { findHealthkitByName } from '../../../../../models/ItemHealthKit';
 import { listActiveWeaponsByGameType } from '../../../../../models/ItemWeapon';
@@ -18,6 +19,7 @@ import {
   TOWER_HEALTHKITS,
 } from '../../../consts';
 import { defineSearchRarityParamsByFloor, theTowerNotifyInPrivate } from '../../../utils';
+
 import { towerEngineReply } from './replies';
 
 export async function processSearchHealth(

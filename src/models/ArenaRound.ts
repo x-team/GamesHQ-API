@@ -11,6 +11,7 @@ import {
   PrimaryKey,
   AutoIncrement,
 } from 'sequelize-typescript';
+
 import { GAME_TYPE, ITEM_TYPE } from '../games/consts/global';
 
 import { Game, Item, User, ArenaPlayer, ArenaRoundAction } from './';
@@ -122,7 +123,7 @@ export class ArenaRound
   _actions?: ArenaRoundAction[];
 
   static associations: {
-    _game: Association<ArenaRound, Game>;
+    _game: Association<ArenaRound, Game>; // TBD association with ArenaGame?
     _createdBy: Association<ArenaRound, User>;
     _actions: Association<ArenaRound, ArenaRoundAction>;
   };
@@ -147,8 +148,17 @@ export class ArenaRound
         ArenaRound.associations._createdBy,
         {
           association: ArenaRound.associations._game,
-          where: { isActive: true, _gameTypeId: GAME_TYPE.ARENA },
-          include: [Game.associations._arena],
+          where: { isActive: true },
+          include: [
+            Game.associations._arena,
+            {
+              association: Game.associations._gameType,
+              attributes: ['id', 'name'],
+              where: {
+                name: GAME_TYPE.ARENA,
+              },
+            },
+          ],
         },
         ...includeAllAssociations(includeAll),
       ],
@@ -157,24 +167,7 @@ export class ArenaRound
   }
 }
 
-export async function findOneRound(
-  roundId: number,
-  includeAll: boolean,
-  transaction?: Transaction
-) {
-  return ArenaRound.findOne({
-    where: { id: roundId },
-    include: [
-      ArenaRound.associations._createdBy,
-      {
-        association: ArenaRound.associations._game,
-        where: { isActive: true, _gameTypeId: GAME_TYPE.ARENA },
-      },
-      ...includeAllAssociations(includeAll),
-    ],
-    transaction,
-  });
-}
+//TBD this function has a bug if the api were to accept more than one Active Arena Game. It would return rounds from other ArenaGames. This can be fixed by adjusting the association to ArenaGame.
 
 export function findActiveRound(includeAll: boolean, transaction?: Transaction) {
   return ArenaRound.findOne({
@@ -183,8 +176,16 @@ export function findActiveRound(includeAll: boolean, transaction?: Transaction) 
       ArenaRound.associations._createdBy,
       {
         association: ArenaRound.associations._game,
-        where: { isActive: true, _gameTypeId: GAME_TYPE.ARENA },
-        include: [Game.associations._arena],
+        where: { isActive: true },
+        include: [
+          Game.associations._arena,
+          {
+            association: Game.associations._gameType,
+            where: {
+              name: GAME_TYPE.ARENA,
+            },
+          },
+        ],
       },
       ...includeAllAssociations(includeAll),
     ],
@@ -193,7 +194,7 @@ export function findActiveRound(includeAll: boolean, transaction?: Transaction) 
 }
 
 export async function startRound(
-  gameId: number,
+  _gameId: number,
   createdById: number,
   isEveryoneVisible: boolean,
   transaction: Transaction
@@ -204,7 +205,7 @@ export async function startRound(
   }
   return createArenaRound(
     {
-      _gameId: gameId,
+      _gameId,
       _createdById: createdById,
       isEveryoneVisible,
       isActive: true,
@@ -224,7 +225,7 @@ export async function createArenaRound(
     endedAt,
     isActive,
   }: ArenaRoundCreationAttributes,
-  transaction: Transaction
+  transaction?: Transaction
 ) {
   return ArenaRound.create(
     {
@@ -244,7 +245,17 @@ export function countRoundsCompleted(transaction?: Transaction) {
     include: [
       {
         association: ArenaRound.associations._game,
-        where: { isActive: true, _gameTypeId: GAME_TYPE.ARENA },
+        where: { isActive: true },
+        include: [
+          Game.associations._arena,
+          {
+            association: Game.associations._gameType,
+            attributes: ['id', 'name'],
+            where: {
+              name: GAME_TYPE.ARENA,
+            },
+          },
+        ],
       },
     ],
     where: { isActive: false },

@@ -2,8 +2,8 @@ import type { AnonymousGameItemAvailabilityCreationAttributes } from '../../../.
 import { deleteItem } from '../../../../models/Item';
 import { createOrUpdateWeapon } from '../../../../models/ItemWeapon';
 import { withWeaponTransaction } from '../../../arena/utils';
-import type { GAME_TYPE, ITEM_RARITY, TRAIT } from '../../../consts/global';
 import { ITEM_TYPE } from '../../../consts/global';
+import type { ITEM_RARITY, TRAIT } from '../../../consts/global';
 
 export interface IWeaponEditorData {
   id?: number;
@@ -15,17 +15,19 @@ export interface IWeaponEditorData {
   majorDamageRate: number;
   usageLimit: number | null;
   traits: string[];
-  gameAvailability: GAME_TYPE[];
+  gameTypeIds: number[];
 }
 
 export const upsertWeapon = async (data: IWeaponEditorData) => {
   return withWeaponTransaction((transaction) => {
     const gameAvailability: AnonymousGameItemAvailabilityCreationAttributes[] =
-      data.gameAvailability.map((gameAvailability) => ({
-        _gameTypeId: gameAvailability,
-        isArchived: data.isArchived,
-        isActive: !data.isArchived,
-      }));
+      data.gameTypeIds.map((_gameTypeId) => {
+        return {
+          _gameTypeId,
+          isArchived: data.isArchived,
+          isActive: !data.isArchived,
+        };
+      });
 
     return createOrUpdateWeapon(
       {
