@@ -30,6 +30,6 @@ const sessionGenericSchema = Joi.object({
   message: sessionErrorMessageSchema,
 }).required();
 
-export const checkAvailableSessionSchema = Joi.alternatives([sessionSchema, sessionGenericSchema]);
+export const checkAvailableSessionSchema = sessionSchema;
 
 export const logoutSessionSchema = sessionGenericSchema;
