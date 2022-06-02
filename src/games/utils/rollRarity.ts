@@ -1,6 +1,6 @@
 import { random } from 'lodash';
-import { Item } from '../../models';
-import { GAME_TYPE, HUNDRED, ITEM_RARITY, ITEM_TYPE, ONE, ZERO } from '../consts/global';
+
+import type { Item } from '../../models';
 import {
   COMMON_ARMOR_CHANCE,
   COMMON_WEAPON_CHANCE,
@@ -11,6 +11,8 @@ import {
   RARE_ARMOR_CHANCE,
   RARE_WEAPON_CHANCE,
 } from '../arena/consts';
+import { HUNDRED, ITEM_RARITY, ITEM_TYPE, ONE, ZERO } from '../consts/global';
+import type { GAME_TYPE } from '../consts/global';
 
 export function weightedChance<T>(specs: Array<{ chance: number; result: T }>, defaultValue: T) {
   const total = specs.reduce((acc, { chance }) => acc + chance, 0);
@@ -164,13 +166,13 @@ export function randomizeItems(items: Item[]): Item {
 
 export function generateItemRarityAvailability(
   items: Item[],
-  gameType: GAME_TYPE
+  gameTypeName: GAME_TYPE
 ): { [key in ITEM_RARITY]: boolean } {
   return items.reduce(
     (acc, item) => {
       const isItemActive =
         item._gameItemAvailability?.find(
-          (itemAvailability) => itemAvailability._gameTypeId === gameType
+          (itemAvailability) => itemAvailability._gameType?.name === gameTypeName
         )?.isActive ?? false;
       return {
         [ITEM_RARITY.COMMON]:

@@ -1,4 +1,5 @@
 import type { ServerRoute } from '@hapi/hapi';
+
 import { getAuthUser } from '../../api-utils/getAuthUser';
 import { CAPABILITIES } from '../../api-utils/interfaceAndTypes';
 import {
@@ -6,6 +7,7 @@ import {
   multipleGamesSchema,
   sigleGameItemSchema,
 } from '../../api-utils/responseSchemas/gamedev';
+
 import {
   deleteGameTypeHandler,
   getGameTypeHandler,

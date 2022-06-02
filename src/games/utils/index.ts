@@ -1,15 +1,15 @@
+import { URLSearchParams } from 'url';
+
 import { WebClient } from '@slack/client';
 import { random } from 'lodash';
 import fetch from 'node-fetch';
 import type { Transaction } from 'sequelize';
-import { URLSearchParams } from 'url';
 
 import { getConfig, logger } from '../../config';
 import { sequelize } from '../../db';
 import type { User } from '../../models';
 import { parseEscapedSlackUserValues } from '../../utils/slack';
-import { GAME_TYPE, ZERO } from '../consts/global';
-import { HUNDRED } from '../consts/global';
+import { ZERO, HUNDRED } from '../consts/global';
 import type { SlackBlockKitLayoutElement } from '../model/SlackBlockKit';
 
 import { GameError } from './GameError';
@@ -46,8 +46,8 @@ export function rateToPercentage(rate: number): string {
   return `${Math.round(rate * HUNDRED)}%`;
 }
 
-export function generateRandomNameForGame(gameType: GAME_TYPE) {
-  return `${gameType} ${random(HUNDRED)}.${random(HUNDRED)}.${random(HUNDRED)}`;
+export function generateRandomNameForGame(gameTypeName: string) {
+  return `${gameTypeName} ${random(HUNDRED)}.${random(HUNDRED)}.${random(HUNDRED)}`;
 }
 
 export function hasLuck(successRate: number, boost = 0): boolean {

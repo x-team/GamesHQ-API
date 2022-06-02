@@ -1,7 +1,9 @@
 #!/usr/bin/env ts-node-script
 
 import { Sequelize } from 'sequelize';
-import { Umzug, SequelizeStorage, MigrationMeta } from 'umzug';
+import type { MigrationMeta } from 'umzug';
+import { Umzug, SequelizeStorage } from 'umzug';
+
 import { sequelizeConfig } from './src/db';
 
 const sequelize = new Sequelize({ ...sequelizeConfig, logging: undefined });

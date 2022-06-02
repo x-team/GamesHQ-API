@@ -1,4 +1,4 @@
-import { User } from '../../../../../../models';
+import type { User } from '../../../../../../models';
 import { findLivingPlayersByGame } from '../../../../../../models/ArenaPlayer';
 import {
   countRoundsCompleted,

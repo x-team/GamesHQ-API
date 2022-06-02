@@ -1,14 +1,15 @@
 import Boom from '@hapi/boom';
-import { Lifecycle, Request, ResponseToolkit } from '@hapi/hapi';
-import { CustomRequestThis } from '../../api-utils/interfaceAndTypes';
-import { arrayToJSON } from '../../api-utils/utils';
+import type { Lifecycle, Request, ResponseToolkit } from '@hapi/hapi';
 
+import type { CustomRequestThis } from '../../api-utils/interfaceAndTypes';
+import { arrayToJSON } from '../../api-utils/utils';
+import type { IGameEditorData } from '../../models/GameType';
 import {
+  findGameTypeByName,
   createOrUpdateGameType,
   deleteGameTypeById,
   findAllGameTypesByCreator,
   findGameTypeById,
-  IGameEditorData,
 } from '../../models/GameType';
 
 // 🎮 Games
@@ -35,13 +36,20 @@ export const upsertGameTypeHandler: Lifecycle.Method = async (request, h) => {
   const authUser = request.pre.getAuthUser;
   const { payload } = request;
   const gameDataPayload = payload as IGameEditorData;
-  const gameTypeId = gameDataPayload.id;
-  const game = await findGameTypeById(gameTypeId);
+  const gameTypeName = gameDataPayload.name;
+  const game = await findGameTypeByName(gameTypeName);
+
   if (game && authUser.id !== game._createdById) {
     throw Boom.forbidden('User is not the owner of the game');
   }
+
+  if (game && game.id !== gameDataPayload.id) {
+    throw Boom.forbidden('Game name already exists.');
+  }
+
   const gameCreationData: IGameEditorData = {
     ...(payload as IGameEditorData),
+    name: gameTypeName,
     _createdById: authUser.id,
   };
   await createOrUpdateGameType(gameCreationData);

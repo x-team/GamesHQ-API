@@ -1,11 +1,13 @@
 import type { Transaction } from 'sequelize';
-import { ArenaPlayer, ArenaRound, ArenaRoundAction } from '../../../../../models';
+
+import type { ArenaPlayer, ArenaRound, ArenaRoundAction } from '../../../../../models';
 import { findPlayersByGame, findVisiblePlayers } from '../../../../../models/ArenaPlayer';
 import { findWeaponById } from '../../../../../models/ItemWeapon';
 import { SORT_ACTION_ARRAY_RATE, TRAIT } from '../../../../consts/global';
 import { hasLuck } from '../../../../utils';
 import { LOSE_ACTION_RATE } from '../../../consts';
 import { publishArenaMessage } from '../../../utils';
+
 import { bossHuntPlayers, playerHuntPlayers } from './evaluateHunt';
 import { arenaEngineReply } from './replies';
 

@@ -1,6 +1,7 @@
 import Boom from '@hapi/boom';
-import { Lifecycle } from '@hapi/hapi';
-import { GoogleAuthCredentials } from '../../api-utils/interfaceAndTypes';
+import type { Lifecycle } from '@hapi/hapi';
+
+import type { GoogleAuthCredentials } from '../../api-utils/interfaceAndTypes';
 import { logger } from '../../config';
 import { USER_ROLE_LEVEL } from '../../consts/model';
 import { findOrganizationByName } from '../../models/Organization';

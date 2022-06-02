@@ -1,4 +1,4 @@
-import { Association, Transaction } from 'sequelize';
+import type { Association, Transaction } from 'sequelize';
 import {
   Table,
   Column,
@@ -14,12 +14,13 @@ import {
   UpdatedAt,
 } from 'sequelize-typescript';
 
-import { GAME_TYPE, ZERO } from '../games/consts/global';
+import { ZERO } from '../games/consts/global';
+
 import { GameType } from './';
 
 interface AchievementAttributes {
   id: number;
-  _gameTypeId: GAME_TYPE | string;
+  _gameTypeId: number;
   description: string;
   isEnabled: boolean;
   targetValue: number;
@@ -34,7 +35,7 @@ interface AchievementCreationAttributes {
   targetValue: number;
   createdAt: Date;
   updatedAt: Date;
-  _gameTypeId: GAME_TYPE | string;
+  _gameTypeId: number;
 }
 
 @Table
@@ -73,7 +74,7 @@ export class Achievement
 
   @ForeignKey(() => GameType)
   @Column(DataType.INTEGER)
-  _gameTypeId!: GAME_TYPE | string;
+  _gameTypeId!: number;
 
   @BelongsTo(() => GameType, {
     foreignKey: '_gameTypeId',
@@ -99,16 +100,13 @@ export function findAchievementById(id: number, transaction?: Transaction) {
   return Achievement.findByPk(id, { transaction });
 }
 
-export function findAllAchievementsByGameType(
-  gameTypeId: GAME_TYPE | string,
-  transaction?: Transaction
-) {
+export function findAllAchievementsByGameType(gameTypeId: number, transaction?: Transaction) {
   return Achievement.findAll({ where: { _gameTypeId: gameTypeId }, transaction });
 }
 
 export async function createOrUpdateAchievement(
   achievementData: AchievementEditorData,
-  gameTypeId: GAME_TYPE | string,
+  gameTypeId: number,
   transaction?: Transaction
 ) {
   const { id, description, isEnabled, targetValue, createdAt } = achievementData;
