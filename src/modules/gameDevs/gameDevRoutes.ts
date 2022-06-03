@@ -6,6 +6,8 @@ import {
   gamedevGenericSchema,
   multipleGamesSchema,
   sigleGameItemSchema,
+  leaderboardSchema,
+  multipleLeaderboardSchema,
 } from '../../api-utils/responseSchemas/gamedev';
 
 import {
@@ -15,6 +17,7 @@ import {
   upsertGameTypeHandler,
   getLeaderboardHandler,
   upsertLeaderboardHandler,
+  deleteLeaderboardHandler,
 } from './gameDevHandlers';
 
 declare module '@hapi/hapi' {
@@ -73,7 +76,7 @@ export const gameDevRoutes: ServerRoute[] = [
   },
   {
     method: 'GET',
-    path: '/dashboard/game-dev/games/{gameTypeId}/leaderboard/{leaderboardId?}',
+    path: '/dashboard/game-dev/games/{gameTypeId}/leaderboards',
     options: {
       description: 'Fetch game`s leaderboardEntries',
       tags: ['api'],
@@ -86,12 +89,57 @@ export const gameDevRoutes: ServerRoute[] = [
           assign: 'getAuthUser',
         },
       ],
+      response: {
+        schema: multipleLeaderboardSchema,
+      },
     },
     handler: getLeaderboardHandler,
   },
   {
+    method: 'GET',
+    path: '/dashboard/game-dev/games/{gameTypeId}/leaderboards/{leaderboardId}',
+    options: {
+      description: 'Fetch game`s leaderboardEntry',
+      tags: ['api'],
+      bind: {
+        requiredCapabilities: [CAPABILITIES.GAMEDEV_ACTIONS],
+      },
+      pre: [
+        {
+          method: getAuthUser,
+          assign: 'getAuthUser',
+        },
+      ],
+      response: {
+        schema: leaderboardSchema,
+      },
+    },
+    handler: getLeaderboardHandler,
+  },
+  {
+    method: 'DELETE',
+    path: '/dashboard/game-dev/games/{gameTypeId}/leaderboards/{leaderboardId}',
+    options: {
+      description: 'Delete game`s leaderboardEntry',
+      tags: ['api'],
+      bind: {
+        requiredCapabilities: [CAPABILITIES.GAMEDEV_ACTIONS],
+      },
+      pre: [
+        {
+          method: getAuthUser,
+          assign: 'getAuthUser',
+        },
+      ],
+      response: {
+        schema: gamedevGenericSchema,
+      },
+    },
+    handler: deleteLeaderboardHandler,
+  },
+  {
     method: 'POST',
-    path: '/dashboard/game-dev/games/{gameTypeId}/leaderboard',
+    path: '/dashboard/game-dev/games/{gameTypeId}/leaderboards',
     options: {
       description: 'Add or update a game`s leaderboardEntry',
       tags: ['api'],
@@ -104,6 +152,9 @@ export const gameDevRoutes: ServerRoute[] = [
           assign: 'getAuthUser',
         },
       ],
+      response: {
+        schema: leaderboardSchema,
+      },
     },
     handler: upsertLeaderboardHandler,
   },

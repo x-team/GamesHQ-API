@@ -73,7 +73,7 @@ export class GameType
 
   static associations: {
     _createdBy: Association<GameType, User>;
-    _leaderboards: Association<LeaderboardEntry, User>;
+    _leaderboards: Association<GameType, LeaderboardEntry>;
   };
 }
 
@@ -90,7 +90,10 @@ export function findGameTypeByClientSecret(clientSecret: string, transaction?: T
 }
 
 export function findGameTypeById(id: number, transaction?: Transaction) {
-  return GameType.findByPk(id, { transaction });
+  return GameType.findByPk(id, {
+    transaction,
+    include: [GameType.associations._leaderboards],
+  });
 }
 
 export function findGameTypeByName(name: string, transaction?: Transaction) {
@@ -133,6 +136,7 @@ export function deleteGameTypeById(id: number, transaction?: Transaction) {
     where: {
       id,
     },
+    cascade: true,
     transaction,
   });
 }

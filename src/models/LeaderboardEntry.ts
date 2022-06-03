@@ -100,12 +100,41 @@ export class LeaderboardEntry extends Model<
   updatedAt!: Date;
 }
 
-export function getLeaderBoardById(id: number, transaction?: Transaction) {
-  return LeaderboardEntry.findByPk<LeaderboardEntry>(id, { transaction });
+export function getLeaderBoard(
+  id: number,
+  _gameTypeId: number,
+  _createdById: number,
+  transaction?: Transaction
+) {
+  return LeaderboardEntry.findOne<LeaderboardEntry>({
+    where: {
+      id,
+      _gameTypeId,
+    },
+    include: [
+      {
+        association: LeaderboardEntry.associations._gameType,
+        attributes: ['id'],
+        where: {
+          _createdById,
+        },
+      },
+    ],
+    transaction,
+  });
 }
 
 export function getLeaderBoardsByGameType(_gameTypeId: number, transaction?: Transaction) {
   return LeaderboardEntry.findAll({ where: { _gameTypeId }, transaction });
+}
+
+export function deleteLeaderboardById(id: number, transaction?: Transaction) {
+  return LeaderboardEntry.destroy({
+    where: {
+      id,
+    },
+    transaction,
+  });
 }
 
 export function createOrUpdateLeaderBoard(

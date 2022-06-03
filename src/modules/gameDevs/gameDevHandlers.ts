@@ -3,9 +3,8 @@ import type { Lifecycle, Request, ResponseToolkit } from '@hapi/hapi';
 
 import type { CustomRequestThis } from '../../api-utils/interfaceAndTypes';
 import { arrayToJSON } from '../../api-utils/utils';
-import type { IGameEditorData } from '../../models/GameType';
+import type { IGameEditorData, GameType } from '../../models/GameType';
 import {
-  findGameTypeByName,
   createOrUpdateGameType,
   deleteGameTypeById,
   findAllGameTypesByCreator,
@@ -14,17 +13,14 @@ import {
 import type { LeaderboardEntryCreationAttributes } from '../../models/LeaderboardEntry';
 import {
   getLeaderBoardsByGameType,
-  getLeaderBoardById,
+  getLeaderBoard,
   createOrUpdateLeaderBoard,
+  deleteLeaderboardById,
 } from '../../models/LeaderboardEntry';
 
 // 🎮 Games
 export const getGameTypeHandler: Lifecycle.Method = async (request, h) => {
-  const authUser = request.pre.getAuthUser;
-  const game = await findGameTypeById(request.params.gameTypeId);
-  if (authUser.id !== game?._createdById) {
-    throw Boom.forbidden('User is not the owner of the game');
-  }
+  const game = await validateGameAuth(request.pre.getAuthUser.id, request.params.gameTypeId);
   return h.response({ game: game?.toJSON() }).code(200);
 };
 
@@ -42,20 +38,14 @@ export const upsertGameTypeHandler: Lifecycle.Method = async (request, h) => {
   const authUser = request.pre.getAuthUser;
   const { payload } = request;
   const gameDataPayload = payload as IGameEditorData;
-  const gameTypeName = gameDataPayload.name;
-  const game = await findGameTypeByName(gameTypeName);
+  const game = await validateGameAuth(authUser.id, gameDataPayload.id);
 
-  if (game && authUser.id !== game._createdById) {
-    throw Boom.forbidden('User is not the owner of the game');
-  }
-
-  if (game && game.id !== gameDataPayload.id) {
+  if (game && game.id !== gameDataPayload.id && game.name !== gameDataPayload.name) {
     throw Boom.forbidden('Game name already exists.');
   }
 
   const gameCreationData: IGameEditorData = {
     ...(payload as IGameEditorData),
-    name: gameTypeName,
     _createdById: authUser.id,
   };
   await createOrUpdateGameType(gameCreationData);
@@ -64,44 +54,75 @@ export const upsertGameTypeHandler: Lifecycle.Method = async (request, h) => {
 };
 
 export const deleteGameTypeHandler: Lifecycle.Method = async (request, h) => {
+  await validateGameAuth(request.pre.getAuthUser.id, request.params.gameTypeId);
+
   await deleteGameTypeById(request.params.gameTypeId);
   return h.response({ success: true }).code(200);
 };
 
 export const getLeaderboardHandler: Lifecycle.Method = async (request, h) => {
-  const authUser = request.pre.getAuthUser;
-  const game = await findGameTypeById(request.params.gameTypeId);
-  if (authUser.id !== game?._createdById) {
-    throw Boom.forbidden('User is not the owner of the game');
-  }
-
   if (request.params.leaderboardId) {
-    const leaderboard = await getLeaderBoardById(request.params.leaderboardId);
+    const leaderboard = await getLeaderBoard(
+      request.params.leaderboardId,
+      request.params.gameTypeId,
+      request.pre.getAuthUser.id
+    );
+
+    if (!leaderboard) {
+      throw Boom.notFound('leaderboard not found');
+    }
+
     return h.response(leaderboard?.toJSON()).code(200);
   } else {
     const leaderboards = await getLeaderBoardsByGameType(request.params.gameTypeId);
-    return h.response(leaderboards).code(200);
+    return h.response(arrayToJSON(leaderboards)).code(200);
   }
 };
 
 export const upsertLeaderboardHandler: Lifecycle.Method = async (request, h) => {
-  const authUser = request.pre.getAuthUser;
-  const gameTypeId = request.params.gameTypeId;
-
-  const game = await findGameTypeById(gameTypeId);
-  if (game && authUser.id !== game._createdById) {
-    throw Boom.forbidden('User is not the owner of the game');
-  }
-
   const payload = request.payload as LeaderboardEntryCreationAttributes;
+
+  const game = await validateGameAuth(request.pre.getAuthUser.id, request.params.gameTypeId);
+
+  if (payload.id && game && !game._leaderboards?.map((l) => l.id).includes(payload.id)) {
+    throw Boom.forbidden(`leaderboard does not belong to gametypeId ${request.params.gameTypeId}`);
+  }
 
   const [rslt] = await createOrUpdateLeaderBoard({
     id: payload.id,
     name: payload.name,
-    _gameTypeId: gameTypeId,
     scoreStrategy: payload.scoreStrategy,
     resetStrategy: payload.resetStrategy,
+    _gameTypeId: request.params.gameTypeId,
   });
 
-  return h.response(rslt).code(200);
+  return h.response(rslt?.toJSON()).code(200);
+};
+
+export const deleteLeaderboardHandler: Lifecycle.Method = async (request, h) => {
+  await validateGameAuth(request.pre.getAuthUser.id, request.params.gameTypeId);
+
+  const rslt = await deleteLeaderboardById(request.params.leaderboardId);
+
+  if (!rslt) {
+    throw Boom.notFound('leaderboard not found');
+  }
+
+  return h.response({ success: true }).code(200);
+};
+
+const validateGameAuth = async (
+  authUserId: number,
+  gameTypeId?: number
+): Promise<GameType | void> => {
+  if (!gameTypeId) {
+    return;
+  }
+
+  const game = await findGameTypeById(gameTypeId);
+  if (authUserId !== game?._createdById) {
+    throw Boom.forbidden('User is not the owner of the game');
+  }
+
+  return game;
 };
