@@ -105,7 +105,6 @@ export function findAllGameTypesByCreator(creatorId: number, transaction?: Trans
     where: {
       _createdById: creatorId,
     },
-    include: [GameType.associations._leaderboards],
     transaction,
   });
 }
