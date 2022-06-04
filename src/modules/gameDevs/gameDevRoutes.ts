@@ -29,176 +29,190 @@ declare module '@hapi/hapi' {
   }
 }
 
+export const getGameTypesRoute = {
+  method: 'GET',
+  path: '/dashboard/game-dev/games',
+  options: {
+    description: 'Get all games',
+    tags: ['api'],
+    bind: {
+      requiredCapabilities: [CAPABILITIES.GAMEDEV_ACTIONS],
+    },
+    pre: [
+      {
+        method: getAuthUser,
+        assign: 'getAuthUser',
+      },
+    ],
+    response: {
+      schema: multipleGamesSchema,
+    },
+  },
+  handler: getGameTypesHandler,
+};
+
+export const getGameTypeByIdRoute = {
+  method: 'GET',
+  path: '/dashboard/game-dev/games/{gameTypeId}',
+  options: {
+    description: 'Get specific game by id',
+    tags: ['api'],
+    bind: {
+      requiredCapabilities: [CAPABILITIES.GAMEDEV_ACTIONS],
+    },
+    pre: [
+      {
+        method: getAuthUser,
+        assign: 'getAuthUser',
+      },
+    ],
+    response: {
+      schema: sigleGameItemSchema,
+    },
+  },
+  handler: getGameTypeHandler,
+};
+
+export const upsertGameTypeRoute = {
+  method: 'POST',
+  path: '/dashboard/game-dev/games/upsertGameType',
+  options: {
+    description: 'Add or update a game',
+    tags: ['api'],
+    bind: {
+      requiredCapabilities: [CAPABILITIES.GAMEDEV_ACTIONS],
+    },
+    pre: [
+      {
+        method: getAuthUser,
+        assign: 'getAuthUser',
+      },
+    ],
+    response: {
+      schema: gamedevGenericSchema,
+    },
+  },
+  handler: upsertGameTypeHandler,
+};
+
+export const deleteGameTypeRoute = {
+  method: 'DELETE',
+  path: '/dashboard/game-dev/games/{gameTypeId}',
+  options: {
+    description: 'Delete a game.',
+    tags: ['api'],
+    bind: {
+      requiredCapabilities: [CAPABILITIES.GAMEDEV_ACTIONS],
+    },
+    pre: [
+      {
+        method: getAuthUser,
+        assign: 'getAuthUser',
+      },
+    ],
+    response: {
+      schema: gamedevGenericSchema,
+    },
+  },
+  handler: deleteGameTypeHandler,
+};
+
+export const getLeaderboardsRoute = {
+  method: 'GET',
+  path: '/dashboard/game-dev/games/{gameTypeId}/leaderboards',
+  options: {
+    description: 'Fetch game`s leaderboardEntries',
+    tags: ['api'],
+    bind: {
+      requiredCapabilities: [CAPABILITIES.GAMEDEV_ACTIONS],
+    },
+    pre: [
+      {
+        method: getAuthUser,
+        assign: 'getAuthUser',
+      },
+    ],
+    response: {
+      schema: multipleLeaderboardSchema,
+    },
+  },
+  handler: getLeaderboardHandler,
+};
+
+export const getLeaderboardByIdRoute = {
+  method: 'GET',
+  path: '/dashboard/game-dev/games/{gameTypeId}/leaderboards/{leaderboardId}',
+  options: {
+    description: 'Fetch game`s leaderboardEntry',
+    tags: ['api'],
+    bind: {
+      requiredCapabilities: [CAPABILITIES.GAMEDEV_ACTIONS],
+    },
+    pre: [
+      {
+        method: getAuthUser,
+        assign: 'getAuthUser',
+      },
+    ],
+    response: {
+      schema: leaderboardSchema,
+    },
+  },
+  handler: getLeaderboardHandler,
+};
+
+export const deleteLeaderboardRoute = {
+  method: 'DELETE',
+  path: '/dashboard/game-dev/games/{gameTypeId}/leaderboards/{leaderboardId}',
+  options: {
+    description: 'Delete game`s leaderboardEntry',
+    tags: ['api'],
+    bind: {
+      requiredCapabilities: [CAPABILITIES.GAMEDEV_ACTIONS],
+    },
+    pre: [
+      {
+        method: getAuthUser,
+        assign: 'getAuthUser',
+      },
+    ],
+    response: {
+      schema: gamedevGenericSchema,
+    },
+  },
+  handler: deleteLeaderboardHandler,
+};
+
+export const upsertLeaderboardRoute = {
+  method: 'POST',
+  path: '/dashboard/game-dev/games/{gameTypeId}/leaderboards',
+  options: {
+    description: 'Add or update a game`s leaderboardEntry',
+    tags: ['api'],
+    bind: {
+      requiredCapabilities: [CAPABILITIES.GAMEDEV_ACTIONS],
+    },
+    pre: [
+      {
+        method: getAuthUser,
+        assign: 'getAuthUser',
+      },
+    ],
+    response: {
+      schema: leaderboardSchema,
+    },
+  },
+  handler: upsertLeaderboardHandler,
+};
+
 export const gameDevRoutes: ServerRoute[] = [
   // 🎮 Games
-  {
-    method: 'GET',
-    path: '/dashboard/game-dev/games/{gameTypeId}',
-    options: {
-      description: 'Get specific game by id',
-      tags: ['api'],
-      bind: {
-        requiredCapabilities: [CAPABILITIES.GAMEDEV_ACTIONS],
-      },
-      pre: [
-        {
-          method: getAuthUser,
-          assign: 'getAuthUser',
-        },
-      ],
-      response: {
-        schema: sigleGameItemSchema,
-      },
-    },
-    handler: getGameTypeHandler,
-  },
-
-  {
-    method: 'DELETE',
-    path: '/dashboard/game-dev/games/{gameTypeId}',
-    options: {
-      description: 'Delete a game.',
-      tags: ['api'],
-      bind: {
-        requiredCapabilities: [CAPABILITIES.GAMEDEV_ACTIONS],
-      },
-      pre: [
-        {
-          method: getAuthUser,
-          assign: 'getAuthUser',
-        },
-      ],
-      response: {
-        schema: gamedevGenericSchema,
-      },
-    },
-    handler: deleteGameTypeHandler,
-  },
-  {
-    method: 'GET',
-    path: '/dashboard/game-dev/games/{gameTypeId}/leaderboards',
-    options: {
-      description: 'Fetch game`s leaderboardEntries',
-      tags: ['api'],
-      bind: {
-        requiredCapabilities: [CAPABILITIES.GAMEDEV_ACTIONS],
-      },
-      pre: [
-        {
-          method: getAuthUser,
-          assign: 'getAuthUser',
-        },
-      ],
-      response: {
-        schema: multipleLeaderboardSchema,
-      },
-    },
-    handler: getLeaderboardHandler,
-  },
-  {
-    method: 'GET',
-    path: '/dashboard/game-dev/games/{gameTypeId}/leaderboards/{leaderboardId}',
-    options: {
-      description: 'Fetch game`s leaderboardEntry',
-      tags: ['api'],
-      bind: {
-        requiredCapabilities: [CAPABILITIES.GAMEDEV_ACTIONS],
-      },
-      pre: [
-        {
-          method: getAuthUser,
-          assign: 'getAuthUser',
-        },
-      ],
-      response: {
-        schema: leaderboardSchema,
-      },
-    },
-    handler: getLeaderboardHandler,
-  },
-  {
-    method: 'DELETE',
-    path: '/dashboard/game-dev/games/{gameTypeId}/leaderboards/{leaderboardId}',
-    options: {
-      description: 'Delete game`s leaderboardEntry',
-      tags: ['api'],
-      bind: {
-        requiredCapabilities: [CAPABILITIES.GAMEDEV_ACTIONS],
-      },
-      pre: [
-        {
-          method: getAuthUser,
-          assign: 'getAuthUser',
-        },
-      ],
-      response: {
-        schema: gamedevGenericSchema,
-      },
-    },
-    handler: deleteLeaderboardHandler,
-  },
-  {
-    method: 'POST',
-    path: '/dashboard/game-dev/games/{gameTypeId}/leaderboards',
-    options: {
-      description: 'Add or update a game`s leaderboardEntry',
-      tags: ['api'],
-      bind: {
-        requiredCapabilities: [CAPABILITIES.GAMEDEV_ACTIONS],
-      },
-      pre: [
-        {
-          method: getAuthUser,
-          assign: 'getAuthUser',
-        },
-      ],
-      response: {
-        schema: leaderboardSchema,
-      },
-    },
-    handler: upsertLeaderboardHandler,
-  },
-  {
-    method: 'GET',
-    path: '/dashboard/game-dev/games',
-    options: {
-      description: 'Get all games',
-      tags: ['api'],
-      bind: {
-        requiredCapabilities: [CAPABILITIES.GAMEDEV_ACTIONS],
-      },
-      pre: [
-        {
-          method: getAuthUser,
-          assign: 'getAuthUser',
-        },
-      ],
-      response: {
-        schema: multipleGamesSchema,
-      },
-    },
-    handler: getGameTypesHandler,
-  },
-
-  {
-    method: 'POST',
-    path: '/dashboard/game-dev/games/upsertGameType',
-    options: {
-      description: 'Add or update a game',
-      tags: ['api'],
-      bind: {
-        requiredCapabilities: [CAPABILITIES.GAMEDEV_ACTIONS],
-      },
-      pre: [
-        {
-          method: getAuthUser,
-          assign: 'getAuthUser',
-        },
-      ],
-      response: {
-        schema: gamedevGenericSchema,
-      },
-    },
-    handler: upsertGameTypeHandler,
-  },
+  getGameTypesRoute,
+  getGameTypeByIdRoute,
+  upsertGameTypeRoute,
+  deleteGameTypeRoute,
+  getLeaderboardsRoute,
+  getLeaderboardByIdRoute,
+  upsertLeaderboardRoute,
+  deleteLeaderboardRoute,
 ];
