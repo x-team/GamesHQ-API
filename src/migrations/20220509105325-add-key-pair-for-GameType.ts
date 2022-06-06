@@ -89,7 +89,7 @@ module.exports = {
     return queryInterface.sequelize.transaction(async (transaction) => {
       await queryInterface.removeColumn('GameType', 'clientSecret', { transaction });
       await queryInterface.removeColumn('GameType', 'signingSecret', { transaction });
-      await queryInterface.removeColumn('GameType', '_createdBy', { transaction });
+      await queryInterface.removeColumn('GameType', '_createdById', { transaction });
     });
   },
 };
