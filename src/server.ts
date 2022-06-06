@@ -1,13 +1,13 @@
 import Bell from '@hapi/bell';
 import Boom from '@hapi/boom';
 import CatboxMemory from '@hapi/catbox-memory';
+import Cookie from '@hapi/cookie';
 import { Server } from '@hapi/hapi';
 import Inert from '@hapi/inert';
-import Cookie from '@hapi/cookie';
 import Vision from '@hapi/vision';
+import Handlebars from 'handlebars';
 import HapiSwagger from 'hapi-swagger';
 import Joi from 'joi';
-import Handlebars from 'handlebars';
 
 import pkg from '../package.json';
 
@@ -36,6 +36,10 @@ const getServer = () =>
           convert: true,
           stripUnknown: { objects: true },
         },
+        async failAction(_request, _h, error) {
+          logger.error('response error', error);
+          throw error;
+        },
       },
       cors: {
         origin: ['*'],
@@ -57,7 +61,6 @@ const getServer = () =>
         },
       },
     },
-    debug: { request: ['error'] },
   });
 
 export async function getServerWithPlugins() {

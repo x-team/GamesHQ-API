@@ -1,11 +1,18 @@
 import Boom from '@hapi/boom';
 import type { Request, ResponseToolkit } from '@hapi/hapi';
+
 import { ZERO } from '../games/consts/global';
 import { findSessionByToken } from '../models/Session';
+import type { User } from '../models/User';
 import { findUserById } from '../models/User';
-import { CustomRequestThis } from './interfaceAndTypes';
 
-export async function getAuthUser(this: CustomRequestThis, req: Request, _h: ResponseToolkit) {
+import type { CustomRequestThis } from './interfaceAndTypes';
+
+export async function getAuthUser(
+  this: CustomRequestThis,
+  req: Request,
+  _h: ResponseToolkit
+): Promise<User> {
   // console.log({ something: this }); // Get capabilities from this
   const sessionToken = req.headers['xtu-session-token'];
   if (!sessionToken) {
@@ -17,13 +24,13 @@ export async function getAuthUser(this: CustomRequestThis, req: Request, _h: Res
   }
   const user = await findUserById(userSession._userId);
   if (!user) {
-    return Boom.notFound('User not found');
+    throw Boom.notFound('User not found');
   }
   const capabilityHeight = this.requiredCapabilities.shift() ?? ZERO;
 
   // This works for now while we design and code the capabilities system
   if ((user._roleId ?? ZERO) < capabilityHeight) {
-    return Boom.unauthorized('Only authorized users can access here');
+    throw Boom.unauthorized('Only authorized users can access here');
   }
   return user;
   // return h.continue;

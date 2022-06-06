@@ -114,7 +114,7 @@ export function getLeaderBoard(
     include: [
       {
         association: LeaderboardEntry.associations._gameType,
-        attributes: ['id'],
+        attributes: [],
         where: {
           _createdById,
         },

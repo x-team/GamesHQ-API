@@ -1,5 +1,18 @@
 import Joi from 'joi';
 
+import { ScoreStrategy, ResetStrategy } from '../../models/LeaderboardEntry';
+
+export const postLeaderboardSchema = Joi.object({
+  id: Joi.number().optional(),
+  name: Joi.string().required(),
+  scoreStrategy: Joi.string()
+    .valid(...Object.values(ScoreStrategy))
+    .optional(),
+  resetStrategy: Joi.string()
+    .valid(...Object.values(ResetStrategy))
+    .optional(),
+}).required();
+
 export const leaderboardSchema = Joi.object({
   id: Joi.number(),
   name: Joi.string(),

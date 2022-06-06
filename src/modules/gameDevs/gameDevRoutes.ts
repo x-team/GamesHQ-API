@@ -8,6 +8,7 @@ import {
   sigleGameItemSchema,
   leaderboardSchema,
   multipleLeaderboardSchema,
+  postLeaderboardSchema,
 } from '../../api-utils/responseSchemas/gamedev';
 
 import {
@@ -29,7 +30,7 @@ declare module '@hapi/hapi' {
   }
 }
 
-export const getGameTypesRoute = {
+export const getGameTypesRoute: ServerRoute = {
   method: 'GET',
   path: '/dashboard/game-dev/games',
   options: {
@@ -51,7 +52,7 @@ export const getGameTypesRoute = {
   handler: getGameTypesHandler,
 };
 
-export const getGameTypeByIdRoute = {
+export const getGameTypeByIdRoute: ServerRoute = {
   method: 'GET',
   path: '/dashboard/game-dev/games/{gameTypeId}',
   options: {
@@ -73,7 +74,7 @@ export const getGameTypeByIdRoute = {
   handler: getGameTypeHandler,
 };
 
-export const upsertGameTypeRoute = {
+export const upsertGameTypeRoute: ServerRoute = {
   method: 'POST',
   path: '/dashboard/game-dev/games/upsertGameType',
   options: {
@@ -95,7 +96,7 @@ export const upsertGameTypeRoute = {
   handler: upsertGameTypeHandler,
 };
 
-export const deleteGameTypeRoute = {
+export const deleteGameTypeRoute: ServerRoute = {
   method: 'DELETE',
   path: '/dashboard/game-dev/games/{gameTypeId}',
   options: {
@@ -117,7 +118,7 @@ export const deleteGameTypeRoute = {
   handler: deleteGameTypeHandler,
 };
 
-export const getLeaderboardsRoute = {
+export const getLeaderboardsRoute: ServerRoute = {
   method: 'GET',
   path: '/dashboard/game-dev/games/{gameTypeId}/leaderboards',
   options: {
@@ -139,7 +140,7 @@ export const getLeaderboardsRoute = {
   handler: getLeaderboardHandler,
 };
 
-export const getLeaderboardByIdRoute = {
+export const getLeaderboardByIdRoute: ServerRoute = {
   method: 'GET',
   path: '/dashboard/game-dev/games/{gameTypeId}/leaderboards/{leaderboardId}',
   options: {
@@ -161,7 +162,7 @@ export const getLeaderboardByIdRoute = {
   handler: getLeaderboardHandler,
 };
 
-export const deleteLeaderboardRoute = {
+export const deleteLeaderboardRoute: ServerRoute = {
   method: 'DELETE',
   path: '/dashboard/game-dev/games/{gameTypeId}/leaderboards/{leaderboardId}',
   options: {
@@ -183,7 +184,7 @@ export const deleteLeaderboardRoute = {
   handler: deleteLeaderboardHandler,
 };
 
-export const upsertLeaderboardRoute = {
+export const upsertLeaderboardRoute: ServerRoute = {
   method: 'POST',
   path: '/dashboard/game-dev/games/{gameTypeId}/leaderboards',
   options: {
@@ -198,6 +199,9 @@ export const upsertLeaderboardRoute = {
         assign: 'getAuthUser',
       },
     ],
+    validate: {
+      payload: postLeaderboardSchema,
+    },
     response: {
       schema: leaderboardSchema,
     },
