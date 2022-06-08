@@ -17,6 +17,7 @@ export { GameItemAvailability } from './GameItemAvailability';
 export { GameType } from './GameType';
 export { LeaderboardEntry } from './LeaderboardEntry';
 export { LeaderboardResults } from './LeaderboardResults';
+export { LeaderboardResultsMeta } from './LeaderboardResultsMeta';
 export { Item } from './Item';
 export { ItemArmor } from './ItemArmor';
 export { ItemHealthKit } from './ItemHealthKit';

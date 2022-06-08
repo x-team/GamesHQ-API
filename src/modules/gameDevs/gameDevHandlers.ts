@@ -13,7 +13,7 @@ import {
 import type { LeaderboardEntryCreationAttributes } from '../../models/LeaderboardEntry';
 import {
   getLeaderBoardsByGameType,
-  getLeaderBoard,
+  getLeaderBoardByCreator,
   createOrUpdateLeaderBoard,
   deleteLeaderboardById,
 } from '../../models/LeaderboardEntry';
@@ -62,7 +62,7 @@ export const deleteGameTypeHandler: Lifecycle.Method = async (request, h) => {
 
 export const getLeaderboardHandler: Lifecycle.Method = async (request, h) => {
   if (request.params.leaderboardId) {
-    const leaderboard = await getLeaderBoard(
+    const leaderboard = await getLeaderBoardByCreator(
       request.params.leaderboardId,
       request.params.gameTypeId,
       request.pre.getAuthUser.id
