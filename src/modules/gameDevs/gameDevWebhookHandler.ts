@@ -23,7 +23,7 @@ export const postLeaderboardResultHandler: Lifecycle.Method = async (request, h)
   const { gameType } = request.pre.webhookValidation;
   const payload = request.pre.webhookPayload as LeaderboardResultsCreationAttributes;
 
-  await validateLeaderboard(gameType.id, payload._leaderboardEntryId);
+  await validateLeaderboard(payload._leaderboardEntryId, gameType.id);
 
   const currentLeaderboardRslt = await getUserLeaderboardResult(
     payload._userId,
