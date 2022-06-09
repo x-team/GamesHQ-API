@@ -43,6 +43,61 @@ describe('LeaderboardRestults', () => {
       expect(lbrInDB?._leaderboardResultsMeta![0].value).to.equal('10000');
     });
 
+    it('should create LeaderboardResult without _leaderboardResultsMeta ', async () => {
+      const lb1 = await LeaderboardEntry.create({
+        _gameTypeId: 1,
+        name: 'my_leaderboard_' + uuid(),
+      });
+
+      const leaderboardRslt: LeaderboardResultsCreationAttributes = {
+        _leaderboardEntryId: lb1.id,
+        _userId: 1,
+        score: 10,
+      };
+
+      const [rslt] = await createOrUpdateLeaderBoardResult(leaderboardRslt);
+
+      const lbrInDB = await LeaderboardResults.findByPk(rslt.id, {
+        include: LeaderboardResults.associations._leaderboardResultsMeta,
+      });
+
+      expect(rslt.id).to.equal(lbrInDB!.id);
+      expect(rslt._leaderboardEntryId).to.equal(lb1.id);
+      expect(rslt._userId).to.equal(1);
+      expect(rslt.score).to.equal(10);
+      expect(rslt.createdAt).to.instanceOf(Date);
+      expect(rslt.updatedAt).to.instanceOf(Date);
+      expect(lbrInDB?._leaderboardResultsMeta?.length).to.equal(0);
+    });
+
+    it('should create LeaderboardResult with empty _leaderboardResultsMeta', async () => {
+      const lb1 = await LeaderboardEntry.create({
+        _gameTypeId: 1,
+        name: 'my_leaderboard_' + uuid(),
+      });
+
+      const leaderboardRslt: LeaderboardResultsCreationAttributes = {
+        _leaderboardEntryId: lb1.id,
+        _userId: 1,
+        score: 10,
+        _leaderboardResultsMeta: [],
+      };
+
+      const [rslt] = await createOrUpdateLeaderBoardResult(leaderboardRslt);
+
+      const lbrInDB = await LeaderboardResults.findByPk(rslt.id, {
+        include: LeaderboardResults.associations._leaderboardResultsMeta,
+      });
+
+      expect(rslt.id).to.equal(lbrInDB!.id);
+      expect(rslt._leaderboardEntryId).to.equal(lb1.id);
+      expect(rslt._userId).to.equal(1);
+      expect(rslt.score).to.equal(10);
+      expect(rslt.createdAt).to.instanceOf(Date);
+      expect(rslt.updatedAt).to.instanceOf(Date);
+      expect(lbrInDB?._leaderboardResultsMeta?.length).to.equal(0);
+    });
+
     it('should update LeaderboardResult', async () => {
       const lb1 = await LeaderboardEntry.create({
         _gameTypeId: 1,

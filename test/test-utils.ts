@@ -49,7 +49,7 @@ export const getCustomTestServer = () => {
           allowUnknown: true,
         },
         async failAction(_request, _h, error) {
-          console.error(error);
+          logger.error(error);
           throw Boom.badRequest(`Invalid request payload input`);
         },
       },

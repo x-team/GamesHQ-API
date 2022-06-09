@@ -3,6 +3,7 @@ import type { Lifecycle } from '@hapi/hapi';
 import type { ValidationResult } from 'joi';
 
 import { postLeaderboardResultScoreSchema } from '../../api-utils/responseSchemas/gamedev';
+import { isProd, logger } from '../../config';
 
 export const parseWebhookPayload: Lifecycle.Method = (request) => {
   if (!Buffer.isBuffer(request.payload)) {
@@ -22,6 +23,9 @@ export const parseWebhookPayload: Lifecycle.Method = (request) => {
 
 const checkForWebhookErrors = (validationResult: ValidationResult, payload: any) => {
   if (validationResult.error) {
+    if (!isProd()) {
+      logger.error(validationResult.error);
+    }
     throw Boom.boomify(validationResult.error, { statusCode: 400, data: { payload } });
   }
 };
