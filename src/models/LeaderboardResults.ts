@@ -14,6 +14,8 @@ import {
   HasMany,
 } from 'sequelize-typescript';
 
+import { withTransaction } from '../db';
+
 import { LeaderboardEntry } from './LeaderboardEntry';
 import type {
   LeaderboardResultsMetaAttributes,
@@ -98,30 +100,26 @@ export class LeaderboardResults extends Model<
 }
 
 export function createOrUpdateLeaderBoardResult(
-  leaderBoardData: LeaderboardResultsCreationAttributes,
-  transaction?: Transaction
+  leaderBoardData: LeaderboardResultsCreationAttributes
 ) {
-  return LeaderboardResults.upsert(
-    {
-      ...leaderBoardData,
-    },
-    {
-      transaction,
-    }
-  ).then(async (r) => {
-    if (r[0] && leaderBoardData._leaderboardResultsMeta) {
+  return withTransaction(async (transaction) => {
+    const rslt = await LeaderboardResults.upsert(leaderBoardData, { transaction });
+
+    if (rslt.length && leaderBoardData?._leaderboardResultsMeta) {
       for (const meta of leaderBoardData._leaderboardResultsMeta) {
         await LeaderboardResultsMeta.upsert(
           {
             ...meta,
-            _leaderboardResultsId: r[0].id,
+            _leaderboardResultsId: rslt[0].id,
           },
-          { transaction }
+          {
+            transaction,
+          }
         );
       }
     }
 
-    return r;
+    return rslt;
   });
 }
 
