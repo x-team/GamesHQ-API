@@ -1,10 +1,13 @@
 import { expect } from 'chai';
 import {
   createOrUpdateLeaderBoardResult,
+  getLeaderboardResultRank,
   LeaderboardResultsCreationAttributes,
 } from '../../src/models/LeaderboardResults';
-import { LeaderboardEntry, LeaderboardResults } from '../../src/models';
+import { USER_ROLE_LEVEL } from '../../src/consts/model';
+import { LeaderboardEntry, LeaderboardResults, User } from '../../src/models';
 import { v4 as uuid } from 'uuid';
+import { ScoreStrategy } from '../../src/models/LeaderboardEntry';
 
 describe('LeaderboardRestults', () => {
   describe('createOrUpdateLeaderBoardResult', () => {
@@ -152,4 +155,117 @@ describe('LeaderboardRestults', () => {
       expect(lbrInDB?._leaderboardResultsMeta![1].value).to.equal('Android');
     });
   });
+
+  describe('getLeaderboardResultRank', () => {
+    it('should get rank from highest scoreStrategy leaderboard', async () => {
+      const lb = await LeaderboardEntry.create({
+        _gameTypeId: 1,
+        name: 'my_leaderboard_' + uuid(),
+        scoreStrategy: ScoreStrategy.HIGHEST,
+      });
+
+      for (const score of [1, 2, 3, 1]) {
+        await LeaderboardResults.create({
+          _leaderboardEntryId: lb.id,
+          _userId: (await createTestUser()).id,
+          score,
+        });
+      }
+
+      const rslt = await getLeaderboardResultRank(lb);
+
+      expect(rslt.length).to.equal(4);
+      expect(rslt[0].score).to.equal(3);
+      expect(rslt[1].score).to.equal(2);
+      expect(rslt[2].score).to.equal(1);
+      expect(rslt[3].score).to.equal(1);
+    });
+
+    it('should get rank from lowest scoreStrategy leaderboard', async () => {
+      const lb = await LeaderboardEntry.create({
+        _gameTypeId: 1,
+        name: 'my_leaderboard_' + uuid(),
+        scoreStrategy: ScoreStrategy.LOWEST,
+      });
+
+      for (const score of [1, 2, 3, 1]) {
+        await LeaderboardResults.create({
+          _leaderboardEntryId: lb.id,
+          _userId: (await createTestUser()).id,
+          score,
+        });
+      }
+
+      const rslt = await getLeaderboardResultRank(lb);
+
+      expect(rslt.length).to.equal(4);
+      expect(rslt[0].score).to.equal(1);
+      expect(rslt[1].score).to.equal(1);
+      expect(rslt[2].score).to.equal(2);
+      expect(rslt[3].score).to.equal(3);
+    });
+
+    it('should get rank from sum scoreStrategy leaderboard', async () => {
+      const lb = await LeaderboardEntry.create({
+        _gameTypeId: 1,
+        name: 'my_leaderboard_' + uuid(),
+        scoreStrategy: ScoreStrategy.SUM,
+      });
+
+      for (const score of [1, 2, 3, 1]) {
+        await LeaderboardResults.create({
+          _leaderboardEntryId: lb.id,
+          _userId: (await createTestUser()).id,
+          score,
+        });
+      }
+
+      const rslt = await getLeaderboardResultRank(lb);
+
+      expect(rslt.length).to.equal(4);
+      expect(rslt[0].score).to.equal(3);
+      expect(rslt[1].score).to.equal(2);
+      expect(rslt[2].score).to.equal(1);
+      expect(rslt[3].score).to.equal(1);
+    });
+
+    it('should get rank from latest scoreStrategy leaderboard', async () => {
+      const lb = await LeaderboardEntry.create({
+        _gameTypeId: 1,
+        name: 'my_leaderboard_' + uuid(),
+        scoreStrategy: ScoreStrategy.LATEST,
+      });
+
+      for (const score of [1, 2, 3, 1]) {
+        await LeaderboardResults.create({
+          _leaderboardEntryId: lb.id,
+          _userId: (await createTestUser()).id,
+          score,
+        });
+      }
+
+      const rslt = await getLeaderboardResultRank(lb);
+
+      expect(rslt.length).to.equal(4);
+      expect(rslt[0].score).to.equal(3);
+      expect(rslt[1].score).to.equal(2);
+      expect(rslt[2].score).to.equal(1);
+      expect(rslt[3].score).to.equal(1);
+    });
+  });
 });
+
+const createTestUser = async () => {
+  const uniqueId = uuid();
+  return await User.create({
+    email: `email_${uniqueId}@test.com`,
+    displayName: `displayName_${uniqueId}`,
+    firebaseUserUid: null,
+    slackId: null,
+    profilePictureUrl: null,
+    _roleId: USER_ROLE_LEVEL.USER,
+    _organizationId: 1,
+    createdAt: new Date(),
+    updatedAt: new Date(),
+  });
+};

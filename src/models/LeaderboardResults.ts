@@ -1,4 +1,4 @@
-import type { Association, Transaction } from 'sequelize';
+import type { Association, Transaction, Order } from 'sequelize';
 import {
   Table,
   Column,
@@ -16,7 +16,7 @@ import {
 
 import { withTransaction } from '../db';
 
-import { LeaderboardEntry } from './LeaderboardEntry';
+import { LeaderboardEntry, ScoreStrategy } from './LeaderboardEntry';
 import type {
   LeaderboardResultsMetaAttributes,
   LeaderboardResultsMetaCreationAttributes,
@@ -42,6 +42,16 @@ export interface LeaderboardResultsCreationAttributes {
   _leaderboardResultsMeta?: LeaderboardResultsMetaCreationAttributes[];
 }
 
+interface ScoreStrategyOptions {
+  order: Order;
+}
+
+const ScoreStrategyOptionsMap: { [key in ScoreStrategy]: ScoreStrategyOptions } = {
+  [ScoreStrategy.HIGHEST]: { order: [['score', 'DESC']] },
+  [ScoreStrategy.LOWEST]: { order: [['score', 'ASC']] },
+  [ScoreStrategy.SUM]: { order: [['score', 'DESC']] },
+  [ScoreStrategy.LATEST]: { order: [['score', 'DESC']] },
+};
 @Table
 export class LeaderboardResults extends Model<
   LeaderboardResultsAttributes,
@@ -128,11 +138,39 @@ export function createOrUpdateLeaderBoardResult(
   });
 }
 
-export function getLeaderboardResultsById(_leaderboardEntryId: number, transaction?: Transaction) {
+export function getLeaderboardResultRank(
+  _leaderboardEntry: LeaderboardEntry,
+  limit?: number,
+  transaction?: Transaction
+) {
+  return getOrderedRank(
+    _leaderboardEntry.id,
+    {
+      order: ScoreStrategyOptionsMap[_leaderboardEntry.scoreStrategy].order,
+      limit,
+    },
+    transaction
+  );
+}
+
+function getOrderedRank(
+  _leaderboardEntryId: number,
+  options?: { order?: Order; limit?: number },
+  transaction?: Transaction
+) {
   return LeaderboardResults.findAll({
     where: {
       _leaderboardEntryId,
     },
+    include: [
+      {
+        association: LeaderboardResults.associations._user,
+        attributes: ['displayName'],
+      },
+    ],
+    attributes: ['score'],
+    order: options?.order,
+    limit: options?.limit,
     transaction,
   });
 }

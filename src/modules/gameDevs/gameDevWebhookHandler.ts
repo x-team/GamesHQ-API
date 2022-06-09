@@ -8,7 +8,7 @@ import { getLeaderboardById } from '../../models/LeaderboardEntry';
 import type { LeaderboardResultsCreationAttributes } from '../../models/LeaderboardResults';
 import {
   createOrUpdateLeaderBoardResult,
-  getLeaderboardResultsById,
+  getLeaderboardResultRank,
   getUserLeaderboardResult,
 } from '../../models/LeaderboardResults';
 
@@ -26,9 +26,8 @@ export const getLeaderboardRankHandler: Lifecycle.Method = async (request, h) =>
   const { gameType } = request.pre.webhookValidation;
 
   const leaderboard = await validateLeaderboard(request.params.leaderboardId, gameType.id);
+  const rslt = await getLeaderboardResultRank(leaderboard);
 
-  const rslt = await getLeaderboardResultsById(leaderboard.id);
-  //wip getLeaderboardResultsById
   return h.response(arrayToJSON(rslt)).code(200);
 };
 
