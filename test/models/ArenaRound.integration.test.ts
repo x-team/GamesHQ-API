@@ -7,9 +7,6 @@ import { createArenaGame } from '../../src/models/ArenaGame';
 describe('ArenaRound', () => {
   describe('findActiveRound', () => {
     it('should find active round', async () => {
-      // hack to align gameIds between ArenaRound, ArenaGame and Game
-      // await Game.destroy({ truncate: true, cascade: true, restartIdentity: true })
-
       const newGame = Game.build({
         name: 'my_game_' + uuid(),
         isActive: true,

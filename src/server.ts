@@ -43,7 +43,16 @@ const getServer = () =>
       },
       cors: {
         origin: ['*'],
-        headers: ['Accept', 'Authorization', 'Content-Type', 'If-None-Match', 'xtu-session-token'],
+        headers: [
+          'Accept',
+          'Authorization',
+          'Content-Type',
+          'If-None-Match',
+          'xtu-session-token',
+          'xtu-client-secret',
+          'xtu-request-timestamp',
+          'xtu-signature',
+        ],
       },
       validate: {
         headers: Joi.object({

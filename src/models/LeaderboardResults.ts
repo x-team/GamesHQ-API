@@ -11,36 +11,42 @@ import {
   AutoIncrement,
   CreatedAt,
   UpdatedAt,
+  HasMany,
 } from 'sequelize-typescript';
 
-import { LeaderboardEntry } from './LeaderboardEntry';
+import { withTransaction } from '../db';
 
-import { User } from './';
+import { LeaderboardEntry } from './LeaderboardEntry';
+import type {
+  LeaderboardResultsMetaAttributes,
+  LeaderboardResultsMetaCreationAttributes,
+} from './LeaderboardResultsMeta';
+
+import { LeaderboardResultsMeta, User } from './';
 
 interface LeaderboardResultsAttributes {
   id: number;
   _leaderboardEntryId: number;
   _userId: number;
   score: number;
-  meta: JSON;
+  _leaderboardResultsMeta?: LeaderboardResultsMetaAttributes[];
   createdAt: Date;
   updatedAt: Date;
 }
 
-interface LeaderboardResultsCreationAttributes {
-  createdAt?: Date;
-  updatedAt?: Date;
-}
-
-interface LeaderboardResultsBasicCreationAttributes {
+export interface LeaderboardResultsCreationAttributes {
+  id?: number;
+  _leaderboardEntryId: number;
   _userId: number;
+  score: number;
+  _leaderboardResultsMeta?: LeaderboardResultsMetaCreationAttributes[];
 }
 
 @Table
-export class LeaderboardResults
-  extends Model<LeaderboardResultsAttributes, LeaderboardResultsCreationAttributes>
-  implements LeaderboardResultsAttributes
-{
+export class LeaderboardResults extends Model<
+  LeaderboardResultsAttributes,
+  LeaderboardResultsCreationAttributes
+> {
   @PrimaryKey
   @AutoIncrement
   @Column(DataType.INTEGER)
@@ -69,18 +75,12 @@ export class LeaderboardResults
   })
   _user?: User;
 
-  static associations: {
-    _user: Association<LeaderboardResults, User>;
-    _leaderboardEntry: Association<LeaderboardResults, LeaderboardEntry>;
-  };
-
   @AllowNull(false)
   @Column(DataType.INTEGER)
   score!: number;
 
-  @AllowNull(true)
-  @Column(DataType.JSON)
-  meta!: JSON;
+  @HasMany(() => LeaderboardResultsMeta, '_leaderboardResultsId')
+  _leaderboardResultsMeta?: LeaderboardResultsMeta[];
 
   @AllowNull(false)
   @CreatedAt
@@ -91,18 +91,48 @@ export class LeaderboardResults
   @UpdatedAt
   @Column(DataType.DATE)
   updatedAt!: Date;
+
+  static associations: {
+    _user: Association<LeaderboardResults, User>;
+    _leaderboardEntry: Association<LeaderboardResults, LeaderboardEntry>;
+    _leaderboardResultsMeta: Association<LeaderboardResults, LeaderboardResultsMeta>;
+  };
 }
 
-export function createLeaderBoardResult(
-  leaderBoardData: LeaderboardResultsBasicCreationAttributes,
+export function createOrUpdateLeaderBoardResult(
+  leaderBoardData: LeaderboardResultsCreationAttributes
+) {
+  return withTransaction(async (transaction) => {
+    const rslt = await LeaderboardResults.upsert(leaderBoardData, { transaction });
+
+    if (rslt.length && leaderBoardData?._leaderboardResultsMeta) {
+      for (const meta of leaderBoardData._leaderboardResultsMeta) {
+        await LeaderboardResultsMeta.upsert(
+          {
+            ...meta,
+            _leaderboardResultsId: rslt[0].id,
+          },
+          {
+            transaction,
+          }
+        );
+      }
+    }
+
+    return rslt;
+  });
+}
+
+export function getUserLeaderboardResult(
+  _userId: number,
+  _leaderboardEntryId: number,
   transaction?: Transaction
 ) {
-  return LeaderboardResults.create(
-    {
-      ...leaderBoardData,
-      createdAt: new Date(),
-      updatedAt: new Date(),
+  return LeaderboardResults.findOne({
+    where: {
+      _userId,
+      _leaderboardEntryId,
     },
-    { transaction }
-  );
+    transaction,
+  });
 }

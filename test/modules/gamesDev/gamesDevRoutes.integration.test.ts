@@ -1,5 +1,4 @@
 import { expect } from 'chai';
-import { Server } from '@hapi/hapi';
 import {
   getLeaderboardsRoute,
   getLeaderboardByIdRoute,
@@ -8,25 +7,11 @@ import {
 } from '../../../src/modules/gameDevs/gameDevRoutes';
 import { LeaderboardEntry, Session } from '../../../src/models';
 import { v4 as uuid } from 'uuid';
-import { logger } from '../../../src/config';
+import { getCustomTestServer } from '../../test-utils';
 
 describe('gameDevRoutes', () => {
-  const testServer = new Server({
-    routes: {
-      validate: {
-        async failAction(_request, _h, error) {
-          logger.error('response error', error);
-          throw error;
-        },
-      },
-      response: {
-        async failAction(_request, _h, error) {
-          logger.error('response error', error);
-          throw error;
-        },
-      },
-    },
-  });
+  const testServer = getCustomTestServer();
+
   testServer.route([
     getLeaderboardsRoute,
     getLeaderboardByIdRoute,

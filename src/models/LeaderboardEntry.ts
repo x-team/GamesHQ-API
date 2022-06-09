@@ -14,7 +14,7 @@ import {
   UpdatedAt,
 } from 'sequelize-typescript';
 
-import { GameType } from './GameType';
+import { GameType } from './';
 
 interface LeaderboardEntryAttributes {
   id: number;
@@ -100,7 +100,7 @@ export class LeaderboardEntry extends Model<
   updatedAt!: Date;
 }
 
-export function getLeaderBoard(
+export function getLeaderBoardByCreator(
   id: number,
   _gameTypeId: number,
   _createdById: number,
@@ -122,6 +122,10 @@ export function getLeaderBoard(
     ],
     transaction,
   });
+}
+
+export function getLeaderboardById(id: number, transaction?: Transaction) {
+  return LeaderboardEntry.findByPk(id, { transaction });
 }
 
 export function getLeaderBoardsByGameType(_gameTypeId: number, transaction?: Transaction) {

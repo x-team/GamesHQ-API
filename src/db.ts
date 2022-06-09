@@ -1,8 +1,9 @@
+import type { Transaction } from 'sequelize';
 import type { Model } from 'sequelize-typescript';
 import { Sequelize } from 'sequelize-typescript';
 import { prettify } from 'sql-log-prettifier';
 
-import { getConfig, prettifyConfig } from './config';
+import { getConfig, prettifyConfig, logger } from './config';
 import * as models from './models';
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
@@ -43,4 +44,15 @@ export function getAllModels() {
 
 export function getModelByName(name: string) {
   return getAllModels()[name];
+}
+
+export function withTransaction<T>(fn: (transaction: Transaction) => Promise<T>) {
+  return sequelize
+    .transaction((transaction) => {
+      return fn(transaction);
+    })
+    .catch(async (error) => {
+      logger.error(error);
+      throw error;
+    });
 }

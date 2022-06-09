@@ -1,5 +1,5 @@
 import { Table, Column, Model, DataType, PrimaryKey } from 'sequelize-typescript';
-import { Transaction } from 'sequelize/types';
+import type { Transaction } from 'sequelize/types';
 
 interface EnemyPatternAttributes {
   id: string;
