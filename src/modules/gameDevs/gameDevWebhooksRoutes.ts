@@ -1,6 +1,6 @@
 import type { ServerRoute } from '@hapi/hapi';
 
-import { leaderboardResultSchema } from '../../api-utils/responseSchemas/gamedev';
+import { leaderboardResultSchema } from '../../api-utils/schemas/gameDev/leaderboardSchemas';
 import { webhookValidation } from '../../api-utils/webhookValidations';
 
 import {
@@ -17,11 +17,30 @@ declare module '@hapi/hapi' {
   }
 }
 
+export const getLeaderboardResultRoute: ServerRoute = {
+  method: 'GET',
+  path: '/webhooks/game-dev/leaderboards/{leaderboardId}/rank',
+  options: {
+    description: 'Fetch a game`s current leaderboard rank',
+    tags: ['api'],
+    response: {
+      schema: leaderboardResultSchema,
+    },
+    pre: [
+      {
+        method: webhookValidation,
+        assign: 'webhookValidation',
+      },
+    ],
+  },
+  handler: postLeaderboardResultHandler,
+};
+
 export const postLeaderboardResultRoute: ServerRoute = {
   method: 'POST',
   path: '/webhooks/game-dev/leaderboards/score',
   options: {
-    description: 'Submit a game`s leaderboard score',
+    description: 'Submit a user`s game leaderboard score',
     payload: {
       parse: false,
       output: 'data',

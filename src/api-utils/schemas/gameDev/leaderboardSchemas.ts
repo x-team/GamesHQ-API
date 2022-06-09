@@ -1,6 +1,6 @@
 import Joi from 'joi';
 
-import { ScoreStrategy, ResetStrategy } from '../../models/LeaderboardEntry';
+import { ScoreStrategy, ResetStrategy } from '../../../models/LeaderboardEntry';
 
 export const postLeaderboardResultScoreSchema = Joi.object({
   id: Joi.number().optional(),
@@ -56,20 +56,3 @@ export const leaderboardSchema = Joi.object({
 }).optional();
 
 export const multipleLeaderboardSchema = Joi.array().items(leaderboardSchema).optional();
-
-const gameItemSchema = Joi.object({
-  id: Joi.number(),
-  name: Joi.string(),
-  clientSecret: Joi.string(),
-  signingSecret: Joi.string(),
-  _createdById: Joi.number(),
-  _leaderboards: Joi.array().items(leaderboardSchema),
-}).optional(); //.options({ stripUnknown: true });
-
-export const sigleGameItemSchema = Joi.object({ game: gameItemSchema }).required(); //.options({ stripUnknown: true });
-
-export const multipleGamesSchema = Joi.object({
-  games: Joi.array().items(gameItemSchema),
-}).required();
-
-export const gamedevGenericSchema = Joi.object({ success: Joi.boolean().required() }).required();

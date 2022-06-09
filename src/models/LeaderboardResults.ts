@@ -103,6 +103,11 @@ export function createOrUpdateLeaderBoardResult(
   leaderBoardData: LeaderboardResultsCreationAttributes
 ) {
   return withTransaction(async (transaction) => {
+    //tbd if highest, only save if highest
+    //tbd if lowests, only save if lowest
+    //tbd if sum, update the  score + what is in db
+    //tbd if latest, updates regardless
+
     const rslt = await LeaderboardResults.upsert(leaderBoardData, { transaction });
 
     if (rslt.length && leaderBoardData?._leaderboardResultsMeta) {
@@ -120,6 +125,15 @@ export function createOrUpdateLeaderBoardResult(
     }
 
     return rslt;
+  });
+}
+
+export function getLeaderboardResultsById(_leaderboardEntryId: number, transaction?: Transaction) {
+  return LeaderboardResults.findAll({
+    where: {
+      _leaderboardEntryId,
+    },
+    transaction,
   });
 }
 

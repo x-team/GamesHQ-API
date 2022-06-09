@@ -2,7 +2,7 @@ import { expect } from 'chai';
 import { RouteOptions } from '@hapi/hapi';
 import { getLeaderboardsRoute } from '../../../src/modules/gameDevs/gameDevRoutes';
 import { getLeaderboardHandler } from '../../../src/modules/gameDevs/gameDevHandlers';
-import { multipleLeaderboardSchema } from '../../../src/api-utils/responseSchemas/gamedev';
+import { multipleLeaderboardSchema } from '../../../src/api-utils/schemas/gameDev/leaderboardSchemas';
 import { CAPABILITIES } from '../../../src/api-utils/interfaceAndTypes';
 import { getAuthUser } from '../../../src/api-utils/getAuthUser';
 

@@ -1,11 +1,14 @@
 import Boom from '@hapi/boom';
 import type { Lifecycle } from '@hapi/hapi';
 
+import { arrayToJSON } from '../../api-utils/utils';
 import { findAllAchievementsByGameType } from '../../models/Achievements';
+import type { LeaderboardEntry } from '../../models/LeaderboardEntry';
 import { getLeaderboardById } from '../../models/LeaderboardEntry';
 import type { LeaderboardResultsCreationAttributes } from '../../models/LeaderboardResults';
 import {
   createOrUpdateLeaderBoardResult,
+  getLeaderboardResultsById,
   getUserLeaderboardResult,
 } from '../../models/LeaderboardResults';
 
@@ -19,11 +22,21 @@ export const getAchievementsThruWebhookHandler: Lifecycle.Method = async (reques
   return h.response({ achievements }).code(200);
 };
 
+export const getLeaderboardRankHandler: Lifecycle.Method = async (request, h) => {
+  const { gameType } = request.pre.webhookValidation;
+
+  const leaderboard = await validateLeaderboard(request.params.leaderboardId, gameType.id);
+
+  const rslt = await getLeaderboardResultsById(leaderboard.id);
+  //wip getLeaderboardResultsById
+  return h.response(arrayToJSON(rslt)).code(200);
+};
+
 export const postLeaderboardResultHandler: Lifecycle.Method = async (request, h) => {
   const { gameType } = request.pre.webhookValidation;
   const payload = request.pre.webhookPayload as LeaderboardResultsCreationAttributes;
 
-  await validateLeaderboard(gameType.id, payload._leaderboardEntryId);
+  await validateLeaderboard(payload._leaderboardEntryId, gameType.id);
 
   const currentLeaderboardRslt = await getUserLeaderboardResult(
     payload._userId,
@@ -41,10 +54,12 @@ export const postLeaderboardResultHandler: Lifecycle.Method = async (request, h)
 const validateLeaderboard = async (
   leaderboardEntryId: number,
   gameTypeId: number
-): Promise<void> => {
+): Promise<LeaderboardEntry> => {
   const leaderboard = await getLeaderboardById(leaderboardEntryId);
 
   if (leaderboard?._gameTypeId !== gameTypeId) {
     throw Boom.forbidden('leaderboard does not belong to that game');
   }
+
+  return leaderboard;
 };

@@ -2,7 +2,7 @@ import Boom from '@hapi/boom';
 import type { Lifecycle } from '@hapi/hapi';
 import type { ValidationResult } from 'joi';
 
-import { postLeaderboardResultScoreSchema } from '../../api-utils/responseSchemas/gamedev';
+import { postLeaderboardResultScoreSchema } from '../../api-utils/schemas/gameDev/leaderboardSchemas';
 import { isProd, logger } from '../../config';
 
 export const parseWebhookPayload: Lifecycle.Method = (request) => {
