@@ -28,5 +28,6 @@ export function validateWebhookSignatures(
   version: string
 ) {
   const sha = signMessage(signatureBase, secretSignature);
+  // console.log({ signatureBase, sha });
   return hashedSignature === `${version}=${sha}`;
 }

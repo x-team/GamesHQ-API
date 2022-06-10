@@ -1,4 +1,5 @@
 import type { ServerRoute } from '@hapi/hapi';
+import { appendUserToRequest } from '../../api-utils/appendUserToRequest';
 
 import { leaderboardResultSchema } from '../../api-utils/responseSchemas/gamedev';
 import { webhookValidation } from '../../api-utils/webhookValidations';
@@ -21,7 +22,7 @@ export const postLeaderboardResultRoute: ServerRoute = {
   method: 'POST',
   path: '/webhooks/game-dev/leaderboards/score',
   options: {
-    description: 'Submit a game`s leaderboard score',
+    description: `Submit a game's leaderboard score`,
     payload: {
       parse: false,
       output: 'data',
@@ -38,6 +39,10 @@ export const postLeaderboardResultRoute: ServerRoute = {
       {
         method: parseWebhookPayload,
         assign: 'webhookPayload',
+      },
+      {
+        method: appendUserToRequest,
+        assign: 'appendUserToRequest',
       },
     ],
   },

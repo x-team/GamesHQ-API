@@ -5,7 +5,7 @@ import { ScoreStrategy, ResetStrategy } from '../../models/LeaderboardEntry';
 export const postLeaderboardResultScoreSchema = Joi.object({
   id: Joi.number().optional(),
   _leaderboardEntryId: Joi.number().required(),
-  _userId: Joi.number().required(),
+  _userId: Joi.number().optional(),
   score: Joi.number().required(),
   _leaderboardResultsMeta: Joi.array()
     .items(
