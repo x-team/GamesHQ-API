@@ -3,7 +3,7 @@ import {
   postLeaderboardResultRoute,
   getLeaderboardResultRoute,
 } from '../../../src/modules/gameDevs/gameDevWebhooksRoutes';
-import { GameType, LeaderboardEntry, LeaderboardResults } from '../../../src/models';
+import { GameType, LeaderboardEntry, LeaderboardResults, Session } from '../../../src/models';
 import { getCustomTestServer, createTestUser } from '../../test-utils';
 import { signMessage } from '../../../src/utils/cryptography';
 import { v4 as uuid } from 'uuid';
@@ -22,7 +22,7 @@ describe('gameDevWebhooksRoutes', () => {
       });
 
       const rslt = await testServer.inject(
-        postLeaderboarsScoreInjectOptions(undefined, lb1.id, game!)
+        await postLeaderboarsScoreInjectOptions(undefined, lb1.id, game!)
       );
       const payload = JSON.parse(rslt.payload);
 
@@ -55,7 +55,7 @@ describe('gameDevWebhooksRoutes', () => {
         score: 10,
       };
 
-      let injectOptions = postLeaderboarsScoreInjectOptions(p, undefined, game!);
+      let injectOptions = await postLeaderboarsScoreInjectOptions(p, undefined, game!);
 
       const rslt = await testServer.inject(injectOptions as any);
       const payload = JSON.parse(rslt.payload);
@@ -88,7 +88,7 @@ describe('gameDevWebhooksRoutes', () => {
         _leaderboardResultsMeta: [],
       };
 
-      let injectOptions = postLeaderboarsScoreInjectOptions(p, undefined, game!);
+      let injectOptions = await postLeaderboarsScoreInjectOptions(p, undefined, game!);
 
       const rslt = await testServer.inject(injectOptions as any);
       const payload = JSON.parse(rslt.payload);
@@ -127,7 +127,7 @@ describe('gameDevWebhooksRoutes', () => {
         _leaderboardResultsMeta: [],
       };
 
-      let injectOptions = postLeaderboarsScoreInjectOptions(p, undefined, game!);
+      let injectOptions = await postLeaderboarsScoreInjectOptions(p, undefined, game!);
 
       const rslt = await testServer.inject(injectOptions as any);
       const payload = JSON.parse(rslt.payload);
@@ -155,7 +155,7 @@ describe('gameDevWebhooksRoutes', () => {
         _leaderboardResultsMeta: [],
       };
 
-      let injectOptions = postLeaderboarsScoreInjectOptions(p, undefined, game!);
+      let injectOptions = await postLeaderboarsScoreInjectOptions(p, undefined, game!);
 
       const rslt = await testServer.inject(injectOptions as any);
       const payload = JSON.parse(rslt.payload);
@@ -256,7 +256,11 @@ describe('gameDevWebhooksRoutes', () => {
   });
 });
 
-function postLeaderboarsScoreInjectOptions(p: any, _leaderboardEntryId?: number, game?: GameType) {
+async function postLeaderboarsScoreInjectOptions(
+  p: any,
+  _leaderboardEntryId?: number,
+  game?: GameType
+) {
   const payload = p || {
     _leaderboardEntryId,
     _userId: 1,
@@ -271,6 +275,11 @@ function postLeaderboarsScoreInjectOptions(p: any, _leaderboardEntryId?: number,
   const timestamp = String(new Date().getTime() / 1000);
   const signatureMessage = `v0:${timestamp}:${JSON.stringify(payload)}`;
 
+  const session = await Session.create({
+    token: uuid(),
+    _userId: 1,
+  });
+
   const injectOptions = {
     method: 'POST',
     url: '/webhooks/game-dev/leaderboards/score',
@@ -278,6 +287,7 @@ function postLeaderboarsScoreInjectOptions(p: any, _leaderboardEntryId?: number,
       'xtu-request-timestamp': timestamp,
       'xtu-signature': `v0=${signMessage(signatureMessage, game!.signingSecret)}`,
       'xtu-client-secret': game!.clientSecret,
+      'xtu-session-token': session.token,
     },
     payload,
   };
