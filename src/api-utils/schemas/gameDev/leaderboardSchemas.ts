@@ -2,7 +2,17 @@ import Joi from 'joi';
 
 import { ScoreStrategy, ResetStrategy } from '../../../models/LeaderboardEntry';
 
-export const postLeaderboardResultScoreSchema = Joi.object({
+export const getLeaderboardRankResponseSchema = Joi.array()
+  .items(
+    Joi.object({
+      displayName: Joi.string().allow(null).required(),
+      email: Joi.string().required(),
+      score: Joi.number().required(),
+    })
+  )
+  .required();
+
+export const postLeaderboardResultScoreResquestSchema = Joi.object({
   id: Joi.number().optional(),
   _leaderboardEntryId: Joi.number().required(),
   _userId: Joi.number().required(),
@@ -17,21 +27,8 @@ export const postLeaderboardResultScoreSchema = Joi.object({
     .optional(),
 }).required();
 
-export const leaderboardResultSchema = Joi.object({
-  id: Joi.number().required(),
-  _leaderboardEntryId: Joi.number().required(),
-  _userId: Joi.number().required(),
-  score: Joi.number().required(),
-  _leaderboardResultsMeta: Joi.array()
-    .items(
-      Joi.object({
-        attribute: Joi.string().required(),
-        value: Joi.string().required(),
-      })
-    )
-    .optional(),
-  createdAt: Joi.date(),
-  updatedAt: Joi.date(),
+export const postLeaderboardResultScoreResponseSchema = Joi.object({
+  newEntry: Joi.boolean().required(),
 }).required();
 
 export const postLeaderboardSchema = Joi.object({

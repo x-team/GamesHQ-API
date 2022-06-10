@@ -1,14 +1,17 @@
 import { expect } from 'chai';
-import { postLeaderboardResultRoute } from '../../../src/modules/gameDevs/gameDevWebhooksRoutes';
+import {
+  postLeaderboardResultRoute,
+  getLeaderboardResultRoute,
+} from '../../../src/modules/gameDevs/gameDevWebhooksRoutes';
 import { GameType, LeaderboardEntry, LeaderboardResults } from '../../../src/models';
-import { getCustomTestServer } from '../../test-utils';
+import { getCustomTestServer, createTestUser } from '../../test-utils';
 import { signMessage } from '../../../src/utils/cryptography';
 import { v4 as uuid } from 'uuid';
 
 describe('gameDevWebhooksRoutes', () => {
   const testServer = getCustomTestServer();
 
-  testServer.route([postLeaderboardResultRoute]);
+  testServer.route([postLeaderboardResultRoute, getLeaderboardResultRoute]);
 
   describe(' postLeaderboardResultRoute', async () => {
     it('should return 200 status code on POST /leaderboards/score', async () => {
@@ -19,117 +22,241 @@ describe('gameDevWebhooksRoutes', () => {
       });
 
       const rslt = await testServer.inject(
-        getPostLeaderboarsScoreInjectOptions(undefined, lb1.id, game!)
+        postLeaderboarsScoreInjectOptions(undefined, lb1.id, game!)
       );
       const payload = JSON.parse(rslt.payload);
 
-      const lbrInDB = await LeaderboardResults.findByPk(payload.id, {
+      const lbrInDB = await LeaderboardResults.findOne({
         include: LeaderboardResults.associations._leaderboardResultsMeta,
       });
 
       expect(rslt.statusCode).to.equal(200);
-      expect(payload.id).to.be.equal(lbrInDB!.id);
-      expect(payload._leaderboardEntryId).to.equal(lb1.id);
-      expect(payload._userId).to.equal(1);
-      expect(payload.score).to.equal(10);
-      expect(isNaN(Date.parse(payload.createdAt))).to.be.false;
-      expect(isNaN(Date.parse(payload.updatedAt))).to.be.false;
+      expect(payload).to.deep.equal({
+        newEntry: true,
+      });
+      expect(lbrInDB?._leaderboardEntryId).to.equal(lb1.id);
+      expect(lbrInDB?._userId).to.equal(1);
+      expect(lbrInDB?.score).to.equal(10);
       expect(lbrInDB?._leaderboardResultsMeta?.length).to.equal(1);
+      expect(lbrInDB?._leaderboardResultsMeta![0].attribute).to.equal('timePlayed');
+      expect(lbrInDB?._leaderboardResultsMeta![0].value).to.equal('10000');
+    });
+
+    it('should return 200 status code on POST /leaderboards/score without meta', async () => {
+      const game = await GameType.findByPk(1);
+      const lb1 = await LeaderboardEntry.create({
+        _gameTypeId: 1,
+        name: 'my_leaderboard_' + uuid(),
+      });
+
+      const p = {
+        _leaderboardEntryId: lb1.id,
+        _userId: 1,
+        score: 10,
+      };
+
+      let injectOptions = postLeaderboarsScoreInjectOptions(p, undefined, game!);
+
+      const rslt = await testServer.inject(injectOptions as any);
+      const payload = JSON.parse(rslt.payload);
+
+      const lbrInDB = await LeaderboardResults.findOne({
+        include: LeaderboardResults.associations._leaderboardResultsMeta,
+      });
+
+      expect(rslt.statusCode).to.equal(200);
+      expect(payload).to.deep.equal({
+        newEntry: true,
+      });
+      expect(lbrInDB!._leaderboardEntryId).to.equal(lb1.id);
+      expect(lbrInDB!._userId).to.equal(1);
+      expect(lbrInDB!.score).to.equal(10);
+      expect(lbrInDB?._leaderboardResultsMeta?.length).to.equal(0);
+    });
+
+    it('should return 200 status code on POST /leaderboards/score with empty meta', async () => {
+      const game = await GameType.findByPk(1);
+      const lb1 = await LeaderboardEntry.create({
+        _gameTypeId: 1,
+        name: 'my_leaderboard_' + uuid(),
+      });
+
+      const p = {
+        _leaderboardEntryId: lb1.id,
+        _userId: 1,
+        score: 10,
+        _leaderboardResultsMeta: [],
+      };
+
+      let injectOptions = postLeaderboarsScoreInjectOptions(p, undefined, game!);
+
+      const rslt = await testServer.inject(injectOptions as any);
+      const payload = JSON.parse(rslt.payload);
+
+      const lbrInDB = await LeaderboardResults.findOne({
+        include: LeaderboardResults.associations._leaderboardResultsMeta,
+      });
+
+      expect(rslt.statusCode).to.equal(200);
+      expect(payload).to.deep.equal({
+        newEntry: true,
+      });
+      expect(lbrInDB!._leaderboardEntryId).to.equal(lb1.id);
+      expect(lbrInDB!._userId).to.equal(1);
+      expect(lbrInDB!.score).to.equal(10);
+      expect(lbrInDB?._leaderboardResultsMeta?.length).to.equal(0);
+    });
+
+    it('should return newEntry= false on POST /leaderboards/score when result is not updated', async () => {
+      const game = await GameType.findByPk(1);
+      const lb1 = await LeaderboardEntry.create({
+        _gameTypeId: 1,
+        name: 'my_leaderboard_' + uuid(),
+      });
+
+      await LeaderboardResults.create({
+        score: 100,
+        _leaderboardEntryId: lb1.id,
+        _userId: 1,
+      });
+
+      const p = {
+        _leaderboardEntryId: lb1.id,
+        _userId: 1,
+        score: 10, // score is lower than current
+        _leaderboardResultsMeta: [],
+      };
+
+      let injectOptions = postLeaderboarsScoreInjectOptions(p, undefined, game!);
+
+      const rslt = await testServer.inject(injectOptions as any);
+      const payload = JSON.parse(rslt.payload);
+      const lbrInDB = await LeaderboardResults.findOne({
+        include: LeaderboardResults.associations._leaderboardResultsMeta,
+      });
+
+      expect(rslt.statusCode).to.equal(200);
+      expect(payload).to.deep.equal({
+        newEntry: false,
+      });
+      expect(lbrInDB!._leaderboardEntryId).to.equal(lb1.id);
+      expect(lbrInDB!._userId).to.equal(1);
+      expect(lbrInDB!.score).to.equal(100);
+      expect(lbrInDB?._leaderboardResultsMeta?.length).to.equal(0);
+    });
+
+    it('should return 400 status code on POST /leaderboards/score on schema validation: missing _leaderboardEntryId', async () => {
+      const game = await GameType.findByPk(1);
+
+      const p = {
+        // _leaderboardEntryId: lb1.id
+        _userId: 1,
+        score: 10,
+        _leaderboardResultsMeta: [],
+      };
+
+      let injectOptions = postLeaderboarsScoreInjectOptions(p, undefined, game!);
+
+      const rslt = await testServer.inject(injectOptions as any);
+      const payload = JSON.parse(rslt.payload);
+
+      expect(rslt.statusCode).to.equal(400);
+      expect(payload.statusCode).to.be.equal(400);
+      expect(payload.error).to.be.equal('Bad Request');
+      expect(payload.message).to.be.equal('"_leaderboardEntryId" is required');
     });
   });
 
-  it('should return 200 status code on POST /leaderboards/score without meta', async () => {
-    const game = await GameType.findByPk(1);
-    const lb1 = await LeaderboardEntry.create({
-      _gameTypeId: 1,
-      name: 'my_leaderboard_' + uuid(),
+  describe('getLeaderboardResultRoute', async () => {
+    it('should return 200 status code on GET /leaderboards/score', async () => {
+      const game = await GameType.findByPk(1);
+      const lb1 = await LeaderboardEntry.create({
+        _gameTypeId: 1,
+        name: 'my_leaderboard_' + uuid(),
+      });
+
+      for (const score of [1, 2, 3, 1]) {
+        await LeaderboardResults.create({
+          _leaderboardEntryId: lb1.id,
+          _userId: (await createTestUser()).id,
+          score,
+        });
+      }
+
+      const rslt = await testServer.inject(
+        getLeaderboardResultsRankInjectOptions({}, lb1.id, game!)
+      );
+
+      const payload = JSON.parse(rslt.payload);
+      expect(rslt.statusCode).to.equal(200);
+      expect(payload.length).to.equal(4);
+      expect(Object.keys(payload[0])).to.deep.equal(['score', 'displayName', 'email']);
+      expect(payload[0].score).to.equal(3);
+      expect(payload[0].displayName).to.be.a('string');
+      expect(payload[0].email).to.be.a('string');
+      expect(payload[1].score).to.equal(2);
+      expect(payload[2].score).to.equal(1);
+      expect(payload[3].score).to.equal(1);
     });
 
-    const p = {
-      _leaderboardEntryId: lb1.id,
-      _userId: 1,
-      score: 10,
-    };
+    it('should return 200 status code on GET /leaderboards/score with limit set', async () => {
+      const limit = 2;
+      const game = await GameType.findByPk(1);
+      const lb1 = await LeaderboardEntry.create({
+        _gameTypeId: 1,
+        name: 'my_leaderboard_' + uuid(),
+      });
 
-    let injectOptions = getPostLeaderboarsScoreInjectOptions(p, undefined, game!);
+      for (const score of [1, 2, 3, 1]) {
+        await LeaderboardResults.create({
+          _leaderboardEntryId: lb1.id,
+          _userId: (await createTestUser()).id,
+          score,
+        });
+      }
 
-    const rslt = await testServer.inject(injectOptions as any);
-    const payload = JSON.parse(rslt.payload);
+      const rslt = await testServer.inject(
+        getLeaderboardResultsRankInjectOptions({}, lb1.id, game!, limit)
+      );
 
-    const lbrInDB = await LeaderboardResults.findByPk(payload.id, {
-      include: LeaderboardResults.associations._leaderboardResultsMeta,
+      const payload = JSON.parse(rslt.payload);
+      expect(rslt.statusCode).to.equal(200);
+      expect(payload.length).to.equal(2);
+      expect(payload[0].score).to.equal(3);
+      expect(payload[0].displayName).to.be.a('string');
+      expect(payload[0].email).to.be.a('string');
+      expect(payload[1].score).to.equal(2);
+      expect(payload[1].displayName).to.be.a('string');
+      expect(payload[1].email).to.be.a('string');
     });
 
-    expect(rslt.statusCode).to.equal(200);
-    expect(payload.id).to.be.equal(lbrInDB!.id);
-    expect(payload._leaderboardEntryId).to.equal(lb1.id);
-    expect(payload._userId).to.equal(1);
-    expect(payload.score).to.equal(10);
-    expect(isNaN(Date.parse(payload.createdAt))).to.be.false;
-    expect(isNaN(Date.parse(payload.updatedAt))).to.be.false;
-    expect(lbrInDB?._leaderboardResultsMeta?.length).to.equal(0);
-  });
+    it('should return 200 status code on GET /leaderboards/score with default limit of 10', async () => {
+      const game = await GameType.findByPk(1);
+      const lb1 = await LeaderboardEntry.create({
+        _gameTypeId: 1,
+        name: 'my_leaderboard_' + uuid(),
+      });
 
-  it('should return 200 status code on POST /leaderboards/score with empty meta', async () => {
-    const game = await GameType.findByPk(1);
-    const lb1 = await LeaderboardEntry.create({
-      _gameTypeId: 1,
-      name: 'my_leaderboard_' + uuid(),
+      for (const score of [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15]) {
+        await LeaderboardResults.create({
+          _leaderboardEntryId: lb1.id,
+          _userId: (await createTestUser()).id,
+          score,
+        });
+      }
+
+      const rslt = await testServer.inject(
+        getLeaderboardResultsRankInjectOptions({}, lb1.id, game!)
+      );
+
+      const payload = JSON.parse(rslt.payload);
+      expect(rslt.statusCode).to.equal(200);
+      expect(payload.length).to.equal(10);
     });
-
-    const p = {
-      _leaderboardEntryId: lb1.id,
-      _userId: 1,
-      score: 10,
-      _leaderboardResultsMeta: [],
-    };
-
-    let injectOptions = getPostLeaderboarsScoreInjectOptions(p, undefined, game!);
-
-    const rslt = await testServer.inject(injectOptions as any);
-    const payload = JSON.parse(rslt.payload);
-
-    const lbrInDB = await LeaderboardResults.findByPk(payload.id, {
-      include: LeaderboardResults.associations._leaderboardResultsMeta,
-    });
-
-    expect(rslt.statusCode).to.equal(200);
-    expect(payload.id).to.be.equal(lbrInDB!.id);
-    expect(payload._leaderboardEntryId).to.equal(lb1.id);
-    expect(payload._userId).to.equal(1);
-    expect(payload.score).to.equal(10);
-    expect(isNaN(Date.parse(payload.createdAt))).to.be.false;
-    expect(isNaN(Date.parse(payload.updatedAt))).to.be.false;
-    expect(lbrInDB?._leaderboardResultsMeta?.length).to.equal(0);
-  });
-
-  it('should return 400 status code on POST /leaderboards/score on schema validation: missing _leaderboardEntryId', async () => {
-    const game = await GameType.findByPk(1);
-
-    const p = {
-      // _leaderboardEntryId: lb1.id
-      _userId: 1,
-      score: 10,
-      _leaderboardResultsMeta: [],
-    };
-
-    let injectOptions = getPostLeaderboarsScoreInjectOptions(p, undefined, game!);
-
-    const rslt = await testServer.inject(injectOptions as any);
-    const payload = JSON.parse(rslt.payload);
-
-    expect(rslt.statusCode).to.equal(400);
-    expect(payload.statusCode).to.be.equal(400);
-    expect(payload.error).to.be.equal('Bad Request');
-    expect(payload.message).to.be.equal('"_leaderboardEntryId" is required');
   });
 });
 
-function getPostLeaderboarsScoreInjectOptions(
-  p: any,
-  _leaderboardEntryId?: number,
-  game?: GameType
-) {
+function postLeaderboarsScoreInjectOptions(p: any, _leaderboardEntryId?: number, game?: GameType) {
   const payload = p || {
     _leaderboardEntryId,
     _userId: 1,
@@ -153,6 +280,30 @@ function getPostLeaderboarsScoreInjectOptions(
       'xtu-client-secret': game!.clientSecret,
     },
     payload,
+  };
+
+  return injectOptions;
+}
+
+function getLeaderboardResultsRankInjectOptions(
+  _: {},
+  _leaderboardEntryId?: number,
+  game?: GameType,
+  limit?: number
+) {
+  const timestamp = String(new Date().getTime() / 1000);
+  const signatureMessage = `v0:${timestamp}:{}`;
+
+  const injectOptions = {
+    method: 'GET',
+    url:
+      `/webhooks/game-dev/leaderboards/${_leaderboardEntryId}/rank` +
+      (limit ? `?limit=${limit}` : ''),
+    headers: {
+      'xtu-request-timestamp': timestamp,
+      'xtu-signature': `v0=${signMessage(signatureMessage, game!.signingSecret)}`,
+      'xtu-client-secret': game!.clientSecret,
+    },
   };
 
   return injectOptions;

@@ -2,7 +2,7 @@ import Boom from '@hapi/boom';
 import type { Lifecycle } from '@hapi/hapi';
 import type { ValidationResult } from 'joi';
 
-import { postLeaderboardResultScoreSchema } from '../../api-utils/schemas/gameDev/leaderboardSchemas';
+import { postLeaderboardResultScoreResquestSchema } from '../../api-utils/schemas/gameDev/leaderboardSchemas';
 import { isProd, logger } from '../../config';
 
 export const parseWebhookPayload: Lifecycle.Method = (request) => {
@@ -14,7 +14,7 @@ export const parseWebhookPayload: Lifecycle.Method = (request) => {
   const payload = JSON.parse(body);
 
   //TBD: add validation for new requests
-  const validationRslt = postLeaderboardResultScoreSchema.validate(payload);
+  const validationRslt = postLeaderboardResultScoreResquestSchema.validate(payload);
 
   checkForWebhookErrors(validationRslt, payload);
 

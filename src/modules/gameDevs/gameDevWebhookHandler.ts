@@ -1,7 +1,6 @@
 import Boom from '@hapi/boom';
 import type { Lifecycle } from '@hapi/hapi';
 
-import { arrayToJSON } from '../../api-utils/utils';
 import { findAllAchievementsByGameType } from '../../models/Achievements';
 import type { LeaderboardEntry } from '../../models/LeaderboardEntry';
 import { getLeaderboardById } from '../../models/LeaderboardEntry';
@@ -9,7 +8,6 @@ import type { LeaderboardResultsCreationAttributes } from '../../models/Leaderbo
 import {
   createOrUpdateLeaderBoardResult,
   getLeaderboardResultRank,
-  getUserLeaderboardResult,
 } from '../../models/LeaderboardResults';
 
 // 🎮 Games
@@ -26,9 +24,17 @@ export const getLeaderboardRankHandler: Lifecycle.Method = async (request, h) =>
   const { gameType } = request.pre.webhookValidation;
 
   const leaderboard = await validateLeaderboard(request.params.leaderboardId, gameType.id);
-  const rslt = await getLeaderboardResultRank(leaderboard);
+  const rslt = await getLeaderboardResultRank(leaderboard, request.query.limit);
 
-  return h.response(arrayToJSON(rslt)).code(200);
+  return h
+    .response(
+      rslt.map((i) => ({
+        score: i.score,
+        displayName: i._user?.displayName,
+        email: i._user?.email,
+      }))
+    )
+    .code(200);
 };
 
 export const postLeaderboardResultHandler: Lifecycle.Method = async (request, h) => {
@@ -37,17 +43,11 @@ export const postLeaderboardResultHandler: Lifecycle.Method = async (request, h)
 
   await validateLeaderboard(payload._leaderboardEntryId, gameType.id);
 
-  const currentLeaderboardRslt = await getUserLeaderboardResult(
-    payload._userId,
-    payload._leaderboardEntryId
-  );
-
-  const [leaderboardRslt] = await createOrUpdateLeaderBoardResult({
-    id: currentLeaderboardRslt?.id,
+  const leaderboardRslt = await createOrUpdateLeaderBoardResult({
     ...payload,
   });
 
-  return h.response(leaderboardRslt.toJSON()).code(200);
+  return h.response({ newEntry: leaderboardRslt ? true : false }).code(200);
 };
 
 const validateLeaderboard = async (
