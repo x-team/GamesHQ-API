@@ -1,6 +1,7 @@
 import Boom from '@hapi/boom';
 import type { Lifecycle } from '@hapi/hapi';
 
+import type { User } from '../../models';
 import { findAllAchievementsByGameType } from '../../models/Achievements';
 import type { LeaderboardEntry } from '../../models/LeaderboardEntry';
 import { getLeaderboardById } from '../../models/LeaderboardEntry';
@@ -17,7 +18,9 @@ export const getAchievementsThruWebhookHandler: Lifecycle.Method = async (reques
   // if () {
   //   throw Boom.forbidden('User is not the owner of the game');
   // }
-  return h.response({ achievements }).code(200);
+  return h
+    .response({ achievements: achievements.map((achievement) => achievement.toJSON()) })
+    .code(200);
 };
 
 export const getLeaderboardRankHandler: Lifecycle.Method = async (request, h) => {
@@ -40,11 +43,13 @@ export const getLeaderboardRankHandler: Lifecycle.Method = async (request, h) =>
 export const postLeaderboardResultHandler: Lifecycle.Method = async (request, h) => {
   const { gameType } = request.pre.webhookValidation;
   const payload = request.pre.webhookPayload as LeaderboardResultsCreationAttributes;
+  const user = request.pre.appendUserToRequest as User;
 
   await validateLeaderboard(payload._leaderboardEntryId, gameType.id);
 
   const leaderboardRslt = await createOrUpdateLeaderBoardResult({
     ...payload,
+    _userId: user.id,
   });
 
   return h.response({ newEntry: leaderboardRslt ? true : false }).code(200);
