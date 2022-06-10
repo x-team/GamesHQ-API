@@ -15,7 +15,7 @@ export const getLeaderboardRankResponseSchema = Joi.array()
 export const postLeaderboardResultScoreResquestSchema = Joi.object({
   id: Joi.number().optional(),
   _leaderboardEntryId: Joi.number().required(),
-  _userId: Joi.number().required(),
+  _userId: Joi.number().optional(),
   score: Joi.number().required(),
   _leaderboardResultsMeta: Joi.array()
     .items(
