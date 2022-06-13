@@ -10,7 +10,7 @@ const sessionTokenSchema = Joi.object({
 }).options({ stripUnknown: true });
 
 const userSessionSchema = Joi.object({
-  displayName: Joi.string().required(),
+  displayName: Joi.string().allow(null).required(),
   email: Joi.string().email().required(),
   slackId: Joi.string().allow(null).optional(),
   firebaseUserUid: Joi.string().allow(null).optional(),

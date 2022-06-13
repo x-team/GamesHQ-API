@@ -1,12 +1,16 @@
 import type { ServerRoute } from '@hapi/hapi';
-import { appendUserToRequest } from '../../api-utils/appendUserToRequest';
 
-import { leaderboardResultSchema } from '../../api-utils/responseSchemas/gamedev';
+import { appendUserToRequest } from '../../api-utils/appendUserToRequest';
+import {
+  getLeaderboardRankResponseSchema,
+  postLeaderboardResultScoreResponseSchema,
+} from '../../api-utils/schemas/gameDev/leaderboardSchemas';
 import { webhookValidation } from '../../api-utils/webhookValidations';
 
 import {
   getAchievementsThruWebhookHandler,
   postLeaderboardResultHandler,
+  getLeaderboardRankHandler,
 } from './gameDevWebhookHandler';
 import { parseWebhookPayload } from './utils';
 declare module '@hapi/hapi' {
@@ -17,6 +21,25 @@ declare module '@hapi/hapi' {
     };
   }
 }
+
+export const getLeaderboardResultRoute: ServerRoute = {
+  method: 'GET',
+  path: '/webhooks/game-dev/leaderboards/{leaderboardId}/rank',
+  options: {
+    description: 'Fetch a game`s current leaderboard rank',
+    tags: ['api'],
+    response: {
+      schema: getLeaderboardRankResponseSchema,
+    },
+    pre: [
+      {
+        method: webhookValidation,
+        assign: 'webhookValidation',
+      },
+    ],
+  },
+  handler: getLeaderboardRankHandler,
+};
 
 export const postLeaderboardResultRoute: ServerRoute = {
   method: 'POST',
@@ -29,7 +52,7 @@ export const postLeaderboardResultRoute: ServerRoute = {
     },
     tags: ['api'],
     response: {
-      schema: leaderboardResultSchema,
+      schema: postLeaderboardResultScoreResponseSchema,
     },
     pre: [
       {
@@ -49,21 +72,24 @@ export const postLeaderboardResultRoute: ServerRoute = {
   handler: postLeaderboardResultHandler,
 };
 
-export const gameDevWebhookRoutes: ServerRoute[] = [
-  {
-    method: 'GET',
-    path: '/webhooks/game-dev/achievements',
-    options: {
-      description: 'Get All the achievements related to a gameType',
-      tags: ['api'],
-      pre: [
-        {
-          method: webhookValidation,
-          assign: 'webhookValidation',
-        },
-      ],
-    },
-    handler: getAchievementsThruWebhookHandler,
+const getGameAcheivmentsRoute: ServerRoute = {
+  method: 'GET',
+  path: '/webhooks/game-dev/achievements',
+  options: {
+    description: 'Get All the achievements related to a gameType',
+    tags: ['api'],
+    pre: [
+      {
+        method: webhookValidation,
+        assign: 'webhookValidation',
+      },
+    ],
   },
+  handler: getAchievementsThruWebhookHandler,
+};
+
+export const gameDevWebhookRoutes: ServerRoute[] = [
+  getGameAcheivmentsRoute,
+  getLeaderboardResultRoute,
   postLeaderboardResultRoute,
 ];

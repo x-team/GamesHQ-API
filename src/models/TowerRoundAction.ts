@@ -12,6 +12,11 @@ import {
   AutoIncrement,
 } from 'sequelize-typescript';
 
+import { ITEM_TYPE } from '../games/consts/global';
+import type { TOWER_ACTIONS } from '../games/tower/consts';
+
+import { TowerAction } from './AvailableAction';
+
 import {
   AvailableAction,
   Item,
@@ -20,9 +25,6 @@ import {
   TowerFloorBattlefieldEnemy,
   TowerFloorEnemy,
 } from '.';
-import { ITEM_TYPE } from '../games/consts/global';
-import { TOWER_ACTIONS } from '../games/tower/consts';
-import { TowerAction } from './AvailableAction';
 
 type Values<T> = T[keyof T];
 
@@ -252,9 +254,9 @@ export async function findRoundAction(
 ) {
   return TowerRoundAction.findOne({
     where: {
-      _towerRaiderId: raiderId,
-      _towerFloorBattlefieldEnemyId: enemyId,
-      _towerRoundId: roundId,
+      _towerRaiderId: raiderId ?? undefined,
+      _towerFloorBattlefieldEnemyId: enemyId ?? undefined,
+      _towerRoundId: roundId ?? undefined,
     },
     transaction,
   });

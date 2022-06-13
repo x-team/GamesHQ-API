@@ -1,11 +1,14 @@
 /* eslint-disable */
 import sinon from 'sinon';
+import { v4 as uuid } from 'uuid';
 import { performance } from 'perf_hooks';
 import { initDb, sequelize, getAllModels } from '../src/db';
 import { logger } from '../src/config';
 import { Server } from '@hapi/hapi';
 import Boom from '@hapi/boom';
 import Joi from 'joi';
+import { User } from '../src/models';
+import { USER_ROLE_LEVEL } from '../src/consts/model';
 
 declare module 'mocha' {
   interface Suite {
@@ -132,3 +135,18 @@ async function resetDB() {
   const query = keys.map((key) => `TRUNCATE TABLE "${key}" RESTART IDENTITY CASCADE;`).join('\n');
   await sequelize.query(query, { raw: true });
 }
+
+export const createTestUser = async () => {
+  const uniqueId = uuid();
+  return await User.create({
+    email: `email_${uniqueId}@test.com`,
+    displayName: `displayName_${uniqueId}`,
+    firebaseUserUid: null,
+    slackId: null,
+    profilePictureUrl: null,
+    _roleId: USER_ROLE_LEVEL.USER,
+    _organizationId: 1,
+    createdAt: new Date(),
+    updatedAt: new Date(),
+  });
+};

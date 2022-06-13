@@ -10,6 +10,7 @@ import {
   CreatedAt,
   UpdatedAt,
   BelongsTo,
+  Index,
 } from 'sequelize-typescript';
 
 import { LeaderboardResults } from './';
@@ -42,6 +43,10 @@ export class LeaderboardResultsMeta extends Model<
   @Column(DataType.INTEGER)
   id!: number;
 
+  @Index({
+    name: 'index_attribute_leaderboardresult',
+    unique: true,
+  })
   @ForeignKey(() => LeaderboardResults)
   @Column(DataType.INTEGER)
   _leaderboardResultsId!: number;
@@ -53,6 +58,10 @@ export class LeaderboardResultsMeta extends Model<
   })
   _leaderboardResults?: LeaderboardResults;
 
+  @Index({
+    name: 'index_attribute_leaderboardresult',
+    unique: true,
+  })
   @AllowNull(false)
   @Column(DataType.TEXT)
   attribute!: string;

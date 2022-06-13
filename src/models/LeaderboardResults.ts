@@ -1,4 +1,4 @@
-import type { Association, Transaction } from 'sequelize';
+import type { Association, Transaction, Order } from 'sequelize';
 import {
   Table,
   Column,
@@ -12,11 +12,12 @@ import {
   CreatedAt,
   UpdatedAt,
   HasMany,
+  Index,
 } from 'sequelize-typescript';
 
 import { withTransaction } from '../db';
 
-import { LeaderboardEntry } from './LeaderboardEntry';
+import { LeaderboardEntry, ScoreStrategy } from './LeaderboardEntry';
 import type {
   LeaderboardResultsMetaAttributes,
   LeaderboardResultsMetaCreationAttributes,
@@ -42,6 +43,37 @@ export interface LeaderboardResultsCreationAttributes {
   _leaderboardResultsMeta?: LeaderboardResultsMetaCreationAttributes[];
 }
 
+interface ScoreStrategyOptions {
+  orderBy: Order;
+  beforeUpsert: (
+    data: LeaderboardResultsCreationAttributes,
+    lbrInDb: LeaderboardResults
+  ) => boolean;
+}
+
+const mapScoreStrategyOptions: { [key in ScoreStrategy]: ScoreStrategyOptions } = {
+  [ScoreStrategy.HIGHEST]: {
+    orderBy: [['score', 'DESC']],
+    beforeUpsert: (data: LeaderboardResultsCreationAttributes, lbrInDb: LeaderboardResults) =>
+      data.score > lbrInDb.score,
+  },
+  [ScoreStrategy.LOWEST]: {
+    orderBy: [['score', 'ASC']],
+    beforeUpsert: (data: LeaderboardResultsCreationAttributes, lbrInDb: LeaderboardResults) =>
+      data.score < lbrInDb.score,
+  },
+  [ScoreStrategy.SUM]: {
+    orderBy: [['score', 'DESC']],
+    beforeUpsert: (data: LeaderboardResultsCreationAttributes, lbrInDb: LeaderboardResults) => {
+      data.score = data.score + lbrInDb.score;
+      return true;
+    },
+  },
+  [ScoreStrategy.LATEST]: {
+    orderBy: [['score', 'DESC']],
+    beforeUpsert: (_: LeaderboardResultsCreationAttributes, __: LeaderboardResults) => true,
+  },
+};
 @Table
 export class LeaderboardResults extends Model<
   LeaderboardResultsAttributes,
@@ -52,6 +84,10 @@ export class LeaderboardResults extends Model<
   @Column(DataType.INTEGER)
   id!: number;
 
+  @Index({
+    name: 'index_user_leaderboard',
+    unique: true,
+  })
   @ForeignKey(() => LeaderboardEntry)
   @AllowNull(false)
   @Column(DataType.INTEGER)
@@ -64,6 +100,10 @@ export class LeaderboardResults extends Model<
   })
   _leaderboardEntry?: LeaderboardEntry;
 
+  @Index({
+    name: 'index_user_leaderboard',
+    unique: true,
+  })
   @ForeignKey(() => User)
   @Column(DataType.INTEGER)
   _userId!: number;
@@ -99,31 +139,79 @@ export class LeaderboardResults extends Model<
   };
 }
 
-export function createOrUpdateLeaderBoardResult(
-  leaderBoardData: LeaderboardResultsCreationAttributes
-) {
+export function createOrUpdateLeaderBoardResult(data: LeaderboardResultsCreationAttributes) {
   return withTransaction(async (transaction) => {
-    const rslt = await LeaderboardResults.upsert(leaderBoardData, { transaction });
+    const lbrInDb = await getUserLeaderboardResult(data._userId, data._leaderboardEntryId);
 
-    if (rslt.length && leaderBoardData?._leaderboardResultsMeta) {
-      for (const meta of leaderBoardData._leaderboardResultsMeta) {
-        await LeaderboardResultsMeta.upsert(
-          {
-            ...meta,
-            _leaderboardResultsId: rslt[0].id,
-          },
-          {
-            transaction,
-          }
-        );
+    if (shouldUpsert(data, lbrInDb)) {
+      const rslt = await LeaderboardResults.upsert(
+        {
+          ...data,
+          id: lbrInDb?.id,
+        },
+        {
+          transaction,
+          conflictFields: ['_userId', '_leaderboardEntryId'],
+        }
+      );
+
+      if (rslt.length && data?._leaderboardResultsMeta) {
+        for (const meta of data._leaderboardResultsMeta) {
+          await LeaderboardResultsMeta.upsert(
+            {
+              ...meta,
+              _leaderboardResultsId: rslt[0].id,
+            },
+            {
+              transaction,
+              conflictFields: ['attribute', '_leaderboardResultsId'],
+            }
+          );
+        }
       }
+
+      return rslt;
     }
 
-    return rslt;
+    return;
   });
 }
 
-export function getUserLeaderboardResult(
+function shouldUpsert(
+  data: LeaderboardResultsCreationAttributes,
+  lbrInDb: LeaderboardResults | null
+): boolean {
+  const scoreStrategy = lbrInDb?._leaderboardEntry?.scoreStrategy;
+  if (lbrInDb && scoreStrategy) {
+    return mapScoreStrategyOptions[scoreStrategy].beforeUpsert(data, lbrInDb);
+  }
+
+  return true;
+}
+
+export function getLeaderboardResultRank(
+  _leaderboardEntry: LeaderboardEntry,
+  limit = 10,
+  transaction?: Transaction
+) {
+  return LeaderboardResults.findAll({
+    where: {
+      _leaderboardEntryId: _leaderboardEntry.id,
+    },
+    include: [
+      {
+        association: LeaderboardResults.associations._user,
+        attributes: ['displayName', 'email'],
+      },
+    ],
+    attributes: ['score'],
+    order: mapScoreStrategyOptions[_leaderboardEntry.scoreStrategy].orderBy,
+    limit,
+    transaction,
+  });
+}
+
+function getUserLeaderboardResult(
   _userId: number,
   _leaderboardEntryId: number,
   transaction?: Transaction
@@ -133,6 +221,12 @@ export function getUserLeaderboardResult(
       _userId,
       _leaderboardEntryId,
     },
+    include: [
+      {
+        association: LeaderboardResults.associations._leaderboardEntry,
+        attributes: ['scoreStrategy'],
+      },
+    ],
     transaction,
   });
 }

@@ -6,10 +6,12 @@ import {
   gamedevGenericSchema,
   multipleGamesSchema,
   sigleGameItemSchema,
+} from '../../api-utils/schemas/gameDev/game';
+import {
   leaderboardSchema,
   multipleLeaderboardSchema,
   postLeaderboardSchema,
-} from '../../api-utils/responseSchemas/gamedev';
+} from '../../api-utils/schemas/gameDev/leaderboardSchemas';
 
 import {
   deleteGameTypeHandler,
