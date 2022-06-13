@@ -8,7 +8,7 @@ import { fail } from 'assert';
 
 describe('ItemWeapon', () => {
   describe('listActiveWeaponsByGameType', () => {
-    it('should list Active weapons by Game Type', async () => {
+    it.skip('should list Active weapons by Game Type', async () => {
       const gameType = await findGameTypeByName(GAME_TYPE.ARENA);
       const towerItems = await GameItemAvailability.findAll({
         where: { _gameTypeId: gameType!.id },

@@ -16,6 +16,8 @@ declare module 'mocha' {
   }
 }
 
+sequelize.options.logging = false;
+
 export const getCustomTestServer = () => {
   return new Server({
     routes: {

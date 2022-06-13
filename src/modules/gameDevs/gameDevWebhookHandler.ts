@@ -9,6 +9,7 @@ import type { LeaderboardResultsCreationAttributes } from '../../models/Leaderbo
 import {
   createOrUpdateLeaderBoardResult,
   getLeaderboardResultRank,
+  getUserLeaderboardResult,
 } from '../../models/LeaderboardResults';
 
 // 🎮 Games
@@ -40,15 +41,29 @@ export const getLeaderboardRankHandler: Lifecycle.Method = async (request, h) =>
     .code(200);
 };
 
+export const getUserLeaderboardResultHandler: Lifecycle.Method = async (request, h) => {
+  const { gameType } = request.pre.webhookValidation;
+  const user = request.pre.appendUserToRequest as User;
+
+  const rslt = await getUserLeaderboardResult(user.id, request.params.leaderboardId, gameType.id);
+
+  if (!rslt) {
+    throw Boom.notFound('user score not found');
+  }
+
+  return h.response(rslt?.toJSON()).code(200);
+};
+
 export const postLeaderboardResultHandler: Lifecycle.Method = async (request, h) => {
   const { gameType } = request.pre.webhookValidation;
   const payload = request.pre.webhookPayload as LeaderboardResultsCreationAttributes;
   const user = request.pre.appendUserToRequest as User;
 
-  await validateLeaderboard(payload._leaderboardEntryId, gameType.id);
+  await validateLeaderboard(request.params.leaderboardId, gameType.id);
 
   const leaderboardRslt = await createOrUpdateLeaderBoardResult({
     ...payload,
+    _leaderboardEntryId: request.params.leaderboardId,
     _userId: user.id,
   });
 

@@ -2,6 +2,7 @@ import { expect } from 'chai';
 import {
   createOrUpdateLeaderBoardResult,
   getLeaderboardResultRank,
+  getUserLeaderboardResult,
   LeaderboardResultsCreationAttributes,
 } from '../../src/models/LeaderboardResults';
 import { createTestUser } from '../test-utils';
@@ -9,7 +10,7 @@ import { LeaderboardEntry, LeaderboardResults } from '../../src/models';
 import { v4 as uuid } from 'uuid';
 import { ScoreStrategy } from '../../src/models/LeaderboardEntry';
 
-describe('LeaderboardRestults', () => {
+describe('LeaderboardResults', () => {
   describe('createOrUpdateLeaderBoardResult', () => {
     it('should create LeaderboardResult', async () => {
       const lb1 = await LeaderboardEntry.create({
@@ -471,6 +472,57 @@ describe('LeaderboardRestults', () => {
       expect(rslt[1].score).to.equal(2);
       expect(rslt[2].score).to.equal(1);
       expect(rslt[3].score).to.equal(1);
+    });
+  });
+
+  describe('getUserLeaderboardResult', () => {
+    it('should get rank from highest scoreStrategy leaderboard', async () => {
+      const userId = 1;
+      const lb = await LeaderboardEntry.create({
+        _gameTypeId: 1,
+        name: 'my_leaderboard_' + uuid(),
+        scoreStrategy: ScoreStrategy.HIGHEST,
+      });
+      const gameTypeId = 1;
+
+      let lbr = await LeaderboardResults.create({
+        _leaderboardEntryId: lb.id,
+        _userId: 1,
+        score: 10,
+      });
+
+      const rslt = await getUserLeaderboardResult(userId, lb.id, gameTypeId);
+
+      expect(rslt!.id).to.equal(lbr.id);
+      expect(rslt!.score).to.equal(10);
+      expect(rslt!._leaderboardEntryId).to.equal(lb.id);
+      expect(rslt!._userId).to.equal(1);
+      expect(rslt!._leaderboardEntry).to.be.undefined;
+      expect(rslt!._user).to.be.undefined;
+      expect(rslt!._leaderboardResultsMeta).to.be.undefined;
+      expect(rslt!.createdAt).to.be.instanceOf(Date);
+      expect(rslt!.updatedAt).to.be.instanceOf(Date);
+    });
+
+    it('should return null if LeaderboardResult does not belong to leaderboardentry', async () => {
+      const userId = 1;
+      const lb = await LeaderboardEntry.create({
+        _gameTypeId: 1,
+        name: 'my_leaderboard_' + uuid(),
+        scoreStrategy: ScoreStrategy.HIGHEST,
+      });
+      const gameTypeId = 1;
+      const otherleaderboardEntryId = lb.id * 100;
+
+      await LeaderboardResults.create({
+        _leaderboardEntryId: lb.id,
+        _userId: 1,
+        score: 10,
+      });
+
+      const rslt = await getUserLeaderboardResult(userId, otherleaderboardEntryId, gameTypeId);
+
+      expect(rslt).to.be.null;
     });
   });
 });

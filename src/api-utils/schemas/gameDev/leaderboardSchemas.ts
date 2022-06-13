@@ -12,10 +12,15 @@ export const getLeaderboardRankResponseSchema = Joi.array()
   )
   .required();
 
+export const getUserLeaderboardResultScoreResponseSchema = Joi.object({
+  id: Joi.number().required(),
+  _leaderboardEntryId: Joi.number().required(),
+  _userId: Joi.number().required(),
+  score: Joi.number().required(),
+}).required();
+
 export const postLeaderboardResultScoreResquestSchema = Joi.object({
   id: Joi.number().optional(),
-  _leaderboardEntryId: Joi.number().required(),
-  _userId: Joi.number().optional(),
   score: Joi.number().required(),
   _leaderboardResultsMeta: Joi.array()
     .items(
