@@ -3,12 +3,14 @@ import type { ServerRoute } from '@hapi/hapi';
 import { appendUserToRequest } from '../../api-utils/appendUserToRequest';
 import {
   getLeaderboardRankResponseSchema,
+  getUserLeaderboardResultScoreResponseSchema,
   postLeaderboardResultScoreResponseSchema,
 } from '../../api-utils/schemas/gameDev/leaderboardSchemas';
 import { webhookValidation } from '../../api-utils/webhookValidations';
 
 import {
   getAchievementsThruWebhookHandler,
+  getUserLeaderboardResultHandler,
   postLeaderboardResultHandler,
   getLeaderboardRankHandler,
 } from './gameDevWebhookHandler';
@@ -22,7 +24,7 @@ declare module '@hapi/hapi' {
   }
 }
 
-export const getLeaderboardResultRoute: ServerRoute = {
+export const getGameLeaderboardResultRoute: ServerRoute = {
   method: 'GET',
   path: '/webhooks/game-dev/leaderboards/{leaderboardId}/rank',
   options: {
@@ -41,9 +43,32 @@ export const getLeaderboardResultRoute: ServerRoute = {
   handler: getLeaderboardRankHandler,
 };
 
+export const getUserLeaderboardResultRoute: ServerRoute = {
+  method: 'GET',
+  path: '/webhooks/game-dev/leaderboards/{leaderboardId}/score',
+  options: {
+    description: `Fetch a user's current leaderboard score`,
+    tags: ['api'],
+    response: {
+      schema: getUserLeaderboardResultScoreResponseSchema,
+    },
+    pre: [
+      {
+        method: webhookValidation,
+        assign: 'webhookValidation',
+      },
+      {
+        method: appendUserToRequest,
+        assign: 'appendUserToRequest',
+      },
+    ],
+  },
+  handler: getUserLeaderboardResultHandler,
+};
+
 export const postLeaderboardResultRoute: ServerRoute = {
   method: 'POST',
-  path: '/webhooks/game-dev/leaderboards/score',
+  path: '/webhooks/game-dev/leaderboards/{leaderboardId}/score',
   options: {
     description: `Submit a game's leaderboard score`,
     payload: {
@@ -90,6 +115,7 @@ const getGameAcheivmentsRoute: ServerRoute = {
 
 export const gameDevWebhookRoutes: ServerRoute[] = [
   getGameAcheivmentsRoute,
-  getLeaderboardResultRoute,
+  getGameLeaderboardResultRoute,
+  getUserLeaderboardResultRoute,
   postLeaderboardResultRoute,
 ];

@@ -141,7 +141,10 @@ export class LeaderboardResults extends Model<
 
 export function createOrUpdateLeaderBoardResult(data: LeaderboardResultsCreationAttributes) {
   return withTransaction(async (transaction) => {
-    const lbrInDb = await getUserLeaderboardResult(data._userId, data._leaderboardEntryId);
+    const lbrInDb = await getUserLeaderboardResultWithScoreStrategy(
+      data._userId,
+      data._leaderboardEntryId
+    );
 
     if (shouldUpsert(data, lbrInDb)) {
       const rslt = await LeaderboardResults.upsert(
@@ -211,7 +214,37 @@ export function getLeaderboardResultRank(
   });
 }
 
-function getUserLeaderboardResult(
+export function getUserLeaderboardResult(
+  _userId: number,
+  _leaderboardEntryId: number,
+  _gametypeId: number,
+  transaction?: Transaction
+) {
+  return LeaderboardResults.findOne({
+    where: {
+      _userId,
+      _leaderboardEntryId,
+    },
+    include: [
+      {
+        association: LeaderboardResults.associations._leaderboardEntry,
+        attributes: [],
+        include: [
+          {
+            association: LeaderboardEntry.associations._gameType,
+            attributes: [],
+            where: {
+              id: _gametypeId,
+            },
+          },
+        ],
+      },
+    ],
+    transaction,
+  });
+}
+
+function getUserLeaderboardResultWithScoreStrategy(
   _userId: number,
   _leaderboardEntryId: number,
   transaction?: Transaction
