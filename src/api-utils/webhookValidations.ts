@@ -1,6 +1,7 @@
 import Boom from '@hapi/boom';
 import type { Request, ResponseToolkit } from '@hapi/hapi';
 import { isEmpty, isNaN } from 'lodash';
+
 import { TWO } from '../games/consts/global';
 import { findGameTypeByClientSecret } from '../models/GameType';
 import { isRequestFresh } from '../modules/slack/utils';
@@ -10,7 +11,7 @@ export async function webhookValidation(request: Request, _h: ResponseToolkit) {
   if (!isEmpty(request.payload) && !Buffer.isBuffer(request.payload)) {
     throw Boom.internal('Payload is not a Buffer');
   }
-  const bodyString = request.payload ? request.payload.toString('utf-8') : {};
+  const bodyString = request.payload ? request.payload.toString('utf-8') : '{}';
   const timestamp = Number(request.headers['xtu-request-timestamp']);
   if (isNaN(timestamp) || !isRequestFresh(timestamp, TWO)) {
     throw Boom.unauthorized('Invalid timestamp');

@@ -1,6 +1,6 @@
 import type { ServerRoute } from '@hapi/hapi';
 
-import { sessionSchema, logoutSessionSchema } from '../../api-utils/responseSchemas/user';
+import { sessionSchema, logoutSessionSchema } from '../../api-utils/schemas/user';
 
 import { checkAvailableSession, loginWithGoogle, logutFromAPI } from './userHandler';
 

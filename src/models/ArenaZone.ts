@@ -270,6 +270,7 @@ export async function activateAllArenaZones(transaction?: Transaction) {
           [Op.not]: 'Streaming Zone',
         },
       },
+      returning: true,
       transaction,
     }
   );
