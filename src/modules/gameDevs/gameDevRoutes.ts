@@ -3,6 +3,10 @@ import type { ServerRoute } from '@hapi/hapi';
 import { getAuthUser } from '../../api-utils/getAuthUser';
 import { CAPABILITIES } from '../../api-utils/interfaceAndTypes';
 import {
+  postAcheivementRequestSchema,
+  postAcheivementResponseSchema,
+} from '../../api-utils/schemas/gameDev/acheivementsSchemas';
+import {
   gamedevGenericSchema,
   multipleGamesSchema,
   sigleGameItemSchema,
@@ -21,6 +25,7 @@ import {
   getLeaderboardHandler,
   upsertLeaderboardHandler,
   deleteLeaderboardHandler,
+  upsertAcheivementHandler,
 } from './gameDevHandlers';
 
 declare module '@hapi/hapi' {
@@ -211,6 +216,32 @@ export const upsertLeaderboardRoute: ServerRoute = {
   handler: upsertLeaderboardHandler,
 };
 
+//Acheivements
+export const upsertAcheivementsRoute: ServerRoute = {
+  method: 'POST',
+  path: '/dashboard/game-dev/games/{gameTypeId}/acheivements',
+  options: {
+    description: `Add or update a game's acheivement`,
+    tags: ['api'],
+    bind: {
+      requiredCapabilities: [CAPABILITIES.GAMEDEV_ACTIONS],
+    },
+    pre: [
+      {
+        method: getAuthUser,
+        assign: 'getAuthUser',
+      },
+    ],
+    validate: {
+      payload: postAcheivementRequestSchema,
+    },
+    response: {
+      schema: postAcheivementResponseSchema,
+    },
+  },
+  handler: upsertAcheivementHandler,
+};
+
 export const gameDevRoutes: ServerRoute[] = [
   // 🎮 Games
   getGameTypesRoute,
@@ -221,4 +252,5 @@ export const gameDevRoutes: ServerRoute[] = [
   getLeaderboardByIdRoute,
   upsertLeaderboardRoute,
   deleteLeaderboardRoute,
+  upsertAcheivementsRoute,
 ];

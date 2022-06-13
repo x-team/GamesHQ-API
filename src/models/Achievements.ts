@@ -33,8 +33,8 @@ interface AchievementCreationAttributes {
   description: string;
   isEnabled: boolean;
   targetValue: number;
-  createdAt: Date;
-  updatedAt: Date;
+  createdAt?: Date;
+  updatedAt?: Date;
   _gameTypeId: number;
 }
 
@@ -88,12 +88,11 @@ export class Achievement
   };
 }
 
-interface AchievementEditorData {
-  id: number;
+export interface AchievementEditorData {
+  id?: number;
   description: string;
   isEnabled: boolean;
   targetValue: number;
-  createdAt?: Date;
 }
 
 export function findAchievementById(id: number, transaction?: Transaction) {
@@ -109,20 +108,10 @@ export async function createOrUpdateAchievement(
   gameTypeId: number,
   transaction?: Transaction
 ) {
-  const { id, description, isEnabled, targetValue, createdAt } = achievementData;
-  const valuesToUpdate: AchievementCreationAttributes = {
-    description,
-    isEnabled,
-    targetValue,
-    createdAt: createdAt ?? new Date(),
-    updatedAt: new Date(),
-    _gameTypeId: gameTypeId,
-  };
-
   return Achievement.upsert(
     {
-      id: id ?? undefined,
-      ...valuesToUpdate,
+      ...achievementData,
+      _gameTypeId: gameTypeId,
     },
     { transaction }
   );

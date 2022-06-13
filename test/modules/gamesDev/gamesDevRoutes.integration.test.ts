@@ -4,10 +4,11 @@ import {
   getLeaderboardByIdRoute,
   upsertLeaderboardRoute,
   deleteLeaderboardRoute,
+  upsertAcheivementsRoute,
 } from '../../../src/modules/gameDevs/gameDevRoutes';
-import { LeaderboardEntry, Session } from '../../../src/models';
+import { Achievement, LeaderboardEntry, Session, User } from '../../../src/models';
 import { v4 as uuid } from 'uuid';
-import { getCustomTestServer } from '../../test-utils';
+import { createTestUser, getCustomTestServer } from '../../test-utils';
 
 describe('gameDevRoutes', () => {
   const testServer = getCustomTestServer();
@@ -17,6 +18,7 @@ describe('gameDevRoutes', () => {
     getLeaderboardByIdRoute,
     upsertLeaderboardRoute,
     deleteLeaderboardRoute,
+    upsertAcheivementsRoute,
   ]);
 
   describe('getLeaderboardRoute', async () => {
@@ -262,7 +264,7 @@ describe('gameDevRoutes', () => {
     });
   });
 
-  describe('upsertLeaderboardRoute', async () => {
+  describe('deleteLeaderboardRoute', async () => {
     it('should return 200 status code on DELETE /leaderboards', async () => {
       const session = await Session.create({
         token: uuid(),
@@ -293,6 +295,190 @@ describe('gameDevRoutes', () => {
         success: true,
       });
       expect(deletedLeaderboard).to.be.null;
+    });
+  });
+
+  describe('upsertAcheivementsRoute', async () => {
+    it('should return 200 status code on POST /acheivements when creating acheivement', async () => {
+      const session = await Session.create({
+        token: uuid(),
+        _userId: 1,
+      });
+
+      const payload = {
+        description: 'my_acheivement_' + uuid(),
+        isEnabled: true,
+        targetValue: 200,
+      };
+
+      const injectOptions = {
+        method: 'POST',
+        url: `/dashboard/game-dev/games/1/acheivements`,
+        headers: {
+          'xtu-session-token': session.token,
+        },
+        payload,
+      };
+
+      const rslt = await testServer.inject(injectOptions);
+      const acheivementIDb = await Achievement.findOne();
+      const resp = JSON.parse(rslt.payload);
+
+      expect(rslt.statusCode).to.equal(200);
+      expect(resp.id).to.equal(acheivementIDb?.id);
+      expect(resp.description).to.equal(acheivementIDb?.description);
+      expect(resp.description).to.equal(payload.description);
+      expect(resp.isEnabled).to.equal(acheivementIDb?.isEnabled);
+      expect(resp.isEnabled).to.equal(payload.isEnabled);
+      expect(resp.targetValue).to.equal(acheivementIDb?.targetValue);
+      expect(resp.targetValue).to.equal(payload.targetValue);
+      expect(isNaN(Date.parse(resp.createdAt))).to.be.false;
+      expect(isNaN(Date.parse(resp.updatedAt))).to.be.false;
+    });
+
+    it('should return 200 status code on POST /acheivements when updating an acheivement', async () => {
+      const session = await Session.create({
+        token: uuid(),
+        _userId: 1,
+      });
+
+      const acheivementInDB = await Achievement.create({
+        description: 'new_my_acheivement',
+        isEnabled: true,
+        targetValue: 200,
+        _gameTypeId: 1,
+      });
+
+      const payload = {
+        id: acheivementInDB.id,
+        description: 'updated_acheivement',
+        isEnabled: false,
+        targetValue: 100,
+      };
+
+      const injectOptions = {
+        method: 'POST',
+        url: `/dashboard/game-dev/games/1/acheivements`,
+        headers: {
+          'xtu-session-token': session.token,
+        },
+        payload,
+      };
+
+      const rslt = await testServer.inject(injectOptions);
+      const updatedAcheivementInDB = await Achievement.findOne();
+      const resp = JSON.parse(rslt.payload);
+
+      expect(rslt.statusCode).to.equal(200);
+      expect(resp.id).to.equal(updatedAcheivementInDB?.id);
+      expect(resp.id).to.equal(payload?.id);
+      expect(resp.description).to.equal(updatedAcheivementInDB?.description);
+      expect(resp.description).to.equal(payload.description);
+      expect(resp.isEnabled).to.equal(updatedAcheivementInDB?.isEnabled);
+      expect(resp.isEnabled).to.equal(payload.isEnabled);
+      expect(resp.targetValue).to.equal(updatedAcheivementInDB?.targetValue);
+      expect(resp.targetValue).to.equal(payload.targetValue);
+      expect(isNaN(Date.parse(resp.createdAt))).to.be.false;
+      expect(isNaN(Date.parse(resp.updatedAt))).to.be.false;
+    });
+
+    it('should return error if updating acheivement that does not belong to gametype', async () => {
+      const session = await Session.create({
+        token: uuid(),
+        _userId: 1,
+      });
+
+      const acheivementInDB = await Achievement.create({
+        description: 'new_my_acheivement',
+        isEnabled: true,
+        targetValue: 200,
+        _gameTypeId: 1,
+      });
+
+      const payload = {
+        id: acheivementInDB.id,
+        description: 'updated_acheivement',
+        isEnabled: false,
+        targetValue: 100,
+      };
+
+      const injectOptions = {
+        method: 'POST',
+        url: `/dashboard/game-dev/games/2/acheivements`, // from other gameType
+        headers: {
+          'xtu-session-token': session.token,
+        },
+        payload,
+      };
+
+      const rslt = await testServer.inject(injectOptions);
+      expect(rslt.statusCode).to.equal(403);
+      expect(rslt.result).to.deep.equal({
+        statusCode: 403,
+        error: 'Forbidden',
+        message: 'acheivement does not belong to gametypeId 2',
+      });
+    });
+
+    it('should return error if calling POST /acheivements with invalid payload', async () => {
+      const session = await Session.create({
+        token: uuid(),
+        _userId: 1,
+      });
+
+      const payload = {
+        description_invalid: 'new_acheivement',
+        isEnabled: false,
+      };
+
+      const injectOptions = {
+        method: 'POST',
+        url: `/dashboard/game-dev/games/1/acheivements`,
+        headers: {
+          'xtu-session-token': session.token,
+        },
+        payload,
+      };
+
+      const rslt = await testServer.inject(injectOptions);
+      expect(rslt.statusCode).to.equal(400);
+      expect(rslt.result).to.deep.equal({
+        statusCode: 400,
+        error: 'Bad Request',
+        message: 'Invalid request payload input',
+      });
+    });
+
+    it('should return error if creating acheivement without user permission', async () => {
+      const user = await createTestUser();
+
+      const session = await Session.create({
+        token: uuid(),
+        _userId: user.id,
+      });
+
+      const payload = {
+        description: 'updated_acheivement',
+        isEnabled: false,
+        targetValue: 100,
+      };
+
+      const injectOptions = {
+        method: 'POST',
+        url: `/dashboard/game-dev/games/1/acheivements`,
+        headers: {
+          'xtu-session-token': session.token,
+        },
+        payload,
+      };
+
+      const rslt = await testServer.inject(injectOptions);
+      expect(rslt.statusCode).to.equal(403);
+      expect(rslt.result).to.deep.equal({
+        statusCode: 403,
+        error: 'Forbidden',
+        message: 'User is not the owner of the game',
+      });
     });
   });
 });

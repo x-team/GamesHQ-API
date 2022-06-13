@@ -3,6 +3,8 @@ import type { Lifecycle, Request, ResponseToolkit } from '@hapi/hapi';
 
 import type { CustomRequestThis } from '../../api-utils/interfaceAndTypes';
 import { arrayToJSON } from '../../api-utils/utils';
+import type { AchievementEditorData } from '../../models/Achievements';
+import { createOrUpdateAchievement } from '../../models/Achievements';
 import type { IGameEditorData, GameType } from '../../models/GameType';
 import {
   createOrUpdateGameType,
@@ -109,6 +111,20 @@ export const deleteLeaderboardHandler: Lifecycle.Method = async (request, h) => 
   }
 
   return h.response({ success: true }).code(200);
+};
+
+export const upsertAcheivementHandler: Lifecycle.Method = async (request, h) => {
+  const payload = request.payload as AchievementEditorData;
+
+  const game = await validateGameAuth(request.pre.getAuthUser.id, request.params.gameTypeId);
+
+  if (payload.id && game && !game._acheivements?.map((a) => a.id).includes(payload.id)) {
+    throw Boom.forbidden(`acheivement does not belong to gametypeId ${request.params.gameTypeId}`);
+  }
+
+  const [rslt] = await createOrUpdateAchievement({ ...payload }, request.params.gameTypeId);
+
+  return h.response(rslt?.toJSON()).code(200);
 };
 
 const validateGameAuth = async (
