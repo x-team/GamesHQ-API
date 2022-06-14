@@ -7,8 +7,9 @@ import {
   getAcheivementsByIdRoute,
   getAcheivementsRoute,
   upsertAcheivementsRoute,
+  deleteAcheivementsRoute,
 } from '../../../src/modules/gameDevs/gameDevRoutes';
-import { Achievement, LeaderboardEntry, Session, User } from '../../../src/models';
+import { Achievement, LeaderboardEntry, Session } from '../../../src/models';
 import { v4 as uuid } from 'uuid';
 import { createTestUser, getCustomTestServer } from '../../test-utils';
 
@@ -23,6 +24,7 @@ describe('gameDevRoutes', () => {
     getAcheivementsByIdRoute,
     getAcheivementsRoute,
     upsertAcheivementsRoute,
+    deleteAcheivementsRoute,
   ]);
 
   describe('getLeaderboardRoute', async () => {
@@ -658,6 +660,95 @@ describe('gameDevRoutes', () => {
         statusCode: 403,
         error: 'Forbidden',
         message: 'User is not the owner of the game',
+      });
+    });
+  });
+
+  describe('deleteAcheivementsRoute', async () => {
+    it('should return 200 status code on DELETE /acheivements/{id}', async () => {
+      const session = await Session.create({
+        token: uuid(),
+        _userId: 1,
+      });
+
+      const acheivementInDB_1 = await Achievement.create({
+        description: 'new_my_acheivement_1',
+        isEnabled: true,
+        targetValue: 200,
+        _gameTypeId: 1,
+      });
+
+      const injectOptions = {
+        method: 'DELETE',
+        url: `/dashboard/game-dev/games/1/acheivements/${acheivementInDB_1.id}`,
+        headers: {
+          'xtu-session-token': session.token,
+        },
+      };
+
+      const rslt = await testServer.inject(injectOptions);
+
+      const acheivementIDb = await Achievement.findOne();
+      const resp = JSON.parse(rslt.payload);
+
+      expect(rslt.statusCode).to.equal(200);
+      expect(resp).to.deep.equal({
+        success: true,
+      });
+      expect(acheivementIDb).to.be.null;
+    });
+
+    it('should return 404 status code on DELETE /acheivements/{id} when acheivement does not exist', async () => {
+      const session = await Session.create({
+        token: uuid(),
+        _userId: 1,
+      });
+
+      const injectOptions = {
+        method: 'DELETE',
+        url: `/dashboard/game-dev/games/1/acheivements/123`,
+        headers: {
+          'xtu-session-token': session.token,
+        },
+      };
+
+      const rslt = await testServer.inject(injectOptions);
+
+      const resp = JSON.parse(rslt.payload);
+
+      expect(rslt.statusCode).to.equal(404);
+      expect(resp).to.deep.equal({
+        statusCode: 404,
+        message: 'acheivement not found',
+        error: 'Not Found',
+      });
+    });
+
+    it('should return 403 status code on DELETE /acheivements/{id} when user does not own game', async () => {
+      const user = await createTestUser();
+
+      const session = await Session.create({
+        token: uuid(),
+        _userId: user.id,
+      });
+
+      const injectOptions = {
+        method: 'DELETE',
+        url: `/dashboard/game-dev/games/1/acheivements/1`,
+        headers: {
+          'xtu-session-token': session.token,
+        },
+      };
+
+      const rslt = await testServer.inject(injectOptions);
+
+      const resp = JSON.parse(rslt.payload);
+
+      expect(rslt.statusCode).to.equal(403);
+      expect(resp).to.deep.equal({
+        statusCode: 403,
+        message: 'User is not the owner of the game',
+        error: 'Forbidden',
       });
     });
   });

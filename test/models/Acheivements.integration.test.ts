@@ -4,6 +4,7 @@ import {
   createOrUpdateAchievement,
   getAcheivementByCreator,
   findAllAchievementsByGameType,
+  deleteAchievementById,
 } from '../../src/models/Achievements';
 
 describe('Acheivement', () => {
@@ -130,6 +131,29 @@ describe('Acheivement', () => {
       const gameTypeId = 1;
       const rslt = await findAllAchievementsByGameType(gameTypeId);
       expect(rslt?.length).to.equal(0);
+    });
+  });
+
+  describe('deleteAchievementById', () => {
+    it('should delete Acheivement by id', async () => {
+      const acheivementInDB = await Achievement.create({
+        description: 'my_desc',
+        targetValue: 100,
+        isEnabled: true,
+        _gameTypeId: 1,
+      });
+
+      const rslt = await deleteAchievementById(acheivementInDB.id);
+
+      const acheivementDeleted = await Achievement.findByPk(acheivementInDB.id);
+
+      expect(rslt).to.equal(1);
+      expect(acheivementDeleted).to.be.null;
+    });
+
+    it('should return 0 if no Acheivement found', async () => {
+      const rslt = await deleteAchievementById(123456);
+      expect(rslt).to.equal(0);
     });
   });
 });

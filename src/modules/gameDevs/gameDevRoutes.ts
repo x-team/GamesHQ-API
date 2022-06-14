@@ -29,6 +29,7 @@ import {
   deleteLeaderboardHandler,
   getAcheivementsHandler,
   upsertAcheivementHandler,
+  deleteAcheivementHandler,
 } from './gameDevHandlers';
 
 declare module '@hapi/hapi' {
@@ -289,6 +290,28 @@ export const upsertAcheivementsRoute: ServerRoute = {
   handler: upsertAcheivementHandler,
 };
 
+export const deleteAcheivementsRoute: ServerRoute = {
+  method: 'DELETE',
+  path: '/dashboard/game-dev/games/{gameTypeId}/acheivements/{acheivementId}',
+  options: {
+    description: `Delete a game's acheivement`,
+    tags: ['api'],
+    bind: {
+      requiredCapabilities: [CAPABILITIES.GAMEDEV_ACTIONS],
+    },
+    pre: [
+      {
+        method: getAuthUser,
+        assign: 'getAuthUser',
+      },
+    ],
+    response: {
+      schema: gamedevGenericSchema,
+    },
+  },
+  handler: deleteAcheivementHandler,
+};
+
 export const gameDevRoutes: ServerRoute[] = [
   // 🎮 Games
   getGameTypesRoute,
@@ -302,4 +325,5 @@ export const gameDevRoutes: ServerRoute[] = [
   getAcheivementsRoute,
   getAcheivementsByIdRoute,
   upsertAcheivementsRoute,
+  deleteAcheivementsRoute,
 ];

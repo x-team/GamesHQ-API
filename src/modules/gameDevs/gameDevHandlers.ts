@@ -8,6 +8,7 @@ import {
   findAllAchievementsByGameType,
   getAcheivementByCreator,
   createOrUpdateAchievement,
+  deleteAchievementById,
 } from '../../models/Achievements';
 import type { IGameEditorData, GameType } from '../../models/GameType';
 import {
@@ -152,6 +153,18 @@ export const upsertAcheivementHandler: Lifecycle.Method = async (request, h) => 
   const [rslt] = await createOrUpdateAchievement({ ...payload }, request.params.gameTypeId);
 
   return h.response(rslt?.toJSON()).code(200);
+};
+
+export const deleteAcheivementHandler: Lifecycle.Method = async (request, h) => {
+  await validateGameAuth(request.pre.getAuthUser.id, request.params.gameTypeId);
+
+  const rslt = await deleteAchievementById(request.params.acheivementId);
+
+  if (!rslt) {
+    throw Boom.notFound('acheivement not found');
+  }
+
+  return h.response({ success: true }).code(200);
 };
 
 const validateGameAuth = async (
