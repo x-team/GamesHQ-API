@@ -114,3 +114,16 @@ export const firebasePlugin = {
     });
   },
 };
+
+export const createUserInFirebase = async (email: string, displayName: string) => {
+  const firebaseUser = await firebaseApp.auth().getUserByEmail(email);
+
+  if (!firebaseUser) {
+    return await firebaseApp.auth().createUser({
+      email,
+      displayName,
+    });
+  }
+
+  return firebaseUser;
+};

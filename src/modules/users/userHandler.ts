@@ -13,7 +13,7 @@ import {
   updateSession,
 } from '../../models/Session';
 import { createUser, findUserById, getUserByEmail } from '../../models/User';
-import { firebaseApp } from '../../plugins/firebasePlugin';
+import { createUserInFirebase } from '../../plugins/firebasePlugin';
 
 export const loginWithGoogle: Lifecycle.Method = async (req, h) => {
   if (!req.auth.isAuthenticated) {
@@ -74,17 +74,9 @@ export const loginWithGoogle: Lifecycle.Method = async (req, h) => {
     });
   }
   if (!mutableUserFound.firebaseUserUid) {
-    const firebaseUser = await firebaseApp.auth().getUserByEmail(googleProfile.email);
-
-    if (!firebaseUser) {
-      await firebaseApp.auth().createUser({
-        email: googleProfile.email,
-        displayName: googleProfile.displayName,
-      });
-    } else {
-      mutableUserFound.firebaseUserUid = firebaseUser.uid;
-      await mutableUserFound.save();
-    }
+    const firebaseUser = await createUserInFirebase(googleProfile.email, googleProfile.displayName);
+    mutableUserFound.firebaseUserUid = firebaseUser.uid;
+    await mutableUserFound.save();
   }
 
   const newSession = await createSession({

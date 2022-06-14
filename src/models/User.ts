@@ -36,6 +36,7 @@ interface UserAttributes {
 }
 
 interface UserCreationAttributes {
+  id?: number;
   slackId: string | null;
   email: string;
   createdAt?: Date;
@@ -52,6 +53,7 @@ interface UserCreationAttributes {
     'id',
     'email',
     'slackId',
+    'firebaseUserUid',
     'createdAt',
     'displayName',
     'profilePictureUrl',
@@ -222,6 +224,10 @@ export async function userExists(slackId: string, transaction?: Transaction) {
   });
 
   return count > ZERO;
+}
+
+export async function upsertUser(data: UserCreationAttributes) {
+  return User.upsert(data);
 }
 
 export async function createUser(data: UserCreationAttributes) {
