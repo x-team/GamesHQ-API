@@ -15,6 +15,7 @@ import {
 import type { GAME_TYPE } from '../games/consts/global';
 import { generateSecret } from '../utils/cryptography';
 
+import { Achievement } from './Achievements';
 import { LeaderboardEntry } from './LeaderboardEntry';
 
 import { User } from './';
@@ -71,9 +72,13 @@ export class GameType
   @HasMany(() => LeaderboardEntry, '_gameTypeId')
   _leaderboards?: LeaderboardEntry[];
 
+  @HasMany(() => Achievement, '_gameTypeId')
+  _acheivements?: Achievement[];
+
   static associations: {
     _createdBy: Association<GameType, User>;
     _leaderboards: Association<GameType, LeaderboardEntry>;
+    _acheivements: Association<GameType, Achievement>;
   };
 }
 
@@ -92,7 +97,7 @@ export function findGameTypeByClientSecret(clientSecret: string, transaction?: T
 export function findGameTypeById(id: number, transaction?: Transaction) {
   return GameType.findByPk(id, {
     transaction,
-    include: [GameType.associations._leaderboards],
+    include: [GameType.associations._leaderboards, GameType.associations._acheivements],
   });
 }
 
