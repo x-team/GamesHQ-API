@@ -103,6 +103,30 @@ export function findAllAchievementsByGameType(gameTypeId: number, transaction?: 
   return Achievement.findAll({ where: { _gameTypeId: gameTypeId }, transaction });
 }
 
+export function getAcheivementByCreator(
+  id: number,
+  _gameTypeId: number,
+  _createdById: number,
+  transaction?: Transaction
+) {
+  return Achievement.findOne({
+    where: {
+      id,
+      _gameTypeId,
+    },
+    include: [
+      {
+        association: Achievement.associations._gameType,
+        attributes: [],
+        where: {
+          _createdById,
+        },
+      },
+    ],
+    transaction,
+  });
+}
+
 export async function createOrUpdateAchievement(
   achievementData: AchievementEditorData,
   gameTypeId: number,

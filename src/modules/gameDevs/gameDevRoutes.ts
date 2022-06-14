@@ -3,6 +3,8 @@ import type { ServerRoute } from '@hapi/hapi';
 import { getAuthUser } from '../../api-utils/getAuthUser';
 import { CAPABILITIES } from '../../api-utils/interfaceAndTypes';
 import {
+  getAcheivementByIdResponseSchema,
+  getAcheivementsResponseSchema,
   postAcheivementRequestSchema,
   postAcheivementResponseSchema,
 } from '../../api-utils/schemas/gameDev/acheivementsSchemas';
@@ -25,6 +27,7 @@ import {
   getLeaderboardHandler,
   upsertLeaderboardHandler,
   deleteLeaderboardHandler,
+  getAcheivementsHandler,
   upsertAcheivementHandler,
 } from './gameDevHandlers';
 
@@ -217,6 +220,50 @@ export const upsertLeaderboardRoute: ServerRoute = {
 };
 
 //Acheivements
+export const getAcheivementsRoute: ServerRoute = {
+  method: 'GET',
+  path: '/dashboard/game-dev/games/{gameTypeId}/acheivements',
+  options: {
+    description: `Get game's acheivements`,
+    tags: ['api'],
+    bind: {
+      requiredCapabilities: [CAPABILITIES.GAMEDEV_ACTIONS],
+    },
+    pre: [
+      {
+        method: getAuthUser,
+        assign: 'getAuthUser',
+      },
+    ],
+    response: {
+      schema: getAcheivementsResponseSchema,
+    },
+  },
+  handler: getAcheivementsHandler,
+};
+
+export const getAcheivementsByIdRoute: ServerRoute = {
+  method: 'GET',
+  path: '/dashboard/game-dev/games/{gameTypeId}/acheivements/{acheivementId}',
+  options: {
+    description: `Get game's acheivements`,
+    tags: ['api'],
+    bind: {
+      requiredCapabilities: [CAPABILITIES.GAMEDEV_ACTIONS],
+    },
+    pre: [
+      {
+        method: getAuthUser,
+        assign: 'getAuthUser',
+      },
+    ],
+    response: {
+      schema: getAcheivementByIdResponseSchema,
+    },
+  },
+  handler: getAcheivementsHandler,
+};
+
 export const upsertAcheivementsRoute: ServerRoute = {
   method: 'POST',
   path: '/dashboard/game-dev/games/{gameTypeId}/acheivements',
@@ -252,5 +299,7 @@ export const gameDevRoutes: ServerRoute[] = [
   getLeaderboardByIdRoute,
   upsertLeaderboardRoute,
   deleteLeaderboardRoute,
+  getAcheivementsRoute,
+  getAcheivementsByIdRoute,
   upsertAcheivementsRoute,
 ];

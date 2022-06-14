@@ -4,7 +4,11 @@ import type { Lifecycle, Request, ResponseToolkit } from '@hapi/hapi';
 import type { CustomRequestThis } from '../../api-utils/interfaceAndTypes';
 import { arrayToJSON } from '../../api-utils/utils';
 import type { AchievementEditorData } from '../../models/Achievements';
-import { createOrUpdateAchievement } from '../../models/Achievements';
+import {
+  findAllAchievementsByGameType,
+  getAcheivementByCreator,
+  createOrUpdateAchievement,
+} from '../../models/Achievements';
 import type { IGameEditorData, GameType } from '../../models/GameType';
 import {
   createOrUpdateGameType,
@@ -63,6 +67,8 @@ export const deleteGameTypeHandler: Lifecycle.Method = async (request, h) => {
 };
 
 export const getLeaderboardHandler: Lifecycle.Method = async (request, h) => {
+  await validateGameAuth(request.pre.getAuthUser.id, request.params.gameTypeId);
+
   if (request.params.leaderboardId) {
     const leaderboard = await getLeaderBoardByCreator(
       request.params.leaderboardId,
@@ -111,6 +117,27 @@ export const deleteLeaderboardHandler: Lifecycle.Method = async (request, h) => 
   }
 
   return h.response({ success: true }).code(200);
+};
+
+export const getAcheivementsHandler: Lifecycle.Method = async (request, h) => {
+  await validateGameAuth(request.pre.getAuthUser.id, request.params.gameTypeId);
+
+  if (request.params.acheivementId) {
+    const acheivement = await getAcheivementByCreator(
+      request.params.acheivementId,
+      request.params.gameTypeId,
+      request.pre.getAuthUser.id
+    );
+
+    if (!acheivement) {
+      throw Boom.notFound('acheivement not found');
+    }
+
+    return h.response(acheivement?.toJSON()).code(200);
+  } else {
+    const acheivements = await findAllAchievementsByGameType(request.params.gameTypeId);
+    return h.response(arrayToJSON(acheivements)).code(200);
+  }
 };
 
 export const upsertAcheivementHandler: Lifecycle.Method = async (request, h) => {

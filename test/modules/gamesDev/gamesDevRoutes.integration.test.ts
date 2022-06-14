@@ -4,6 +4,8 @@ import {
   getLeaderboardByIdRoute,
   upsertLeaderboardRoute,
   deleteLeaderboardRoute,
+  getAcheivementsByIdRoute,
+  getAcheivementsRoute,
   upsertAcheivementsRoute,
 } from '../../../src/modules/gameDevs/gameDevRoutes';
 import { Achievement, LeaderboardEntry, Session, User } from '../../../src/models';
@@ -18,6 +20,8 @@ describe('gameDevRoutes', () => {
     getLeaderboardByIdRoute,
     upsertLeaderboardRoute,
     deleteLeaderboardRoute,
+    getAcheivementsByIdRoute,
+    getAcheivementsRoute,
     upsertAcheivementsRoute,
   ]);
 
@@ -295,6 +299,182 @@ describe('gameDevRoutes', () => {
         success: true,
       });
       expect(deletedLeaderboard).to.be.null;
+    });
+  });
+
+  describe('getAcheivementsRoute', async () => {
+    it('should return 200 status code on GET /acheivements', async () => {
+      const session = await Session.create({
+        token: uuid(),
+        _userId: 1,
+      });
+
+      const acheivementInDB_1 = await Achievement.create({
+        description: 'new_my_acheivement_1',
+        isEnabled: true,
+        targetValue: 200,
+        _gameTypeId: 1,
+      });
+
+      const acheivementInDB_2 = await Achievement.create({
+        description: 'new_my_acheivement_2',
+        isEnabled: true,
+        targetValue: 200,
+        _gameTypeId: 1,
+      });
+
+      const injectOptions = {
+        method: 'GET',
+        url: '/dashboard/game-dev/games/1/acheivements',
+        headers: {
+          'xtu-session-token': session.token,
+        },
+      };
+
+      const rslt = await testServer.inject(injectOptions);
+
+      expect(rslt.statusCode).to.equal(200);
+      expect(JSON.parse(rslt.payload)).to.deep.equal([
+        {
+          ...acheivementInDB_1.toJSON(),
+          createdAt: acheivementInDB_1.createdAt.toISOString(),
+          updatedAt: acheivementInDB_1.updatedAt.toISOString(),
+        },
+        {
+          ...acheivementInDB_2.toJSON(),
+          createdAt: acheivementInDB_2.createdAt.toISOString(),
+          updatedAt: acheivementInDB_2.updatedAt.toISOString(),
+        },
+      ]);
+    });
+
+    it('should return 200 status code on GET /acheivements with empty response', async () => {
+      const session = await Session.create({
+        token: uuid(),
+        _userId: 1,
+      });
+
+      const injectOptions = {
+        method: 'GET',
+        url: '/dashboard/game-dev/games/1/acheivements',
+        headers: {
+          'xtu-session-token': session.token,
+        },
+      };
+
+      const rslt = await testServer.inject(injectOptions);
+
+      expect(rslt.statusCode).to.equal(200);
+      expect(JSON.parse(rslt.payload)).to.deep.equal([]);
+    });
+
+    it('should return error if user does not own gametype', async () => {
+      const user = await createTestUser();
+
+      const session = await Session.create({
+        token: uuid(),
+        _userId: user.id,
+      });
+
+      const injectOptions = {
+        method: 'GET',
+        url: '/dashboard/game-dev/games/1/acheivements',
+        headers: {
+          'xtu-session-token': session.token,
+        },
+      };
+
+      const rslt = await testServer.inject(injectOptions);
+
+      expect(rslt.statusCode).to.equal(403);
+      expect(rslt.result).to.deep.equal({
+        error: 'Forbidden',
+        message: 'User is not the owner of the game',
+        statusCode: 403,
+      });
+    });
+  });
+
+  describe('getAcheivementsByIdRoute', async () => {
+    it('should return 200 status code on GET /acheivements/{id}', async () => {
+      const session = await Session.create({
+        token: uuid(),
+        _userId: 1,
+      });
+
+      const acheivementInDB_1 = await Achievement.create({
+        description: 'new_my_acheivement_1',
+        isEnabled: true,
+        targetValue: 200,
+        _gameTypeId: 1,
+      });
+
+      const injectOptions = {
+        method: 'GET',
+        url: `/dashboard/game-dev/games/1/acheivements/${acheivementInDB_1.id}`,
+        headers: {
+          'xtu-session-token': session.token,
+        },
+      };
+
+      const rslt = await testServer.inject(injectOptions);
+
+      expect(rslt.statusCode).to.equal(200);
+      expect(JSON.parse(rslt.payload)).to.deep.equal({
+        ...acheivementInDB_1.toJSON(),
+        createdAt: acheivementInDB_1.createdAt.toISOString(),
+        updatedAt: acheivementInDB_1.updatedAt.toISOString(),
+      });
+    });
+
+    it('should return 404 status code on GET /acheivements/{id} when acheivement does not exist', async () => {
+      const session = await Session.create({
+        token: uuid(),
+        _userId: 1,
+      });
+
+      const injectOptions = {
+        method: 'GET',
+        url: `/dashboard/game-dev/games/1/acheivements/1234`,
+        headers: {
+          'xtu-session-token': session.token,
+        },
+      };
+
+      const rslt = await testServer.inject(injectOptions);
+
+      expect(rslt.statusCode).to.equal(404);
+      expect(rslt.result).to.deep.equal({
+        error: 'Not Found',
+        message: 'acheivement not found',
+        statusCode: 404,
+      });
+    });
+
+    it('should return error if user does not own gametype', async () => {
+      const user = await createTestUser();
+
+      const session = await Session.create({
+        token: uuid(),
+        _userId: user.id,
+      });
+
+      const injectOptions = {
+        method: 'GET',
+        url: '/dashboard/game-dev/games/1/acheivements/1',
+        headers: {
+          'xtu-session-token': session.token,
+        },
+      };
+
+      const rslt = await testServer.inject(injectOptions);
+
+      expect(rslt.statusCode).to.equal(403);
+      expect(rslt.result).to.deep.equal({
+        error: 'Forbidden',
+        message: 'User is not the owner of the game',
+        statusCode: 403,
+      });
     });
   });
 
