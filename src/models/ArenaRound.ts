@@ -92,29 +92,29 @@ export class ArenaRound
 
   @Default(true)
   @Column(DataType.BOOLEAN)
-  isActive!: boolean;
+  declare isActive: boolean;
 
   @Default(false)
   @Column(DataType.BOOLEAN)
-  isEveryoneVisible!: boolean;
+  declare isEveryoneVisible: boolean;
 
   @Column(DataType.DATE)
-  startedAt!: Date;
+  declare startedAt: Date;
 
   @Default(null)
   @Column(DataType.DATE)
-  endedAt!: Date | null;
+  declare endedAt: Date | null;
 
   @ForeignKey(() => Game)
   @Column(DataType.INTEGER)
-  _gameId!: number;
+  declare _gameId: number;
 
   @BelongsTo(() => Game, '_gameId')
   _game?: Game;
 
   @ForeignKey(() => User)
   @Column(DataType.INTEGER)
-  _createdById!: number;
+  declare _createdById: number;
 
   @BelongsTo(() => User, '_createdById')
   _createdBy?: User;

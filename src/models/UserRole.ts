@@ -34,7 +34,7 @@ export class UserRole
 
   @Unique
   @Column(DataType.TEXT)
-  name!: USER_ROLE_NAME;
+  declare name: USER_ROLE_NAME;
 
   @HasMany(() => User, '_roleId')
   _users?: User[];

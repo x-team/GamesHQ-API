@@ -41,7 +41,7 @@ export class TowerStatistics
   @PrimaryKey
   @ForeignKey(() => User)
   @Column(DataType.INTEGER)
-  _userId!: number;
+  declare _userId: number;
 
   @BelongsTo(() => User, {
     foreignKey: '_userId',
@@ -53,7 +53,7 @@ export class TowerStatistics
   @PrimaryKey
   @ForeignKey(() => TowerGame)
   @Column(DataType.INTEGER)
-  _towerGameId!: number;
+  declare _towerGameId: number;
 
   @BelongsTo(() => TowerGame, {
     foreignKey: '_gameId',
@@ -63,10 +63,10 @@ export class TowerStatistics
   _towerGame?: TowerGame;
 
   @Column(DataType.INTEGER)
-  attempts!: number;
+  declare attempts: number;
 
   @Column(DataType.INTEGER)
-  completed!: number;
+  declare completed: number;
 
   static associations: {
     _user: Association<TowerStatistics, User>;

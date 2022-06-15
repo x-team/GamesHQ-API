@@ -60,7 +60,7 @@ export class PerkInventory
 
   @ForeignKey(() => Perk)
   @Column(DataType.TEXT)
-  _perkId!: PERK;
+  declare _perkId: PERK;
 
   @BelongsTo(() => Perk, {
     foreignKey: '_perkId',
@@ -72,7 +72,7 @@ export class PerkInventory
   @ForeignKey(() => TowerRaider)
   @AllowNull(true)
   @Column(DataType.INTEGER)
-  _towerRaiderId!: number;
+  declare _towerRaiderId: number;
 
   @BelongsTo(() => TowerRaider, {
     foreignKey: '_towerRaiderId',
@@ -84,7 +84,7 @@ export class PerkInventory
   @ForeignKey(() => TowerFloorBattlefieldEnemy)
   @AllowNull(true)
   @Column(DataType.INTEGER)
-  _towerFloorBattlefieldEnemyId!: number;
+  declare _towerFloorBattlefieldEnemyId: number;
 
   @BelongsTo(() => TowerFloorBattlefieldEnemy, '_towerFloorBattlefieldEnemyId')
   _towerFloorBattlefieldEnemy?: TowerFloorBattlefieldEnemy;

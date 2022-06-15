@@ -42,10 +42,10 @@ export class ItemArmor
   @PrimaryKey
   @ForeignKey(() => Item)
   @Column(DataType.INTEGER)
-  _itemId!: number;
+  declare _itemId: number;
 
   @Column(DataType.DOUBLE)
-  reductionRate!: number;
+  declare reductionRate: number;
 
   @BelongsTo(() => Item, {
     foreignKey: '_itemId',

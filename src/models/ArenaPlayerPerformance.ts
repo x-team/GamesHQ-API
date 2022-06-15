@@ -48,7 +48,7 @@ export class ArenaPlayerPerformance
   @PrimaryKey
   @ForeignKey(() => ArenaPlayer)
   @Column(DataType.INTEGER)
-  _arenaPlayerId!: number;
+  declare _arenaPlayerId: number;
 
   @BelongsTo(() => ArenaPlayer, '_arenaPlayerId')
   _player?: ArenaPlayer;
@@ -56,38 +56,38 @@ export class ArenaPlayerPerformance
   @PrimaryKey
   @ForeignKey(() => Game)
   @Column(DataType.INTEGER)
-  _gameId!: number;
+  declare _gameId: number;
 
   @BelongsTo(() => Game, '_gameId')
   _game?: Game;
 
   @Default(ZERO)
   @Column(DataType.INTEGER)
-  cheersReceived!: number;
+  declare cheersReceived: number;
 
   @Default(ZERO)
   @Column(DataType.INTEGER)
-  weaponsFound!: number;
+  declare weaponsFound: number;
 
   @Default(ZERO)
   @Column(DataType.INTEGER)
-  damageDealt!: number;
+  declare damageDealt: number;
 
   @Default(ZERO)
   @Column(DataType.INTEGER)
-  cheersGiven!: number;
+  declare cheersGiven: number;
 
   @Default(ZERO)
   @Column(DataType.INTEGER)
-  healed!: number;
+  declare healed: number;
 
   @Default(ZERO)
   @Column(DataType.INTEGER)
-  kills!: number;
+  declare kills: number;
 
   @Default(false)
   @Column(DataType.BOOLEAN)
-  firstBlood!: boolean;
+  declare firstBlood: boolean;
 
   static associations: {
     _game: Association<ArenaPlayerPerformance, Game>;

@@ -62,7 +62,7 @@ export class LeaderboardEntry extends Model<
   @ForeignKey(() => GameType)
   @AllowNull(false)
   @Column(DataType.INTEGER)
-  _gameTypeId!: number;
+  declare _gameTypeId: number;
 
   @BelongsTo(() => GameType, {
     foreignKey: '_gameTypeId',
@@ -77,17 +77,17 @@ export class LeaderboardEntry extends Model<
 
   @AllowNull(false)
   @Column(DataType.TEXT)
-  name!: string;
+  declare name: string;
 
   @AllowNull(false)
   @Default(ScoreStrategy.HIGHEST)
   @Column(DataType.TEXT)
-  scoreStrategy!: ScoreStrategy;
+  declare scoreStrategy: ScoreStrategy;
 
   @AllowNull(false)
   @Default(ResetStrategy.NEVER)
   @Column(DataType.TEXT)
-  resetStrategy!: ResetStrategy;
+  declare resetStrategy: ResetStrategy;
 
   @AllowNull(false)
   @CreatedAt
