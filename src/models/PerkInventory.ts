@@ -56,7 +56,7 @@ export class PerkInventory
   @PrimaryKey
   @AutoIncrement
   @Column(DataType.INTEGER)
-  id!: number;
+  declare id: number;
 
   @ForeignKey(() => Perk)
   @Column(DataType.TEXT)
@@ -94,7 +94,7 @@ export class PerkInventory
   quantity?: number;
 
   @Column(DataType.DATE)
-  createdAt!: Date;
+  declare createdAt: Date;
 
   static associations: {
     _raider: Association<PerkInventory, TowerRaider>;

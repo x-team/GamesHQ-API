@@ -71,7 +71,7 @@ export class Enemy
   @PrimaryKey
   @AutoIncrement
   @Column(DataType.INTEGER)
-  id!: number;
+  declare id: number;
 
   @Unique
   @Column(DataType.TEXT)

@@ -42,7 +42,7 @@ export class ArenaItemInventory
   @PrimaryKey
   @AutoIncrement
   @Column(DataType.INTEGER)
-  id!: number;
+  declare id: number;
 
   @ForeignKey(() => ArenaPlayer)
   @Column(DataType.INTEGER)

@@ -69,7 +69,7 @@ export class ArenaRoundAction
   isCompleted!: boolean;
 
   @Column(DataType.DATE)
-  createdAt!: Date;
+  declare createdAt: Date;
 
   @Default(null)
   @Column(DataType.DATE)

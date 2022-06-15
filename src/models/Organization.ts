@@ -88,7 +88,7 @@ export class Organization
   @PrimaryKey
   @AutoIncrement
   @Column(DataType.INTEGER)
-  id!: number;
+  declare id: number;
 
   @Unique
   @Column(DataType.TEXT)
@@ -104,7 +104,7 @@ export class Organization
 
   @Default(new Date())
   @Column(DataType.DATE)
-  createdAt!: Date;
+  declare createdAt: Date;
 
   @Column(DataType.TEXT)
   clientSecret!: string;

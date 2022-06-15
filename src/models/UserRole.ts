@@ -30,7 +30,7 @@ export class UserRole
   @PrimaryKey
   @Unique
   @Column(DataType.INTEGER)
-  id!: USER_ROLE_LEVEL;
+  declare id: USER_ROLE_LEVEL;
 
   @Unique
   @Column(DataType.TEXT)

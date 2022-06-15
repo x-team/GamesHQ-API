@@ -143,7 +143,7 @@ export class ArenaPlayer
   @PrimaryKey
   @AutoIncrement
   @Column(DataType.INTEGER)
-  id!: number;
+  declare id: number;
 
   @Default(MAX_PLAYER_HEALTH)
   @Column(DataType.INTEGER)

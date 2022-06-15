@@ -61,12 +61,12 @@ export class AchievementUnlocked
   @AllowNull(false)
   @CreatedAt
   @Column(DataType.DATE)
-  createdAt!: Date;
+  declare createdAt: Date;
 
   @AllowNull(false)
   @UpdatedAt
   @Column(DataType.DATE)
-  updatedAt!: Date;
+  declare updatedAt: Date;
 
   @BelongsTo(() => User, {
     foreignKey: '_userId',

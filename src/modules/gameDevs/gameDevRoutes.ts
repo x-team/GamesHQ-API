@@ -32,15 +32,6 @@ import {
   deleteAcheivementHandler,
 } from './gameDevHandlers';
 
-declare module '@hapi/hapi' {
-  export interface PluginSpecificConfiguration {
-    firebasePlugin: {
-      requiresAuth: boolean;
-      requiredCapabilities: string[];
-    };
-  }
-}
-
 export const getGameTypesRoute: ServerRoute = {
   method: 'GET',
   path: '/dashboard/game-dev/games',

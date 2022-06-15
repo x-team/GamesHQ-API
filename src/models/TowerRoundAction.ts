@@ -111,7 +111,7 @@ export class TowerRoundAction
   @PrimaryKey
   @AutoIncrement
   @Column(DataType.INTEGER)
-  id!: number;
+  declare id: number;
 
   @ForeignKey(() => TowerRaider)
   @AllowNull(true)
@@ -153,7 +153,7 @@ export class TowerRoundAction
   isCompleted!: boolean;
 
   @Column(DataType.DATE)
-  createdAt!: Date;
+  declare createdAt: Date;
 
   @Default(null)
   @Column(DataType.DATE)
