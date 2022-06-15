@@ -75,23 +75,23 @@ export class Enemy
 
   @Unique
   @Column(DataType.TEXT)
-  name!: string;
+  declare name: string;
 
   @Column(DataType.TEXT)
-  emoji!: string;
+  declare emoji: string;
 
   @Column(DataType.DOUBLE)
-  minorDamageRate!: number;
+  declare minorDamageRate: number;
 
   @Column(DataType.DOUBLE)
-  majorDamageRate!: number;
+  declare majorDamageRate: number;
 
   @Column(DataType.INTEGER)
-  health!: number;
+  declare health: number;
 
   @Default(false)
   @Column(DataType.BOOLEAN)
-  isBoss!: boolean;
+  declare isBoss: boolean;
 
   @AllowNull(true)
   @Column(DataType.TEXT)
@@ -99,11 +99,11 @@ export class Enemy
 
   @Default(Ability.defaultProps())
   @Column(DataType.JSONB)
-  abilitiesJSON!: AbilityProperty;
+  declare abilitiesJSON: AbilityProperty;
 
   @ForeignKey(() => EnemyPattern)
   @Column(DataType.TEXT)
-  _enemyPatternId!: string;
+  declare _enemyPatternId: string;
 
   @BelongsTo(() => EnemyPattern, {
     foreignKey: '_enemyPatternId',
@@ -114,7 +114,7 @@ export class Enemy
 
   @ForeignKey(() => Organization)
   @Column(DataType.INTEGER)
-  _organizationId!: string;
+  declare _organizationId: string;
 
   @BelongsTo(() => Organization, {
     foreignKey: '_organizationId',

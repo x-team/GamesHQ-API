@@ -40,12 +40,12 @@ export class ItemHealthKit
   implements ItemHealthKitAttributes
 {
   @Column(DataType.INTEGER)
-  healingPower!: number;
+  declare healingPower: number;
 
   @PrimaryKey
   @ForeignKey(() => Item)
   @Column(DataType.INTEGER)
-  _itemId!: number;
+  declare _itemId: number;
 
   @BelongsTo(() => Item, {
     foreignKey: '_itemId',

@@ -91,7 +91,7 @@ export class LeaderboardResults extends Model<
   @ForeignKey(() => LeaderboardEntry)
   @AllowNull(false)
   @Column(DataType.INTEGER)
-  _leaderboardEntryId!: number;
+  declare _leaderboardEntryId: number;
 
   @BelongsTo(() => LeaderboardEntry, {
     foreignKey: '_leaderboardEntryId',
@@ -106,7 +106,7 @@ export class LeaderboardResults extends Model<
   })
   @ForeignKey(() => User)
   @Column(DataType.INTEGER)
-  _userId!: number;
+  declare _userId: number;
 
   @BelongsTo(() => User, {
     foreignKey: '_userId',
@@ -117,7 +117,7 @@ export class LeaderboardResults extends Model<
 
   @AllowNull(false)
   @Column(DataType.INTEGER)
-  score!: number;
+  declare score: number;
 
   @HasMany(() => LeaderboardResultsMeta, '_leaderboardResultsId')
   _leaderboardResultsMeta?: LeaderboardResultsMeta[];

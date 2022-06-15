@@ -43,7 +43,7 @@ export class ItemTrait
   @PrimaryKey
   @ForeignKey(() => Item)
   @Column(DataType.INTEGER)
-  _itemId!: number;
+  declare _itemId: number;
 
   @BelongsTo(() => Item, {
     foreignKey: '_itemId',
@@ -55,7 +55,7 @@ export class ItemTrait
   @PrimaryKey
   @ForeignKey(() => Trait)
   @Column(DataType.TEXT)
-  _traitId!: TRAIT;
+  declare _traitId: TRAIT;
 
   @BelongsTo(() => Trait)
   _trait?: Trait;

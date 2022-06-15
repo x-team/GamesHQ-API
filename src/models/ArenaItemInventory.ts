@@ -46,14 +46,14 @@ export class ArenaItemInventory
 
   @ForeignKey(() => ArenaPlayer)
   @Column(DataType.INTEGER)
-  _arenaPlayerId!: number;
+  declare _arenaPlayerId: number;
 
   @BelongsTo(() => ArenaPlayer, '_arenaPlayerId')
   _player?: ArenaPlayer;
 
   @ForeignKey(() => Item)
   @Column(DataType.INTEGER)
-  _itemId!: number;
+  declare _itemId: number;
 
   @BelongsTo(() => Item, {
     foreignKey: '_itemId',
@@ -63,7 +63,7 @@ export class ArenaItemInventory
   _item?: Item;
 
   @Column(DataType.INTEGER)
-  remainingUses!: number | null;
+  declare remainingUses: number | null;
 
   static associations: {
     _player: Association<ArenaItemInventory, ArenaPlayer>;

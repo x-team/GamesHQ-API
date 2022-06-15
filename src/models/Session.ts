@@ -59,12 +59,12 @@ export class Session
 
   @AllowNull(false)
   @Column(DataType.TEXT)
-  token!: string;
+  declare token: string;
 
   @AllowNull(false)
   @Default(ZERO)
   @Column(DataType.DOUBLE)
-  expireTime!: number;
+  declare expireTime: number;
 
   @AllowNull(false)
   @CreatedAt
@@ -79,7 +79,7 @@ export class Session
   @Unique
   @ForeignKey(() => User)
   @Column(DataType.INTEGER)
-  _userId!: number;
+  declare _userId: number;
 
   @BelongsTo(() => User, {
     foreignKey: '_userId',

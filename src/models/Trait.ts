@@ -29,8 +29,8 @@ export class Trait
   declare id: TRAIT;
 
   @Column(DataType.TEXT)
-  displayName!: string;
+  declare displayName: string;
 
   @Column(DataType.TEXT)
-  shortDescription!: string;
+  declare shortDescription: string;
 }

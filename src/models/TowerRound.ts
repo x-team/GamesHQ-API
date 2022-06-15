@@ -117,22 +117,22 @@ export class TowerRound
 
   @Default(true)
   @Column(DataType.BOOLEAN)
-  isActive!: boolean;
+  declare isActive: boolean;
 
   @Default(false)
   @Column(DataType.BOOLEAN)
-  isEveryoneVisible!: boolean;
+  declare isEveryoneVisible: boolean;
 
   @Column(DataType.DATE)
-  startedAt!: Date;
+  declare startedAt: Date;
 
   @Default(null)
   @Column(DataType.DATE)
-  endedAt!: Date | null;
+  declare endedAt: Date | null;
 
   @ForeignKey(() => TowerFloorBattlefield)
   @Column(DataType.INTEGER)
-  _towerFloorBattlefieldId!: number;
+  declare _towerFloorBattlefieldId: number;
 
   @BelongsTo(() => TowerFloorBattlefield, {
     foreignKey: '_towerFloorBattlefieldId',
@@ -143,7 +143,7 @@ export class TowerRound
 
   @ForeignKey(() => User)
   @Column(DataType.INTEGER)
-  _createdById!: number;
+  declare _createdById: number;
 
   @BelongsTo(() => User, {
     foreignKey: '_createdById',

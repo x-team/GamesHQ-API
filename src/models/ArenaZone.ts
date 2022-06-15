@@ -62,25 +62,25 @@ export class ArenaZone
 
   @Unique
   @Column(DataType.TEXT)
-  name!: string;
+  declare name: string;
 
   @Default(true)
   @Column(DataType.BOOLEAN)
-  isActive!: boolean;
+  declare isActive: boolean;
 
   @Default(false)
   @Column(DataType.BOOLEAN)
-  isArchived!: boolean;
+  declare isArchived: boolean;
 
   @Column(DataType.TEXT)
-  emoji!: string;
+  declare emoji: string;
 
   @Column(DataType.TEXT)
-  ring!: ARENA_ZONE_RING;
+  declare ring: ARENA_ZONE_RING;
 
   @ForeignKey(() => Organization)
   @Column(DataType.INTEGER)
-  _organizationId!: string;
+  declare _organizationId: string;
 
   @BelongsTo(() => Organization, {
     foreignKey: '_organizationId',

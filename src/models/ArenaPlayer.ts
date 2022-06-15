@@ -147,31 +147,31 @@ export class ArenaPlayer
 
   @Default(MAX_PLAYER_HEALTH)
   @Column(DataType.INTEGER)
-  health!: number;
+  declare health: number;
 
   @Default(false)
   @Column(DataType.BOOLEAN)
-  isSpectator!: boolean;
+  declare isSpectator: boolean;
 
   @Default(true)
   @Column(DataType.BOOLEAN)
-  isVisible!: boolean;
+  declare isVisible: boolean;
 
   @Default(false)
   @Column(DataType.BOOLEAN)
-  isBoss!: boolean;
+  declare isBoss: boolean;
 
   @Default(ZERO)
   @Column(DataType.DOUBLE)
-  luckBoost!: number;
+  declare luckBoost: number;
 
   @Default(Ability.defaultProps())
   @Column(DataType.JSONB)
-  abilitiesJSON!: AbilityProperty;
+  declare abilitiesJSON: AbilityProperty;
 
   @ForeignKey(() => User)
   @Column(DataType.INTEGER)
-  _userId!: number;
+  declare _userId: number;
 
   @BelongsTo(() => User, {
     foreignKey: '_userId',
@@ -183,7 +183,7 @@ export class ArenaPlayer
   @AllowNull(true)
   @ForeignKey(() => Team)
   @Column(DataType.INTEGER)
-  _teamId!: number | null;
+  declare _teamId: number | null;
 
   @BelongsTo(() => Team, {
     foreignKey: '_teamId',
@@ -194,7 +194,7 @@ export class ArenaPlayer
 
   @ForeignKey(() => Game)
   @Column(DataType.INTEGER)
-  _gameId!: number;
+  declare _gameId: number;
 
   @BelongsTo(() => Game, {
     foreignKey: '_gameId',
@@ -206,7 +206,7 @@ export class ArenaPlayer
   @AllowNull(true)
   @ForeignKey(() => ArenaZone)
   @Column(DataType.INTEGER)
-  _arenaZoneId!: number | null;
+  declare _arenaZoneId: number | null;
 
   @BelongsTo(() => ArenaZone)
   _zone?: ArenaZone;
