@@ -31,7 +31,7 @@
     "db:test:clear": "docker-compose -p gameshq-api-test-project -f 'docker-compose-test.yml' down",
     "test:all": "concurrently --kill-others-on-fail --names *typescript,*****eslint,*tests:unit,integration --prefix-colors blue.inverse,blue,yellow,green 'npm run tsc' 'npm run eslint --quiet' 'npm run test:unit' 'npm run test:integration'",
     "test:prepare:integration": "npm run db:test:create &&  cross-env NODE_ENV=test ENV=test npm run prepare-db",
-    "test:_integration": "npm run test:prepare:integration && npm run mocha \"test/**/*register.integration.test.ts\"",
+    "test:_integration": "npm run test:prepare:integration && npm run mocha \"test/**/*.integration.test.ts\"",
     "prepare": "husky install"
   },
   "author": "X-Team Community",
