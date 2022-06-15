@@ -37,7 +37,7 @@ export const getEmojis: Lifecycle.Method = async (_request, h) => {
     headers: {
       Authorization: `Bearer ${frontendBotToken}`,
     },
-  }).then((response) => response.json());
+  }).then((response) => response.json() as any);
 
   return h.response({ emoji }).code(200);
 };
