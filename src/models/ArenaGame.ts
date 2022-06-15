@@ -59,39 +59,39 @@ export class ArenaGame
 
   @Default(true)
   @Column(DataType.BOOLEAN)
-  hasZoneDeactivation!: boolean;
+  declare hasZoneDeactivation: boolean;
 
   @Default(false)
   @Column(DataType.BOOLEAN)
-  teamBased!: boolean;
+  declare teamBased: boolean;
 
   // Ring System
   @Default('5')
   @Column(DataType.TEXT)
-  ringSystemAlgorithm!: string;
+  declare ringSystemAlgorithm: string;
 
   @Default(ONE)
   @Column(DataType.INTEGER)
-  currentRingDeactivation!: number;
+  declare currentRingDeactivation: number;
 
   @Default(ZERO)
   @Column(DataType.INTEGER)
-  inactiveZonePenaltyPower!: number;
+  declare inactiveZonePenaltyPower: number;
 
   @Unique
   @ForeignKey(() => Game)
   @Column(DataType.INTEGER)
-  _gameId!: number;
+  declare _gameId: number;
 
   @BelongsTo(() => Game, {
     foreignKey: '_gameId',
     onUpdate: 'CASCADE',
     onDelete: 'CASCADE',
   })
-  _game?: Game;
+  declare _game?: Game;
 
   @HasMany(() => ArenaRound, '_gameId')
-  _rounds?: ArenaRound[];
+  declare _rounds?: ArenaRound[];
 
   static associations: {
     _rounds: Association<ArenaGame, ArenaRound>;

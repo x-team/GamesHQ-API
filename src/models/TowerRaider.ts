@@ -132,37 +132,37 @@ export class TowerRaider
   declare id: number;
 
   @Column(DataType.INTEGER)
-  health!: number;
+  declare health: number;
 
   @Default(true)
   @Column(DataType.BOOLEAN)
-  isVisible!: boolean;
+  declare isVisible: boolean;
 
   @Default(ZERO)
   @Column(DataType.DOUBLE)
-  luckBoost!: number;
+  declare luckBoost: number;
 
   @ForeignKey(() => User)
   @Column(DataType.INTEGER)
-  _userId!: number;
+  declare _userId: number;
 
   @BelongsTo(() => User, {
     foreignKey: '_userId',
     onUpdate: 'CASCADE',
     onDelete: 'CASCADE',
   })
-  _user?: User;
+  declare _user?: User;
 
   @ForeignKey(() => TowerFloorBattlefield)
   @Column(DataType.INTEGER)
-  _towerFloorBattlefieldId!: number | null;
+  declare _towerFloorBattlefieldId: number | null;
 
   @BelongsTo(() => TowerFloorBattlefield, {
     foreignKey: '_towerFloorBattlefieldId',
     onUpdate: 'CASCADE',
     onDelete: 'SET NULL',
   })
-  _currentTowerFloorBattlefield?: TowerFloorBattlefield;
+  declare _currentTowerFloorBattlefield?: TowerFloorBattlefield;
 
   @BelongsToMany(() => Item, {
     through: () => TowerItemInventory,
@@ -170,7 +170,7 @@ export class TowerRaider
     otherKey: '_itemId',
     as: '_weapons',
   })
-  _weapons?: Array<Item & { TowerItemInventory: TowerItemInventory }>;
+  declare _weapons?: Array<Item & { TowerItemInventory: TowerItemInventory }>;
 
   @BelongsToMany(() => Item, {
     through: () => TowerItemInventory,
@@ -178,7 +178,7 @@ export class TowerRaider
     otherKey: '_itemId',
     as: '_armors',
   })
-  _armors?: Array<Item & { TowerItemInventory: TowerItemInventory }>;
+  declare _armors?: Array<Item & { TowerItemInventory: TowerItemInventory }>;
 
   @BelongsToMany(() => Item, {
     through: () => TowerItemInventory,
@@ -186,7 +186,7 @@ export class TowerRaider
     otherKey: '_itemId',
     as: '_healthkits',
   })
-  _healthkits?: Array<Item & { TowerItemInventory: TowerItemInventory }>;
+  declare _healthkits?: Array<Item & { TowerItemInventory: TowerItemInventory }>;
 
   @BelongsToMany(() => Perk, {
     through: () => PerkInventory,
@@ -194,11 +194,11 @@ export class TowerRaider
     otherKey: '_perkId',
     as: '_perks',
   })
-  _perks?: Array<Perk & { PerkInventory: PerkInventory }>;
+  declare _perks?: Array<Perk & { PerkInventory: PerkInventory }>;
 
   @Default(Ability.defaultProps())
   @Column(DataType.JSONB)
-  abilitiesJSON!: AbilityProperty;
+  declare abilitiesJSON: AbilityProperty;
 
   static associations: {
     _user: Association<TowerRaider, User>;

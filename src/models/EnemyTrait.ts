@@ -27,25 +27,25 @@ export class EnemyTrait
 {
   @ForeignKey(() => Enemy)
   @Column(DataType.INTEGER)
-  _enemyId!: number;
+  declare _enemyId: number;
 
   @BelongsTo(() => Enemy, {
     foreignKey: '_enemyId',
     onUpdate: 'CASCADE',
     onDelete: 'CASCADE',
   })
-  _enemy?: Enemy;
+  declare _enemy?: Enemy;
 
   @ForeignKey(() => Trait)
   @Column(DataType.TEXT)
-  _traitId!: TRAIT;
+  declare _traitId: TRAIT;
 
   @BelongsTo(() => Trait, {
     foreignKey: '_traitId',
     onUpdate: 'CASCADE',
     onDelete: 'CASCADE',
   })
-  _trait?: Trait;
+  declare _trait?: Trait;
 
   static associations: {
     _enemy: Association<EnemyTrait, Enemy>;

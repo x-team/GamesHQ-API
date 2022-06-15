@@ -48,34 +48,34 @@ export class GameItemAvailability
   @PrimaryKey
   @ForeignKey(() => GameType)
   @Column(DataType.INTEGER)
-  _gameTypeId!: number;
+  declare _gameTypeId: number;
 
   @BelongsTo(() => GameType, {
     foreignKey: '_gameTypeId',
     onUpdate: 'CASCADE',
     onDelete: 'CASCADE',
   })
-  _gameType?: GameType;
+  declare _gameType?: GameType;
 
   @PrimaryKey
   @ForeignKey(() => Item)
   @Column(DataType.INTEGER)
-  _itemId!: number;
+  declare _itemId: number;
 
   @BelongsTo(() => Item, {
     foreignKey: '_itemId',
     onUpdate: 'CASCADE',
     onDelete: 'CASCADE',
   })
-  _item?: Item;
+  declare _item?: Item;
 
   @Default(true)
   @Column(DataType.BOOLEAN)
-  isActive!: boolean;
+  declare isActive: boolean;
 
   @Default(false)
   @Column(DataType.BOOLEAN)
-  isArchived!: boolean;
+  declare isArchived: boolean;
 
   static associations: {
     _gameType: Association<GameItemAvailability, GameType>;

@@ -84,47 +84,47 @@ export class Game extends Model<GameAttributes, GameCreationAttributes> implemen
   declare id: number;
 
   @Column(DataType.TEXT)
-  name!: string;
+  declare name: string;
 
   @Default(true)
   @Column(DataType.BOOLEAN)
-  isActive!: boolean;
+  declare isActive: boolean;
 
   @Column(DataType.DATE)
-  startedAt!: Date;
+  declare startedAt: Date;
 
   @AllowNull(true)
   @Default(null)
   @Column(DataType.DATE)
-  endedAt!: Date | null;
+  declare endedAt: Date | null;
 
   @ForeignKey(() => GameType)
   @Column(DataType.INTEGER)
-  _gameTypeId!: number;
+  declare _gameTypeId: number;
 
   @BelongsTo(() => GameType, {
     foreignKey: '_gameTypeId',
     onUpdate: 'CASCADE',
     onDelete: 'CASCADE',
   })
-  _gameType!: GameType;
+  declare _gameType: GameType;
 
   @ForeignKey(() => User)
   @Column(DataType.INTEGER)
-  _createdById!: number;
+  declare _createdById: number;
 
   @BelongsTo(() => User, {
     foreignKey: '_createdById',
     onUpdate: 'CASCADE',
     onDelete: 'CASCADE',
   })
-  _createdBy?: User;
+  declare _createdBy?: User;
 
   @HasOne(() => ArenaGame)
-  _arena?: ArenaGame;
+  declare _arena?: ArenaGame;
 
   @HasOne(() => TowerGame)
-  _tower?: TowerGame;
+  declare _tower?: TowerGame;
 
   static associations: {
     _arena: Association<Game, ArenaGame>;

@@ -49,14 +49,14 @@ export class LeaderboardResultsMeta extends Model<
   })
   @ForeignKey(() => LeaderboardResults)
   @Column(DataType.INTEGER)
-  _leaderboardResultsId!: number;
+  declare _leaderboardResultsId: number;
 
   @BelongsTo(() => LeaderboardResults, {
     foreignKey: '_leaderboardResultsId',
     onUpdate: 'CASCADE',
     onDelete: 'CASCADE',
   })
-  _leaderboardResults?: LeaderboardResults;
+  declare _leaderboardResults?: LeaderboardResults;
 
   @Index({
     name: 'index_attribute_leaderboardresult',
@@ -64,11 +64,11 @@ export class LeaderboardResultsMeta extends Model<
   })
   @AllowNull(false)
   @Column(DataType.TEXT)
-  attribute!: string;
+  declare attribute: string;
 
   @AllowNull(false)
   @Column(DataType.TEXT)
-  value!: string;
+  declare value: string;
 
   @AllowNull(false)
   @CreatedAt

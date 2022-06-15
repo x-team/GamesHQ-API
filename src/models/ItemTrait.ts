@@ -43,22 +43,22 @@ export class ItemTrait
   @PrimaryKey
   @ForeignKey(() => Item)
   @Column(DataType.INTEGER)
-  _itemId!: number;
+  declare _itemId: number;
 
   @BelongsTo(() => Item, {
     foreignKey: '_itemId',
     onUpdate: 'CASCADE',
     onDelete: 'CASCADE',
   })
-  _item?: Item;
+  declare _item?: Item;
 
   @PrimaryKey
   @ForeignKey(() => Trait)
   @Column(DataType.TEXT)
-  _traitId!: TRAIT;
+  declare _traitId: TRAIT;
 
   @BelongsTo(() => Trait)
-  _trait?: Trait;
+  declare _trait?: Trait;
 }
 
 export async function createOrUpdateItemTrait(

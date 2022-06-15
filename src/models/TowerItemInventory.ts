@@ -45,28 +45,28 @@ export class TowerItemInventory
 
   @ForeignKey(() => TowerRaider)
   @Column(DataType.INTEGER)
-  _towerRaiderId!: number;
+  declare _towerRaiderId: number;
 
   @BelongsTo(() => TowerRaider, {
     foreignKey: '_towerRaiderId',
     onUpdate: 'CASCADE',
     onDelete: 'CASCADE',
   })
-  _raider?: TowerRaider;
+  declare _raider?: TowerRaider;
 
   @ForeignKey(() => Item)
   @Column(DataType.INTEGER)
-  _itemId!: number;
+  declare _itemId: number;
 
   @BelongsTo(() => Item, {
     foreignKey: '_itemId',
     onUpdate: 'CASCADE',
     onDelete: 'CASCADE',
   })
-  _item?: Item;
+  declare _item?: Item;
 
   @Column(DataType.INTEGER)
-  remainingUses!: number | null;
+  declare remainingUses: number | null;
 
   static associations: {
     _raider: Association<TowerItemInventory, TowerRaider>;

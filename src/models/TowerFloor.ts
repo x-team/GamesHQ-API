@@ -44,28 +44,28 @@ export class TowerFloor
   declare id: number;
 
   @Column(DataType.INTEGER)
-  number!: number;
+  declare number: number;
 
   @Default(false)
   @Column(DataType.BOOLEAN)
-  isEveryoneVisible!: boolean;
+  declare isEveryoneVisible: boolean;
 
   @ForeignKey(() => TowerGame)
   @Column(DataType.INTEGER)
-  _towerGameId!: number;
+  declare _towerGameId: number;
 
   @BelongsTo(() => TowerGame, {
     foreignKey: '_towerGameId',
     onUpdate: 'CASCADE',
     onDelete: 'CASCADE',
   })
-  _towerGame?: TowerGame;
+  declare _towerGame?: TowerGame;
 
   @HasMany(() => TowerFloorEnemy, '_towerFloorId')
-  _floorEnemies?: TowerFloorEnemy[];
+  declare _floorEnemies?: TowerFloorEnemy[];
 
   @HasMany(() => TowerFloorBattlefield, '_towerFloorId')
-  _floorBattlefields?: TowerFloorBattlefield[];
+  declare _floorBattlefields?: TowerFloorBattlefield[];
 
   static associations: {
     _towerGame: Association<TowerFloor, TowerGame>;

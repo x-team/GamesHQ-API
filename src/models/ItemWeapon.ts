@@ -42,22 +42,22 @@ export class ItemWeapon
   implements ItemWeaponAttributes
 {
   @Column(DataType.INTEGER)
-  minorDamageRate!: number;
+  declare minorDamageRate: number;
 
   @Column(DataType.INTEGER)
-  majorDamageRate!: number;
+  declare majorDamageRate: number;
 
   @PrimaryKey
   @ForeignKey(() => Item)
   @Column(DataType.INTEGER)
-  _itemId!: number;
+  declare _itemId: number;
 
   @BelongsTo(() => Item, {
     foreignKey: '_itemId',
     onUpdate: 'CASCADE',
     onDelete: 'CASCADE',
   })
-  _item?: Item;
+  declare _item?: Item;
 
   static associations: {
     _item: Association<ItemWeapon, Item>;

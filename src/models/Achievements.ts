@@ -50,17 +50,17 @@ export class Achievement
 
   @AllowNull(false)
   @Column(DataType.TEXT)
-  description!: string;
+  declare description: string;
 
   @AllowNull(false)
   @Default(true)
   @Column(DataType.BOOLEAN)
-  isEnabled!: boolean;
+  declare isEnabled: boolean;
 
   @AllowNull(false)
   @Default(ZERO)
   @Column(DataType.INTEGER)
-  targetValue!: number;
+  declare targetValue: number;
 
   @AllowNull(false)
   @CreatedAt
@@ -74,14 +74,14 @@ export class Achievement
 
   @ForeignKey(() => GameType)
   @Column(DataType.INTEGER)
-  _gameTypeId!: number;
+  declare _gameTypeId: number;
 
   @BelongsTo(() => GameType, {
     foreignKey: '_gameTypeId',
     onUpdate: 'CASCADE',
     onDelete: 'CASCADE',
   })
-  _gameType?: GameType;
+  declare _gameType?: GameType;
 
   static associations: {
     _gameType: Association<Achievement, GameType>;

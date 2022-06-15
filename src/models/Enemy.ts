@@ -75,46 +75,46 @@ export class Enemy
 
   @Unique
   @Column(DataType.TEXT)
-  name!: string;
+  declare name: string;
 
   @Column(DataType.TEXT)
-  emoji!: string;
+  declare emoji: string;
 
   @Column(DataType.DOUBLE)
-  minorDamageRate!: number;
+  declare minorDamageRate: number;
 
   @Column(DataType.DOUBLE)
-  majorDamageRate!: number;
+  declare majorDamageRate: number;
 
   @Column(DataType.INTEGER)
-  health!: number;
+  declare health: number;
 
   @Default(false)
   @Column(DataType.BOOLEAN)
-  isBoss!: boolean;
+  declare isBoss: boolean;
 
   @AllowNull(true)
   @Column(DataType.TEXT)
-  gifUrl?: string;
+  declare gifUrl?: string;
 
   @Default(Ability.defaultProps())
   @Column(DataType.JSONB)
-  abilitiesJSON!: AbilityProperty;
+  declare abilitiesJSON: AbilityProperty;
 
   @ForeignKey(() => EnemyPattern)
   @Column(DataType.TEXT)
-  _enemyPatternId!: string;
+  declare _enemyPatternId: string;
 
   @BelongsTo(() => EnemyPattern, {
     foreignKey: '_enemyPatternId',
     onUpdate: 'CASCADE',
     onDelete: 'SET NULL',
   })
-  _enemyPattern?: EnemyPattern;
+  declare _enemyPattern?: EnemyPattern;
 
   @ForeignKey(() => Organization)
   @Column(DataType.INTEGER)
-  _organizationId!: string;
+  declare _organizationId: string;
 
   @BelongsTo(() => Organization, {
     foreignKey: '_organizationId',
@@ -122,7 +122,7 @@ export class Enemy
     onUpdate: 'CASCADE',
     as: '_organization',
   })
-  _organization?: Organization;
+  declare _organization?: Organization;
 
   @BelongsToMany(() => Trait, {
     through: () => EnemyTrait,
@@ -130,7 +130,7 @@ export class Enemy
     otherKey: '_traitId',
     as: '_traits',
   })
-  _traits?: Array<Trait & { EnemyTrait: EnemyTrait }>;
+  declare _traits?: Array<Trait & { EnemyTrait: EnemyTrait }>;
 
   static associations: {
     _enemyPattern: Association<Enemy, EnemyPattern>;

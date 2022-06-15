@@ -147,69 +147,69 @@ export class ArenaPlayer
 
   @Default(MAX_PLAYER_HEALTH)
   @Column(DataType.INTEGER)
-  health!: number;
+  declare health: number;
 
   @Default(false)
   @Column(DataType.BOOLEAN)
-  isSpectator!: boolean;
+  declare isSpectator: boolean;
 
   @Default(true)
   @Column(DataType.BOOLEAN)
-  isVisible!: boolean;
+  declare isVisible: boolean;
 
   @Default(false)
   @Column(DataType.BOOLEAN)
-  isBoss!: boolean;
+  declare isBoss: boolean;
 
   @Default(ZERO)
   @Column(DataType.DOUBLE)
-  luckBoost!: number;
+  declare luckBoost: number;
 
   @Default(Ability.defaultProps())
   @Column(DataType.JSONB)
-  abilitiesJSON!: AbilityProperty;
+  declare abilitiesJSON: AbilityProperty;
 
   @ForeignKey(() => User)
   @Column(DataType.INTEGER)
-  _userId!: number;
+  declare _userId: number;
 
   @BelongsTo(() => User, {
     foreignKey: '_userId',
     onUpdate: 'CASCADE',
     onDelete: 'CASCADE',
   })
-  _user?: User;
+  declare _user?: User;
 
   @AllowNull(true)
   @ForeignKey(() => Team)
   @Column(DataType.INTEGER)
-  _teamId!: number | null;
+  declare _teamId: number | null;
 
   @BelongsTo(() => Team, {
     foreignKey: '_teamId',
     onUpdate: 'CASCADE',
     onDelete: 'SET NULL',
   })
-  _team?: Team | null;
+  declare _team?: Team | null;
 
   @ForeignKey(() => Game)
   @Column(DataType.INTEGER)
-  _gameId!: number;
+  declare _gameId: number;
 
   @BelongsTo(() => Game, {
     foreignKey: '_gameId',
     onUpdate: 'CASCADE',
     onDelete: 'SET NULL',
   })
-  _game?: Game;
+  declare _game?: Game;
 
   @AllowNull(true)
   @ForeignKey(() => ArenaZone)
   @Column(DataType.INTEGER)
-  _arenaZoneId!: number | null;
+  declare _arenaZoneId: number | null;
 
   @BelongsTo(() => ArenaZone)
-  _zone?: ArenaZone;
+  declare _zone?: ArenaZone;
 
   @BelongsToMany(() => Item, {
     through: () => ArenaItemInventory,
@@ -217,7 +217,7 @@ export class ArenaPlayer
     otherKey: '_itemId',
     as: '_weapons',
   })
-  _weapons?: Array<Item & { ArenaItemInventory: ArenaItemInventory }>;
+  declare _weapons?: Array<Item & { ArenaItemInventory: ArenaItemInventory }>;
 
   @BelongsToMany(() => Item, {
     through: () => ArenaItemInventory,
@@ -225,7 +225,7 @@ export class ArenaPlayer
     otherKey: '_itemId',
     as: '_armors',
   })
-  _armors?: Array<Item & { ArenaItemInventory: ArenaItemInventory }>;
+  declare _armors?: Array<Item & { ArenaItemInventory: ArenaItemInventory }>;
 
   @BelongsToMany(() => Item, {
     through: () => ArenaItemInventory,
@@ -233,7 +233,7 @@ export class ArenaPlayer
     otherKey: '_itemId',
     as: '_healthkits',
   })
-  _healthkits?: Array<Item & { ArenaItemInventory: ArenaItemInventory }>;
+  declare _healthkits?: Array<Item & { ArenaItemInventory: ArenaItemInventory }>;
 
   static associations: {
     _user: Association<ArenaPlayer, User>;

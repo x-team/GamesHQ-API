@@ -51,43 +51,43 @@ export class ArenaRoundAction
   @PrimaryKey
   @ForeignKey(() => ArenaPlayer)
   @Column(DataType.INTEGER)
-  _arenaPlayerId!: number;
+  declare _arenaPlayerId: number;
 
   @BelongsTo(() => ArenaPlayer, '_arenaPlayerId')
-  _player?: ArenaPlayer;
+  declare _player?: ArenaPlayer;
 
   @PrimaryKey
   @ForeignKey(() => ArenaRound)
   @Column(DataType.INTEGER)
-  _arenaRoundId!: number;
+  declare _arenaRoundId: number;
 
   @BelongsTo(() => ArenaRound, '_arenaRoundId')
-  _round?: ArenaRound;
+  declare _round?: ArenaRound;
 
   @Default(false)
   @Column(DataType.BOOLEAN)
-  isCompleted!: boolean;
+  declare isCompleted: boolean;
 
   @Column(DataType.DATE)
   declare createdAt: Date;
 
   @Default(null)
   @Column(DataType.DATE)
-  completedAt!: Date | null;
+  declare completedAt: Date | null;
 
   @ForeignKey(() => AvailableAction)
   @Column(DataType.TEXT)
-  _availableActionId!: ARENA_ACTIONS_TYPE;
+  declare _availableActionId: ARENA_ACTIONS_TYPE;
 
   @BelongsTo(() => AvailableAction, {
     foreignKey: '_availableActionId',
     onUpdate: 'CASCADE',
     onDelete: 'CASCADE',
   })
-  _action?: AvailableAction;
+  declare _action?: AvailableAction;
 
   @Column(DataType.JSONB)
-  actionJSON!: ArenaAction;
+  declare actionJSON: ArenaAction;
 
   static associations: {
     _player: Association<ArenaRoundAction, ArenaPlayer>;

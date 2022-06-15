@@ -46,23 +46,23 @@ export class TowerFloorBattlefield
 
   @ForeignKey(() => TowerFloor)
   @Column(DataType.INTEGER)
-  _towerFloorId!: number;
+  declare _towerFloorId: number;
 
   @BelongsTo(() => TowerFloor, {
     foreignKey: '_towerFloorId',
     onUpdate: 'CASCADE',
     onDelete: 'CASCADE',
   })
-  _towerFloor?: TowerFloor;
+  declare _towerFloor?: TowerFloor;
 
   @HasMany(() => TowerFloorBattlefieldEnemy, '_towerFloorBattlefieldId')
-  _enemies?: TowerFloorBattlefieldEnemy[];
+  declare _enemies?: TowerFloorBattlefieldEnemy[];
 
   @HasMany(() => TowerRaider, '_towerFloorBattlefieldId')
-  _raiders?: TowerRaider[];
+  declare _raiders?: TowerRaider[];
 
   @HasMany(() => TowerRound, '_towerFloorBattlefieldId')
-  _rounds?: TowerRound[];
+  declare _rounds?: TowerRound[];
 
   static associations: {
     _towerFloor: Association<TowerFloorBattlefield, TowerFloor>;

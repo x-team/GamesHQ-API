@@ -1,3 +1,5 @@
+import Boom from '@hapi/boom';
+
 import { USER_ROLE_LEVEL } from '../../../consts/model';
 import { findOrganizationByName } from '../../../models/Organization';
 import { upsertUser, userExists, getUserByEmail } from '../../../models/User';

@@ -26,25 +26,25 @@ export class TowerFloorEnemy
 {
   @ForeignKey(() => Enemy)
   @Column(DataType.INTEGER)
-  _enemyId!: number;
+  declare _enemyId: number;
 
   @BelongsTo(() => Enemy, {
     foreignKey: '_enemyId',
     onUpdate: 'CASCADE',
     onDelete: 'CASCADE',
   })
-  _enemy?: Enemy;
+  declare _enemy?: Enemy;
 
   @ForeignKey(() => TowerFloor)
   @Column(DataType.INTEGER)
-  _towerFloorId!: number;
+  declare _towerFloorId: number;
 
   @BelongsTo(() => TowerFloor, {
     foreignKey: '_towerFloorId',
     onUpdate: 'CASCADE',
     onDelete: 'CASCADE',
   })
-  _towerFloor?: TowerFloor;
+  declare _towerFloor?: TowerFloor;
 
   static associations: {
     _enemy: Association<TowerFloorEnemy, Enemy>;

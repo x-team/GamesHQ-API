@@ -116,58 +116,58 @@ export class TowerRoundAction
   @ForeignKey(() => TowerRaider)
   @AllowNull(true)
   @Column(DataType.INTEGER)
-  _towerRaiderId!: number;
+  declare _towerRaiderId: number;
 
   @BelongsTo(() => TowerRaider, {
     foreignKey: '_towerRaiderId',
     onUpdate: 'CASCADE',
     onDelete: 'CASCADE',
   })
-  _raider?: TowerRaider;
+  declare _raider?: TowerRaider;
 
   @ForeignKey(() => TowerFloorBattlefieldEnemy)
   @AllowNull(true)
   @Column(DataType.INTEGER)
-  _towerFloorBattlefieldEnemyId!: number;
+  declare _towerFloorBattlefieldEnemyId: number;
 
   @BelongsTo(() => TowerFloorBattlefieldEnemy, {
     foreignKey: '_towerFloorBattlefieldEnemyId',
     onUpdate: 'CASCADE',
     onDelete: 'CASCADE',
   })
-  _enemy?: TowerFloorBattlefieldEnemy;
+  declare _enemy?: TowerFloorBattlefieldEnemy;
 
   @ForeignKey(() => TowerRound)
   @Column(DataType.INTEGER)
-  _towerRoundId!: number;
+  declare _towerRoundId: number;
 
   @BelongsTo(() => TowerRound, {
     foreignKey: '_towerRoundId',
     onUpdate: 'CASCADE',
     onDelete: 'CASCADE',
   })
-  _round?: TowerRound;
+  declare _round?: TowerRound;
 
   @Default(false)
   @Column(DataType.BOOLEAN)
-  isCompleted!: boolean;
+  declare isCompleted: boolean;
 
   @Column(DataType.DATE)
   declare createdAt: Date;
 
   @Default(null)
   @Column(DataType.DATE)
-  completedAt!: Date | null;
+  declare completedAt: Date | null;
 
   @ForeignKey(() => AvailableAction)
   @Column(DataType.TEXT)
-  _availableActionId!: TOWER_ACTIONS_TYPE;
+  declare _availableActionId: TOWER_ACTIONS_TYPE;
 
   @BelongsTo(() => AvailableAction, '_availableActionId')
-  _action?: AvailableAction;
+  declare _action?: AvailableAction;
 
   @Column(DataType.JSONB)
-  actionJSON!: TowerAction;
+  declare actionJSON: TowerAction;
 
   static associations: {
     _action: Association<TowerRoundAction, AvailableAction>;

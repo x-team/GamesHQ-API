@@ -61,36 +61,36 @@ export class TowerGame
   declare id: number;
 
   @Column(DataType.INTEGER)
-  lunaPrize!: number;
+  declare lunaPrize: number;
 
   @Default(DEFAULT_MAX_FLOOR_NUMBER)
   @Column(DataType.INTEGER)
-  height!: number;
+  declare height: number;
 
   @Column(DataType.INTEGER)
-  coinPrize!: number;
+  declare coinPrize: number;
 
   @Default(false)
   @Column(DataType.BOOLEAN)
-  isOpen!: boolean;
+  declare isOpen: boolean;
 
   @Unique
   @ForeignKey(() => Game)
   @Column(DataType.INTEGER)
-  _gameId!: number;
+  declare _gameId: number;
 
   @BelongsTo(() => Game, {
     foreignKey: '_gameId',
     onUpdate: 'CASCADE',
     onDelete: 'CASCADE',
   })
-  _game?: Game;
+  declare _game?: Game;
 
   @HasMany(() => TowerFloor, '_towerGameId')
-  _floors?: TowerFloor[];
+  declare _floors?: TowerFloor[];
 
   @HasMany(() => TowerStatistics, '_towerGameId')
-  _statistics?: TowerStatistics[];
+  declare _statistics?: TowerStatistics[];
 
   static associations: {
     _game: Association<TowerGame, Game>;

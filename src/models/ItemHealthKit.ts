@@ -40,19 +40,19 @@ export class ItemHealthKit
   implements ItemHealthKitAttributes
 {
   @Column(DataType.INTEGER)
-  healingPower!: number;
+  declare healingPower: number;
 
   @PrimaryKey
   @ForeignKey(() => Item)
   @Column(DataType.INTEGER)
-  _itemId!: number;
+  declare _itemId: number;
 
   @BelongsTo(() => Item, {
     foreignKey: '_itemId',
     onUpdate: 'CASCADE',
     onDelete: 'CASCADE',
   })
-  _item?: Item;
+  declare _item?: Item;
 
   static associations: {
     _item: Association<ItemHealthKit, Item>;

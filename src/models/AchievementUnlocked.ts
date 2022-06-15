@@ -41,22 +41,22 @@ export class AchievementUnlocked
   @PrimaryKey
   @ForeignKey(() => User)
   @Column(DataType.INTEGER)
-  _userId!: number;
+  declare _userId: number;
 
   @PrimaryKey
   @ForeignKey(() => Achievement)
   @Column(DataType.INTEGER)
-  _achievementId!: number;
+  declare _achievementId: number;
 
   @AllowNull(false)
   @Default(false)
   @Column(DataType.BOOLEAN)
-  isUnlocked!: boolean;
+  declare isUnlocked: boolean;
 
   @AllowNull(false)
   @Default(ZERO)
   @Column(DataType.INTEGER)
-  progress!: number;
+  declare progress: number;
 
   @AllowNull(false)
   @CreatedAt
@@ -73,14 +73,14 @@ export class AchievementUnlocked
     onUpdate: 'CASCADE',
     onDelete: 'CASCADE',
   })
-  _user?: User;
+  declare _user?: User;
 
   @BelongsTo(() => Achievement, {
     foreignKey: '_achievementId',
     onUpdate: 'CASCADE',
     onDelete: 'CASCADE',
   })
-  _achievement?: Achievement;
+  declare _achievement?: Achievement;
 
   static associations: {
     _user: Association<AchievementUnlocked, User>;

@@ -91,14 +91,14 @@ export class LeaderboardResults extends Model<
   @ForeignKey(() => LeaderboardEntry)
   @AllowNull(false)
   @Column(DataType.INTEGER)
-  _leaderboardEntryId!: number;
+  declare _leaderboardEntryId: number;
 
   @BelongsTo(() => LeaderboardEntry, {
     foreignKey: '_leaderboardEntryId',
     onUpdate: 'CASCADE',
     onDelete: 'CASCADE',
   })
-  _leaderboardEntry?: LeaderboardEntry;
+  declare _leaderboardEntry?: LeaderboardEntry;
 
   @Index({
     name: 'index_user_leaderboard',
@@ -106,21 +106,21 @@ export class LeaderboardResults extends Model<
   })
   @ForeignKey(() => User)
   @Column(DataType.INTEGER)
-  _userId!: number;
+  declare _userId: number;
 
   @BelongsTo(() => User, {
     foreignKey: '_userId',
     onUpdate: 'CASCADE',
     onDelete: 'CASCADE',
   })
-  _user?: User;
+  declare _user?: User;
 
   @AllowNull(false)
   @Column(DataType.INTEGER)
-  score!: number;
+  declare score: number;
 
   @HasMany(() => LeaderboardResultsMeta, '_leaderboardResultsId')
-  _leaderboardResultsMeta?: LeaderboardResultsMeta[];
+  declare _leaderboardResultsMeta?: LeaderboardResultsMeta[];
 
   @AllowNull(false)
   @CreatedAt

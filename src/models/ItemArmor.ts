@@ -42,17 +42,17 @@ export class ItemArmor
   @PrimaryKey
   @ForeignKey(() => Item)
   @Column(DataType.INTEGER)
-  _itemId!: number;
+  declare _itemId: number;
 
   @Column(DataType.DOUBLE)
-  reductionRate!: number;
+  declare reductionRate: number;
 
   @BelongsTo(() => Item, {
     foreignKey: '_itemId',
     onUpdate: 'CASCADE',
     onDelete: 'CASCADE',
   })
-  _item?: Item;
+  declare _item?: Item;
 
   static associations: {
     _item: Association<ItemArmor, Item>;

@@ -64,47 +64,47 @@ export class TowerFloorBattlefieldEnemy
   declare id: number;
 
   @Column(DataType.INTEGER)
-  health!: number;
+  declare health: number;
 
   @Default(true)
   @Column(DataType.BOOLEAN)
-  isVisible!: boolean;
+  declare isVisible: boolean;
 
   @Default(ZERO)
   @AllowNull(false)
   @Column(DataType.INTEGER)
-  patternCursor!: number;
+  declare patternCursor: number;
 
   @Default(ZERO)
   @AllowNull(false)
   @Column(DataType.INTEGER)
-  patternCounter!: number;
+  declare patternCounter: number;
 
   @Default(Ability.defaultProps())
   @Column(DataType.JSONB)
-  abilitiesJSON!: AbilityProperty;
+  declare abilitiesJSON: AbilityProperty;
 
   @ForeignKey(() => TowerFloorEnemy)
   @Column(DataType.INTEGER)
-  _towerFloorEnemyId!: number;
+  declare _towerFloorEnemyId: number;
 
   @BelongsTo(() => TowerFloorEnemy, {
     foreignKey: '_towerFloorEnemyId',
     onUpdate: 'CASCADE',
     onDelete: 'CASCADE',
   })
-  _towerFloorEnemy?: TowerFloorEnemy;
+  declare _towerFloorEnemy?: TowerFloorEnemy;
 
   @ForeignKey(() => TowerFloorBattlefield)
   @Column(DataType.INTEGER)
-  _towerFloorBattlefieldId!: number;
+  declare _towerFloorBattlefieldId: number;
 
   @BelongsTo(() => TowerFloorBattlefield, {
     foreignKey: '_towerFloorBattlefieldId',
     onUpdate: 'CASCADE',
     onDelete: 'CASCADE',
   })
-  _currentTowerFloorBattlefield?: TowerFloorBattlefield;
+  declare _currentTowerFloorBattlefield?: TowerFloorBattlefield;
 
   @BelongsToMany(() => Perk, {
     through: () => PerkInventory,
@@ -112,7 +112,7 @@ export class TowerFloorBattlefieldEnemy
     otherKey: '_perkId',
     as: '_perks',
   })
-  _perks?: Array<Perk & { PerkInventory: PerkInventory }>;
+  declare _perks?: Array<Perk & { PerkInventory: PerkInventory }>;
 
   static associations: {
     _towerFloorEnemy: Association<TowerFloorBattlefieldEnemy, TowerFloorEnemy>;

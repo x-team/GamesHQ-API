@@ -60,38 +60,38 @@ export class PerkInventory
 
   @ForeignKey(() => Perk)
   @Column(DataType.TEXT)
-  _perkId!: PERK;
+  declare _perkId: PERK;
 
   @BelongsTo(() => Perk, {
     foreignKey: '_perkId',
     onUpdate: 'CASCADE',
     onDelete: 'CASCADE',
   })
-  _perk?: Perk;
+  declare _perk?: Perk;
 
   @ForeignKey(() => TowerRaider)
   @AllowNull(true)
   @Column(DataType.INTEGER)
-  _towerRaiderId!: number;
+  declare _towerRaiderId: number;
 
   @BelongsTo(() => TowerRaider, {
     foreignKey: '_towerRaiderId',
     onUpdate: 'CASCADE',
     onDelete: 'CASCADE',
   })
-  _raider?: TowerRaider;
+  declare _raider?: TowerRaider;
 
   @ForeignKey(() => TowerFloorBattlefieldEnemy)
   @AllowNull(true)
   @Column(DataType.INTEGER)
-  _towerFloorBattlefieldEnemyId!: number;
+  declare _towerFloorBattlefieldEnemyId: number;
 
   @BelongsTo(() => TowerFloorBattlefieldEnemy, '_towerFloorBattlefieldEnemyId')
-  _towerFloorBattlefieldEnemy?: TowerFloorBattlefieldEnemy;
+  declare _towerFloorBattlefieldEnemy?: TowerFloorBattlefieldEnemy;
 
   @Default(ONE)
   @Column(DataType.INTEGER)
-  quantity?: number;
+  declare quantity?: number;
 
   @Column(DataType.DATE)
   declare createdAt: Date;
