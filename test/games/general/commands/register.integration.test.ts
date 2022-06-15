@@ -52,6 +52,49 @@ describe('register', () => {
     expect(userInDB?._roleId).to.equal(USER_ROLE_LEVEL.USER);
   });
 
+  it('should update USER user without slackId but with firebaseUid', async () => {
+    const random = uuid();
+    const slackId = 'randomSlackId' + random;
+
+    const user = await createTestUser({
+      slackId: undefined,
+      firebaseUserUid: 'firebaseUid' + random,
+      _roleId: USER_ROLE_LEVEL.ADMIN,
+    });
+
+    const stubbedGetSlackUser = sinon.stub(utils, 'getSlackUserInfo').resolves({
+      id: slackId,
+      real_name: random,
+      profile: {
+        email: user.email,
+        image_512: 'imageUrl_' + random,
+      },
+    } as unknown as SlackUser);
+
+    const stubberCreateUserInFirebase = sinon.stub(firebaseplugin, 'createUserInFirebase');
+
+    const rslt = await register(slackId);
+
+    const userInDB = await User.findOne({
+      where: {
+        slackId,
+      },
+    });
+
+    expect(rslt).to.deep.equal({
+      type: 'response',
+      text: `Your e-mail _${userInDB?.email}_ is now registered to all our games :partyparrot: `,
+    });
+    expect(stubbedGetSlackUser).callCount(1);
+    expect(stubberCreateUserInFirebase).callCount(0);
+    expect(userInDB?.displayName).to.equal(user.displayName);
+    expect(userInDB?.slackId).to.equal(slackId);
+    expect(userInDB?.firebaseUserUid).to.equal(user.firebaseUserUid);
+    expect(userInDB?.email).to.equal(user.email);
+    expect(userInDB?.profilePictureUrl).to.equal('imageUrl_' + random);
+    expect(userInDB?._roleId).to.equal(USER_ROLE_LEVEL.ADMIN);
+  });
+
   it('should update ADMIN user without slackId and firebaseUid', async () => {
     const random = uuid();
     const slackId = 'randomSlackId' + random;
@@ -66,7 +109,7 @@ describe('register', () => {
       id: slackId,
       real_name: random,
       profile: {
-        email: random + '@email.com',
+        email: user.email,
         image_512: 'imageUrl_' + random,
       },
     } as unknown as SlackUser);
@@ -87,16 +130,16 @@ describe('register', () => {
 
     expect(rslt).to.deep.equal({
       type: 'response',
-      text: `Your e-mail _${random}@email.com_ is now registered to all our games :partyparrot: `,
+      text: `Your e-mail _${userInDB?.email}_ is now registered to all our games :partyparrot: `,
     });
     expect(stubbedGetSlackUser).callCount(1);
     expect(stubberCreateUserInFirebase).callCount(1);
-    expect(userInDB?.displayName).to.equal(random);
+    expect(userInDB?.displayName).to.equal(user.displayName);
     expect(userInDB?.slackId).to.equal(slackId);
     expect(userInDB?.firebaseUserUid).to.equal('firebaseUid_' + random);
-    expect(userInDB?.email).to.equal(random + '@email.com');
+    expect(userInDB?.email).to.equal(user.email);
     expect(userInDB?.profilePictureUrl).to.equal('imageUrl_' + random);
-    expect(userInDB?._roleId).to.equal(USER_ROLE_LEVEL.USER);
+    expect(userInDB?._roleId).to.equal(USER_ROLE_LEVEL.ADMIN);
   });
 
   it('should return if user is already registered with SlackId', async () => {

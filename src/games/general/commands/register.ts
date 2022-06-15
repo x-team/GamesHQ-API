@@ -33,7 +33,7 @@ export const register = async (slackUserId: string) => {
     id: userInDb?.id,
     _roleId: userInDb?._roleId || USER_ROLE_LEVEL.USER,
     email,
-    displayName: real_name,
+    displayName: userInDb?.displayName || real_name,
     profilePictureUrl: image_512,
     slackId: id,
     _organizationId: xteamOrganization?.id,
