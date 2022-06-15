@@ -91,28 +91,28 @@ export class Item extends Model<ItemAttributes, ItemCreationAttributes> implemen
 
   @Unique
   @Column(DataType.TEXT)
-  name!: string;
+  declare name: string;
 
   @Column(DataType.TEXT)
-  emoji!: string;
+  declare emoji: string;
 
   @AllowNull(true)
   @Column(DataType.INTEGER)
-  usageLimit!: number | null;
+  declare usageLimit: number | null;
 
   @Column(DataType.TEXT)
-  type!: ITEM_TYPE;
+  declare type: ITEM_TYPE;
 
   @ForeignKey(() => ItemRarity)
   @Column(DataType.TEXT)
-  _itemRarityId!: ITEM_RARITY;
+  declare _itemRarityId: ITEM_RARITY;
 
   @BelongsTo(() => ItemRarity, '_itemRarityId')
   _rarity?: ItemRarity;
 
   @ForeignKey(() => Organization)
   @Column(DataType.INTEGER)
-  _organizationId!: string;
+  declare _organizationId: string;
 
   @BelongsTo(() => Organization, {
     foreignKey: '_organizationId',

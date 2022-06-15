@@ -68,32 +68,32 @@ export class Team extends Model<TeamAttributes, TeamCreationAttributes> implemen
 
   @Unique
   @Column(DataType.TEXT)
-  name!: string;
+  declare name: string;
 
   @AllowNull(true)
   @Default(null)
   @Column(DataType.TEXT)
-  emoji!: string | null;
+  declare emoji: string | null;
 
   @Default(new Date())
   @Column(DataType.DATE)
-  addedAt!: Date;
+  declare addedAt: Date;
 
   @Column(DataType.INTEGER)
-  health!: number;
+  declare health: number;
 
   @AllowNull(true)
   @Default(null)
   @Column(DataType.TEXT)
-  slackWebhook!: string | null;
+  declare slackWebhook: string | null;
 
   @Default(true)
   @Column(DataType.BOOLEAN)
-  isActive!: boolean;
+  declare isActive: boolean;
 
   @ForeignKey(() => Organization)
   @Column(DataType.INTEGER)
-  _organizationId!: number;
+  declare _organizationId: number;
 
   @BelongsTo(() => Organization, {
     foreignKey: '_organizationId',

@@ -44,15 +44,15 @@ export class TowerFloor
   declare id: number;
 
   @Column(DataType.INTEGER)
-  number!: number;
+  declare number: number;
 
   @Default(false)
   @Column(DataType.BOOLEAN)
-  isEveryoneVisible!: boolean;
+  declare isEveryoneVisible: boolean;
 
   @ForeignKey(() => TowerGame)
   @Column(DataType.INTEGER)
-  _towerGameId!: number;
+  declare _towerGameId: number;
 
   @BelongsTo(() => TowerGame, {
     foreignKey: '_towerGameId',

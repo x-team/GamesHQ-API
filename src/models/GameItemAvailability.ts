@@ -48,7 +48,7 @@ export class GameItemAvailability
   @PrimaryKey
   @ForeignKey(() => GameType)
   @Column(DataType.INTEGER)
-  _gameTypeId!: number;
+  declare _gameTypeId: number;
 
   @BelongsTo(() => GameType, {
     foreignKey: '_gameTypeId',
@@ -60,7 +60,7 @@ export class GameItemAvailability
   @PrimaryKey
   @ForeignKey(() => Item)
   @Column(DataType.INTEGER)
-  _itemId!: number;
+  declare _itemId: number;
 
   @BelongsTo(() => Item, {
     foreignKey: '_itemId',
@@ -71,11 +71,11 @@ export class GameItemAvailability
 
   @Default(true)
   @Column(DataType.BOOLEAN)
-  isActive!: boolean;
+  declare isActive: boolean;
 
   @Default(false)
   @Column(DataType.BOOLEAN)
-  isArchived!: boolean;
+  declare isArchived: boolean;
 
   static associations: {
     _gameType: Association<GameItemAvailability, GameType>;

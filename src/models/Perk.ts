@@ -54,30 +54,30 @@ export class Perk extends Model<PerkAttributes, PerkCreationAttributes> implemen
 
   @AllowNull(false)
   @Column(DataType.TEXT)
-  archetype!: PERK_ARCHETYPE;
+  declare archetype: PERK_ARCHETYPE;
 
   @Column(DataType.TEXT)
-  name!: string;
+  declare name: string;
 
   @Column(DataType.TEXT)
-  emoji!: string;
+  declare emoji: string;
 
   @Column(DataType.TEXT)
-  description!: string;
+  declare description: string;
 
   @Column(DataType.JSONB)
-  abilitiesJSON!: AbilityProperty;
+  declare abilitiesJSON: AbilityProperty;
 
   @ForeignKey(() => ItemRarity)
   @Column(DataType.TEXT)
-  _itemRarityId!: ITEM_RARITY;
+  declare _itemRarityId: ITEM_RARITY;
 
   @BelongsTo(() => ItemRarity, '_itemRarityId')
   _rarity?: ItemRarity;
 
   @ForeignKey(() => Organization)
   @Column(DataType.INTEGER)
-  _organizationId!: string;
+  declare _organizationId: string;
 
   @BelongsTo(() => Organization, {
     foreignKey: '_organizationId',

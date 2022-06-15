@@ -92,25 +92,25 @@ export class Organization
 
   @Unique
   @Column(DataType.TEXT)
-  name!: string;
+  declare name: string;
 
   @AllowNull(true)
   @Column(DataType.TEXT)
-  domain!: string;
+  declare domain: string;
 
   @Default(true)
   @Column(DataType.BOOLEAN)
-  isActive!: boolean;
+  declare isActive: boolean;
 
   @Default(new Date())
   @Column(DataType.DATE)
   declare createdAt: Date;
 
   @Column(DataType.TEXT)
-  clientSecret!: string;
+  declare clientSecret: string;
 
   @Column(DataType.TEXT)
-  signingSecret!: string;
+  declare signingSecret: string;
 
   @HasMany(() => User, '_organizationId')
   _users?: User[];

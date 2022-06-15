@@ -46,7 +46,7 @@ export class TowerFloorBattlefield
 
   @ForeignKey(() => TowerFloor)
   @Column(DataType.INTEGER)
-  _towerFloorId!: number;
+  declare _towerFloorId: number;
 
   @BelongsTo(() => TowerFloor, {
     foreignKey: '_towerFloorId',

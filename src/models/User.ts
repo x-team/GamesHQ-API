@@ -96,23 +96,23 @@ export class User extends Model<UserAttributes, UserCreationAttributes> implemen
   declare id: number;
 
   @Column(DataType.TEXT)
-  displayName!: string;
+  declare displayName: string;
 
   @Unique
   @Column(DataType.TEXT)
-  email!: string;
+  declare email: string;
 
   @AllowNull(true)
   @Column(DataType.TEXT)
-  slackId!: string | null;
+  declare slackId: string | null;
 
   @AllowNull(true)
   @Column(DataType.TEXT)
-  firebaseUserUid!: string | null;
+  declare firebaseUserUid: string | null;
 
   @AllowNull(true)
   @Column(DataType.TEXT)
-  profilePictureUrl!: string | null;
+  declare profilePictureUrl: string | null;
 
   @CreatedAt
   declare createdAt: Date;
@@ -122,7 +122,7 @@ export class User extends Model<UserAttributes, UserCreationAttributes> implemen
 
   @ForeignKey(() => UserRole)
   @Column(DataType.INTEGER)
-  _roleId!: number | null;
+  declare _roleId: number | null;
 
   @BelongsTo(() => UserRole, {
     foreignKey: '_roleId',
@@ -133,7 +133,7 @@ export class User extends Model<UserAttributes, UserCreationAttributes> implemen
 
   @ForeignKey(() => Organization)
   @Column(DataType.INTEGER)
-  _organizationId!: number;
+  declare _organizationId: number;
 
   @BelongsTo(() => Organization, {
     foreignKey: '_organizationId',

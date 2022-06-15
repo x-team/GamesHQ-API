@@ -64,29 +64,29 @@ export class TowerFloorBattlefieldEnemy
   declare id: number;
 
   @Column(DataType.INTEGER)
-  health!: number;
+  declare health: number;
 
   @Default(true)
   @Column(DataType.BOOLEAN)
-  isVisible!: boolean;
+  declare isVisible: boolean;
 
   @Default(ZERO)
   @AllowNull(false)
   @Column(DataType.INTEGER)
-  patternCursor!: number;
+  declare patternCursor: number;
 
   @Default(ZERO)
   @AllowNull(false)
   @Column(DataType.INTEGER)
-  patternCounter!: number;
+  declare patternCounter: number;
 
   @Default(Ability.defaultProps())
   @Column(DataType.JSONB)
-  abilitiesJSON!: AbilityProperty;
+  declare abilitiesJSON: AbilityProperty;
 
   @ForeignKey(() => TowerFloorEnemy)
   @Column(DataType.INTEGER)
-  _towerFloorEnemyId!: number;
+  declare _towerFloorEnemyId: number;
 
   @BelongsTo(() => TowerFloorEnemy, {
     foreignKey: '_towerFloorEnemyId',
@@ -97,7 +97,7 @@ export class TowerFloorBattlefieldEnemy
 
   @ForeignKey(() => TowerFloorBattlefield)
   @Column(DataType.INTEGER)
-  _towerFloorBattlefieldId!: number;
+  declare _towerFloorBattlefieldId: number;
 
   @BelongsTo(() => TowerFloorBattlefield, {
     foreignKey: '_towerFloorBattlefieldId',

@@ -48,19 +48,19 @@ export class GameType
   @Unique(true)
   @AllowNull(false)
   @Column(DataType.TEXT)
-  name!: GAME_TYPE | string;
+  declare name: GAME_TYPE | string;
 
   @AllowNull(false)
   @Column(DataType.TEXT)
-  clientSecret!: string;
+  declare clientSecret: string;
 
   @AllowNull(false)
   @Column(DataType.TEXT)
-  signingSecret!: string;
+  declare signingSecret: string;
 
   @ForeignKey(() => User)
   @Column(DataType.INTEGER)
-  _createdById!: number;
+  declare _createdById: number;
 
   @BelongsTo(() => User, {
     foreignKey: '_createdById',

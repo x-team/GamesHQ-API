@@ -116,7 +116,7 @@ export class TowerRoundAction
   @ForeignKey(() => TowerRaider)
   @AllowNull(true)
   @Column(DataType.INTEGER)
-  _towerRaiderId!: number;
+  declare _towerRaiderId: number;
 
   @BelongsTo(() => TowerRaider, {
     foreignKey: '_towerRaiderId',
@@ -128,7 +128,7 @@ export class TowerRoundAction
   @ForeignKey(() => TowerFloorBattlefieldEnemy)
   @AllowNull(true)
   @Column(DataType.INTEGER)
-  _towerFloorBattlefieldEnemyId!: number;
+  declare _towerFloorBattlefieldEnemyId: number;
 
   @BelongsTo(() => TowerFloorBattlefieldEnemy, {
     foreignKey: '_towerFloorBattlefieldEnemyId',
@@ -139,7 +139,7 @@ export class TowerRoundAction
 
   @ForeignKey(() => TowerRound)
   @Column(DataType.INTEGER)
-  _towerRoundId!: number;
+  declare _towerRoundId: number;
 
   @BelongsTo(() => TowerRound, {
     foreignKey: '_towerRoundId',
@@ -150,24 +150,24 @@ export class TowerRoundAction
 
   @Default(false)
   @Column(DataType.BOOLEAN)
-  isCompleted!: boolean;
+  declare isCompleted: boolean;
 
   @Column(DataType.DATE)
   declare createdAt: Date;
 
   @Default(null)
   @Column(DataType.DATE)
-  completedAt!: Date | null;
+  declare completedAt: Date | null;
 
   @ForeignKey(() => AvailableAction)
   @Column(DataType.TEXT)
-  _availableActionId!: TOWER_ACTIONS_TYPE;
+  declare _availableActionId: TOWER_ACTIONS_TYPE;
 
   @BelongsTo(() => AvailableAction, '_availableActionId')
   _action?: AvailableAction;
 
   @Column(DataType.JSONB)
-  actionJSON!: TowerAction;
+  declare actionJSON: TowerAction;
 
   static associations: {
     _action: Association<TowerRoundAction, AvailableAction>;
