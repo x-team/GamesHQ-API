@@ -55,7 +55,7 @@ export class ArenaGame
   @PrimaryKey
   @AutoIncrement
   @Column(DataType.INTEGER)
-  id!: number;
+  declare id: number;
 
   @Default(true)
   @Column(DataType.BOOLEAN)

@@ -81,7 +81,7 @@ export class Game extends Model<GameAttributes, GameCreationAttributes> implemen
   @PrimaryKey
   @AutoIncrement
   @Column(DataType.INTEGER)
-  id!: number;
+  declare id: number;
 
   @Column(DataType.TEXT)
   name!: string;

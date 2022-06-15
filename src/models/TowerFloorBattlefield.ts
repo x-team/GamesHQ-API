@@ -39,10 +39,10 @@ export class TowerFloorBattlefield
   @PrimaryKey
   @AutoIncrement
   @Column(DataType.INTEGER)
-  id!: number;
+  declare id: number;
 
   @Column(DataType.DATE)
-  createdAt!: Date;
+  declare createdAt: Date;
 
   @ForeignKey(() => TowerFloor)
   @Column(DataType.INTEGER)

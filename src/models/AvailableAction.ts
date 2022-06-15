@@ -25,7 +25,7 @@ export class AvailableAction
 {
   @PrimaryKey
   @Column(DataType.TEXT)
-  id!: GAME_ACTIONS;
+  declare id: GAME_ACTIONS;
 }
 
 export interface GameAction {

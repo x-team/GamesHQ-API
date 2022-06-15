@@ -16,7 +16,7 @@ export class EnemyPattern
 {
   @PrimaryKey
   @Column(DataType.TEXT)
-  id!: string;
+  declare id: string;
 }
 
 export async function createEnemyPattern(pattern: string, transaction?: Transaction) {
