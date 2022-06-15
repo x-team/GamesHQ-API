@@ -178,7 +178,8 @@ export async function getSlackUserInfo(slackId: string): Promise<SlackUser> {
         user: slackId,
       }),
     };
-    const response = await (await fetch(url, options)).json();
+    const rslt = await fetch(url, options);
+    const response = await rslt.json();
     const responseUser: SlackUser = response as SlackUser;
     return responseUser;
   } catch (error) {
