@@ -43,7 +43,7 @@ export class GameType
 {
   @PrimaryKey
   @Column(DataType.INTEGER)
-  id!: number;
+  declare id: number;
 
   @Unique(true)
   @AllowNull(false)

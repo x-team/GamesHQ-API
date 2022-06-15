@@ -26,7 +26,7 @@ export class Trait
 {
   @PrimaryKey
   @Column(DataType.TEXT)
-  id!: TRAIT;
+  declare id: TRAIT;
 
   @Column(DataType.TEXT)
   displayName!: string;

@@ -82,7 +82,7 @@ export class LeaderboardResults extends Model<
   @PrimaryKey
   @AutoIncrement
   @Column(DataType.INTEGER)
-  id!: number;
+  declare id: number;
 
   @Index({
     name: 'index_user_leaderboard',
@@ -125,12 +125,12 @@ export class LeaderboardResults extends Model<
   @AllowNull(false)
   @CreatedAt
   @Column(DataType.DATE)
-  createdAt!: Date;
+  declare createdAt: Date;
 
   @AllowNull(false)
   @UpdatedAt
   @Column(DataType.DATE)
-  updatedAt!: Date;
+  declare updatedAt: Date;
 
   static associations: {
     _user: Association<LeaderboardResults, User>;

@@ -12,20 +12,19 @@ export const register = async (slackUserId: string) => {
   }
 
   const xteamOrganization = await findOrganizationByName('x-team');
-  const { user } = await getSlackUserInfo(slackUserId);
+  const { id, real_name, profile } = await getSlackUserInfo(slackUserId);
 
-  if (!user || !user.profile || !xteamOrganization) {
+  if (!id || !real_name || !profile || !xteamOrganization) {
     throw Boom.badRequest(`Failed to create new user on GamesHQ.`);
   }
-  const { profile } = user;
   const { email, image_512 } = profile;
 
   await createUser({
     email: email,
-    displayName: user.real_name,
+    displayName: real_name,
     firebaseUserUid: null,
     profilePictureUrl: image_512,
-    slackId: user.id,
+    slackId: id,
     _roleId: USER_ROLE_LEVEL.USER,
     _organizationId: xteamOrganization?.id,
   });

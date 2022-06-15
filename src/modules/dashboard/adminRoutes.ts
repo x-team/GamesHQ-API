@@ -1,4 +1,5 @@
 import type { ServerRoute } from '@hapi/hapi';
+
 import { getAuthUser } from '../../api-utils/getAuthUser';
 import { CAPABILITIES } from '../../api-utils/interfaceAndTypes';
 
@@ -23,15 +24,6 @@ import {
   getEmojis,
   addEnemyToFloorHandler,
 } from './adminHandlers';
-
-declare module '@hapi/hapi' {
-  export interface PluginSpecificConfiguration {
-    firebasePlugin: {
-      requiresAuth: boolean;
-      requiredCapabilities: string[];
-    };
-  }
-}
 
 export const adminRoutes: ServerRoute[] = [
   {

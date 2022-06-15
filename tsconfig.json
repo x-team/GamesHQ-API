@@ -1,7 +1,7 @@
 {
   "compilerOptions": {
     "incremental": true,
-    "target": "es2019",
+    "target": "es2022",
     "module": "commonjs",
     "strict": true,
     "noUnusedLocals": true,
@@ -12,7 +12,7 @@
     "experimentalDecorators": true,
     "emitDecoratorMetadata": true,
     "skipLibCheck": true,
-    "lib": ["es2019"],
+    "lib": ["es2022"],
     "outDir": "dist",
     "rootDir": ".",
     "sourceMap": true,

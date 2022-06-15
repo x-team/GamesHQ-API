@@ -19,7 +19,7 @@ export class ItemRarity
 {
   @PrimaryKey
   @Column(DataType.TEXT)
-  id!: ITEM_RARITY;
+  declare id: ITEM_RARITY;
 }
 
 export const findItemRarity = memoize((id: string, transaction?: Transaction) =>

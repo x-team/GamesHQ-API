@@ -50,7 +50,7 @@ interface PerkCreationAttributes {
 export class Perk extends Model<PerkAttributes, PerkCreationAttributes> implements PerkAttributes {
   @PrimaryKey
   @Column(DataType.TEXT)
-  id!: PERK;
+  declare id: PERK;
 
   @AllowNull(false)
   @Column(DataType.TEXT)

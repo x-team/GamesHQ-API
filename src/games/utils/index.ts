@@ -11,6 +11,7 @@ import type { User } from '../../models';
 import { parseEscapedSlackUserValues } from '../../utils/slack';
 import { ZERO, HUNDRED } from '../consts/global';
 import type { SlackBlockKitLayoutElement } from '../model/SlackBlockKit';
+import type { SlackUser } from '../model/SlackUser';
 
 import { GameError } from './GameError';
 
@@ -164,7 +165,7 @@ export async function chatUnfurl(requestBody: object, bearer: string = getConfig
   }
 }
 
-export async function getSlackUserInfo(slackId: string) {
+export async function getSlackUserInfo(slackId: string): Promise<SlackUser> {
   try {
     const url = 'https://slack.com/api/users.info';
     const options = {
@@ -177,8 +178,9 @@ export async function getSlackUserInfo(slackId: string) {
         user: slackId,
       }),
     };
-    const response = await fetch(url, options);
-    return response.json();
+    const response = await (await fetch(url, options)).json();
+    const responseUser: SlackUser = response as SlackUser;
+    return responseUser;
   } catch (error) {
     logger.error('Error in getSlackUserInfo()');
     logger.error(error);

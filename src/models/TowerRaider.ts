@@ -129,7 +129,7 @@ export class TowerRaider
   @PrimaryKey
   @AutoIncrement
   @Column(DataType.INTEGER)
-  id!: number;
+  declare id: number;
 
   @Column(DataType.INTEGER)
   health!: number;

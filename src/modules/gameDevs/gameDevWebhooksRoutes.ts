@@ -15,14 +15,6 @@ import {
   getLeaderboardRankHandler,
 } from './gameDevWebhookHandler';
 import { parseWebhookPayload } from './utils';
-declare module '@hapi/hapi' {
-  export interface PluginSpecificConfiguration {
-    firebasePlugin: {
-      requiresAuth: boolean;
-      requiredCapabilities: string[];
-    };
-  }
-}
 
 export const getGameLeaderboardResultRoute: ServerRoute = {
   method: 'GET',
