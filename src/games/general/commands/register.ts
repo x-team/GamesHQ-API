@@ -1,5 +1,3 @@
-import Boom from '@hapi/boom';
-
 import { USER_ROLE_LEVEL } from '../../../consts/model';
 import { findOrganizationByName } from '../../../models/Organization';
 import { upsertUser, userExists, getUserByEmail } from '../../../models/User';
@@ -14,22 +12,18 @@ export const register = async (slackUserId: string) => {
   }
 
   const xteamOrganization = await findOrganizationByName('x-team');
-  const { user: slackUser } = await getSlackUserInfo(slackUserId);
+  const { id, real_name, profile } = await getSlackUserInfo(slackUserId);
 
-  if (!slackUser || !slackUser.profile || !xteamOrganization) {
+  if (!id || !real_name || !profile || !xteamOrganization) {
     throw Boom.badRequest(`Failed to create new user on GamesHQ.`);
   }
-  const {
-    id: slackId,
-    profile: { email, image_512 },
-    real_name: displayName,
-  } = slackUser;
+  const { email, image_512 } = profile;
 
   const userInDb = await getUserByEmail(email);
   let firebaseUserUid = userInDb?.firebaseUserUid;
 
   if (!firebaseUserUid) {
-    const firebaseUser = await createUserInFirebase(email, displayName);
+    const firebaseUser = await createUserInFirebase(email, real_name);
     firebaseUserUid = firebaseUser.uid;
   }
 
@@ -37,10 +31,10 @@ export const register = async (slackUserId: string) => {
     id: userInDb?.id,
     _roleId: userInDb?._roleId || USER_ROLE_LEVEL.USER,
     email,
-    displayName,
+    displayName: real_name,
     profilePictureUrl: image_512,
+    slackId: id,
     _organizationId: xteamOrganization?.id,
-    slackId,
     firebaseUserUid,
   });
 

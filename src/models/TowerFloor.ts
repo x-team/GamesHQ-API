@@ -41,7 +41,7 @@ export class TowerFloor
   @PrimaryKey
   @AutoIncrement
   @Column(DataType.INTEGER)
-  id!: number;
+  declare id: number;
 
   @Column(DataType.INTEGER)
   number!: number;

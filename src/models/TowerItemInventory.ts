@@ -41,7 +41,7 @@ export class TowerItemInventory
   @PrimaryKey
   @AutoIncrement
   @Column(DataType.INTEGER)
-  id!: number;
+  declare id: number;
 
   @ForeignKey(() => TowerRaider)
   @Column(DataType.INTEGER)

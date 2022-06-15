@@ -41,7 +41,7 @@ export class LeaderboardResultsMeta extends Model<
   @PrimaryKey
   @AutoIncrement
   @Column(DataType.INTEGER)
-  id!: number;
+  declare id: number;
 
   @Index({
     name: 'index_attribute_leaderboardresult',
@@ -73,10 +73,10 @@ export class LeaderboardResultsMeta extends Model<
   @AllowNull(false)
   @CreatedAt
   @Column(DataType.DATE)
-  createdAt!: Date;
+  declare createdAt: Date;
 
   @AllowNull(false)
   @UpdatedAt
   @Column(DataType.DATE)
-  updatedAt!: Date;
+  declare updatedAt: Date;
 }

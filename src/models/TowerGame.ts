@@ -58,7 +58,7 @@ export class TowerGame
   @PrimaryKey
   @AutoIncrement
   @Column(DataType.INTEGER)
-  id!: number;
+  declare id: number;
 
   @Column(DataType.INTEGER)
   lunaPrize!: number;

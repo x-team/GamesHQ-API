@@ -95,7 +95,7 @@ export class User extends Model<UserAttributes, UserCreationAttributes> implemen
   @PrimaryKey
   @AutoIncrement
   @Column(DataType.INTEGER)
-  id!: number;
+  declare id: number;
 
   @Column(DataType.TEXT)
   displayName!: string;
@@ -117,10 +117,10 @@ export class User extends Model<UserAttributes, UserCreationAttributes> implemen
   profilePictureUrl!: string | null;
 
   @CreatedAt
-  createdAt!: Date;
+  declare createdAt: Date;
 
   @UpdatedAt
-  updatedAt!: Date;
+  declare updatedAt: Date;
 
   @ForeignKey(() => UserRole)
   @Column(DataType.INTEGER)

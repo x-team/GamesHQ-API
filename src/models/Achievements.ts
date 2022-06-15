@@ -46,7 +46,7 @@ export class Achievement
   @PrimaryKey
   @AutoIncrement
   @Column(DataType.INTEGER)
-  id!: number;
+  declare id: number;
 
   @AllowNull(false)
   @Column(DataType.TEXT)
@@ -65,12 +65,12 @@ export class Achievement
   @AllowNull(false)
   @CreatedAt
   @Column(DataType.DATE)
-  createdAt!: Date;
+  declare createdAt: Date;
 
   @AllowNull(false)
   @UpdatedAt
   @Column(DataType.DATE)
-  updatedAt!: Date;
+  declare updatedAt: Date;
 
   @ForeignKey(() => GameType)
   @Column(DataType.INTEGER)
