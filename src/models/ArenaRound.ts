@@ -110,17 +110,17 @@ export class ArenaRound
   declare _gameId: number;
 
   @BelongsTo(() => Game, '_gameId')
-  _game?: Game;
+  declare _game?: Game;
 
   @ForeignKey(() => User)
   @Column(DataType.INTEGER)
   declare _createdById: number;
 
   @BelongsTo(() => User, '_createdById')
-  _createdBy?: User;
+  declare _createdBy?: User;
 
   @HasMany(() => ArenaRoundAction, '_arenaRoundId')
-  _actions?: ArenaRoundAction[];
+  declare _actions?: ArenaRoundAction[];
 
   static associations: {
     _game: Association<ArenaRound, Game>; // TBD association with ArenaGame?

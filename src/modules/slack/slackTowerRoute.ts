@@ -17,33 +17,6 @@ const routePrefix = '/slack-integrations/';
 export const slackTowerRoutes: ServerRoute[] = [
   {
     method: 'POST',
-    path: `${routePrefix}gameshq-commands`,
-    options: {
-      auth: false,
-      payload: {
-        parse: false,
-        output: 'data',
-      },
-      description: 'General GamesHQ related routes',
-      tags: ['api', 'slack', 'slash commands', 'gameshq'],
-      response: {
-        emptyStatusCode: 200,
-      },
-      pre: [
-        {
-          method: verifySlackRequest,
-          assign: 'verifySlackRequest',
-        },
-        {
-          method: parseSlashCommandPayload,
-          assign: 'slashCommandPayload',
-        },
-      ],
-    },
-    handler: slackCommandHandler,
-  },
-  {
-    method: 'POST',
     path: `${routePrefix}tower-commands`,
     options: {
       auth: false,

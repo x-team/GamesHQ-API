@@ -67,7 +67,7 @@ export class PerkInventory
     onUpdate: 'CASCADE',
     onDelete: 'CASCADE',
   })
-  _perk?: Perk;
+  declare _perk?: Perk;
 
   @ForeignKey(() => TowerRaider)
   @AllowNull(true)
@@ -79,7 +79,7 @@ export class PerkInventory
     onUpdate: 'CASCADE',
     onDelete: 'CASCADE',
   })
-  _raider?: TowerRaider;
+  declare _raider?: TowerRaider;
 
   @ForeignKey(() => TowerFloorBattlefieldEnemy)
   @AllowNull(true)
@@ -87,11 +87,11 @@ export class PerkInventory
   declare _towerFloorBattlefieldEnemyId: number;
 
   @BelongsTo(() => TowerFloorBattlefieldEnemy, '_towerFloorBattlefieldEnemyId')
-  _towerFloorBattlefieldEnemy?: TowerFloorBattlefieldEnemy;
+  declare _towerFloorBattlefieldEnemy?: TowerFloorBattlefieldEnemy;
 
   @Default(ONE)
   @Column(DataType.INTEGER)
-  quantity?: number;
+  declare quantity?: number;
 
   @Column(DataType.DATE)
   declare createdAt: Date;

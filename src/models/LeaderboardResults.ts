@@ -98,7 +98,7 @@ export class LeaderboardResults extends Model<
     onUpdate: 'CASCADE',
     onDelete: 'CASCADE',
   })
-  _leaderboardEntry?: LeaderboardEntry;
+  declare _leaderboardEntry?: LeaderboardEntry;
 
   @Index({
     name: 'index_user_leaderboard',

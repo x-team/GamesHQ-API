@@ -50,7 +50,7 @@ export class ItemTrait
     onUpdate: 'CASCADE',
     onDelete: 'CASCADE',
   })
-  _item?: Item;
+  declare _item?: Item;
 
   @PrimaryKey
   @ForeignKey(() => Trait)
@@ -58,7 +58,7 @@ export class ItemTrait
   declare _traitId: TRAIT;
 
   @BelongsTo(() => Trait)
-  _trait?: Trait;
+  declare _trait?: Trait;
 }
 
 export async function createOrUpdateItemTrait(

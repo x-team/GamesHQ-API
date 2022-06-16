@@ -51,7 +51,7 @@ export class ArenaPlayerPerformance
   declare _arenaPlayerId: number;
 
   @BelongsTo(() => ArenaPlayer, '_arenaPlayerId')
-  _player?: ArenaPlayer;
+  declare _player?: ArenaPlayer;
 
   @PrimaryKey
   @ForeignKey(() => Game)
@@ -59,7 +59,7 @@ export class ArenaPlayerPerformance
   declare _gameId: number;
 
   @BelongsTo(() => Game, '_gameId')
-  _game?: Game;
+  declare _game?: Game;
 
   @Default(ZERO)
   @Column(DataType.INTEGER)

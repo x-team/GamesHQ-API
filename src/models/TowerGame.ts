@@ -84,13 +84,13 @@ export class TowerGame
     onUpdate: 'CASCADE',
     onDelete: 'CASCADE',
   })
-  _game?: Game;
+  declare _game?: Game;
 
   @HasMany(() => TowerFloor, '_towerGameId')
-  _floors?: TowerFloor[];
+  declare _floors?: TowerFloor[];
 
   @HasMany(() => TowerStatistics, '_towerGameId')
-  _statistics?: TowerStatistics[];
+  declare _statistics?: TowerStatistics[];
 
   static associations: {
     _game: Association<TowerGame, Game>;

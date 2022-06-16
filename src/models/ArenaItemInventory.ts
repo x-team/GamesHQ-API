@@ -49,7 +49,7 @@ export class ArenaItemInventory
   declare _arenaPlayerId: number;
 
   @BelongsTo(() => ArenaPlayer, '_arenaPlayerId')
-  _player?: ArenaPlayer;
+  declare _player: ArenaPlayer;
 
   @ForeignKey(() => Item)
   @Column(DataType.INTEGER)
@@ -60,7 +60,7 @@ export class ArenaItemInventory
     onUpdate: 'CASCADE',
     onDelete: 'CASCADE',
   })
-  _item?: Item;
+  declare _item?: Item;
 
   @Column(DataType.INTEGER)
   declare remainingUses: number | null;

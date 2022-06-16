@@ -37,7 +37,7 @@ export class UserRole
   declare name: USER_ROLE_NAME;
 
   @HasMany(() => User, '_roleId')
-  _users?: User[];
+  declare _users?: User[];
 
   static associations: {
     _users: Association<UserRole, User>;

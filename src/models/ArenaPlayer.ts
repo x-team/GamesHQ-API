@@ -178,7 +178,7 @@ export class ArenaPlayer
     onUpdate: 'CASCADE',
     onDelete: 'CASCADE',
   })
-  _user?: User;
+  declare _user?: User;
 
   @AllowNull(true)
   @ForeignKey(() => Team)
@@ -190,7 +190,7 @@ export class ArenaPlayer
     onUpdate: 'CASCADE',
     onDelete: 'SET NULL',
   })
-  _team?: Team | null;
+  declare _team?: Team | null;
 
   @ForeignKey(() => Game)
   @Column(DataType.INTEGER)
@@ -201,7 +201,7 @@ export class ArenaPlayer
     onUpdate: 'CASCADE',
     onDelete: 'SET NULL',
   })
-  _game?: Game;
+  declare _game?: Game;
 
   @AllowNull(true)
   @ForeignKey(() => ArenaZone)
@@ -209,7 +209,7 @@ export class ArenaPlayer
   declare _arenaZoneId: number | null;
 
   @BelongsTo(() => ArenaZone)
-  _zone?: ArenaZone;
+  declare _zone?: ArenaZone;
 
   @BelongsToMany(() => Item, {
     through: () => ArenaItemInventory,
@@ -217,7 +217,7 @@ export class ArenaPlayer
     otherKey: '_itemId',
     as: '_weapons',
   })
-  _weapons?: Array<Item & { ArenaItemInventory: ArenaItemInventory }>;
+  declare _weapons?: Array<Item & { ArenaItemInventory: ArenaItemInventory }>;
 
   @BelongsToMany(() => Item, {
     through: () => ArenaItemInventory,
@@ -225,7 +225,7 @@ export class ArenaPlayer
     otherKey: '_itemId',
     as: '_armors',
   })
-  _armors?: Array<Item & { ArenaItemInventory: ArenaItemInventory }>;
+  declare _armors?: Array<Item & { ArenaItemInventory: ArenaItemInventory }>;
 
   @BelongsToMany(() => Item, {
     through: () => ArenaItemInventory,
@@ -233,7 +233,7 @@ export class ArenaPlayer
     otherKey: '_itemId',
     as: '_healthkits',
   })
-  _healthkits?: Array<Item & { ArenaItemInventory: ArenaItemInventory }>;
+  declare _healthkits?: Array<Item & { ArenaItemInventory: ArenaItemInventory }>;
 
   static associations: {
     _user: Association<ArenaPlayer, User>;

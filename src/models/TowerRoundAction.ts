@@ -123,7 +123,7 @@ export class TowerRoundAction
     onUpdate: 'CASCADE',
     onDelete: 'CASCADE',
   })
-  _raider?: TowerRaider;
+  declare _raider?: TowerRaider;
 
   @ForeignKey(() => TowerFloorBattlefieldEnemy)
   @AllowNull(true)
@@ -135,7 +135,7 @@ export class TowerRoundAction
     onUpdate: 'CASCADE',
     onDelete: 'CASCADE',
   })
-  _enemy?: TowerFloorBattlefieldEnemy;
+  declare _enemy?: TowerFloorBattlefieldEnemy;
 
   @ForeignKey(() => TowerRound)
   @Column(DataType.INTEGER)
@@ -146,7 +146,7 @@ export class TowerRoundAction
     onUpdate: 'CASCADE',
     onDelete: 'CASCADE',
   })
-  _round?: TowerRound;
+  declare _round?: TowerRound;
 
   @Default(false)
   @Column(DataType.BOOLEAN)
@@ -164,7 +164,7 @@ export class TowerRoundAction
   declare _availableActionId: TOWER_ACTIONS_TYPE;
 
   @BelongsTo(() => AvailableAction, '_availableActionId')
-  _action?: AvailableAction;
+  declare _action?: AvailableAction;
 
   @Column(DataType.JSONB)
   declare actionJSON: TowerAction;

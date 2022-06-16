@@ -113,7 +113,7 @@ export class Organization
   declare signingSecret: string;
 
   @HasMany(() => User, '_organizationId')
-  _users?: User[];
+  declare _users?: User[];
 
   static associations: {
     _users: Association<Organization, User>;

@@ -67,13 +67,13 @@ export class GameType
     onUpdate: 'CASCADE',
     onDelete: 'CASCADE',
   })
-  _createdBy?: User;
+  declare _createdBy?: User;
 
   @HasMany(() => LeaderboardEntry, '_gameTypeId')
-  _leaderboards?: LeaderboardEntry[];
+  declare _leaderboards?: LeaderboardEntry[];
 
   @HasMany(() => Achievement, '_gameTypeId')
-  _acheivements?: Achievement[];
+  declare _acheivements?: Achievement[];
 
   static associations: {
     _createdBy: Association<GameType, User>;

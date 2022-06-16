@@ -88,10 +88,10 @@ export class ArenaGame
     onUpdate: 'CASCADE',
     onDelete: 'CASCADE',
   })
-  _game?: Game;
+  declare _game?: Game;
 
   @HasMany(() => ArenaRound, '_gameId')
-  _rounds?: ArenaRound[];
+  declare _rounds?: ArenaRound[];
 
   static associations: {
     _rounds: Association<ArenaGame, ArenaRound>;

@@ -34,7 +34,7 @@ export class EnemyTrait
     onUpdate: 'CASCADE',
     onDelete: 'CASCADE',
   })
-  _enemy?: Enemy;
+  declare _enemy?: Enemy;
 
   @ForeignKey(() => Trait)
   @Column(DataType.TEXT)
@@ -45,7 +45,7 @@ export class EnemyTrait
     onUpdate: 'CASCADE',
     onDelete: 'CASCADE',
   })
-  _trait?: Trait;
+  declare _trait?: Trait;
 
   static associations: {
     _enemy: Association<EnemyTrait, Enemy>;
