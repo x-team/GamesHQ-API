@@ -86,7 +86,7 @@ export class Session
     onUpdate: 'CASCADE',
     onDelete: 'CASCADE',
   })
-  _user?: User;
+  declare _user?: User;
 
   static associations: {
     _user: Association<Session, User>;

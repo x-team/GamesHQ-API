@@ -98,7 +98,7 @@ export class LeaderboardResults extends Model<
     onUpdate: 'CASCADE',
     onDelete: 'CASCADE',
   })
-  _leaderboardEntry?: LeaderboardEntry;
+  declare _leaderboardEntry?: LeaderboardEntry;
 
   @Index({
     name: 'index_user_leaderboard',
@@ -113,14 +113,14 @@ export class LeaderboardResults extends Model<
     onUpdate: 'CASCADE',
     onDelete: 'CASCADE',
   })
-  _user?: User;
+  declare _user?: User;
 
   @AllowNull(false)
   @Column(DataType.INTEGER)
   declare score: number;
 
   @HasMany(() => LeaderboardResultsMeta, '_leaderboardResultsId')
-  _leaderboardResultsMeta?: LeaderboardResultsMeta[];
+  declare _leaderboardResultsMeta?: LeaderboardResultsMeta[];
 
   @AllowNull(false)
   @CreatedAt

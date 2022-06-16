@@ -56,7 +56,7 @@ export class LeaderboardResultsMeta extends Model<
     onUpdate: 'CASCADE',
     onDelete: 'CASCADE',
   })
-  _leaderboardResults?: LeaderboardResults;
+  declare _leaderboardResults?: LeaderboardResults;
 
   @Index({
     name: 'index_attribute_leaderboardresult',

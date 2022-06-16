@@ -108,7 +108,7 @@ export class Item extends Model<ItemAttributes, ItemCreationAttributes> implemen
   declare _itemRarityId: ITEM_RARITY;
 
   @BelongsTo(() => ItemRarity, '_itemRarityId')
-  _rarity?: ItemRarity;
+  declare _rarity?: ItemRarity;
 
   @ForeignKey(() => Organization)
   @Column(DataType.INTEGER)
@@ -120,7 +120,7 @@ export class Item extends Model<ItemAttributes, ItemCreationAttributes> implemen
     onUpdate: 'CASCADE',
     as: '_organization',
   })
-  _organization?: Organization;
+  declare _organization?: Organization;
 
   @BelongsToMany(() => ArenaPlayer, {
     through: () => ArenaItemInventory,
@@ -128,7 +128,7 @@ export class Item extends Model<ItemAttributes, ItemCreationAttributes> implemen
     otherKey: '_arenaPlayerId',
     as: '_arenaPlayers',
   })
-  _arenaPlayers?: ArenaPlayer[];
+  declare _arenaPlayers?: ArenaPlayer[];
 
   @BelongsToMany(() => Trait, {
     through: () => ItemTrait,
@@ -136,7 +136,7 @@ export class Item extends Model<ItemAttributes, ItemCreationAttributes> implemen
     otherKey: '_traitId',
     as: '_traits',
   })
-  _traits?: Array<Trait & { ItemTrait: ItemTrait }>;
+  declare _traits?: Array<Trait & { ItemTrait: ItemTrait }>;
 
   @BelongsToMany(() => TowerRaider, {
     through: () => TowerItemInventory,
@@ -144,19 +144,19 @@ export class Item extends Model<ItemAttributes, ItemCreationAttributes> implemen
     otherKey: '_towerRaiderId',
     as: '_towerRaiders',
   })
-  _towerRaiders?: TowerRaider[];
+  declare _towerRaiders?: TowerRaider[];
 
   @HasMany(() => GameItemAvailability, '_itemId')
-  _gameItemAvailability?: GameItemAvailability[];
+  declare _gameItemAvailability?: GameItemAvailability[];
 
   @HasOne(() => ItemArmor, '_itemId')
-  _armor?: ItemArmor;
+  declare _armor?: ItemArmor;
 
   @HasOne(() => ItemWeapon, '_itemId')
-  _weapon?: ItemWeapon;
+  declare _weapon?: ItemWeapon;
 
   @HasOne(() => ItemHealthKit, '_itemId')
-  _healthkit?: ItemHealthKit;
+  declare _healthkit?: ItemHealthKit;
 
   static associations: {
     _arenaPlayers: Association<Item, ArenaPlayer>;

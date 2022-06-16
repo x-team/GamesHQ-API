@@ -54,7 +54,7 @@ export class ArenaRoundAction
   declare _arenaPlayerId: number;
 
   @BelongsTo(() => ArenaPlayer, '_arenaPlayerId')
-  _player?: ArenaPlayer;
+  declare _player?: ArenaPlayer;
 
   @PrimaryKey
   @ForeignKey(() => ArenaRound)
@@ -62,7 +62,7 @@ export class ArenaRoundAction
   declare _arenaRoundId: number;
 
   @BelongsTo(() => ArenaRound, '_arenaRoundId')
-  _round?: ArenaRound;
+  declare _round?: ArenaRound;
 
   @Default(false)
   @Column(DataType.BOOLEAN)
@@ -84,7 +84,7 @@ export class ArenaRoundAction
     onUpdate: 'CASCADE',
     onDelete: 'CASCADE',
   })
-  _action?: AvailableAction;
+  declare _action?: AvailableAction;
 
   @Column(DataType.JSONB)
   declare actionJSON: ArenaAction;

@@ -55,7 +55,7 @@ export class GameItemAvailability
     onUpdate: 'CASCADE',
     onDelete: 'CASCADE',
   })
-  _gameType?: GameType;
+  declare _gameType?: GameType;
 
   @PrimaryKey
   @ForeignKey(() => Item)
@@ -67,7 +67,7 @@ export class GameItemAvailability
     onUpdate: 'CASCADE',
     onDelete: 'CASCADE',
   })
-  _item?: Item;
+  declare _item?: Item;
 
   @Default(true)
   @Column(DataType.BOOLEAN)

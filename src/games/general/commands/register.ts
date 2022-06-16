@@ -2,11 +2,13 @@ import Boom from '@hapi/boom';
 
 import { USER_ROLE_LEVEL } from '../../../consts/model';
 import { findOrganizationByName } from '../../../models/Organization';
-import { createUser, userExists } from '../../../models/User';
+import { upsertUser, userExists, getUserByEmail } from '../../../models/User';
+import { createUserInFirebase } from '../../../plugins/firebasePlugin';
 import { getGameResponse, getSlackUserInfo } from '../../utils';
 
 export const register = async (slackUserId: string) => {
   const exists = await userExists(slackUserId);
+
   if (exists) {
     return getGameResponse(`Your user is already registered.`);
   }
@@ -19,14 +21,23 @@ export const register = async (slackUserId: string) => {
   }
   const { email, image_512 } = profile;
 
-  await createUser({
-    email: email,
-    displayName: real_name,
-    firebaseUserUid: null,
+  const userInDb = await getUserByEmail(email);
+  let firebaseUserUid = userInDb?.firebaseUserUid;
+
+  if (!firebaseUserUid) {
+    const firebaseUser = await createUserInFirebase(email, real_name);
+    firebaseUserUid = firebaseUser.uid;
+  }
+
+  await upsertUser({
+    id: userInDb?.id,
+    _roleId: userInDb?._roleId || USER_ROLE_LEVEL.USER,
+    email,
+    displayName: userInDb?.displayName || real_name,
     profilePictureUrl: image_512,
     slackId: id,
-    _roleId: USER_ROLE_LEVEL.USER,
     _organizationId: xteamOrganization?.id,
+    firebaseUserUid,
   });
 
   return getGameResponse(

@@ -59,13 +59,13 @@ export class TowerFloor
     onUpdate: 'CASCADE',
     onDelete: 'CASCADE',
   })
-  _towerGame?: TowerGame;
+  declare _towerGame?: TowerGame;
 
   @HasMany(() => TowerFloorEnemy, '_towerFloorId')
-  _floorEnemies?: TowerFloorEnemy[];
+  declare _floorEnemies?: TowerFloorEnemy[];
 
   @HasMany(() => TowerFloorBattlefield, '_towerFloorId')
-  _floorBattlefields?: TowerFloorBattlefield[];
+  declare _floorBattlefields?: TowerFloorBattlefield[];
 
   static associations: {
     _towerGame: Association<TowerFloor, TowerGame>;

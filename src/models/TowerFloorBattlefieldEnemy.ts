@@ -93,7 +93,7 @@ export class TowerFloorBattlefieldEnemy
     onUpdate: 'CASCADE',
     onDelete: 'CASCADE',
   })
-  _towerFloorEnemy?: TowerFloorEnemy;
+  declare _towerFloorEnemy?: TowerFloorEnemy;
 
   @ForeignKey(() => TowerFloorBattlefield)
   @Column(DataType.INTEGER)
@@ -104,7 +104,7 @@ export class TowerFloorBattlefieldEnemy
     onUpdate: 'CASCADE',
     onDelete: 'CASCADE',
   })
-  _currentTowerFloorBattlefield?: TowerFloorBattlefield;
+  declare _currentTowerFloorBattlefield?: TowerFloorBattlefield;
 
   @BelongsToMany(() => Perk, {
     through: () => PerkInventory,
@@ -112,7 +112,7 @@ export class TowerFloorBattlefieldEnemy
     otherKey: '_perkId',
     as: '_perks',
   })
-  _perks?: Array<Perk & { PerkInventory: PerkInventory }>;
+  declare _perks?: Array<Perk & { PerkInventory: PerkInventory }>;
 
   static associations: {
     _towerFloorEnemy: Association<TowerFloorBattlefieldEnemy, TowerFloorEnemy>;
