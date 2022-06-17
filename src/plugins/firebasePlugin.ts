@@ -1,29 +1,28 @@
-import admin from 'firebase-admin';
+import { initializeApp, applicationDefault } from 'firebase-admin/app';
+import { getAuth } from 'firebase-admin/auth';
 
-import { getConfig } from '../config';
-
-const googleApplicationCredentials = JSON.parse(getConfig('GOOGLE_APPLICATION_CREDENTIALS'));
-let firebaseApp: admin.app.App;
-
-const getFirebaseApp = (): admin.app.App => {
-  if (firebaseApp) {
-    return firebaseApp;
-  }
-
-  return admin.initializeApp({
-    credential: admin.credential.cert(googleApplicationCredentials),
-  });
-};
+initializeApp({
+  credential: applicationDefault(),
+});
 
 export const createUserInFirebase = async (email: string, displayName: string) => {
-  const firebaseUser = await getFirebaseApp().auth().getUserByEmail(email);
-
-  if (!firebaseUser) {
-    return await firebaseApp.auth().createUser({
-      email,
-      displayName,
-    });
+  try {
+    const firebaseUser = await getAuth().getUserByEmail(email);
+    return firebaseUser;
+  } catch (error: any) {
+    // If the user is not found, an error is thrown, and the user is created
+    if (error.code === 'auth/user-not-found') {
+      try {
+        const createdUser = await getAuth().createUser({
+          email,
+          displayName,
+        });
+        return createdUser;
+      } catch (e) {
+        console.error(e);
+        throw new Error('Error creating user in firebase');
+      }
+    }
+    throw new Error('Error creating firebase user ', error);
   }
-
-  return firebaseUser;
 };
