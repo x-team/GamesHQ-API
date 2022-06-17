@@ -88,10 +88,10 @@ export class ArenaZone
     onUpdate: 'CASCADE',
     as: '_organization',
   })
-  _organization?: Organization;
+  declare _organization?: Organization;
 
   @HasMany(() => ArenaPlayer, '_arenaZoneId')
-  _players?: ArenaPlayer[];
+  declare _players?: ArenaPlayer[];
 
   static associations: {
     _players: Association<ArenaZone, ArenaPlayer>;

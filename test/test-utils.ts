@@ -138,17 +138,21 @@ async function resetDB() {
   await sequelize.query(query, { raw: true });
 }
 
-export const createTestUser = async () => {
+export const createTestUser = async (partialUser?: Partial<User>) => {
   const uniqueId = uuid();
-  return await User.create({
+
+  const data = {
     email: `email_${uniqueId}@test.com`,
     displayName: `displayName_${uniqueId}`,
     firebaseUserUid: null,
-    slackId: null,
+    slackId: 'fakeSlackId' + uniqueId,
     profilePictureUrl: null,
     _roleId: USER_ROLE_LEVEL.USER,
     _organizationId: 1,
     createdAt: new Date(),
     updatedAt: new Date(),
-  });
+    ...partialUser,
+  };
+
+  return await User.create(data);
 };

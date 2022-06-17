@@ -52,7 +52,7 @@ export class ItemHealthKit
     onUpdate: 'CASCADE',
     onDelete: 'CASCADE',
   })
-  _item?: Item;
+  declare _item?: Item;
 
   static associations: {
     _item: Association<ItemHealthKit, Item>;

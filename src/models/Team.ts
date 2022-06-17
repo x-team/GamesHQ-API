@@ -101,7 +101,7 @@ export class Team extends Model<TeamAttributes, TeamCreationAttributes> implemen
     onUpdate: 'CASCADE',
     as: '_organization',
   })
-  _organization?: Organization;
+  declare _organization?: Organization;
 
   static associations: {
     _organization: Association<Team, Organization>;

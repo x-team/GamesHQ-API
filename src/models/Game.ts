@@ -118,13 +118,13 @@ export class Game extends Model<GameAttributes, GameCreationAttributes> implemen
     onUpdate: 'CASCADE',
     onDelete: 'CASCADE',
   })
-  _createdBy?: User;
+  declare _createdBy?: User;
 
   @HasOne(() => ArenaGame)
-  _arena?: ArenaGame;
+  declare _arena?: ArenaGame;
 
   @HasOne(() => TowerGame)
-  _tower?: TowerGame;
+  declare _tower?: TowerGame;
 
   static associations: {
     _arena: Association<Game, ArenaGame>;

@@ -52,7 +52,7 @@ export class TowerItemInventory
     onUpdate: 'CASCADE',
     onDelete: 'CASCADE',
   })
-  _raider?: TowerRaider;
+  declare _raider?: TowerRaider;
 
   @ForeignKey(() => Item)
   @Column(DataType.INTEGER)
@@ -63,7 +63,7 @@ export class TowerItemInventory
     onUpdate: 'CASCADE',
     onDelete: 'CASCADE',
   })
-  _item?: Item;
+  declare _item?: Item;
 
   @Column(DataType.INTEGER)
   declare remainingUses: number | null;

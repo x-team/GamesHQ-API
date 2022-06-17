@@ -139,7 +139,7 @@ export class TowerRound
     onUpdate: 'CASCADE',
     onDelete: 'CASCADE',
   })
-  _floorBattlefield?: TowerFloorBattlefield;
+  declare _floorBattlefield?: TowerFloorBattlefield;
 
   @ForeignKey(() => User)
   @Column(DataType.INTEGER)
@@ -150,10 +150,10 @@ export class TowerRound
     onUpdate: 'CASCADE',
     onDelete: 'SET NULL',
   })
-  _createdBy?: User;
+  declare _createdBy?: User;
 
   @HasMany(() => TowerRoundAction, '_towerRoundId')
-  _actions?: TowerRoundAction[];
+  declare _actions?: TowerRoundAction[];
 
   static associations: {
     _createdBy: Association<TowerRound, User>;

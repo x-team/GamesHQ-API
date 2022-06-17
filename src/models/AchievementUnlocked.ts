@@ -73,14 +73,14 @@ export class AchievementUnlocked
     onUpdate: 'CASCADE',
     onDelete: 'CASCADE',
   })
-  _user?: User;
+  declare _user?: User;
 
   @BelongsTo(() => Achievement, {
     foreignKey: '_achievementId',
     onUpdate: 'CASCADE',
     onDelete: 'CASCADE',
   })
-  _achievement?: Achievement;
+  declare _achievement?: Achievement;
 
   static associations: {
     _user: Association<AchievementUnlocked, User>;

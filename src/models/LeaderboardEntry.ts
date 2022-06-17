@@ -69,7 +69,7 @@ export class LeaderboardEntry extends Model<
     onUpdate: 'CASCADE',
     onDelete: 'CASCADE',
   })
-  _gameType?: GameType;
+  declare _gameType?: GameType;
 
   static associations: {
     _gameType: Association<LeaderboardEntry, GameType>;

@@ -1,7 +1,8 @@
 import type { ServerRoute } from '@hapi/hapi';
 import Joi from 'joi';
 
-import { testRouteHandler } from './slackHandlers';
+import { slackCommandHandler, testRouteHandler } from './slackHandlers';
+import { parseSlashCommandPayload, verifySlackRequest } from './utils';
 
 export const slackRoutes: ServerRoute[] = [
   {
@@ -49,5 +50,32 @@ export const slackRoutes: ServerRoute[] = [
       },
     },
     handler: testRouteHandler,
+  },
+  {
+    method: 'POST',
+    path: `/slack-integrations/gameshq-commands`,
+    options: {
+      auth: false,
+      payload: {
+        parse: false,
+        output: 'data',
+      },
+      description: 'General GamesHQ related routes',
+      tags: ['api', 'slack', 'slash commands', 'gameshq'],
+      response: {
+        emptyStatusCode: 200,
+      },
+      pre: [
+        {
+          method: verifySlackRequest,
+          assign: 'verifySlackRequest',
+        },
+        {
+          method: parseSlashCommandPayload,
+          assign: 'slashCommandPayload',
+        },
+      ],
+    },
+    handler: slackCommandHandler,
   },
 ];

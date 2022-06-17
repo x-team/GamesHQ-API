@@ -73,7 +73,7 @@ export class Perk extends Model<PerkAttributes, PerkCreationAttributes> implemen
   declare _itemRarityId: ITEM_RARITY;
 
   @BelongsTo(() => ItemRarity, '_itemRarityId')
-  _rarity?: ItemRarity;
+  declare _rarity?: ItemRarity;
 
   @ForeignKey(() => Organization)
   @Column(DataType.INTEGER)
@@ -85,7 +85,7 @@ export class Perk extends Model<PerkAttributes, PerkCreationAttributes> implemen
     onUpdate: 'CASCADE',
     as: '_organization',
   })
-  _organization?: Organization;
+  declare _organization?: Organization;
 
   static associations: {
     _rarity: Association<Perk, ItemRarity>;

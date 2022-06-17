@@ -33,7 +33,7 @@ export class TowerFloorEnemy
     onUpdate: 'CASCADE',
     onDelete: 'CASCADE',
   })
-  _enemy?: Enemy;
+  declare _enemy?: Enemy;
 
   @ForeignKey(() => TowerFloor)
   @Column(DataType.INTEGER)
@@ -44,7 +44,7 @@ export class TowerFloorEnemy
     onUpdate: 'CASCADE',
     onDelete: 'CASCADE',
   })
-  _towerFloor?: TowerFloor;
+  declare _towerFloor?: TowerFloor;
 
   static associations: {
     _enemy: Association<TowerFloorEnemy, Enemy>;

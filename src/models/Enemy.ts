@@ -95,7 +95,7 @@ export class Enemy
 
   @AllowNull(true)
   @Column(DataType.TEXT)
-  gifUrl?: string;
+  declare gifUrl?: string;
 
   @Default(Ability.defaultProps())
   @Column(DataType.JSONB)
@@ -110,7 +110,7 @@ export class Enemy
     onUpdate: 'CASCADE',
     onDelete: 'SET NULL',
   })
-  _enemyPattern?: EnemyPattern;
+  declare _enemyPattern?: EnemyPattern;
 
   @ForeignKey(() => Organization)
   @Column(DataType.INTEGER)
@@ -122,7 +122,7 @@ export class Enemy
     onUpdate: 'CASCADE',
     as: '_organization',
   })
-  _organization?: Organization;
+  declare _organization?: Organization;
 
   @BelongsToMany(() => Trait, {
     through: () => EnemyTrait,
@@ -130,7 +130,7 @@ export class Enemy
     otherKey: '_traitId',
     as: '_traits',
   })
-  _traits?: Array<Trait & { EnemyTrait: EnemyTrait }>;
+  declare _traits?: Array<Trait & { EnemyTrait: EnemyTrait }>;
 
   static associations: {
     _enemyPattern: Association<Enemy, EnemyPattern>;

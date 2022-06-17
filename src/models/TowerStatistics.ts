@@ -48,7 +48,7 @@ export class TowerStatistics
     onUpdate: 'CASCADE',
     onDelete: 'CASCADE',
   })
-  _user?: User;
+  declare _user?: User;
 
   @PrimaryKey
   @ForeignKey(() => TowerGame)
@@ -60,7 +60,7 @@ export class TowerStatistics
     onUpdate: 'CASCADE',
     onDelete: 'CASCADE',
   })
-  _towerGame?: TowerGame;
+  declare _towerGame?: TowerGame;
 
   @Column(DataType.INTEGER)
   declare attempts: number;
