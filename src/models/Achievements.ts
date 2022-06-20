@@ -103,7 +103,7 @@ export function findAllAchievementsByGameType(gameTypeId: number, transaction?: 
   return Achievement.findAll({ where: { _gameTypeId: gameTypeId }, transaction });
 }
 
-export function getAcheivementByCreator(
+export function getAchievementByCreator(
   id: number,
   _gameTypeId: number,
   _createdById: number,
