@@ -12,6 +12,8 @@ import {
   PrimaryKey,
 } from 'sequelize-typescript';
 
+import { ITEM_TYPE } from '../games/consts/global';
+
 import {
   TowerRoundAction,
   TowerRaider,
@@ -21,7 +23,6 @@ import {
   TowerFloorBattlefield,
   TowerFloorBattlefieldEnemy,
 } from '.';
-import { ITEM_TYPE } from '../games/consts/global';
 
 interface TowerRoundAttributes {
   id: number;

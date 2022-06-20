@@ -1,6 +1,11 @@
+import dotenv from 'dotenv';
+
 export { prettifyConfig } from './sqlPrettifyConfig';
 import { version } from '../../package.json';
 
+if (getConfig('NODE_ENV') !== 'production') {
+  dotenv.config({ path: '.env.dev' });
+}
 interface NameToType {
   // PROCESS
   ENV: 'production' | 'staging' | 'development' | 'test';

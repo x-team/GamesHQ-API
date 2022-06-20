@@ -1,13 +1,14 @@
-import { actionReply } from '.';
 import { logger } from '../../../config';
-import { User } from '../../../models';
+import type { User } from '../../../models';
 import { gameResponseToSlackHandler } from '../../../modules/slack/utils';
 import { TEN, ZERO } from '../../consts/global';
-import { SlackBlockKitSelectMenuElement } from '../../model/SlackBlockKit';
+import type { SlackBlockKitSelectMenuElement } from '../../model/SlackBlockKit';
 import { extractSecondaryAction, getEphemeralText, getGameError, slackRequest } from '../../utils';
 import { TOWER_FLOOR_HIDING, TOWER_SECONDARY_SLACK_ACTIONS } from '../consts';
 import { TowerEngine } from '../repositories/tower/engine';
 import { TowerRepository } from '../repositories/tower/tower';
+
+import { actionReply } from '.';
 
 const theTower = new TowerRepository(TowerEngine.getInstance());
 

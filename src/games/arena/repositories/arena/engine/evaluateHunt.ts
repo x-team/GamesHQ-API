@@ -1,6 +1,7 @@
 import { random } from 'lodash';
 import type { Transaction } from 'sequelize';
-import { ArenaPlayer } from '../../../../../models';
+
+import type { ArenaPlayer } from '../../../../../models';
 import { findPlayerById } from '../../../../../models/ArenaPlayer';
 import {
   findFirstBlood,
@@ -20,6 +21,7 @@ import {
   MAX_PLAYER_HEALTH,
 } from '../../../consts';
 import { publishArenaMessage } from '../../../utils';
+
 import { aggressiveLoot } from './evaluateHuntHelpers/aggressiveLoot';
 import { huntablePlayersFilter } from './evaluateHuntHelpers/huntablePlayersFilter';
 import { targetsPicker } from './evaluateHuntHelpers/targetsPicker';

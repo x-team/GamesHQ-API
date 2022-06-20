@@ -1,6 +1,8 @@
-import { Transaction } from 'sequelize/types';
-import { TowerRaider, TowerRoundAction } from '../../../../../models';
+import type { Transaction } from 'sequelize/types';
+
+import type { TowerRaider, TowerRoundAction } from '../../../../../models';
 import { theTowerNotifyInPrivate } from '../../../utils';
+
 import { towerEngineReply } from './replies';
 
 export async function processCharge(

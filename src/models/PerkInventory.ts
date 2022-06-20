@@ -12,8 +12,9 @@ import {
   AutoIncrement,
 } from 'sequelize-typescript';
 
-import { Perk, TowerRaider, TowerFloorBattlefieldEnemy } from '.';
 import { ONE, PERK } from '../games/consts/global';
+
+import { Perk, TowerRaider, TowerFloorBattlefieldEnemy } from '.';
 
 interface PerkInventoryAttributes {
   id: number;

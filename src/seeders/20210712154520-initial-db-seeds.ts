@@ -1,6 +1,7 @@
 import { isNumber } from 'lodash';
 import type { QueryInterface, Sequelize, Transaction } from 'sequelize';
 import { Op, QueryTypes } from 'sequelize';
+
 import { generateSecret } from '../utils/cryptography';
 
 enum AVAILABLE_ACTION {

@@ -1,7 +1,9 @@
-import { Game, User } from '../../../../../../models';
+import type { User } from '../../../../../../models';
+import { Game } from '../../../../../../models';
 import { findRaiderByUser } from '../../../../../../models/TowerRaider';
 import { findActiveRound } from '../../../../../../models/TowerRound';
-import { GameResponse, getGameError, getGameResponse } from '../../../../../utils';
+import type { GameResponse } from '../../../../../utils';
+import { getGameError, getGameResponse } from '../../../../../utils';
 import { activeTowerHandler, towerGatesHandler, withTowerTransaction } from '../../../../utils';
 import { leaveTower } from '../../../../utils/leave-tower';
 import { towerCommandReply } from '../../replies';

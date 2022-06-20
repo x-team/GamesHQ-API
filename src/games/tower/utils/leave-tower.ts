@@ -1,5 +1,6 @@
 import type { Transaction } from 'sequelize';
-import { TowerRaider, TowerRound } from '../../../models';
+
+import type { TowerRaider, TowerRound } from '../../../models';
 import { Ability } from '../../classes/GameAbilities';
 
 export async function leaveTower(

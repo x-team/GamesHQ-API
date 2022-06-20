@@ -1,8 +1,8 @@
-import { Item, Perk, TowerFloorBattlefieldEnemy, TowerRaider } from '../../../models';
+import type { Item, Perk, TowerFloorBattlefieldEnemy, TowerRaider } from '../../../models';
 import { FULL_HEALTH_HEART_EMOJI, HEALTH_KIT_EMOJI } from '../../consts/emojis';
 import { ZERO } from '../../consts/global';
 import { generateRarityColorEmoji } from '../../helpers';
-import {
+import type {
   SlackBlockKitCompositionOption,
   SlackBlockKitLayoutElement,
 } from '../../model/SlackBlockKit';

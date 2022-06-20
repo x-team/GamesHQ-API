@@ -1,4 +1,4 @@
-import { User } from '../../../../../../models';
+import type { User } from '../../../../../../models';
 import { setAllPlayerVisibility } from '../../../../../../models/ArenaPlayer';
 import { findActiveRound } from '../../../../../../models/ArenaRound';
 import { removeActionFromRound } from '../../../../../../models/ArenaRoundAction';

@@ -1,5 +1,5 @@
-import { QueryInterface, QueryOptions, QueryTypes, Sequelize, Transaction } from 'sequelize';
-import { Op } from 'sequelize';
+import type { QueryInterface, QueryOptions, Sequelize, Transaction } from 'sequelize';
+import { QueryTypes, Op } from 'sequelize';
 
 enum ARENA_ZONE_RING {
   ONE_A = '1A',

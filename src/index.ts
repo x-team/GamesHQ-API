@@ -1,17 +1,10 @@
 import 'source-map-support/register';
-import dotenv from 'dotenv';
-
 import { getConfig, logger } from './config';
-
-if (getConfig('NODE_ENV') !== 'production') {
-  dotenv.config({ path: '.env.dev' });
-}
-
 import { SEED_MODE } from './consts/api';
 import { initDb, sequelize } from './db';
 import { getServerWithPlugins } from './server';
 
-(async () => {
+void (async () => {
   // DB Setup
   await initDb();
 

@@ -1,4 +1,5 @@
-import { Game, User } from '../../../../../../models';
+import type { User } from '../../../../../../models';
+import { Game } from '../../../../../../models';
 import { findAllEnemies, findEnemyById } from '../../../../../../models/Enemy';
 import { findTowerFloorById } from '../../../../../../models/TowerFloor';
 import {
@@ -12,8 +13,9 @@ import {
 } from '../../../../../../models/TowerFloorEnemy';
 import { removeActionsByFloorBattlefieldEnemy } from '../../../../../../models/TowerRoundAction';
 import { TEN } from '../../../../../consts/global';
-import { SlackBlockKitLayoutElement } from '../../../../../model/SlackBlockKit';
-import { adminAction, GameResponse, getGameError, getGameResponse } from '../../../../../utils';
+import type { SlackBlockKitLayoutElement } from '../../../../../model/SlackBlockKit';
+import type { GameResponse } from '../../../../../utils';
+import { adminAction, getGameError, getGameResponse } from '../../../../../utils';
 import { TOWER_FLOOR_HIDING, TOWER_SECONDARY_SLACK_ACTIONS } from '../../../../consts';
 import {
   generateFloorEnemyAmountPickerBlock,

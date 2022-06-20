@@ -1,7 +1,8 @@
-import { TowerFloorBattlefieldEnemy, TowerRaider } from '../../../../../../models';
+import type { TowerFloorBattlefieldEnemy, TowerRaider } from '../../../../../../models';
 import { perkImpactCalculator } from '../../../../../../models/Perk';
-import { AbilityProperty } from '../../../../../classes/GameAbilities';
-import { DamageDealtSpecs, ZERO } from '../../../../../consts/global';
+import type { AbilityProperty } from '../../../../../classes/GameAbilities';
+import type { DamageDealtSpecs } from '../../../../../consts/global';
+import { ZERO } from '../../../../../consts/global';
 import { damageIncrease, damageReduction, nonLessThanZeroParam } from '../../../../../utils';
 import { roundTwoDecimalPlaces } from '../../../../../utils/math';
 

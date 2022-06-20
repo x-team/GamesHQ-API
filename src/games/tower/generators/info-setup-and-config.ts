@@ -1,12 +1,13 @@
 import moment from 'moment';
-import { Game, TowerFloor } from '../../../models';
+
+import type { Game, TowerFloor } from '../../../models';
 import { FULL_HEALTH_HEART_EMOJI } from '../../consts/emojis';
-import {
+import type {
   SlackBlockKitDividerLayout,
   SlackBlockKitLayoutElement,
   SlackBlockKitSectionLayout,
 } from '../../model/SlackBlockKit';
-import { SlackDialog } from '../../model/SlackDialogObject';
+import type { SlackDialog } from '../../model/SlackDialogObject';
 import {
   blockKitButton,
   blockKitCompositionText,

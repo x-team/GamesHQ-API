@@ -1,11 +1,18 @@
 import type { Transaction } from 'sequelize';
-import { ArenaRound, ArenaRoundAction } from '../../../../../models';
+
+import type { ArenaRound, ArenaRoundAction } from '../../../../../models';
 import { setPlayerPerformanceAction } from '../../../../../models/ArenaPlayerPerformance';
 import { listActiveArmorsByGameType } from '../../../../../models/ItemArmor';
 import { listActiveHealthkitsByGameType } from '../../../../../models/ItemHealthKit';
 import { listActiveWeaponsByGameType } from '../../../../../models/ItemWeapon';
 import { GAME_TYPE, ITEM_TYPE, TRAIT } from '../../../../consts/global';
 import { hasLuck } from '../../../../utils';
+import {
+  generateItemRarityAvailability,
+  randomizeItems,
+  rarityWeight,
+  rollItemRarity,
+} from '../../../../utils/rollRarity';
 import {
   ARENA_HEALTHKITS,
   ARENA_PLAYER_PERFORMANCE,
@@ -15,12 +22,7 @@ import {
   SEARCH_WEAPONS_SUCCESS_RATE,
 } from '../../../consts';
 import { filterItemsByRarity, publishArenaMessage } from '../../../utils';
-import {
-  generateItemRarityAvailability,
-  randomizeItems,
-  rarityWeight,
-  rollItemRarity,
-} from '../../../../utils/rollRarity';
+
 import { arenaEngineReply } from './replies';
 
 export async function processSearchHealth(actions: ArenaRoundAction[], transaction: Transaction) {

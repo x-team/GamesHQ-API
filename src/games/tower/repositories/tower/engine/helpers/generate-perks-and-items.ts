@@ -1,6 +1,7 @@
 import { random, sampleSize } from 'lodash';
-import { Transaction } from 'sequelize/types';
-import { Item, TowerFloor, TowerRaider } from '../../../../../../models';
+import type { Transaction } from 'sequelize/types';
+
+import type { Item, TowerFloor, TowerRaider } from '../../../../../../models';
 import { listActiveArmorsByGameType } from '../../../../../../models/ItemArmor';
 import { listActiveHealthkitsByGameType } from '../../../../../../models/ItemHealthKit';
 import { listActiveWeaponsByGameType } from '../../../../../../models/ItemWeapon';

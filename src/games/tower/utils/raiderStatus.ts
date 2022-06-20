@@ -1,4 +1,4 @@
-import { TowerFloor, TowerFloorBattlefieldEnemy, TowerRaider } from '../../../models';
+import type { TowerFloor, TowerFloorBattlefieldEnemy, TowerRaider } from '../../../models';
 import { PLAYER_HIDE_EMOJI, PLAYER_VISIBLE_EMOJI } from '../../consts/emojis';
 import { ZERO } from '../../consts/global';
 import {
