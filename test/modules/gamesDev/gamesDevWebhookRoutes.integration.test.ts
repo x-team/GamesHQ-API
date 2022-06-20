@@ -155,6 +155,32 @@ describe('gameDevWebhooksRoutes', () => {
       });
     });
 
+    it('should return 400 status code on POST /achievements/{id}/progress when payload is invalid', async () => {
+      const game = await GameType.findByPk(1);
+      const a1 = await Achievement.create({
+        description: 'game_achievement_' + uuid(),
+        _gameTypeId: 2,
+        isEnabled: true,
+        targetValue: 100,
+      });
+
+      const postPayload: any = {
+        progresssss: 100,
+      };
+
+      const rslt = await testServer.inject(
+        await postAchievementsProgressInjectOptions(a1.id, game!, postPayload)
+      );
+      const payload = JSON.parse(rslt.payload);
+
+      expect(rslt.statusCode).to.equal(400);
+      expect(payload).to.deep.equal({
+        statusCode: 400,
+        message: '"progress" is required',
+        error: 'Bad Request',
+      });
+    });
+
     it('should return 403 status code on POST /achievements/{id}/progress when achievement does not belong to game', async () => {
       const game = await GameType.findByPk(1);
       const a1 = await Achievement.create({
