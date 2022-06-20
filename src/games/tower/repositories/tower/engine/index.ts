@@ -1,8 +1,10 @@
 import type { Transaction } from 'sequelize';
-import { TowerRound, TowerRoundAction } from '../../../../../models';
+
+import type { TowerRound, TowerRoundAction } from '../../../../../models';
 import { findRaidersByFloorBattlefield } from '../../../../../models/TowerRaider';
 import { TOWER_ACTIONS } from '../../../consts';
 import { filterActionsById } from '../../../utils';
+
 import { awardPrize } from './helpers/award-prize';
 import { generateEnemiesActions } from './helpers/generate-enemies-actions';
 import { generateLoot } from './helpers/generate-loot';

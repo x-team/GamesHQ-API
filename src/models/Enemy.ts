@@ -15,10 +15,10 @@ import {
   AutoIncrement,
   AllowNull,
 } from 'sequelize-typescript';
-import { EnemyPattern, EnemyTrait, Organization, Trait } from '.';
+
 import { logger } from '../config';
 import { Ability, AbilityProperty } from '../games/classes/GameAbilities';
-import { TRAIT } from '../games/consts/global';
+import type { TRAIT } from '../games/consts/global';
 import {
   BOSS_MAX_DAMAGE_RATE,
   BOSS_MIN_DAMAGE_RATE,
@@ -29,6 +29,8 @@ import {
   MIN_BOSS_HEALTH,
   MIN_ENEMY_HEALTH,
 } from '../games/tower/consts';
+
+import { EnemyPattern, EnemyTrait, Organization, Trait } from '.';
 
 export interface EnemyCreationAttributes {
   id?: number;

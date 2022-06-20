@@ -1,7 +1,7 @@
-import { Enemy, TowerFloor } from '../../../models';
+import type { Enemy, TowerFloor } from '../../../models';
 import { FULL_HEALTH_HEART_EMOJI } from '../../consts/emojis';
 import { basicHealthDisplayInParentheses } from '../../helpers';
-import {
+import type {
   SlackBlockKitCompositionOption,
   SlackBlockKitLayoutElement,
 } from '../../model/SlackBlockKit';

@@ -1,4 +1,4 @@
-import { User } from '../../../../../../models';
+import type { User } from '../../../../../../models';
 import { findActiveArenaGame, findLastActiveArenaGame } from '../../../../../../models/ArenaGame';
 import {
   findPlayersByGame,

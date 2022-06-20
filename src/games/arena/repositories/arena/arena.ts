@@ -1,5 +1,6 @@
 import type { User } from '../../../../models';
 import type { GameResponse } from '../../../utils';
+
 import {
   addBossOrGuestCommand,
   addPlayerCommand,
@@ -23,14 +24,13 @@ import {
   selectWeaponForEveryone,
   startNarrowWeaponsQuestion,
 } from './actions/admin/weapons';
+import { actionsMenu, status } from './actions/player/actions-menu';
 import { bossChangeLocation, changeLocation } from './actions/player/change-location';
 import { cheer, completeCheer, repeatLastCheer } from './actions/player/cheer';
 import { hide } from './actions/player/hide';
 import { chooseTarget, chooseWeapon, hunt } from './actions/player/hunt';
-import { actionsMenu, status } from './actions/player/actions-menu';
 import { completeRevive, reviveOther, reviveSelf } from './actions/player/revive';
 import { searchForArmors, searchForHealth, searchForWeapons } from './actions/player/search';
-
 import type { ArenaEngine } from './engine';
 
 interface ArenaRepositoryMethods {

@@ -1,4 +1,5 @@
-import { Game, User } from '../../../../../../models';
+import type { User } from '../../../../../../models';
+import { Game } from '../../../../../../models';
 import { createBattlefield } from '../../../../../../models/TowerFloorBattlefield';
 import { addTowerFloorBattlefieldEnemies } from '../../../../../../models/TowerFloorBattlefieldEnemy';
 import {
@@ -8,7 +9,8 @@ import {
 import { startRound } from '../../../../../../models/TowerRound';
 import { findOrCreateTowerStatistics } from '../../../../../../models/TowerStatistics';
 import { ONE, ZERO } from '../../../../../consts/global';
-import { GameResponse, getGameResponse } from '../../../../../utils';
+import type { GameResponse } from '../../../../../utils';
+import { getGameResponse } from '../../../../../utils';
 import { generateTowerActionsBlockKit } from '../../../../generators/gameplay';
 import {
   activeTowerHandler,

@@ -1,4 +1,4 @@
-import { ArenaPlayer, ArenaZone } from '../../../../../models';
+import type { ArenaPlayer, ArenaZone } from '../../../../../models';
 import {
   ARMOR_INVENTORY_EMOJI,
   BOSS_EMOJI,
@@ -16,14 +16,14 @@ import {
   SPINNER_EMOJI,
   WEAPON_INVENTORY_EMOJI,
 } from '../../../../consts/emojis';
-import { ITEM_RARITY, ArmorSpecs } from '../../../../consts/global';
+import type { ITEM_RARITY, ArmorSpecs } from '../../../../consts/global';
 import {
   basicHealthDisplayInParentheses,
   generateRarityColorEmoji,
   generateSoldierAnimationEmoji,
   randomSkinColor,
 } from '../../../../helpers';
-import { ARENA_PERK } from '../../../consts';
+import type { ARENA_PERK } from '../../../consts';
 import { arenaPerkStats } from '../../../utils';
 
 export function getCheerEmoji(player: ArenaPlayer) {

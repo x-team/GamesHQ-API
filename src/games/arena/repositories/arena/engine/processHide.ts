@@ -1,6 +1,8 @@
 import type { Transaction } from 'sequelize';
-import { ArenaRoundAction } from '../../../../../models';
+
+import type { ArenaRoundAction } from '../../../../../models';
 import { publishArenaMessage } from '../../../utils';
+
 import { arenaEngineReply } from './replies';
 
 export async function processHide(actions: ArenaRoundAction[], transaction: Transaction) {

@@ -1,14 +1,15 @@
-import { Transaction } from 'sequelize/types';
-import { ArenaPlayer } from '../../../../../../models';
+import type { Transaction } from 'sequelize/types';
+
+import type { ArenaPlayer } from '../../../../../../models';
 import {
   addAmmoToItemInInventory,
   getPlayerItemCount,
 } from '../../../../../../models/ArenaItemInventory';
 import { findHealthkitByName } from '../../../../../../models/ItemHealthKit';
 import { ZERO } from '../../../../../consts/global';
+import { rarityWeight } from '../../../../../utils/rollRarity';
 import { ARENA_HEALTHKITS, MAX_PLAYER_HEALTH } from '../../../../consts';
 import { publishArenaMessage } from '../../../../utils';
-import { rarityWeight } from '../../../../../utils/rollRarity';
 import { arenaEngineReply } from '../replies';
 
 export async function aggressiveLoot(

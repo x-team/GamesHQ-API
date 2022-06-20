@@ -1,4 +1,4 @@
-import { ArenaPlayer } from '../../../../../../models';
+import type { ArenaPlayer } from '../../../../../../models';
 
 interface HuntablePlayersParams {
   huntablePlayers: ArenaPlayer[];

@@ -1,19 +1,17 @@
-import { User } from '../../../../../../models';
+import type { User } from '../../../../../../models';
 import { findArmorById } from '../../../../../../models/ItemArmor';
 import { findHealthkitById } from '../../../../../../models/ItemHealthKit';
 import { findWeaponById } from '../../../../../../models/ItemWeapon';
 import { findPerkById } from '../../../../../../models/Perk';
 import { addAmmoToItemInInventory } from '../../../../../../models/TowerItemInventory';
 import { ZERO } from '../../../../../consts/global';
-import { GameResponse, getGameResponse } from '../../../../../utils';
+import type { GameResponse } from '../../../../../utils';
+import { getGameResponse } from '../../../../../utils';
 import { rarityWeight } from '../../../../../utils/rollRarity';
 import { MAX_RAIDER_HEALTH, TOWER_HEALTHKITS } from '../../../../consts';
 import { generateTowerActionsBlockKit } from '../../../../generators/gameplay';
-import {
-  raiderActionsAlive,
-  TowerRaiderInteraction,
-  withTowerTransaction,
-} from '../../../../utils';
+import type { TowerRaiderInteraction } from '../../../../utils';
+import { raiderActionsAlive, withTowerTransaction } from '../../../../utils';
 import { towerCommandReply } from '../../replies';
 
 export async function completeChoosePerkOrItem(

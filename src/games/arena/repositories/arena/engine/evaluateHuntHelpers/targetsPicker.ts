@@ -1,5 +1,6 @@
 import { get, sampleSize } from 'lodash';
-import { ArenaPlayer, Item } from '../../../../../../models';
+
+import type { ArenaPlayer, Item } from '../../../../../../models';
 import { TRAIT } from '../../../../../consts/global';
 
 export function targetsPicker(

@@ -1,11 +1,13 @@
-import { Transaction } from 'sequelize/types';
-import { TowerRound, TowerRoundAction } from '../../../../../models';
+import type { Transaction } from 'sequelize/types';
+
+import type { TowerRound, TowerRoundAction } from '../../../../../models';
 import { findHealthkitByName } from '../../../../../models/ItemHealthKit';
 import { perkImpactCalculator } from '../../../../../models/Perk';
 import { findRaiderById } from '../../../../../models/TowerRaider';
 import { ZERO } from '../../../../consts/global';
 import { MAX_RAIDER_HEALTH, TOWER_HEALTHKITS } from '../../../consts';
 import { theTowerNotifyInPrivate } from '../../../utils';
+
 import { towerEngineReply } from './replies';
 
 export async function processHealOrRevive(

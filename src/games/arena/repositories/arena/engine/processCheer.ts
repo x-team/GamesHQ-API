@@ -1,9 +1,11 @@
 import type { Transaction } from 'sequelize';
-import { ArenaRound, ArenaRoundAction } from '../../../../../models';
+
+import type { ArenaRound, ArenaRoundAction } from '../../../../../models';
 import { findPlayerById } from '../../../../../models/ArenaPlayer';
 import { setPlayerPerformanceAction } from '../../../../../models/ArenaPlayerPerformance';
 import { ARENA_PLAYER_PERFORMANCE } from '../../../consts';
 import { publishArenaMessage } from '../../../utils';
+
 import { cheerAwards } from './cheerSystem';
 import { arenaEngineReply } from './replies';
 

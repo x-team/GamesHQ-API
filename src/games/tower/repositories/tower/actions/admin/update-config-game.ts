@@ -1,6 +1,6 @@
-import { User } from '../../../../../../models';
+import type { User } from '../../../../../../models';
 import { findActiveTowerGame } from '../../../../../../models/TowerGame';
-import { TowerFormData } from '../../../../../model/SlackDialogObject';
+import type { TowerFormData } from '../../../../../model/SlackDialogObject';
 import { adminAction, getGameError, getGameResponse } from '../../../../../utils';
 import { generateUpdateTowerDialogView } from '../../../../generators/info-setup-and-config';
 import { theTowerNotifyEphemeral, theTowerOpenView, withTowerTransaction } from '../../../../utils';

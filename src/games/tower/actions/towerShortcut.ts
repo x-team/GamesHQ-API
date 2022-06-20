@@ -1,9 +1,10 @@
-import { actionReply } from '.';
 import { logger } from '../../../config';
 import { getUserBySlackId } from '../../../models/User';
-import { SlackShortcutPayload } from '../../model/SlackShortcutPayload';
+import type { SlackShortcutPayload } from '../../model/SlackShortcutPayload';
 import { adminAction, getGameError } from '../../utils';
 import { theTowerNotifyEphemeral } from '../utils';
+
+import { actionReply } from '.';
 
 export async function handleTowerShortcut(payload: SlackShortcutPayload) {
   const {

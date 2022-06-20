@@ -14,13 +14,10 @@ import {
   PrimaryKey,
 } from 'sequelize-typescript';
 
-import { listActiveWeaponsByGameType } from './ItemWeapon';
-import { perkImpactCalculator } from './Perk';
-import { setPerkInventoryQuantity } from './PerkInventory';
-import { Item, User, TowerFloorBattlefield, TowerItemInventory, Perk, PerkInventory } from '.';
-import { GAME_TYPE, ITEM_TYPE, ONE, PERK, TRAIT, ZERO } from '../games/consts/global';
-import { Ability, AbilityProperty, AbilityPropertyKeys } from '../games/classes/GameAbilities';
-import { addAmmoToItemInInventory, getRaiderItemCount } from './TowerItemInventory';
+import type { AbilityPropertyKeys } from '../games/classes/GameAbilities';
+import { Ability, AbilityProperty } from '../games/classes/GameAbilities';
+import type { PERK } from '../games/consts/global';
+import { GAME_TYPE, ITEM_TYPE, ONE, TRAIT, ZERO } from '../games/consts/global';
 import {
   INITIATIVE_DECREASE,
   INITIATIVE_INCREASE,
@@ -28,6 +25,13 @@ import {
   MAX_AMOUNT_HEALTHKITS_ALLOWED,
   MAX_RAIDER_HEALTH,
 } from '../games/tower/consts';
+
+import { listActiveWeaponsByGameType } from './ItemWeapon';
+import { perkImpactCalculator } from './Perk';
+import { setPerkInventoryQuantity } from './PerkInventory';
+import { addAmmoToItemInInventory, getRaiderItemCount } from './TowerItemInventory';
+
+import { Item, User, TowerFloorBattlefield, TowerItemInventory, Perk, PerkInventory } from '.';
 
 interface TowerRaiderAttributes {
   id: number;
