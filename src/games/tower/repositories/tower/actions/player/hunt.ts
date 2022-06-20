@@ -1,6 +1,8 @@
 import type { Transaction } from 'sequelize';
-import { Item, Trait, User } from '../../../../../../models';
-import { TowerAction } from '../../../../../../models/AvailableAction';
+
+import type { Item, User } from '../../../../../../models';
+import { Trait } from '../../../../../../models';
+import type { TowerAction } from '../../../../../../models/AvailableAction';
 import { findWeaponById } from '../../../../../../models/ItemWeapon';
 import {
   findEnemiesByFloorBattlefield,
@@ -9,7 +11,8 @@ import {
 } from '../../../../../../models/TowerFloorBattlefieldEnemy';
 import { findRoundAction, setRoundAction } from '../../../../../../models/TowerRoundAction';
 import { ONE, TRAIT, ZERO } from '../../../../../consts/global';
-import { GameResponse, getGameResponse } from '../../../../../utils';
+import type { GameResponse } from '../../../../../utils';
+import { getGameResponse } from '../../../../../utils';
 import { generateGenericWeaponPickerBlock } from '../../../../../utils/generators/games';
 import { TOWER_ACTIONS, TOWER_SECONDARY_SLACK_ACTIONS } from '../../../../consts';
 import {
@@ -17,11 +20,8 @@ import {
   generateTowerStartRoundQuestionSection,
   generateTowerTargetEnemyPickerBlock,
 } from '../../../../generators/gameplay';
-import {
-  raiderActionsAlive,
-  TowerRaiderInteraction,
-  withTowerTransaction,
-} from '../../../../utils';
+import type { TowerRaiderInteraction } from '../../../../utils';
+import { raiderActionsAlive, withTowerTransaction } from '../../../../utils';
 import { towerCommandReply } from '../../replies';
 
 export async function chooseHuntTargetHelper(

@@ -1,5 +1,6 @@
 import type { Transaction } from 'sequelize';
-import { TowerRaider, TowerRound, TowerRoundAction } from '../../../../../models';
+
+import type { TowerRaider, TowerRound, TowerRoundAction } from '../../../../../models';
 import { findWeaponById } from '../../../../../models/ItemWeapon';
 import { perkImpactCalculator } from '../../../../../models/Perk';
 import { findEnemiesByFloorBattlefield } from '../../../../../models/TowerFloorBattlefieldEnemy';
@@ -9,6 +10,7 @@ import { TRAIT } from '../../../../consts/global';
 import { hasLuck } from '../../../../utils';
 import { LOSE_ACTION_RATE } from '../../../consts';
 import { initiativeSort, theTowerNotifyInPrivate } from '../../../utils';
+
 import { huntEnemies } from './helpers/evaluate-hunt-enemies';
 import { huntRaiders } from './helpers/evaluate-hunt-raiders';
 import { towerEngineReply } from './replies';

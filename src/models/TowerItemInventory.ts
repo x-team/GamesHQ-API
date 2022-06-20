@@ -10,8 +10,9 @@ import {
   AutoIncrement,
 } from 'sequelize-typescript';
 
-import { Item, TowerRaider } from '.';
 import { ZERO } from '../games/consts/global';
+
+import { Item, TowerRaider } from '.';
 
 interface TowerItemInventoryAttributes {
   id: number;

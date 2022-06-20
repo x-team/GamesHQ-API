@@ -1,6 +1,8 @@
 import type { Transaction } from 'sequelize';
-import { TowerRaider, TowerRoundAction } from '../../../../../models';
+
+import type { TowerRaider, TowerRoundAction } from '../../../../../models';
 import { theTowerNotifyInPrivate } from '../../../utils';
+
 import { towerEngineReply } from './replies';
 
 export async function processHide(

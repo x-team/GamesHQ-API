@@ -1,11 +1,21 @@
+import type { App } from 'firebase-admin/app';
 import { initializeApp, applicationDefault } from 'firebase-admin/app';
 import { getAuth } from 'firebase-admin/auth';
 
-initializeApp({
-  credential: applicationDefault(),
-});
+// eslint-disable-next-line functional/no-let
+let firebaseApp: App | undefined;
+
+const initApp = () => {
+  if (!firebaseApp) {
+    firebaseApp = initializeApp({
+      credential: applicationDefault(),
+    });
+  }
+};
 
 export const createUserInFirebase = async (email: string, displayName: string) => {
+  initApp();
+
   try {
     const firebaseUser = await getAuth().getUserByEmail(email);
     return firebaseUser;

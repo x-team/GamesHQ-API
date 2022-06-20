@@ -1,9 +1,9 @@
-import { ArenaItemInventory, Item, TowerItemInventory } from '../../../models';
+import type { ArenaItemInventory, Item, TowerItemInventory } from '../../../models';
 import type { ARENA_SECONDARY_ACTIONS } from '../../arena/consts';
 import { INFINITY_GIF_EMOJI } from '../../consts/emojis';
 import { generateRarityColorEmoji } from '../../helpers';
-import { SlackBlockKitCompositionOption } from '../../model/SlackBlockKit';
-import { TOWER_SECONDARY_SLACK_ACTIONS } from '../../tower/consts';
+import type { SlackBlockKitCompositionOption } from '../../model/SlackBlockKit';
+import type { TOWER_SECONDARY_SLACK_ACTIONS } from '../../tower/consts';
 
 import {
   blockKitAction,
@@ -15,7 +15,7 @@ import {
 } from './slack';
 
 export function generateEndGameConfirmationBlockKit(
-  questionText: string = 'Are you *absolutely sure* you want to *end the game*?',
+  questionText = 'Are you *absolutely sure* you want to *end the game*?',
   confirmActionValue: ARENA_SECONDARY_ACTIONS | TOWER_SECONDARY_SLACK_ACTIONS,
   cancelActionValue: ARENA_SECONDARY_ACTIONS | TOWER_SECONDARY_SLACK_ACTIONS
 ) {

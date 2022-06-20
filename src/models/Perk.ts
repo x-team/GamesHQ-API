@@ -10,15 +10,19 @@ import {
   PrimaryKey,
   AllowNull,
 } from 'sequelize-typescript';
+
 import { Ability, AbilityProperty } from '../games/classes/GameAbilities';
+import type { PerkMultiplierKey } from '../games/consts/global';
 import {
   ITEM_RARITY,
-  PerkMultiplierKey,
   PERK_CONDITIONS,
   PERK_MULTIPLIERS,
+  PERK,
+  PERK_ARCHETYPE,
 } from '../games/consts/global';
-import { PERK, PERK_ARCHETYPE } from '../games/consts/global';
-import { ItemRarity, Organization, TowerRaider } from '.';
+
+import type { TowerRaider } from '.';
+import { ItemRarity, Organization } from '.';
 
 interface PerkAttributes {
   id: PERK;

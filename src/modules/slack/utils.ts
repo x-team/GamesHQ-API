@@ -9,31 +9,30 @@ import { getConfig, logger } from '../../config';
 import { arenaSwitchCommand } from '../../games/arena/commands';
 import { isArenaCommand } from '../../games/arena/utils';
 import { SAD_PARROT } from '../../games/consts/emojis';
+import { gamesSwitchCommand } from '../../games/general/commands';
 import { slackActionsPayloadSchema } from '../../games/model/SlackActionPayload';
 import type { SlackActionsPayload } from '../../games/model/SlackActionPayload';
 import { slackBlockPayloadSchema } from '../../games/model/SlackBlockKit';
 import type { SlackBlockKitPayload } from '../../games/model/SlackBlockKitPayload';
-import {
-  SlackChallengesPayload,
-  slackChallengesPayloadSchema,
-} from '../../games/model/SlackChallengePayload';
+import type { SlackChallengesPayload } from '../../games/model/SlackChallengePayload';
+import { slackChallengesPayloadSchema } from '../../games/model/SlackChallengePayload';
 import type { SlackDialogSubmissionPayload } from '../../games/model/SlackDialogObject';
 import { slackSSDialogSubmissionPayloadSchema } from '../../games/model/SlackDialogObject';
 import type { SlackDialogsPayload } from '../../games/model/SlackDialogPayload';
 import { slackDialogsPayloadSchema } from '../../games/model/SlackDialogPayload';
-import { SlackEventsPayload, slackEventsPayloadSchema } from '../../games/model/SlackEventPayload';
+import type { SlackEventsPayload } from '../../games/model/SlackEventPayload';
+import { slackEventsPayloadSchema } from '../../games/model/SlackEventPayload';
 import type { SlackShortcutPayload } from '../../games/model/SlackShortcutPayload';
 import { slackSShortcutPayloadSchema } from '../../games/model/SlackShortcutPayload';
 import type { SlackSlashCommandPayload } from '../../games/model/SlackSlashCommandPayload';
 import { slackSlashCommandPayloadSchema } from '../../games/model/SlackSlashCommandPayload';
+import { towerSwitchCommand } from '../../games/tower/commands';
+import { isGamesHQCommand, isTowerCommand } from '../../games/tower/utils';
 import type { GameResponse } from '../../games/utils';
 import { getEphemeralBlock, getEphemeralText } from '../../games/utils';
 import { getUserBySlackId } from '../../models/User';
 import type { SlackConfigKey } from '../../utils/cryptography';
 import { validateWebhookSignatures } from '../../utils/cryptography';
-import { isGamesHQCommand, isTowerCommand } from '../../games/tower/utils';
-import { towerSwitchCommand } from '../../games/tower/commands';
-import { gamesSwitchCommand } from '../../games/general/commands';
 
 export const isRequestFresh = (timestamp: number, freshMinutes?: number): boolean => {
   const SIXTY_SECONDS = 60;

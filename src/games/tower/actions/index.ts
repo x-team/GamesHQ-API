@@ -1,18 +1,18 @@
 import { isNaN } from 'lodash';
+
 import { logger } from '../../../config';
-import { User } from '../../../models';
+import type { User } from '../../../models';
 import { getUserBySlackId } from '../../../models/User';
 import { gameResponseToSlackHandler } from '../../../modules/slack/utils';
 import { parseEscapedSlackId } from '../../../utils/slack';
 import { SAD_PARROT, SPINNER_EMOJI } from '../../consts/emojis';
 import { TEN, ZERO } from '../../consts/global';
-
 import { randomSkinColor } from '../../helpers';
 import type {
   SlackBlockKitButtonElement,
   SlackBlockKitSelectMenuElement,
 } from '../../model/SlackBlockKit';
-import { SlackBlockKitPayload } from '../../model/SlackBlockKitPayload';
+import type { SlackBlockKitPayload } from '../../model/SlackBlockKitPayload';
 import { getEphemeralText, getGameError, getGameResponse, slackRequest } from '../../utils';
 import { TOWER_SECONDARY_SLACK_ACTIONS, TOWER_SLACK_COMMANDS } from '../consts';
 import { TowerEngine } from '../repositories/tower/engine';
@@ -22,6 +22,7 @@ import {
   isTowerRaiderWithParamsAction,
   theTowerNotifyEphemeral,
 } from '../utils';
+
 import { towerConfigActionHandler } from './towerConfig';
 
 const theTower = new TowerRepository(TowerEngine.getInstance());

@@ -1,5 +1,4 @@
-import { v4 as uuid4 } from 'uuid';
-import { Association, Transaction } from 'sequelize';
+import type { Association, Transaction } from 'sequelize';
 import {
   Table,
   Column,
@@ -15,11 +14,13 @@ import {
   UpdatedAt,
   Unique,
 } from 'sequelize-typescript';
+import { v4 as uuid4 } from 'uuid';
 
-import { ZERO } from '../games/consts/global';
-import { User } from './';
-import { MILLISECONDS_IN_A_MONTH } from '../consts/api';
 import { logger } from '../config';
+import { MILLISECONDS_IN_A_MONTH } from '../consts/api';
+import { ZERO } from '../games/consts/global';
+
+import { User } from './';
 
 interface SessionAttributes {
   id: number;
@@ -150,7 +151,7 @@ export function createSession(
 
 export function updateSession(
   sessionData: SessionUpdateAttributes,
-  updateToken: boolean = true,
+  updateToken = true,
   transaction?: Transaction
 ) {
   const token = uuid4();

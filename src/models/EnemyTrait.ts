@@ -1,8 +1,9 @@
 import { Table, Column, Model, DataType, ForeignKey, BelongsTo } from 'sequelize-typescript';
-import { Association } from 'sequelize/types';
+import type { Association } from 'sequelize/types';
+
+import { TRAIT } from '../games/consts/global';
 
 import { Enemy, Trait } from '.';
-import { TRAIT } from '../games/consts/global';
 
 interface EnemyTraitAttributes {
   _enemyId: number;

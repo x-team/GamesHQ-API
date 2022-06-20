@@ -1,13 +1,11 @@
-import { User } from '../../../../../../models';
+import type { User } from '../../../../../../models';
 import { findTowerFloorById } from '../../../../../../models/TowerFloor';
 import { findEnemiesByFloorBattlefield } from '../../../../../../models/TowerFloorBattlefieldEnemy';
-import { GameResponse, getGameResponse } from '../../../../../utils';
+import type { GameResponse } from '../../../../../utils';
+import { getGameResponse } from '../../../../../utils';
 import { generateTowerActionsBlockKit } from '../../../../generators/gameplay';
-import {
-  raiderActionsAlive,
-  TowerRaiderInteraction,
-  withTowerTransaction,
-} from '../../../../utils';
+import type { TowerRaiderInteraction } from '../../../../utils';
+import { raiderActionsAlive, withTowerTransaction } from '../../../../utils';
 import { towerCommandReply } from '../../replies';
 
 export async function raiderActions(userRequesting: User) {

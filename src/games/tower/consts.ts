@@ -1,4 +1,4 @@
-import { TowerFloorBattlefieldEnemy, TowerRaider } from '../../models';
+import type { TowerFloorBattlefieldEnemy, TowerRaider } from '../../models';
 import { GAME_TYPE, SHARED_ACTIONS } from '../consts/global';
 import { generateEnemyPatterns } from '../enemy/helpers/enemyPatterns';
 

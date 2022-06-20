@@ -1,4 +1,5 @@
 import type { Transaction } from 'sequelize';
+
 import type { ArenaPlayer, User } from '../../../models';
 import { findActiveArenaGame } from '../../../models/ArenaGame';
 import { addArenaPlayers, addArenaPlayersToZones } from '../../../models/ArenaPlayer';

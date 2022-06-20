@@ -12,7 +12,7 @@ import type {
   SlackBlockKitSelectMenuElement,
 } from '../../model/SlackBlockKit';
 import type { SlackBlockKitPayload } from '../../model/SlackBlockKitPayload';
-import { ZoneData } from '../../model/SlackDialogObject';
+import type { ZoneData } from '../../model/SlackDialogObject';
 import { extractSecondaryAction, getEphemeralText, getGameError, slackRequest } from '../../utils';
 import { ARENA_ACTIONS, ARENA_SECONDARY_ACTIONS, ARENA_SLACK_COMMANDS } from '../consts';
 import { ArenaRepository } from '../repositories/arena/arena';
@@ -114,18 +114,20 @@ export const handleViewSubmissionAction = async (payload: SlackBlockKitPayload) 
   }
 
   switch (callback_id) {
-    case ARENA_SECONDARY_ACTIONS.CREATE_OR_UPDATE_ZONE_DATA:
-      zoneRepository
-        .createOrUpdateZoneForm(userRequesting, values as ZoneData)
-        .then(async (response) => {
-          if (response?.type === 'error') {
-            await arenaNotifyEphemeral(
-              response.text ?? 'Something went wrong',
-              userRequesting.slackId!,
-              userRequesting.slackId!
-            );
-          }
-        });
+    case ARENA_SECONDARY_ACTIONS.CREATE_OR_UPDATE_ZONE_DATA: {
+      const response = await zoneRepository.createOrUpdateZoneForm(
+        userRequesting,
+        values as ZoneData
+      );
+
+      if (response?.type === 'error') {
+        await arenaNotifyEphemeral(
+          response.text ?? 'Something went wrong',
+          userRequesting.slackId!,
+          userRequesting.slackId!
+        );
+      }
+    }
   }
   return {};
 };
@@ -242,20 +244,22 @@ const handleConfigAction = async (
   switch (actionParsed) {
     case ARENA_SECONDARY_ACTIONS.UPDATE_ZONE:
       return ZoneRepository.openZoneModal(triggerId, selectedId);
-    case ARENA_SECONDARY_ACTIONS.DELETE_ZONE:
+    case ARENA_SECONDARY_ACTIONS.DELETE_ZONE: {
       if (!selectedId) {
         return getGameError(actionReply.needToSelectZoneToDelete);
       }
-      zoneRepository.deleteZone(userRequesting, selectedId).then(async (response) => {
-        if (response?.type === 'error') {
-          await arenaNotifyEphemeral(
-            response.text ?? 'Something went wrong',
-            userRequesting.slackId!,
-            userRequesting.slackId!
-          );
-        }
-      });
+
+      const response = await zoneRepository.deleteZone(userRequesting, selectedId);
+
+      if (response?.type === 'error') {
+        await arenaNotifyEphemeral(
+          response.text ?? 'Something went wrong',
+          userRequesting.slackId!,
+          userRequesting.slackId!
+        );
+      }
       break;
+    }
     default:
       break;
   }

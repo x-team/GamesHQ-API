@@ -1,15 +1,16 @@
-import { ArenaZone, User } from '../../../../models';
+import type { ArenaZone, User } from '../../../../models';
 import { findActiveArenaGame } from '../../../../models/ArenaGame';
+import type { ArenaZoneCreationAttributes } from '../../../../models/ArenaZone';
 import {
-  ArenaZoneCreationAttributes,
   createOrUpdateArenaZone,
   deactivateZones,
   deleteZoneById,
   findAllArenaZones,
   findArenaZoneById,
 } from '../../../../models/ArenaZone';
-import { ZoneData } from '../../../model/SlackDialogObject';
-import { adminAction, GameResponse, getGameError, getGameResponse } from '../../../utils';
+import type { ZoneData } from '../../../model/SlackDialogObject';
+import type { GameResponse } from '../../../utils';
+import { adminAction, getGameError, getGameResponse } from '../../../utils';
 import { ARENA_ZONE_RING } from '../../consts';
 import {
   generateArenaZoneModal,

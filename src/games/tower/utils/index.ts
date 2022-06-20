@@ -1,31 +1,20 @@
 import { random } from 'lodash';
 import type { Transaction } from 'sequelize';
+
 import { getConfig } from '../../../config';
-import { Game, TowerRaider, TowerRound, TowerRoundAction, User } from '../../../models';
+import type { TowerRound, TowerRoundAction, User } from '../../../models';
+import { Game, TowerRaider } from '../../../models';
 import { findActiveTowerGame } from '../../../models/TowerGame';
 import { findRaiderByUser } from '../../../models/TowerRaider';
 import { findActiveRound } from '../../../models/TowerRound';
-import { TOWER_ACTIONS_TYPE } from '../../../models/TowerRoundAction';
-import { TOWER_HEALTHKITS, TOWER_REPOSITORY_NAME } from '../../tower/consts';
-
+import type { TOWER_ACTIONS_TYPE } from '../../../models/TowerRoundAction';
 import { ONE, HUNDRED, ITEM_RARITY, ZERO } from '../../consts/global';
-import { roundActionMessageBuilder, RoundActionMessageBuilderParams } from '../../helpers';
+import type { RoundActionMessageBuilderParams } from '../../helpers';
+import { roundActionMessageBuilder } from '../../helpers';
 import type { SlackBlockKitLayoutElement } from '../../model/SlackBlockKit';
 import {
-  chatUnfurl,
-  GameResponse,
-  getGameError,
-  hasLuck,
-  notifyEphemeral,
-  notifyInPrivate,
-  openView,
-  slackRequest,
-  withTransaction,
-} from '../../utils';
-import { GameError } from '../../utils/GameError';
-import { RollSearchRarityParams, weightedChance } from '../../utils/rollRarity';
-
-import {
+  TOWER_HEALTHKITS,
+  TOWER_REPOSITORY_NAME,
   LUCK_ELIXIR_BOOST,
   TOWER_ACTIONS,
   LOOT_PRIZE_HEALTH_KIT_CHANCE,
@@ -38,7 +27,21 @@ import {
   ENEMY_HIDE_CHANCE,
   ENEMY_HUNT_CHANCE,
   TOWER_LOOT_PRIZES,
-} from '../consts';
+} from '../../tower/consts';
+import type { GameResponse } from '../../utils';
+import {
+  chatUnfurl,
+  getGameError,
+  hasLuck,
+  notifyEphemeral,
+  notifyInPrivate,
+  openView,
+  slackRequest,
+  withTransaction,
+} from '../../utils';
+import { GameError } from '../../utils/GameError';
+import type { RollSearchRarityParams } from '../../utils/rollRarity';
+import { weightedChance } from '../../utils/rollRarity';
 import { towerCommandReply } from '../repositories/tower/replies';
 
 const TOWER_SLACK_CHANNEL = 'SLACK_THE_TOWER_CHANNEL';
