@@ -1,16 +1,18 @@
-import { ServerRoute, CAPABILITIES, getAuthUser, gamedevGenericSchema } from './';
+import type { ServerRoute } from '@hapi/hapi';
 
+import { getAuthUser } from '../../../../api-utils/getAuthUser';
+import { CAPABILITIES } from '../../../../api-utils/interfaceAndTypes';
+import { gamedevGenericSchema } from '../../../../api-utils/schemas/gameDev/game';
 import {
   leaderboardSchema,
   multipleLeaderboardSchema,
   postLeaderboardSchema,
-} from '../../../api-utils/schemas/gameDev/leaderboardSchemas';
-
+} from '../../../../api-utils/schemas/gameDev/leaderboardSchemas';
 import {
   getLeaderboardHandler,
   upsertLeaderboardHandler,
   deleteLeaderboardHandler,
-} from '../gameDevHandler/leaderboardGameDevHandler';
+} from '../gameDevHandlers/leaderboardGameDevHandler';
 
 export const getLeaderboardsRoute: ServerRoute = {
   method: 'GET',

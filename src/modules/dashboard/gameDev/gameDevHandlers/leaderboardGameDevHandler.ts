@@ -1,10 +1,15 @@
-import type { LeaderboardEntryCreationAttributes } from '../../../models/LeaderboardEntry';
+import Boom from '@hapi/boom';
+import type { Lifecycle } from '@hapi/hapi';
+
+import { arrayToJSON } from '../../../../api-utils/utils';
+import { validateGameAuth } from '../../../../api-utils/validateGameAuth';
+import type { LeaderboardEntryCreationAttributes } from '../../../../models/LeaderboardEntry';
 import {
   getLeaderBoardsByGameType,
   getLeaderBoardByCreator,
   createOrUpdateLeaderBoard,
   deleteLeaderboardById,
-} from '../../../models/LeaderboardEntry';
+} from '../../../../models/LeaderboardEntry';
 
 export const getLeaderboardHandler: Lifecycle.Method = async (request, h) => {
   await validateGameAuth(request.pre.getAuthUser.id, request.params.gameTypeId);
