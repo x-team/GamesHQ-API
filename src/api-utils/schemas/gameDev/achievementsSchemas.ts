@@ -32,7 +32,7 @@ export const postAchievementResponseSchema = Joi.object({
 }).required();
 
 export const postAchievementProgressRequestSchema = Joi.object({
-  progress: Joi.number().required(),
+  progress: Joi.number().optional(),
 }).required();
 
 export const postAchievementProgressResponseSchema = Joi.object({

@@ -15,6 +15,7 @@ import {
   getLeaderboardResultRank,
   getUserLeaderboardResult,
 } from '../../models/LeaderboardResults';
+import { ZERO } from '../../games/consts/global';
 
 // 🎮 Games
 export const getAchievementsThruWebhookHandler: Lifecycle.Method = async (request, h) => {
@@ -32,8 +33,8 @@ export const postAchievementsProgressHandler: Lifecycle.Method = async (request,
   const achievement = await validateAchievement(request.params.achievementId, gameType.id);
 
   const [rslt] = await createOrUpdateAchievementUnlocked({
-    progress: payload.progress,
-    isUnlocked: payload.progress >= achievement.targetValue,
+    progress: payload.progress || ZERO,
+    isUnlocked: true, // TODO payload.progress >= achievement.targetValue will be used on future release
     _userId: user.id,
     _achievementId: achievement.id,
   });

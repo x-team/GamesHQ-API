@@ -26,7 +26,7 @@ interface AchievementUnlockedAttributes {
   _achievementId: number;
 }
 export interface AchievementUnlockedCreationAttributes {
-  progress: number;
+  progress?: number;
 }
 
 @Table

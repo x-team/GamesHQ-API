@@ -124,7 +124,7 @@ describe('gameDevWebhooksRoutes', () => {
       });
     });
 
-    it('should return 200 status code on POST /achievements/{id}/progress with locked achievement', async () => {
+    it('should return 200 status code on POST /achievements/{id}/progress with empt payload and default progress', async () => {
       const game = await GameType.findByPk(1);
       const a1 = await Achievement.create({
         description: 'game_achievement_' + uuid(),
@@ -133,21 +133,20 @@ describe('gameDevWebhooksRoutes', () => {
         targetValue: 100,
       });
 
-      const postPayload: any = {
-        progress: 99, //below targetValue
-      };
+      const postPayload = {};
 
       const rslt = await testServer.inject(
         await postAchievementsProgressInjectOptions(a1.id, game!, postPayload)
       );
       const payload = JSON.parse(rslt.payload);
+      console.log(rslt.result);
 
       const userAchievement = await AchievementUnlocked.findOne({ where: { _userId: 1 } });
 
       expect(rslt.statusCode).to.equal(200);
       expect(payload).to.deep.equal({
-        progress: 99,
-        isUnlocked: false,
+        progress: 0, //default
+        isUnlocked: true,
         _achievementId: a1.id,
         _userId: 1,
         createdAt: userAchievement?.createdAt.toISOString(),
@@ -176,7 +175,7 @@ describe('gameDevWebhooksRoutes', () => {
       expect(rslt.statusCode).to.equal(400);
       expect(payload).to.deep.equal({
         statusCode: 400,
-        message: '"progress" is required',
+        message: '"progresssss" is not allowed',
         error: 'Bad Request',
       });
     });
@@ -611,14 +610,14 @@ async function postAchievementsProgressInjectOptions(
   payload?: any
 ) {
   const timestamp = String(new Date().getTime() / 1000);
-  const signatureMessage = `v0:${timestamp}:${JSON.stringify(payload)}`;
+  const signatureMessage = `v0:${timestamp}:${JSON.stringify(payload) || '{}'}`;
 
   const session = await Session.create({
     token: uuid(),
     _userId: 1,
   });
 
-  const injectOptions = {
+  let injectOptions = {
     method: 'POST',
     url: `/webhooks/game-dev/achievements/${achievementId}/progress`,
     headers: {
@@ -627,7 +626,7 @@ async function postAchievementsProgressInjectOptions(
       'xtu-client-secret': game!.clientSecret,
       'xtu-session-token': session.token,
     },
-    payload,
+    payload: payload || {},
   };
 
   return injectOptions;
