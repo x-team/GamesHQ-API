@@ -1,8 +1,12 @@
 import Boom from '@hapi/boom';
 import type { Lifecycle } from '@hapi/hapi';
 
+import { arrayToJSON } from '../../api-utils/utils';
 import type { User } from '../../models';
-import { findAllAchievementsByGameType } from '../../models/Achievements';
+import type { AchievementUnlockedCreationAttributes } from '../../models/AchievementUnlocked';
+import { createOrUpdateAchievementUnlocked } from '../../models/AchievementUnlocked';
+import type { Achievement } from '../../models/Achievements';
+import { findAllAchievementsByGameType, findAchievementById } from '../../models/Achievements';
 import type { LeaderboardEntry } from '../../models/LeaderboardEntry';
 import { getLeaderboardById } from '../../models/LeaderboardEntry';
 import type { LeaderboardResultsCreationAttributes } from '../../models/LeaderboardResults';
@@ -11,17 +15,31 @@ import {
   getLeaderboardResultRank,
   getUserLeaderboardResult,
 } from '../../models/LeaderboardResults';
+import { ZERO } from '../../games/consts/global';
 
 // 🎮 Games
 export const getAchievementsThruWebhookHandler: Lifecycle.Method = async (request, h) => {
   const { gameType } = request.pre.webhookValidation;
   const achievements = await findAllAchievementsByGameType(gameType.id);
-  // if () {
-  //   throw Boom.forbidden('User is not the owner of the game');
-  // }
-  return h
-    .response({ achievements: achievements.map((achievement) => achievement.toJSON()) })
-    .code(200);
+
+  return h.response(arrayToJSON(achievements)).code(200);
+};
+
+export const postAchievementsProgressHandler: Lifecycle.Method = async (request, h) => {
+  const { gameType } = request.pre.webhookValidation;
+  const payload = request.pre.webhookPayload as AchievementUnlockedCreationAttributes;
+  const user = request.pre.appendUserToRequest as User;
+
+  const achievement = await validateAchievement(request.params.achievementId, gameType.id);
+
+  const [rslt] = await createOrUpdateAchievementUnlocked({
+    progress: payload.progress || ZERO,
+    isUnlocked: true, // TODO payload.progress >= achievement.targetValue will be used on future release
+    _userId: user.id,
+    _achievementId: achievement.id,
+  });
+
+  return h.response(rslt.toJSON()).code(200);
 };
 
 export const getLeaderboardRankHandler: Lifecycle.Method = async (request, h) => {
@@ -81,4 +99,17 @@ const validateLeaderboard = async (
   }
 
   return leaderboard;
+};
+
+const validateAchievement = async (
+  achievementId: number,
+  gameTypeId: number
+): Promise<Achievement> => {
+  const achievement = await findAchievementById(achievementId);
+
+  if (achievement?._gameTypeId !== gameTypeId) {
+    throw Boom.forbidden('achievement does not belong to that game');
+  }
+
+  return achievement;
 };

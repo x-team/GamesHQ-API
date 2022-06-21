@@ -3,11 +3,11 @@ import type { ServerRoute } from '@hapi/hapi';
 import { getAuthUser } from '../../api-utils/getAuthUser';
 import { CAPABILITIES } from '../../api-utils/interfaceAndTypes';
 import {
-  getAcheivementByIdResponseSchema,
-  getAcheivementsResponseSchema,
-  postAcheivementRequestSchema,
-  postAcheivementResponseSchema,
-} from '../../api-utils/schemas/gameDev/acheivementsSchemas';
+  getAchievementByIdResponseSchema,
+  getAchievementsResponseSchema,
+  postAchievementRequestSchema,
+  postAchievementResponseSchema,
+} from '../../api-utils/schemas/gameDev/achievementsSchemas';
 import {
   gamedevGenericSchema,
   multipleGamesSchema,
@@ -27,9 +27,9 @@ import {
   getLeaderboardHandler,
   upsertLeaderboardHandler,
   deleteLeaderboardHandler,
-  getAcheivementsHandler,
-  upsertAcheivementHandler,
-  deleteAcheivementHandler,
+  getAchievementsHandler,
+  upsertAchievementHandler,
+  deleteAchievementHandler,
 } from './gameDevHandlers';
 
 export const getGameTypesRoute: ServerRoute = {
@@ -211,12 +211,12 @@ export const upsertLeaderboardRoute: ServerRoute = {
   handler: upsertLeaderboardHandler,
 };
 
-//Acheivements
-export const getAcheivementsRoute: ServerRoute = {
+//Achievements
+export const getAchievementsRoute: ServerRoute = {
   method: 'GET',
-  path: '/dashboard/game-dev/games/{gameTypeId}/acheivements',
+  path: '/dashboard/game-dev/games/{gameTypeId}/achievements',
   options: {
-    description: `Get game's acheivements`,
+    description: `Get game's achievements`,
     tags: ['api'],
     bind: {
       requiredCapabilities: [CAPABILITIES.GAMEDEV_ACTIONS],
@@ -228,17 +228,17 @@ export const getAcheivementsRoute: ServerRoute = {
       },
     ],
     response: {
-      schema: getAcheivementsResponseSchema,
+      schema: getAchievementsResponseSchema,
     },
   },
-  handler: getAcheivementsHandler,
+  handler: getAchievementsHandler,
 };
 
-export const getAcheivementsByIdRoute: ServerRoute = {
+export const getAchievementsByIdRoute: ServerRoute = {
   method: 'GET',
-  path: '/dashboard/game-dev/games/{gameTypeId}/acheivements/{acheivementId}',
+  path: '/dashboard/game-dev/games/{gameTypeId}/achievements/{achievementId}',
   options: {
-    description: `Get game's acheivements`,
+    description: `Get game's achievements`,
     tags: ['api'],
     bind: {
       requiredCapabilities: [CAPABILITIES.GAMEDEV_ACTIONS],
@@ -250,17 +250,17 @@ export const getAcheivementsByIdRoute: ServerRoute = {
       },
     ],
     response: {
-      schema: getAcheivementByIdResponseSchema,
+      schema: getAchievementByIdResponseSchema,
     },
   },
-  handler: getAcheivementsHandler,
+  handler: getAchievementsHandler,
 };
 
-export const upsertAcheivementsRoute: ServerRoute = {
+export const upsertAchievementsRoute: ServerRoute = {
   method: 'POST',
-  path: '/dashboard/game-dev/games/{gameTypeId}/acheivements',
+  path: '/dashboard/game-dev/games/{gameTypeId}/achievements',
   options: {
-    description: `Add or update a game's acheivement`,
+    description: `Add or update a game's achievement`,
     tags: ['api'],
     bind: {
       requiredCapabilities: [CAPABILITIES.GAMEDEV_ACTIONS],
@@ -272,20 +272,20 @@ export const upsertAcheivementsRoute: ServerRoute = {
       },
     ],
     validate: {
-      payload: postAcheivementRequestSchema,
+      payload: postAchievementRequestSchema,
     },
     response: {
-      schema: postAcheivementResponseSchema,
+      schema: postAchievementResponseSchema,
     },
   },
-  handler: upsertAcheivementHandler,
+  handler: upsertAchievementHandler,
 };
 
-export const deleteAcheivementsRoute: ServerRoute = {
+export const deleteAchievementsRoute: ServerRoute = {
   method: 'DELETE',
-  path: '/dashboard/game-dev/games/{gameTypeId}/acheivements/{acheivementId}',
+  path: '/dashboard/game-dev/games/{gameTypeId}/achievements/{achievementId}',
   options: {
-    description: `Delete a game's acheivement`,
+    description: `Delete a game's achievement`,
     tags: ['api'],
     bind: {
       requiredCapabilities: [CAPABILITIES.GAMEDEV_ACTIONS],
@@ -300,7 +300,7 @@ export const deleteAcheivementsRoute: ServerRoute = {
       schema: gamedevGenericSchema,
     },
   },
-  handler: deleteAcheivementHandler,
+  handler: deleteAchievementHandler,
 };
 
 export const gameDevRoutes: ServerRoute[] = [
@@ -313,8 +313,8 @@ export const gameDevRoutes: ServerRoute[] = [
   getLeaderboardByIdRoute,
   upsertLeaderboardRoute,
   deleteLeaderboardRoute,
-  getAcheivementsRoute,
-  getAcheivementsByIdRoute,
-  upsertAcheivementsRoute,
-  deleteAcheivementsRoute,
+  getAchievementsRoute,
+  getAchievementsByIdRoute,
+  upsertAchievementsRoute,
+  deleteAchievementsRoute,
 ];

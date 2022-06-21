@@ -9,7 +9,7 @@ import { validateWebhookSignatures } from '../utils/cryptography';
 
 export async function webhookValidation(request: Request, _h: ResponseToolkit) {
   if (!isEmpty(request.payload) && !Buffer.isBuffer(request.payload)) {
-    throw Boom.internal('Payload is not a Buffer');
+    throw Boom.badRequest('Payload is not a Buffer');
   }
   const bodyString = request.payload ? request.payload.toString('utf-8') : '{}';
   const timestamp = Number(request.headers['xtu-request-timestamp']);
