@@ -1,7 +1,7 @@
 import { createOrUpdateEnemy, deleteEnemyById } from '../../../../models/Enemy';
 import { createEnemyPattern, existsEnemyPattern } from '../../../../models/EnemyPattern';
 import { withEnemyTransaction } from '../../../arena/utils';
-import { AbilityProperty } from '../../../classes/GameAbilities';
+import type { AbilityProperty } from '../../../classes/GameAbilities';
 
 export interface IEnemyEditorData {
   id?: number;

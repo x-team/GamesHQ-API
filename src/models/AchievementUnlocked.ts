@@ -1,4 +1,4 @@
-import { Association, Transaction } from 'sequelize';
+import type { Association, Transaction } from 'sequelize';
 import {
   Table,
   Column,
@@ -14,6 +14,7 @@ import {
 } from 'sequelize-typescript';
 
 import { ZERO } from '../games/consts/global';
+
 import { User, Achievement } from './';
 
 interface AchievementUnlockedAttributes {

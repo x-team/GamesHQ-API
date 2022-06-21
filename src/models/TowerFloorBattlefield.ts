@@ -11,8 +11,9 @@ import {
   AutoIncrement,
 } from 'sequelize-typescript';
 
-import { TowerRaider, TowerRound, TowerFloor, TowerFloorBattlefieldEnemy } from '.';
 import { ONE, ZERO } from '../games/consts/global';
+
+import { TowerRaider, TowerRound, TowerFloor, TowerFloorBattlefieldEnemy } from '.';
 
 interface TowerFloorBattlefieldAttributes {
   id: number;

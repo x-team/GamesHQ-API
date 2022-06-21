@@ -1,7 +1,9 @@
 import type { Transaction } from 'sequelize';
-import { ArenaRoundAction } from '../../../../../models';
+
+import type { ArenaRoundAction } from '../../../../../models';
 import { ARENA_ACTIONS, RING_SYSTEM_BASE_DAMAGE } from '../../../consts';
 import { publishArenaMessage } from '../../../utils';
+
 import { arenaEngineReply } from './replies';
 
 export async function processRingSystemPenalty(

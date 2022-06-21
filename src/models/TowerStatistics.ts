@@ -9,8 +9,9 @@ import {
   PrimaryKey,
 } from 'sequelize-typescript';
 
-import { User, TowerGame } from '.';
 import { ONE, ZERO } from '../games/consts/global';
+
+import { User, TowerGame } from '.';
 
 interface TowerStatisticsAttributes {
   attempts: number;

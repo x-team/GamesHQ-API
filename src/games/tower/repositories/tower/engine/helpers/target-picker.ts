@@ -1,5 +1,6 @@
 import { sampleSize } from 'lodash';
-import { Item, TowerFloorBattlefieldEnemy, TowerRaider } from '../../../../../../models';
+
+import type { Item, TowerFloorBattlefieldEnemy, TowerRaider } from '../../../../../../models';
 import { ONE, TRAIT, TWO, ZERO } from '../../../../../consts/global';
 
 type HuntableEntity = TowerFloorBattlefieldEnemy | TowerRaider;

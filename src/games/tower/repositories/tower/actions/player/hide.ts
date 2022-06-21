@@ -1,17 +1,16 @@
 import type { Transaction } from 'sequelize';
-import { User } from '../../../../../../models';
+
+import type { User } from '../../../../../../models';
 import { setRoundAction } from '../../../../../../models/TowerRoundAction';
-import { GameResponse, getGameResponse } from '../../../../../utils';
+import type { GameResponse } from '../../../../../utils';
+import { getGameResponse } from '../../../../../utils';
 import { TOWER_ACTIONS } from '../../../../consts';
 import {
   generateTowerActionsBlockKit,
   generateTowerStartRoundQuestionSection,
 } from '../../../../generators/gameplay';
-import {
-  raiderActionsAlive,
-  TowerRaiderInteraction,
-  withTowerTransaction,
-} from '../../../../utils';
+import type { TowerRaiderInteraction } from '../../../../utils';
+import { raiderActionsAlive, withTowerTransaction } from '../../../../utils';
 import { towerCommandReply } from '../../replies';
 
 export async function hideHelper(

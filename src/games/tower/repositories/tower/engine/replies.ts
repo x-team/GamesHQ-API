@@ -13,7 +13,7 @@ import {
   SPINNER_EMOJI,
   WEAPON_INVENTORY_EMOJI,
 } from '../../../../consts/emojis';
-import { DamageDealtSpecs, ITEM_RARITY } from '../../../../consts/global';
+import type { DamageDealtSpecs, ITEM_RARITY } from '../../../../consts/global';
 import {
   basicHealthDisplayInParentheses,
   generateRarityColorEmoji,

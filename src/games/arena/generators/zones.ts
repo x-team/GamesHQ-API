@@ -6,7 +6,7 @@ import type {
   SlackBlockKitLayoutElement,
   SlackBlockKitSectionLayout,
 } from '../../model/SlackBlockKit';
-import { SlackDialog } from '../../model/SlackDialogObject';
+import type { SlackDialog } from '../../model/SlackDialogObject';
 import {
   blockKitAction,
   blockKitButton,

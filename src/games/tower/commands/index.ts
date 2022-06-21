@@ -1,5 +1,5 @@
 import { logger } from '../../../config';
-import { User } from '../../../models';
+import type { User } from '../../../models';
 import { SPINNER_EMOJI } from '../../consts/emojis';
 import { getGameResponse } from '../../utils';
 import { TOWER_SLACK_COMMANDS } from '../consts';

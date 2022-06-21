@@ -1,5 +1,6 @@
 import type { Transaction } from 'sequelize';
-import { ArenaPlayer } from '../../../../../models';
+
+import type { ArenaPlayer } from '../../../../../models';
 import { Ability } from '../../../../classes/GameAbilities';
 import { ARENA_PERK } from '../../../consts';
 

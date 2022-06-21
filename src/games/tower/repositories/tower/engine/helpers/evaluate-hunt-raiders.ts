@@ -1,12 +1,15 @@
 import { random } from 'lodash';
 import type { Transaction } from 'sequelize';
-import { TowerRaider } from '../../../../../../models';
+
+import type { TowerRaider } from '../../../../../../models';
 import { perkImpactCalculator } from '../../../../../../models/Perk';
 import { ONE, TRAIT, ZERO } from '../../../../../consts/global';
 import { hasLuck } from '../../../../../utils';
-import { ENEMY_HUNT_SUCCESS_RATE, HuntPlayerParams } from '../../../../consts';
+import type { HuntPlayerParams } from '../../../../consts';
+import { ENEMY_HUNT_SUCCESS_RATE } from '../../../../consts';
 import { theTowerNotifyInPrivate } from '../../../../utils';
 import { towerEngineReply } from '../replies';
+
 import { evaluateInitiative } from './evaluate-initiative';
 import { damageSpecsGenerator } from './generate-damage-specs';
 import { targetsPicker } from './target-picker';

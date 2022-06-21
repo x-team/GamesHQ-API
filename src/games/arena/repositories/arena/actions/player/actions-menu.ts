@@ -1,12 +1,10 @@
-import { User } from '../../../../../../models';
+import type { User } from '../../../../../../models';
 import { findSinglePlayerPerformance } from '../../../../../../models/ArenaPlayerPerformance';
-import { GameResponse, getGameError, getGameResponse } from '../../../../../utils';
+import type { GameResponse } from '../../../../../utils';
+import { getGameError, getGameResponse } from '../../../../../utils';
 import { generateArenaActionsBlockKit } from '../../../../generators/gameplay';
-import {
-  PlayerActionsDeadOrAlive,
-  playerActionsParams,
-  withArenaTransaction,
-} from '../../../../utils';
+import type { PlayerActionsDeadOrAlive } from '../../../../utils';
+import { playerActionsParams, withArenaTransaction } from '../../../../utils';
 import { arenaCommandReply } from '../../replies';
 
 export async function actionsMenu(userRequesting: User) {

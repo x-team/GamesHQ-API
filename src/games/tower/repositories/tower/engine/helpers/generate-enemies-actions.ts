@@ -1,9 +1,12 @@
 import type { Transaction } from 'sequelize';
-import { TowerFloorBattlefieldEnemy, TowerRound } from '../../../../../../models';
-import { setRoundAction, TOWER_ACTIONS_TYPE } from '../../../../../../models/TowerRoundAction';
-import { GAME_ACTION_MAPPING } from '../../../../../consts/global';
+
+import type { TowerFloorBattlefieldEnemy, TowerRound } from '../../../../../../models';
+import type { TOWER_ACTIONS_TYPE } from '../../../../../../models/TowerRoundAction';
+import { setRoundAction } from '../../../../../../models/TowerRoundAction';
+import type { GAME_ACTION_MAPPING } from '../../../../../consts/global';
 import { parseSymbolToEnemyAction } from '../../../../../enemy/helpers/enemyPatterns';
-import { TOWER_ACTIONS, TOWER_ACTION_MAPPING } from '../../../../consts';
+import type { TOWER_ACTION_MAPPING } from '../../../../consts';
+import { TOWER_ACTIONS } from '../../../../consts';
 import { rollEnemyAction } from '../../../../utils';
 
 export async function generateEnemiesActions(
