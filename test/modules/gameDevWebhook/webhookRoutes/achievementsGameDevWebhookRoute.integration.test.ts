@@ -2,7 +2,7 @@ import { expect } from 'chai';
 import {
   getGameAcheivmentsRoute,
   postAchievementProgressRoute,
-} from '../../../../src/modules/gameDevWebhook/webhookRoutes/achievementsGameDevWebhookRoute';
+} from '../../../../src/modules/gameDevWebhook/webhookRoutes/achievementsGameDevWebhookRoutes';
 import { GameType, Session, Achievement, AchievementUnlocked } from '../../../../src/models';
 import { getCustomTestServer } from '../../../test-utils';
 import { signMessage } from '../../../../src/utils/cryptography';
@@ -123,8 +123,6 @@ describe('gameDevWebhooksRoutes', () => {
         await postAchievementsProgressInjectOptions(a1.id, game!, postPayload)
       );
       const payload = JSON.parse(rslt.payload);
-      console.log(rslt.result);
-
       const userAchievement = await AchievementUnlocked.findOne({ where: { _userId: 1 } });
 
       expect(rslt.statusCode).to.equal(200);

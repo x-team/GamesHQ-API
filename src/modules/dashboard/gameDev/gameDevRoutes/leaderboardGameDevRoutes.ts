@@ -15,7 +15,7 @@ import {
   getLeaderboardHandler,
   upsertLeaderboardHandler,
   deleteLeaderboardHandler,
-} from '../gameDevHandlers/leaderboardGameDevHandler';
+} from '../gameDevHandlers/leaderboardGameDevHandlers';
 
 export const getLeaderboardsRoute: ServerRoute = {
   method: 'GET',

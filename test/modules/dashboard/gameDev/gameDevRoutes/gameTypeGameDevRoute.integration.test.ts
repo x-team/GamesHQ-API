@@ -4,7 +4,7 @@ import {
   getGameTypesRoute,
   deleteGameTypeRoute,
   upsertGameTypeRoute,
-} from '../../../../../src/modules/dashboard/gameDev/gameDevRoutes/gameTypeGameDevRoute';
+} from '../../../../../src/modules/dashboard/gameDev/gameDevRoutes/gameTypeGameDevRoutes';
 import { v4 as uuid } from 'uuid';
 import { getCustomTestServer } from '../../../../test-utils';
 import { GameType, Session } from '../../../../../src/models';

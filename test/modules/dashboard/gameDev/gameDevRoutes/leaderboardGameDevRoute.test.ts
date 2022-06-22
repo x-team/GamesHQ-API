@@ -1,7 +1,7 @@
 import { expect } from 'chai';
 import { RouteOptions } from '@hapi/hapi';
 import { getLeaderboardsRoute } from '../../../../../src/modules/dashboard/gameDev/gameDevRoutes/leaderboardGameDevRoutes';
-import { getLeaderboardHandler } from '../../../../../src/modules/dashboard/gameDev/gameDevHandlers/leaderboardGameDevHandler';
+import { getLeaderboardHandler } from '../../../../../src/modules/dashboard/gameDev/gameDevHandlers/leaderboardGameDevHandlers';
 import { multipleLeaderboardSchema } from '../../../../../src/api-utils/schemas/gameDev/leaderboardSchemas';
 import { CAPABILITIES } from '../../../../../src/api-utils/interfaceAndTypes';
 import {

@@ -1,8 +1,12 @@
 import type { ServerRoute } from '@hapi/hapi';
 import Joi from 'joi';
 
+import {
+  parseSlackSlashCommandPayloadMiddleware,
+  verifySlackRequestMiddleware,
+} from '../../api-utils/midddleware';
+
 import { slackCommandHandler, testRouteHandler } from './slackHandlers';
-import { parseSlashCommandPayload, verifySlackRequest } from './utils';
 
 export const slackRoutes: ServerRoute[] = [
   {
@@ -65,16 +69,7 @@ export const slackRoutes: ServerRoute[] = [
       response: {
         emptyStatusCode: 200,
       },
-      pre: [
-        {
-          method: verifySlackRequest,
-          assign: 'verifySlackRequest',
-        },
-        {
-          method: parseSlashCommandPayload,
-          assign: 'slashCommandPayload',
-        },
-      ],
+      pre: [verifySlackRequestMiddleware, parseSlackSlashCommandPayloadMiddleware],
     },
     handler: slackCommandHandler,
   },

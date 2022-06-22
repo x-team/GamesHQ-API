@@ -16,7 +16,7 @@ import {
   getAchievementsHandler,
   upsertAchievementHandler,
   deleteAchievementHandler,
-} from '../gameDevHandlers/achievementGameDevHandler';
+} from '../gameDevHandlers/achievementGameDevHandlers';
 
 //Achievements
 export const getAchievementsRoute: ServerRoute = {

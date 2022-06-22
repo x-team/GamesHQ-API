@@ -5,19 +5,19 @@ import {
   getAchievementsRoute,
   upsertAchievementsRoute,
   deleteAchievementsRoute,
-} from './achievementGameDevRoute';
+} from './gameDevRoutes/achievementGameDevRoutes';
 import {
   getGameTypeByIdRoute,
   getGameTypesRoute,
   deleteGameTypeRoute,
   upsertGameTypeRoute,
-} from './gameTypeGameDevRoute';
+} from './gameDevRoutes/gameTypeGameDevRoutes';
 import {
   getLeaderboardByIdRoute,
   getLeaderboardsRoute,
   deleteLeaderboardRoute,
   upsertLeaderboardRoute,
-} from './leaderboardGameDevRoutes';
+} from './gameDevRoutes/leaderboardGameDevRoutes';
 
 export const gameDevRoutes: ServerRoute[] = [
   //achievements

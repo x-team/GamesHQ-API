@@ -1,16 +1,17 @@
 import type { ServerRoute } from '@hapi/hapi';
 
 import {
+  parseSlackSlashCommandPayloadMiddleware,
+  parseSlackEventPayloadMiddleware,
+  parseSlackActionPayloadMiddleware,
+  verifySlackRequestMiddleware,
+} from '../../api-utils/midddleware';
+
+import {
   slackCommandHandler,
   towerSlackActionHandler,
   towerSlackEventHandler,
 } from './slackHandlers';
-import {
-  parseSlackActionPayload,
-  parseSlackEventPayload,
-  parseSlashCommandPayload,
-  verifySlackRequest,
-} from './utils';
 
 const routePrefix = '/slack-integrations/';
 
@@ -29,16 +30,7 @@ export const slackTowerRoutes: ServerRoute[] = [
       response: {
         emptyStatusCode: 200,
       },
-      pre: [
-        {
-          method: verifySlackRequest,
-          assign: 'verifySlackRequest',
-        },
-        {
-          method: parseSlashCommandPayload,
-          assign: 'slashCommandPayload',
-        },
-      ],
+      pre: [verifySlackRequestMiddleware, parseSlackSlashCommandPayloadMiddleware],
     },
     handler: slackCommandHandler,
   },
@@ -56,16 +48,7 @@ export const slackTowerRoutes: ServerRoute[] = [
       response: {
         emptyStatusCode: 200,
       },
-      pre: [
-        {
-          method: verifySlackRequest,
-          assign: 'verifySlackRequest',
-        },
-        {
-          method: parseSlackActionPayload,
-          assign: 'slackActionPayload',
-        },
-      ],
+      pre: [verifySlackRequestMiddleware, parseSlackActionPayloadMiddleware],
     },
     handler: towerSlackActionHandler,
   },
@@ -83,16 +66,7 @@ export const slackTowerRoutes: ServerRoute[] = [
       response: {
         emptyStatusCode: 200,
       },
-      pre: [
-        {
-          method: verifySlackRequest,
-          assign: 'verifySlackRequest',
-        },
-        {
-          method: parseSlackEventPayload,
-          assign: 'slackActionPayload',
-        },
-      ],
+      pre: [verifySlackRequestMiddleware, parseSlackEventPayloadMiddleware],
     },
     handler: towerSlackEventHandler,
   },

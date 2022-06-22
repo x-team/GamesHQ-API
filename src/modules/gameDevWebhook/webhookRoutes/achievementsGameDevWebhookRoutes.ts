@@ -4,7 +4,7 @@ import {
   webhookValidationMiddleware,
   appendUserToRequestMiddleware,
   parseWebhookPayloadMiddleware,
-} from '../../../api-utils/midddleware/';
+} from '../../../api-utils/midddleware';
 import {
   postAchievementProgressResponseSchema,
   postAchievementProgressRequestSchema,
@@ -12,7 +12,7 @@ import {
 import {
   getAchievementsThruWebhookHandler,
   postAchievementsProgressHandler,
-} from '../webhookHandlers/achievementsGameDevWebhookHandler';
+} from '../webhookHandlers/achievementsGameDevWebhookHandlers';
 
 export const getGameAcheivmentsRoute: ServerRoute = {
   method: 'GET',

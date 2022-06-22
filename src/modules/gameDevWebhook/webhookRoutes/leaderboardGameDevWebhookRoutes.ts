@@ -4,7 +4,7 @@ import {
   webhookValidationMiddleware,
   appendUserToRequestMiddleware,
   parseWebhookPayloadMiddleware,
-} from '../../../api-utils/midddleware/';
+} from '../../../api-utils/midddleware';
 import {
   getLeaderboardRankResponseSchema,
   getUserLeaderboardResultScoreResponseSchema,
@@ -15,7 +15,7 @@ import {
   getUserLeaderboardResultHandler,
   postLeaderboardResultHandler,
   getLeaderboardRankHandler,
-} from '../webhookHandlers/leaderboardGameDevWebhookHandler';
+} from '../webhookHandlers/leaderboardGameDevWebhookHandlers';
 
 export const getGameLeaderboardResultRoute: ServerRoute = {
   method: 'GET',

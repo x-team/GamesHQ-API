@@ -3,7 +3,7 @@ import {
   getGameLeaderboardResultRoute,
   getUserLeaderboardResultRoute,
   postLeaderboardResultRoute,
-} from '../../../../src/modules/gameDevWebhook/webhookRoutes/leaderboardGameDevWebhookRoute';
+} from '../../../../src/modules/gameDevWebhook/webhookRoutes/leaderboardGameDevWebhookRoutes';
 import { GameType, LeaderboardEntry, LeaderboardResults, Session } from '../../../../src/models';
 import { getCustomTestServer, createTestUser } from '../../../test-utils';
 import { signMessage } from '../../../../src/utils/cryptography';

@@ -3,12 +3,12 @@ import type { ServerRoute } from '@hapi/hapi';
 import {
   getGameAcheivmentsRoute,
   postAchievementProgressRoute,
-} from './achievementsGameDevWebhookRoute';
+} from './webhookRoutes/achievementsGameDevWebhookRoutes';
 import {
   getGameLeaderboardResultRoute,
   getUserLeaderboardResultRoute,
   postLeaderboardResultRoute,
-} from './leaderboardGameDevWebhookRoute';
+} from './webhookRoutes/leaderboardGameDevWebhookRoutes';
 
 export const gameDevWebhookRoutes: ServerRoute[] = [
   //achievements

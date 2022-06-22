@@ -16,7 +16,7 @@ import {
   getGameTypeHandler,
   getGameTypesHandler,
   upsertGameTypeHandler,
-} from '../gameDevHandlers/gameTypeGameDevHandler';
+} from '../gameDevHandlers/gameTypeGameDevHandlers';
 
 export const getGameTypesRoute: ServerRoute = {
   method: 'GET',

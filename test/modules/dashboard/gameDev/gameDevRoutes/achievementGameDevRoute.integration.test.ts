@@ -4,7 +4,7 @@ import {
   getAchievementsRoute,
   upsertAchievementsRoute,
   deleteAchievementsRoute,
-} from '../../../../../src/modules/dashboard/gameDev/gameDevRoutes/achievementGameDevRoute';
+} from '../../../../../src/modules/dashboard/gameDev/gameDevRoutes/achievementGameDevRoutes';
 import { Achievement, Session } from '../../../../../src/models';
 import { v4 as uuid } from 'uuid';
 import { createTestUser, getCustomTestServer } from '../../../../test-utils';

@@ -46,6 +46,10 @@ function getGameTypeId(request: Request): number | undefined {
     return request.params.gameTypeId;
   }
 
+  if (!request.payload) {
+    return;
+  }
+
   switch (typeof request.payload) {
     case 'string':
       return JSON.parse(request.payload).id;
