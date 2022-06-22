@@ -12,40 +12,44 @@ An API to handle most of the things related to XTeam Games. With this API a game
 
 The Admin Panel (Frontend APP) is connected to this API allowing XTeam admins to run games on Slack (like The Tower and The Arena) and the rest of the things a regular game dev can do.
 
-## Contents
+## 📑Contents
 
-* [Tech Stack](#tech-stack)
-* [Requirements](#requirements)
-* [Project](#project)
-	* [Database](#database)
-    	* [New Migration](#new-migration)
-    * [Environmental Variables](#environmental-variables)
-    * [API](#api)
-    	* [API Documentation](#api-documentation)
-* [How to contribute](#how-to-contribute)
-	* [JIRA](#jira)
-    * [Commits](#commits)
-    * [Pull Requests](#pull-requests)
-* [Continous Integration](#continous-integration)
-* [Documentation](#documentation)
+- [Tech Stack](#tech-stack)
+- [Requirements](#requirements)
+- [Project](#project)
+  - [Database](#database) \* [New Migration](#new-migration)
+    - [Environmental Variables](#environmental-variables)
+    - [API](#api)
+      - [API Documentation](#api-documentation)
+- [How to contribute](#how-to-contribute)
+  - [JIRA](#jira)
+    - [Commits](#commits)
+    - [Pull Requests](#pull-requests)
+- [Continous Integration](#continous-integration)
+- [Confluence Documentation](#confluence-documentation)
 
 ## 📦Tech Stack
-* [Node.js](https://nodejs.org/)
-* [Hapi](https://hapi.dev/)
-* [Sequelize v5](https://sequelize.org/v5/)
-* [PostgreSQL](https://www.postgresql.org/)
-* [TypeScript](https://www.typescriptlang.org/)
-* [Mocha](https://mochajs.org/) - [Chai](https://www.chaijs.com/) - [Sinon](https://sinonjs.org/)
-- [Swagger](https://swagger.io/)
+
+- [Node.js](https://nodejs.org/)
+- [Hapi](https://hapi.dev/)
+- [Sequelize v5](https://sequelize.org/v5/)
+- [PostgreSQL](https://www.postgresql.org/)
+- [TypeScript](https://www.typescriptlang.org/)
+- [Mocha](https://mochajs.org/) - [Chai](https://www.chaijs.com/) - [Sinon](https://sinonjs.org/)
+
+* [Swagger](https://swagger.io/)
 
 ## 🔎Requirements
-* [Docker](https://www.docker.com/)
-* [NVM - Node Version Manager](https://github.com/nvm-sh/nvm)
+
+- [Docker](https://www.docker.com/)
+- [NVM - Node Version Manager](https://github.com/nvm-sh/nvm)
 
 ## 🚀Project
+
 Let's setup the project!🥹
 
 ### **📟Database**
+
 Spin up the containers by running one of these two commands:
 
 ```bash
@@ -54,7 +58,11 @@ docker-compose up -d
 
 You can now access the DB with your favorite client. If you don't use any, we recommend you [OmniDB](https://github.com/OmniDB/OmniDB)
 
+Here's an example of the OmniDB client with the project DB running.
+![Omni DB example](https://i.imgur.com/sJ4DULF.gif)
+
 #### **🆕New Migration**
+
 Create a new migration file running: `npm run db:migrate:add some-new-table-name`.
 
 Change the extension of the created file from `.js` to `.ts`.
@@ -73,18 +81,13 @@ interface SequelizeContext {
 
 module.exports = {
   async up({ context: { queryInterface } }: SequelizeContext) {
-    return queryInterface.sequelize.transaction(async (transaction) => {
-    
-    });
+    return queryInterface.sequelize.transaction(async (transaction) => {});
   },
 
   async down({ context: { queryInterface } }: SequelizeContext) {
-    return queryInterface.sequelize.transaction(async (transaction) => {
-    
-    });
+    return queryInterface.sequelize.transaction(async (transaction) => {});
   },
 };
-
 ```
 
 Implement those two functions. `up` is the migration and `down` is the reverse of it. For example, in order to add a new column `isEnabled` to the `Game` table:
@@ -102,13 +105,18 @@ interface SequelizeContext {
 module.exports = {
   async up({ context: { queryInterface } }: SequelizeContext) {
     return queryInterface.sequelize.transaction(async (transaction) => {
-    	await queryInterface.addColumn('Game', 'isEnabled', { type: Sequelize.BOOLEAN }, { transaction });
+      await queryInterface.addColumn(
+        'Game',
+        'isEnabled',
+        { type: Sequelize.BOOLEAN },
+        { transaction }
+      );
     });
   },
 
   async down({ context: { queryInterface } }: SequelizeContext) {
     return queryInterface.sequelize.transaction(async (transaction) => {
-    	await queryInterface.removeColumn('Game', 'isEnabled', { transaction });
+      await queryInterface.removeColumn('Game', 'isEnabled', { transaction });
     });
   },
 };
@@ -117,7 +125,7 @@ module.exports = {
 Now modify the model class, `Game.ts` in this case, and add a new field:
 
 ```typescript
-export class Game extends  Model<GameAttributes, GameCreationAttributes> {
+export class Game extends Model<GameAttributes, GameCreationAttributes> {
   @AllowNull(false)
   @Column(DataType.BOOLEAN)
   declare isEnabled: boolean;
@@ -136,9 +144,11 @@ You're all set! Make sure everything works locally before pushing or merging.
 **Never ever modify any past migrations.** If a migration was created and deployed, you can't ever change it. If you need to modify it, just create a new migration which will run after the previous one.
 
 ### **🔒Environmental Variables**
+
 The API needs some env vars to work properly. You can ask @ccmoralesj for this.
 
 Just grab the `.env.example` file and copy everything into a new file called `.env.dev`. It will look something like this at first.
+
 ```
 # API
 HOST=0.0.0.0
@@ -175,7 +185,7 @@ FRONT_END_SIGNING_SECRET=
 # COOKIE
 COOKIE_PASSWORD=
 
-# GOOGLE API CREDS 
+# GOOGLE API CREDS
 GOOGLE_APPLICATION_CLIENT_ID=
 GOOGLE_APPLICATION_CLIENT_SECRET=
 GOOGLE_APPLICATION_CLIENT_RANDOM_PASSWORD=
@@ -183,7 +193,9 @@ GOOGLE_APPLICATION_CLIENT_RANDOM_PASSWORD=
 # FIREBASE
 GOOGLE_APPLICATION_CREDENTIALS=/some/path/to/google_credentials_games_api.json
 ```
+
 ### **🖥️API**
+
 We are almost there with the setup.🥲 Now it's time to run the API
 
 First, make sure you're using our recommended version of Node and yarn by running these commands:
@@ -209,16 +221,27 @@ The API should be up and running 🎉at port 3000!🎉 You can verify by browsin
 
 Let's start coding!🤓
 
+(GIF: Wait for it...)
+![API running](https://i.imgur.com/juYHy6J.gif)
+
 #### **API Documentation**
+
 Documentation is auto-generated based on the Joi validation provided. You can access it at [`/documentation`](https://xhq-api.x-team.com/documentation).
 
+![Documentation Snapshot](https://i.imgur.com/hNrg7Iy.gif)
+
 ## 🫂How to contribute
+
 Collaborate in this repo is quite easy.
+
 ### 📊JIRA
+
 You only need to pick up a ticket from the [JIRA board](https://x-team-internal.atlassian.net/jira/software/c/projects/XTG/boards/48) (If you don't have access you can ask @ccmoralesj)
 
 Each JIRA ticket has an identifier based on a code and a number like XTG-123 which you will use later.
+
 ### 💾Commits
+
 Each commit you do needs to have the JIRA ticket identifier so it can be related to the board.
 
 You can use this commit format suggestion.
@@ -228,7 +251,7 @@ You can use this commit format suggestion.
 ```
 
 | **Emoji** | **Description**                         |
-|-----------|-----------------------------------------|
+| --------- | --------------------------------------- |
 | **🚀**    | New features, or enhancements to code   |
 | **🐞**    | Bug fixes                               |
 | **⚙️**    | Refactors                               |
@@ -236,8 +259,10 @@ You can use this commit format suggestion.
 | **🔎**    | Minor fixes, typos, imports, etc        |
 | **🪄**    | Others                                  |
 
+![Commit Example](https://i.imgur.com/gClC6CV.gif)
 
 ### 🕵🏻Pull Requests
+
 Once you're ready. You can create a new Pull Request (PR) by adding the JIRA ticket identifier in the title. The repo will give you a template to fill in the details of your amazing work!
 
 You can use this PR title format suggestion.
@@ -249,11 +274,13 @@ XTG-123: Login
 You'll need at least 1 review from your teammates to merge the pull request.
 
 ## 🪄Continous Integration
+
 This project is connected to an EC2 instance from AWS.
 
 All code from `main` branch will be deployed to staging.
 
 To **deploy to production** you must create a `new release` and follow the [semantic versioning](https://semver.org/lang/es/) fundamentals. That will trigger an automated deployment to **production**.
 
-## 🪄Documentation
+## 📰Confluence Documentation
+
 Some further information can be found on the X-team GamesHQ API [Confluence page](https://x-team-internal.atlassian.net/wiki/spaces/XTG/pages/2300706828/GamesHQ+API)
