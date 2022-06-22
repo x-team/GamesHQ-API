@@ -1,6 +1,6 @@
 {
   "name": "gameshq-api",
-  "version": "1.0.0",
+  "version": "1.6.0",
   "description": "Headquarters of all the things XTeam games",
   "main": "index.js",
   "scripts": {
