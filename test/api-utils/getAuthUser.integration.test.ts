@@ -1,6 +1,6 @@
 import { expect } from 'chai';
 import type { Request, ResponseToolkit } from '@hapi/hapi';
-import { getAuthUser } from '../../src/api-utils/getAuthUser';
+import { getAuthUser } from '../../src/api-utils/midddleware/getAuthUser';
 import { Session } from '../../src/models';
 import { v4 as uuid } from 'uuid';
 import { fail } from 'assert';

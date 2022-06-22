@@ -4,7 +4,10 @@ import { getLeaderboardsRoute } from '../../../../../src/modules/dashboard/gameD
 import { getLeaderboardHandler } from '../../../../../src/modules/dashboard/gameDev/gameDevHandlers/leaderboardGameDevHandler';
 import { multipleLeaderboardSchema } from '../../../../../src/api-utils/schemas/gameDev/leaderboardSchemas';
 import { CAPABILITIES } from '../../../../../src/api-utils/interfaceAndTypes';
-import { getAuthUser } from '../../../../../src/api-utils/getAuthUser';
+import {
+  getAuthUserMiddleware,
+  validateGameAuthMiddleware,
+} from '../../../../../src/api-utils/midddleware';
 
 describe('getLeaderboardRoute', async () => {
   it('should be configured as expected', async () => {
@@ -16,10 +19,8 @@ describe('getLeaderboardRoute', async () => {
       requiredCapabilities: [CAPABILITIES.GAMEDEV_ACTIONS],
     });
     expect((getLeaderboardsRoute.options as RouteOptions).pre).to.deep.equal([
-      {
-        method: getAuthUser,
-        assign: 'getAuthUser',
-      },
+      getAuthUserMiddleware,
+      validateGameAuthMiddleware,
     ]);
     expect((getLeaderboardsRoute.options as RouteOptions).response?.schema).to.equal(
       multipleLeaderboardSchema

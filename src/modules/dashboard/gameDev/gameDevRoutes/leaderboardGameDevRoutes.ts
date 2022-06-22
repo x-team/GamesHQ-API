@@ -1,8 +1,11 @@
 import type { ServerRoute } from '@hapi/hapi';
 
-import { getAuthUser } from '../../../../api-utils/getAuthUser';
 import { CAPABILITIES } from '../../../../api-utils/interfaceAndTypes';
-import { gamedevGenericSchema } from '../../../../api-utils/schemas/gameDev/game';
+import {
+  getAuthUserMiddleware,
+  validateGameAuthMiddleware,
+} from '../../../../api-utils/midddleware';
+import { gamedevGenericSchema } from '../../../../api-utils/schemas/gameDev/gameTypeSchema';
 import {
   leaderboardSchema,
   multipleLeaderboardSchema,
@@ -23,12 +26,7 @@ export const getLeaderboardsRoute: ServerRoute = {
     bind: {
       requiredCapabilities: [CAPABILITIES.GAMEDEV_ACTIONS],
     },
-    pre: [
-      {
-        method: getAuthUser,
-        assign: 'getAuthUser',
-      },
-    ],
+    pre: [getAuthUserMiddleware, validateGameAuthMiddleware],
     response: {
       schema: multipleLeaderboardSchema,
     },
@@ -45,12 +43,7 @@ export const getLeaderboardByIdRoute: ServerRoute = {
     bind: {
       requiredCapabilities: [CAPABILITIES.GAMEDEV_ACTIONS],
     },
-    pre: [
-      {
-        method: getAuthUser,
-        assign: 'getAuthUser',
-      },
-    ],
+    pre: [getAuthUserMiddleware, validateGameAuthMiddleware],
     response: {
       schema: leaderboardSchema,
     },
@@ -67,12 +60,7 @@ export const deleteLeaderboardRoute: ServerRoute = {
     bind: {
       requiredCapabilities: [CAPABILITIES.GAMEDEV_ACTIONS],
     },
-    pre: [
-      {
-        method: getAuthUser,
-        assign: 'getAuthUser',
-      },
-    ],
+    pre: [getAuthUserMiddleware, validateGameAuthMiddleware],
     response: {
       schema: gamedevGenericSchema,
     },
@@ -89,12 +77,7 @@ export const upsertLeaderboardRoute: ServerRoute = {
     bind: {
       requiredCapabilities: [CAPABILITIES.GAMEDEV_ACTIONS],
     },
-    pre: [
-      {
-        method: getAuthUser,
-        assign: 'getAuthUser',
-      },
-    ],
+    pre: [getAuthUserMiddleware, validateGameAuthMiddleware],
     validate: {
       payload: postLeaderboardSchema,
     },

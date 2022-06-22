@@ -2,7 +2,7 @@ import Boom from '@hapi/boom';
 import type { Lifecycle } from '@hapi/hapi';
 
 import { arrayToJSON } from '../../../../api-utils/utils';
-import { validateGameAuth } from '../../../../api-utils/validateGameAuth';
+import type { GameType } from '../../../../models';
 import type { AchievementEditorData } from '../../../../models/Achievements';
 import {
   findAllAchievementsByGameType,
@@ -12,8 +12,6 @@ import {
 } from '../../../../models/Achievements';
 
 export const getAchievementsHandler: Lifecycle.Method = async (request, h) => {
-  await validateGameAuth(request.pre.getAuthUser.id, request.params.gameTypeId);
-
   if (request.params.achievementId) {
     const achievement = await getAchievementByCreator(
       request.params.achievementId,
@@ -34,8 +32,7 @@ export const getAchievementsHandler: Lifecycle.Method = async (request, h) => {
 
 export const upsertAchievementHandler: Lifecycle.Method = async (request, h) => {
   const payload = request.payload as AchievementEditorData;
-
-  const game = await validateGameAuth(request.pre.getAuthUser.id, request.params.gameTypeId);
+  const game = request.pre.game as GameType;
 
   if (payload.id && game && !game._achievements?.map((a) => a.id).includes(payload.id)) {
     throw Boom.forbidden(`achievement does not belong to gametypeId ${request.params.gameTypeId}`);
@@ -47,8 +44,6 @@ export const upsertAchievementHandler: Lifecycle.Method = async (request, h) => 
 };
 
 export const deleteAchievementHandler: Lifecycle.Method = async (request, h) => {
-  await validateGameAuth(request.pre.getAuthUser.id, request.params.gameTypeId);
-
   const rslt = await deleteAchievementById(request.params.achievementId);
 
   if (!rslt) {

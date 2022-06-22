@@ -1,14 +1,16 @@
 import type { ServerRoute } from '@hapi/hapi';
 
-import { appendUserToRequest } from '../../../api-utils/appendUserToRequest';
+import {
+  webhookValidationMiddleware,
+  appendUserToRequestMiddleware,
+  parseWebhookPayloadMiddleware,
+} from '../../../api-utils/midddleware/';
 import {
   getLeaderboardRankResponseSchema,
   getUserLeaderboardResultScoreResponseSchema,
   postLeaderboardResultScoreResquestSchema,
   postLeaderboardResultScoreResponseSchema,
 } from '../../../api-utils/schemas/gameDev/leaderboardSchemas';
-import { webhookValidation } from '../../../api-utils/webhookValidations';
-import { parseWebhookPayload } from '../utils';
 import {
   getUserLeaderboardResultHandler,
   postLeaderboardResultHandler,
@@ -24,12 +26,7 @@ export const getGameLeaderboardResultRoute: ServerRoute = {
     response: {
       schema: getLeaderboardRankResponseSchema,
     },
-    pre: [
-      {
-        method: webhookValidation,
-        assign: 'webhookValidation',
-      },
-    ],
+    pre: [webhookValidationMiddleware],
   },
   handler: getLeaderboardRankHandler,
 };
@@ -43,16 +40,7 @@ export const getUserLeaderboardResultRoute: ServerRoute = {
     response: {
       schema: getUserLeaderboardResultScoreResponseSchema,
     },
-    pre: [
-      {
-        method: webhookValidation,
-        assign: 'webhookValidation',
-      },
-      {
-        method: appendUserToRequest,
-        assign: 'appendUserToRequest',
-      },
-    ],
+    pre: [webhookValidationMiddleware, appendUserToRequestMiddleware],
   },
   handler: getUserLeaderboardResultHandler,
 };
@@ -71,18 +59,9 @@ export const postLeaderboardResultRoute: ServerRoute = {
       schema: postLeaderboardResultScoreResponseSchema,
     },
     pre: [
-      {
-        method: webhookValidation,
-        assign: 'webhookValidation',
-      },
-      {
-        method: parseWebhookPayload(postLeaderboardResultScoreResquestSchema),
-        assign: 'webhookPayload',
-      },
-      {
-        method: appendUserToRequest,
-        assign: 'appendUserToRequest',
-      },
+      webhookValidationMiddleware,
+      parseWebhookPayloadMiddleware(postLeaderboardResultScoreResquestSchema),
+      appendUserToRequestMiddleware,
     ],
   },
   handler: postLeaderboardResultHandler,

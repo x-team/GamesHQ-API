@@ -1,9 +1,9 @@
 import Boom from '@hapi/boom';
 import type { Request, ResponseToolkit } from '@hapi/hapi';
 
-import { findSessionByToken } from '../models/Session';
-import type { User } from '../models/User';
-import { findUserById } from '../models/User';
+import { findSessionByToken } from '../../models/Session';
+import type { User } from '../../models/User';
+import { findUserById } from '../../models/User';
 
 export async function appendUserToRequest(req: Request, _h: ResponseToolkit): Promise<User> {
   const sessionToken = req.headers['xtu-session-token'];

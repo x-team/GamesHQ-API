@@ -1,12 +1,11 @@
 import Boom from '@hapi/boom';
 import type { Request, ResponseToolkit } from '@hapi/hapi';
 
-import { ZERO } from '../games/consts/global';
-import { findSessionByToken } from '../models/Session';
-import type { User } from '../models/User';
-import { findUserById } from '../models/User';
-
-import type { CustomRequestThis } from './interfaceAndTypes';
+import { ZERO } from '../../games/consts/global';
+import { findSessionByToken } from '../../models/Session';
+import type { User } from '../../models/User';
+import { findUserById } from '../../models/User';
+import type { CustomRequestThis } from '../interfaceAndTypes';
 
 export async function getAuthUser(
   this: CustomRequestThis,

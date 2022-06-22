@@ -2,7 +2,7 @@ import Boom from '@hapi/boom';
 import type { Lifecycle } from '@hapi/hapi';
 
 import { arrayToJSON } from '../../../../api-utils/utils';
-import { validateGameAuth } from '../../../../api-utils/validateGameAuth';
+import type { GameType } from '../../../../models';
 import type { LeaderboardEntryCreationAttributes } from '../../../../models/LeaderboardEntry';
 import {
   getLeaderBoardsByGameType,
@@ -12,8 +12,6 @@ import {
 } from '../../../../models/LeaderboardEntry';
 
 export const getLeaderboardHandler: Lifecycle.Method = async (request, h) => {
-  await validateGameAuth(request.pre.getAuthUser.id, request.params.gameTypeId);
-
   if (request.params.leaderboardId) {
     const leaderboard = await getLeaderBoardByCreator(
       request.params.leaderboardId,
@@ -34,8 +32,7 @@ export const getLeaderboardHandler: Lifecycle.Method = async (request, h) => {
 
 export const upsertLeaderboardHandler: Lifecycle.Method = async (request, h) => {
   const payload = request.payload as LeaderboardEntryCreationAttributes;
-
-  const game = await validateGameAuth(request.pre.getAuthUser.id, request.params.gameTypeId);
+  const game = request.pre.game as GameType;
 
   if (payload.id && game && !game._leaderboards?.map((l) => l.id).includes(payload.id)) {
     throw Boom.forbidden(`leaderboard does not belong to gametypeId ${request.params.gameTypeId}`);
@@ -53,8 +50,6 @@ export const upsertLeaderboardHandler: Lifecycle.Method = async (request, h) => 
 };
 
 export const deleteLeaderboardHandler: Lifecycle.Method = async (request, h) => {
-  await validateGameAuth(request.pre.getAuthUser.id, request.params.gameTypeId);
-
   const rslt = await deleteLeaderboardById(request.params.leaderboardId);
 
   if (!rslt) {

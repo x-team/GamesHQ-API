@@ -1,12 +1,14 @@
 import type { ServerRoute } from '@hapi/hapi';
 
-import { appendUserToRequest } from '../../../api-utils/appendUserToRequest';
+import {
+  webhookValidationMiddleware,
+  appendUserToRequestMiddleware,
+  parseWebhookPayloadMiddleware,
+} from '../../../api-utils/midddleware/';
 import {
   postAchievementProgressResponseSchema,
   postAchievementProgressRequestSchema,
 } from '../../../api-utils/schemas/gameDev/achievementsSchemas';
-import { webhookValidation } from '../../../api-utils/webhookValidations';
-import { parseWebhookPayload } from '../utils';
 import {
   getAchievementsThruWebhookHandler,
   postAchievementsProgressHandler,
@@ -18,12 +20,7 @@ export const getGameAcheivmentsRoute: ServerRoute = {
   options: {
     description: 'Get All the achievements related to a gameType',
     tags: ['api'],
-    pre: [
-      {
-        method: webhookValidation,
-        assign: 'webhookValidation',
-      },
-    ],
+    pre: [webhookValidationMiddleware],
   },
   handler: getAchievementsThruWebhookHandler,
 };
@@ -42,18 +39,9 @@ export const postAchievementProgressRoute: ServerRoute = {
       schema: postAchievementProgressResponseSchema,
     },
     pre: [
-      {
-        method: webhookValidation,
-        assign: 'webhookValidation',
-      },
-      {
-        method: parseWebhookPayload(postAchievementProgressRequestSchema),
-        assign: 'webhookPayload',
-      },
-      {
-        method: appendUserToRequest,
-        assign: 'appendUserToRequest',
-      },
+      webhookValidationMiddleware,
+      parseWebhookPayloadMiddleware(postAchievementProgressRequestSchema),
+      appendUserToRequestMiddleware,
     ],
   },
   handler: postAchievementsProgressHandler,

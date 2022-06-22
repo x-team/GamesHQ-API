@@ -1,7 +1,7 @@
 import type { ServerRoute } from '@hapi/hapi';
 
-import { getAuthUser } from '../../../api-utils/getAuthUser';
 import { CAPABILITIES } from '../../../api-utils/interfaceAndTypes';
+import { getAuthUser } from '../../../api-utils/midddleware/getAuthUser';
 
 import {
   getCurrentArenaGameState,

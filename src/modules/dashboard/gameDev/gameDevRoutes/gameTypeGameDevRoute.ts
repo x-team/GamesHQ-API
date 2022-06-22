@@ -1,12 +1,16 @@
 import type { ServerRoute } from '@hapi/hapi';
 
-import { getAuthUser } from '../../../../api-utils/getAuthUser';
 import { CAPABILITIES } from '../../../../api-utils/interfaceAndTypes';
+import {
+  getAuthUserMiddleware,
+  validateGameAuthMiddleware,
+} from '../../../../api-utils/midddleware';
 import {
   gamedevGenericSchema,
   multipleGamesSchema,
   sigleGameItemSchema,
-} from '../../../../api-utils/schemas/gameDev/game';
+  upsertGameTypeSchema,
+} from '../../../../api-utils/schemas/gameDev/gameTypeSchema';
 import {
   deleteGameTypeHandler,
   getGameTypeHandler,
@@ -23,12 +27,7 @@ export const getGameTypesRoute: ServerRoute = {
     bind: {
       requiredCapabilities: [CAPABILITIES.GAMEDEV_ACTIONS],
     },
-    pre: [
-      {
-        method: getAuthUser,
-        assign: 'getAuthUser',
-      },
-    ],
+    pre: [getAuthUserMiddleware, validateGameAuthMiddleware],
     response: {
       schema: multipleGamesSchema,
     },
@@ -45,12 +44,7 @@ export const getGameTypeByIdRoute: ServerRoute = {
     bind: {
       requiredCapabilities: [CAPABILITIES.GAMEDEV_ACTIONS],
     },
-    pre: [
-      {
-        method: getAuthUser,
-        assign: 'getAuthUser',
-      },
-    ],
+    pre: [getAuthUserMiddleware, validateGameAuthMiddleware],
     response: {
       schema: sigleGameItemSchema,
     },
@@ -67,12 +61,10 @@ export const upsertGameTypeRoute: ServerRoute = {
     bind: {
       requiredCapabilities: [CAPABILITIES.GAMEDEV_ACTIONS],
     },
-    pre: [
-      {
-        method: getAuthUser,
-        assign: 'getAuthUser',
-      },
-    ],
+    pre: [getAuthUserMiddleware, validateGameAuthMiddleware],
+    validate: {
+      payload: upsertGameTypeSchema,
+    },
     response: {
       schema: gamedevGenericSchema,
     },
@@ -89,12 +81,7 @@ export const deleteGameTypeRoute: ServerRoute = {
     bind: {
       requiredCapabilities: [CAPABILITIES.GAMEDEV_ACTIONS],
     },
-    pre: [
-      {
-        method: getAuthUser,
-        assign: 'getAuthUser',
-      },
-    ],
+    pre: [getAuthUserMiddleware, validateGameAuthMiddleware],
     response: {
       schema: gamedevGenericSchema,
     },

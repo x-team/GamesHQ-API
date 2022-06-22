@@ -1,14 +1,17 @@
 import type { ServerRoute } from '@hapi/hapi';
 
-import { getAuthUser } from '../../../../api-utils/getAuthUser';
 import { CAPABILITIES } from '../../../../api-utils/interfaceAndTypes';
+import {
+  getAuthUserMiddleware,
+  validateGameAuthMiddleware,
+} from '../../../../api-utils/midddleware';
 import {
   getAchievementByIdResponseSchema,
   getAchievementsResponseSchema,
   postAchievementRequestSchema,
   postAchievementResponseSchema,
 } from '../../../../api-utils/schemas/gameDev/achievementsSchemas';
-import { gamedevGenericSchema } from '../../../../api-utils/schemas/gameDev/game';
+import { gamedevGenericSchema } from '../../../../api-utils/schemas/gameDev/gameTypeSchema';
 import {
   getAchievementsHandler,
   upsertAchievementHandler,
@@ -25,12 +28,7 @@ export const getAchievementsRoute: ServerRoute = {
     bind: {
       requiredCapabilities: [CAPABILITIES.GAMEDEV_ACTIONS],
     },
-    pre: [
-      {
-        method: getAuthUser,
-        assign: 'getAuthUser',
-      },
-    ],
+    pre: [getAuthUserMiddleware, validateGameAuthMiddleware],
     response: {
       schema: getAchievementsResponseSchema,
     },
@@ -47,12 +45,7 @@ export const getAchievementsByIdRoute: ServerRoute = {
     bind: {
       requiredCapabilities: [CAPABILITIES.GAMEDEV_ACTIONS],
     },
-    pre: [
-      {
-        method: getAuthUser,
-        assign: 'getAuthUser',
-      },
-    ],
+    pre: [getAuthUserMiddleware, validateGameAuthMiddleware],
     response: {
       schema: getAchievementByIdResponseSchema,
     },
@@ -69,12 +62,7 @@ export const upsertAchievementsRoute: ServerRoute = {
     bind: {
       requiredCapabilities: [CAPABILITIES.GAMEDEV_ACTIONS],
     },
-    pre: [
-      {
-        method: getAuthUser,
-        assign: 'getAuthUser',
-      },
-    ],
+    pre: [getAuthUserMiddleware, validateGameAuthMiddleware],
     validate: {
       payload: postAchievementRequestSchema,
     },
@@ -94,12 +82,7 @@ export const deleteAchievementsRoute: ServerRoute = {
     bind: {
       requiredCapabilities: [CAPABILITIES.GAMEDEV_ACTIONS],
     },
-    pre: [
-      {
-        method: getAuthUser,
-        assign: 'getAuthUser',
-      },
-    ],
+    pre: [getAuthUserMiddleware, validateGameAuthMiddleware],
     response: {
       schema: gamedevGenericSchema,
     },
