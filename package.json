@@ -1,6 +1,6 @@
 {
   "name": "gameshq-api",
-  "version": "1.0.0",
+  "version": "1.6.0",
   "description": "Headquarters of all the things XTeam games",
   "main": "index.js",
   "scripts": {
@@ -22,6 +22,7 @@
     "db:seed:down": "ts-node --transpile-only -e 'require(`./migrate.ts`).seedDown()'",
     "db:migrate:up": "ts-node --transpile-only -e 'require(`./migrate.ts`).migrateUp()'",
     "db:migrate:down": "ts-node --transpile-only -e 'require(`./migrate.ts`).migrateDown()'",
+    "db:migrate:add": "npx sequelize-cli migration:generate --name",
     "//1": "/*****************************************************************************",
     "//2": "* Rest of those commands are used internally and should not be used directly!",
     "//3": "*****************************************************************************/",
