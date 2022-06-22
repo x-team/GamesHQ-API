@@ -64,7 +64,6 @@ export const towerSlackActionHandler: Lifecycle.Method = async (request, _h) => 
   try {
     switch (slackActionPayload.type) {
       case 'shortcut':
-      // // return handleTowerShortcut(slackActionPayload as SlackShortcutPayload);
       case 'view_submission':
         return handleTowerAction(slackActionPayload);
       case 'block_actions':

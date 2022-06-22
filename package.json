@@ -13,7 +13,7 @@
     "test:unit": "cross-env NODE_ENV=test ENV=test npm run mocha \"test/**/!(*integration).test.ts\"",
     "test:unit:single": "cross-env NODE_ENV=test ENV=test npm run mocha",
     "mocha": "cross-env ENV=test mocha --unhandled-rejections=strict",
-    "eslint": "eslint src --fix",
+    "eslint": "eslint src --quiet --fix",
     "tsc": "tsc --noEmit -p tsconfig.ci.json",
     "build": "npm run clean && tsc && rsync -av --exclude='*.ts' src/ dist/src",
     "build:start": "npm run build && npm run start",
