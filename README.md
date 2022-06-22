@@ -256,4 +256,4 @@ All code from `main` branch will be deployed to staging.
 To **deploy to production** you must create a `new release` and follow the [semantic versioning](https://semver.org/lang/es/) fundamentals. That will trigger an automated deployment to **production**.
 
 ## 🪄Documentation
-Some further information can be found on the X-team GamesHQ API [Confluence page](https://semver.org/lang/es/](https://x-team-internal.atlassian.net/wiki/spaces/XTG/pages/2300706828/GamesHQ+API) 
+Some further information can be found on the X-team GamesHQ API [Confluence page](https://x-team-internal.atlassian.net/wiki/spaces/XTG/pages/2300706828/GamesHQ+API)
