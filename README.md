@@ -27,6 +27,7 @@ The Admin Panel (Frontend APP) is connected to this API allowing XTeam admins to
     * [Commits](#commits)
     * [Pull Requests](#pull-requests)
 * [Continous Integration](#continous-integration)
+* [Documentation](#documentation)
 
 ## 📦Tech Stack
 * [Node.js](https://nodejs.org/)
@@ -253,3 +254,6 @@ This project is connected to an EC2 instance from AWS.
 All code from `main` branch will be deployed to staging.
 
 To **deploy to production** you must create a `new release` and follow the [semantic versioning](https://semver.org/lang/es/) fundamentals. That will trigger an automated deployment to **production**.
+
+## 🪄Documentation
+Some further information can be found on the X-team GamesHQ API [Confluence page](https://semver.org/lang/es/](https://x-team-internal.atlassian.net/wiki/spaces/XTG/pages/2300706828/GamesHQ+API) 
