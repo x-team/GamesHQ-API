@@ -157,8 +157,8 @@ export class User extends Model<UserAttributes, UserCreationAttributes> implemen
     return Boolean(this._role && this._role.name === USER_ROLE_NAME.SUPER_ADMIN);
   }
 
-  isCommunityTeam(): boolean {
-    return Boolean(this._role && this._role.name === USER_ROLE_NAME.COMMUNITY_TEAM);
+  isGameDev(): boolean {
+    return Boolean(this._role && this._role.name === USER_ROLE_NAME.GAME_DEV);
   }
 }
 
