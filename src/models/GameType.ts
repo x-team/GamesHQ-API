@@ -84,9 +84,9 @@ export class GameType
 
 export interface IGameEditorData {
   id?: number;
-  name: GAME_TYPE | string;
   clientSecret?: string;
   signingSecret?: string;
+  name: GAME_TYPE | string;
   _createdById: number;
 }
 
@@ -118,19 +118,13 @@ export async function createOrUpdateGameType(
   gameTypeData: IGameEditorData,
   transaction?: Transaction
 ) {
-  const { id, name, clientSecret, signingSecret, _createdById } = gameTypeData;
+  const { clientSecret, signingSecret } = gameTypeData;
 
   const valuesToUpdate: GameTypeCreationAttributes = {
-    id,
-    name,
+    ...gameTypeData,
     clientSecret: clientSecret || (await generateSecret()),
     signingSecret: signingSecret || (await generateSecret()),
-    _createdById: _createdById,
   };
-
-  if (!id) {
-    delete valuesToUpdate.id;
-  }
 
   return GameType.upsert(valuesToUpdate, { transaction });
 }

@@ -13,6 +13,13 @@ const gameItemSchema = Joi.object({
 
 export const sigleGameItemSchema = Joi.object({ game: gameItemSchema }).required(); //.options({ stripUnknown: true });
 
+export const upsertGameTypeSchema = Joi.object({
+  id: Joi.number().optional(),
+  name: Joi.string().required(),
+  clientSecret: Joi.string().optional(),
+  signingSecret: Joi.string().optional(),
+}).required();
+
 export const multipleGamesSchema = Joi.object({
   games: Joi.array().items(gameItemSchema),
 }).required();

@@ -1,7 +1,7 @@
 import { expect } from 'chai';
 import sinon from 'sinon';
 import type { Request } from '@hapi/hapi';
-import { webhookValidation } from '../../src/api-utils/webhookValidations';
+import { webhookValidation } from '../../src/api-utils/midddleware/webhookValidations';
 import * as GameType from '../../src/models/GameType';
 import { fail } from 'assert';
 import { signMessage } from '../../src/utils/cryptography';

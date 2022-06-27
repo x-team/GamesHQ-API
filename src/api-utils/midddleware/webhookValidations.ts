@@ -2,10 +2,10 @@ import Boom from '@hapi/boom';
 import type { Request, ResponseToolkit } from '@hapi/hapi';
 import { isEmpty, isNaN } from 'lodash';
 
-import { TWO } from '../games/consts/global';
-import { findGameTypeByClientSecret } from '../models/GameType';
-import { isRequestFresh } from '../modules/slack/utils';
-import { validateWebhookSignatures } from '../utils/cryptography';
+import { TWO } from '../../games/consts/global';
+import { findGameTypeByClientSecret } from '../../models/GameType';
+import { validateWebhookSignatures } from '../../utils/cryptography';
+import { isRequestFresh } from '../utils';
 
 export async function webhookValidation(request: Request, _h: ResponseToolkit) {
   if (!isEmpty(request.payload) && !Buffer.isBuffer(request.payload)) {

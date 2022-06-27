@@ -1,7 +1,12 @@
 import type { ServerRoute } from '@hapi/hapi';
 
+import {
+  verifySlackRequestMiddleware,
+  parseSlackSlashCommandPayloadMiddleware,
+  parseSlackActionPayloadMiddleware,
+} from '../../api-utils/midddleware';
+
 import { arenaSlackActionHandler, slackCommandHandler } from './slackHandlers';
-import { parseSlackActionPayload, parseSlashCommandPayload, verifySlackRequest } from './utils';
 
 const routePrefix = '/slack-integrations/';
 
@@ -20,16 +25,7 @@ export const slackArenaRoutes: ServerRoute[] = [
       response: {
         emptyStatusCode: 200,
       },
-      pre: [
-        {
-          method: verifySlackRequest,
-          assign: 'verifySlackRequest',
-        },
-        {
-          method: parseSlashCommandPayload,
-          assign: 'slashCommandPayload',
-        },
-      ],
+      pre: [verifySlackRequestMiddleware, parseSlackSlashCommandPayloadMiddleware],
     },
     handler: slackCommandHandler,
   },
@@ -47,16 +43,7 @@ export const slackArenaRoutes: ServerRoute[] = [
       response: {
         emptyStatusCode: 200,
       },
-      pre: [
-        {
-          method: verifySlackRequest,
-          assign: 'verifySlackRequest',
-        },
-        {
-          method: parseSlackActionPayload,
-          assign: 'slackActionPayload',
-        },
-      ],
+      pre: [verifySlackRequestMiddleware, parseSlackActionPayloadMiddleware],
     },
     handler: arenaSlackActionHandler,
   },
