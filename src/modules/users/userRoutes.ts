@@ -4,7 +4,7 @@ import { sessionSchema, logoutSessionSchema } from '../../api-utils/schemas/user
 
 import { checkAvailableSession, loginWithGoogle, logutFromAPI } from './userHandler';
 
-export const userRoutes: ServerRoute[] = [
+export const loginWithGoogleRoute: ServerRoute =
   // Login with Google
   {
     method: ['GET', 'POST'],
@@ -18,29 +18,36 @@ export const userRoutes: ServerRoute[] = [
       },
     },
     handler: loginWithGoogle,
-  },
-  {
-    method: ['GET'],
-    path: '/general/login/session',
-    options: {
-      description: 'check if user is already logged in',
-      tags: ['api', 'login', 'google'],
-      response: {
-        schema: sessionSchema,
-      },
+  };
+
+export const checkAvailableSessionRoute: ServerRoute = {
+  method: ['GET'],
+  path: '/general/login/session',
+  options: {
+    description: 'check if user is already logged in',
+    tags: ['api', 'login', 'google'],
+    response: {
+      schema: sessionSchema,
     },
-    handler: checkAvailableSession,
   },
-  {
-    method: ['GET'],
-    path: '/general/logout',
-    options: {
-      description: 'Logout the user',
-      tags: ['api', 'login', 'google'],
-      response: {
-        schema: logoutSessionSchema,
-      },
+  handler: checkAvailableSession,
+};
+
+export const logutFromAPIRoute: ServerRoute = {
+  method: ['GET'],
+  path: '/general/logout',
+  options: {
+    description: 'Logout the user',
+    tags: ['api', 'login', 'google'],
+    response: {
+      schema: logoutSessionSchema,
     },
-    handler: logutFromAPI,
   },
+  handler: logutFromAPI,
+};
+
+export const userRoutes: ServerRoute[] = [
+  loginWithGoogleRoute,
+  checkAvailableSessionRoute,
+  logutFromAPIRoute,
 ];
