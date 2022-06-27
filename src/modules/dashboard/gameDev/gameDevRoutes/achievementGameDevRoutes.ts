@@ -1,6 +1,5 @@
 import type { ServerRoute } from '@hapi/hapi';
 
-import { CAPABILITIES } from '../../../../api-utils/interfaceAndTypes';
 import {
   getAuthUserMiddleware,
   validateGameAuthMiddleware,
@@ -12,6 +11,7 @@ import {
   postAchievementResponseSchema,
 } from '../../../../api-utils/schemas/gameDev/achievementsSchemas';
 import { gamedevGenericSchema } from '../../../../api-utils/schemas/gameDev/gameTypeSchema';
+import { CAPABILITIES } from '../../../../consts/model';
 import {
   getAchievementsHandler,
   upsertAchievementHandler,
@@ -26,7 +26,10 @@ export const getAchievementsRoute: ServerRoute = {
     description: `Get game's achievements`,
     tags: ['api'],
     bind: {
-      requiredCapabilities: [CAPABILITIES.GAMEDEV_ACTIONS],
+      requiredCapabilities: [
+        CAPABILITIES.MY_GAME_ACHIEVEMENT_READ,
+        CAPABILITIES.MY_GAME_ACHIEVEMENT_WRITE,
+      ],
     },
     pre: [getAuthUserMiddleware, validateGameAuthMiddleware],
     response: {
@@ -43,7 +46,10 @@ export const getAchievementsByIdRoute: ServerRoute = {
     description: `Get game's achievements`,
     tags: ['api'],
     bind: {
-      requiredCapabilities: [CAPABILITIES.GAMEDEV_ACTIONS],
+      requiredCapabilities: [
+        CAPABILITIES.MY_GAME_ACHIEVEMENT_READ,
+        CAPABILITIES.MY_GAME_ACHIEVEMENT_WRITE,
+      ],
     },
     pre: [getAuthUserMiddleware, validateGameAuthMiddleware],
     response: {
@@ -60,7 +66,7 @@ export const upsertAchievementsRoute: ServerRoute = {
     description: `Add or update a game's achievement`,
     tags: ['api'],
     bind: {
-      requiredCapabilities: [CAPABILITIES.GAMEDEV_ACTIONS],
+      requiredCapabilities: [CAPABILITIES.MY_GAME_ACHIEVEMENT_WRITE],
     },
     pre: [getAuthUserMiddleware, validateGameAuthMiddleware],
     validate: {
@@ -80,7 +86,7 @@ export const deleteAchievementsRoute: ServerRoute = {
     description: `Delete a game's achievement`,
     tags: ['api'],
     bind: {
-      requiredCapabilities: [CAPABILITIES.GAMEDEV_ACTIONS],
+      requiredCapabilities: [CAPABILITIES.MY_GAME_ACHIEVEMENT_WRITE],
     },
     pre: [getAuthUserMiddleware, validateGameAuthMiddleware],
     response: {

@@ -1,5 +1,5 @@
-import { CAPABILITIES } from '../../../../api-utils/interfaceAndTypes';
 import { getAuthUserMiddleware } from '../../../../api-utils/midddleware';
+import { CAPABILITIES } from '../../../../consts/model';
 import {
   getWeaponsHandler,
   getWeaponHandler,
@@ -14,7 +14,7 @@ export const getWeaponsRoute = {
     description: 'Get list of weapons',
     tags: ['api'],
     bind: {
-      requiredCapabilities: [CAPABILITIES.ADMIN_ACTIONS],
+      requiredCapabilities: [CAPABILITIES.WEAPONS_READ, CAPABILITIES.WEAPONS_WRITE],
     },
     pre: [getAuthUserMiddleware],
   },
@@ -28,7 +28,7 @@ export const getWeaponByIdRoute = {
     description: 'Get information on a specific weapon',
     tags: ['api'],
     bind: {
-      requiredCapabilities: [CAPABILITIES.ADMIN_ACTIONS],
+      requiredCapabilities: [CAPABILITIES.WEAPONS_READ, CAPABILITIES.WEAPONS_WRITE],
     },
     pre: [getAuthUserMiddleware],
   },
@@ -42,7 +42,7 @@ export const upsertWeaponRoute = {
     description: 'Add or update weapon',
     tags: ['api'],
     bind: {
-      requiredCapabilities: [CAPABILITIES.ADMIN_ACTIONS],
+      requiredCapabilities: [CAPABILITIES.WEAPONS_WRITE],
     },
     pre: [getAuthUserMiddleware],
   },
@@ -56,7 +56,7 @@ export const deleteWeaponRoute = {
     description: 'Delete a weapon by its item id.',
     tags: ['api'],
     bind: {
-      requiredCapabilities: [CAPABILITIES.ADMIN_ACTIONS],
+      requiredCapabilities: [CAPABILITIES.WEAPONS_WRITE],
     },
     pre: [getAuthUserMiddleware],
   },

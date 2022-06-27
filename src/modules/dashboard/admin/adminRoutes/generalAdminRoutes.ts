@@ -1,5 +1,5 @@
-import { CAPABILITIES } from '../../../../api-utils/interfaceAndTypes';
 import { getAuthUserMiddleware } from '../../../../api-utils/midddleware';
+import { CAPABILITIES } from '../../../../consts/model';
 import { getEmojis } from '../adminHandlers/generalAdminHandlers';
 
 export const getEmojisRoute = {
@@ -9,7 +9,7 @@ export const getEmojisRoute = {
     description: 'Get all emojis and their respective URLs (from the X-Team slack)',
     tags: ['api'],
     bind: {
-      requiredCapabilities: [CAPABILITIES.ADMIN_ACTIONS],
+      requiredCapabilities: [CAPABILITIES.GENERAL_READ, CAPABILITIES.GENERAL_WRITE],
     },
     pre: [getAuthUserMiddleware],
   },

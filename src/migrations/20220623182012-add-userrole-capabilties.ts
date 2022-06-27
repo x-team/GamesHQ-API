@@ -93,9 +93,6 @@ module.exports = {
       const userRoles = await queryInterface.sequelize.query('SELECT * from "UserRole"');
       const capabilities = await queryInterface.sequelize.query('SELECT * from "Capability"');
 
-      console.log('test fred userRoles', userRoles[0]);
-      console.log('test fred capabilities', capabilities[0]);
-
       for (const role of userRoles[0] as UserRole[]) {
         const userRoleCapabilities = userRoleCapabilitiesMap[role.name];
 

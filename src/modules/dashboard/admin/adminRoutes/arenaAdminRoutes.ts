@@ -1,5 +1,5 @@
-import { CAPABILITIES } from '../../../../api-utils/interfaceAndTypes';
 import { getAuthUserMiddleware } from '../../../../api-utils/midddleware';
+import { CAPABILITIES } from '../../../../consts/model';
 import { getCurrentArenaGameState } from '../adminHandlers/arenaAdminHandlers';
 
 export const getCurrentArenaGameStateRoute = {
@@ -9,7 +9,7 @@ export const getCurrentArenaGameStateRoute = {
     description: 'Get state of current arena game (if any)',
     tags: ['api'],
     bind: {
-      requiredCapabilities: [CAPABILITIES.ADMIN_ACTIONS],
+      requiredCapabilities: [CAPABILITIES.THE_ARENA_READ, CAPABILITIES.THE_ARENA_WRITE],
     },
     pre: [getAuthUserMiddleware],
   },

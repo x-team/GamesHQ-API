@@ -50,12 +50,13 @@ export class UserRole
 
   @BelongsToMany(() => Capability, {
     through: () => UserRoleCapability,
-    foreignKey: '_userId',
+    foreignKey: '_userRoleId',
     otherKey: '_capabilityId',
   })
   declare _capabilities?: Capability[];
 
   static associations: {
     _users: Association<UserRole, User>;
+    _capabilities: Association<UserRole, Capability>;
   };
 }

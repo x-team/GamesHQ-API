@@ -166,6 +166,22 @@ export function findUserById(id: number, transaction?: Transaction) {
   return User.findByPk(id, { transaction });
 }
 
+export function findUserRoleAndCapabilities(id: number, transaction?: Transaction) {
+  return User.findByPk(id, {
+    include: [
+      {
+        association: User.associations._role,
+        include: [
+          {
+            association: UserRole.associations._capabilities,
+          },
+        ],
+      },
+    ],
+    transaction,
+  });
+}
+
 export async function getUserByEmail(email: string): Promise<User | null> {
   return User.findOne({
     where: {
