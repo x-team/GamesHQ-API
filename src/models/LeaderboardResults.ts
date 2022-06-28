@@ -207,7 +207,7 @@ export function getLeaderboardResultRank(
         attributes: ['displayName', 'email'],
       },
     ],
-    attributes: ['score'],
+    attributes: ['id', 'score', '_user.email'],
     order: mapScoreStrategyOptions[_leaderboardEntry.scoreStrategy].orderBy,
     limit,
     transaction,
