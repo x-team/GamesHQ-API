@@ -166,7 +166,7 @@ export function findUserById(id: number, transaction?: Transaction) {
   return User.findByPk(id, { transaction });
 }
 
-export function findUserRoleAndCapabilities(id: number, transaction?: Transaction) {
+export function findUserWithRoleAndCapabilities(id: number, transaction?: Transaction) {
   return User.findByPk(id, {
     include: [
       {

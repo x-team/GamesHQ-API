@@ -4,13 +4,13 @@ import {
   loginWithGoogleRoute,
   logutFromAPIRoute,
   checkAvailableSessionRoute,
-} from '../../../../src/modules/users/userRoutes';
-import { sessionSchema, logoutSessionSchema } from '../../../../src/api-utils/schemas/user';
+} from '../../../src/modules/users/userRoutes';
+import { sessionSchema, logoutSessionSchema } from '../../../src/api-utils/schemas/user';
 import {
   loginWithGoogle,
   logutFromAPI,
   checkAvailableSession,
-} from '../../../../src/modules/users/userHandler';
+} from '../../../src/modules/users/userHandler';
 
 describe('userRoutes', () => {
   describe('loginWithGoogleRoute', () => {

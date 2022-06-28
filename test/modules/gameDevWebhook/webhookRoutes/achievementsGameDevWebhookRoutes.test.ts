@@ -10,12 +10,12 @@ import {
 } from '../../../../src/modules/gameDevWebhook/webhookHandlers/achievementsGameDevWebhookHandlers';
 import {
   webhookValidationMiddleware,
-  parseWebhookPayloadMiddleware,
+  // parseWebhookPayloadMiddleware,
   appendUserToRequestMiddleware,
 } from '../../../../src/api-utils/midddleware';
 import {
   postAchievementProgressResponseSchema,
-  postAchievementProgressRequestSchema,
+  // postAchievementProgressRequestSchema,
 } from '../../../../src/api-utils/schemas/gameDev/achievementsSchemas';
 
 describe('achievementsGameDevWebhookRoutes', () => {

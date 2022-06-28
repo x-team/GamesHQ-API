@@ -4,7 +4,7 @@ import type { Request, ResponseToolkit } from '@hapi/hapi';
 import type { Capability } from '../../models';
 import { findSessionByToken } from '../../models/Session';
 import type { User } from '../../models/User';
-import { findUserRoleAndCapabilities } from '../../models/User';
+import { findUserWithRoleAndCapabilities } from '../../models/User';
 import type { CustomRequestThis } from '../interfaceAndTypes';
 
 export async function getAuthUser(
@@ -21,7 +21,7 @@ export async function getAuthUser(
   if (!userSession) {
     throw Boom.forbidden('Only Auth users can access here - user is not logged in');
   }
-  const user = await findUserRoleAndCapabilities(userSession._userId);
+  const user = await findUserWithRoleAndCapabilities(userSession._userId);
   if (!user) {
     throw Boom.notFound('User not found');
   }

@@ -12,7 +12,7 @@ import {
 } from '../../../../src/modules/gameDevWebhook/webhookHandlers/leaderboardGameDevWebhookHandlers';
 import {
   webhookValidationMiddleware,
-  parseWebhookPayloadMiddleware,
+  // parseWebhookPayloadMiddleware,
   appendUserToRequestMiddleware,
 } from '../../../../src/api-utils/midddleware';
 import {
