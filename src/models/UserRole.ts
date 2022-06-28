@@ -1,4 +1,4 @@
-import type { Association } from 'sequelize';
+import type { Association, Transaction } from 'sequelize';
 import {
   Table,
   Column,
@@ -59,4 +59,15 @@ export class UserRole
     _users: Association<UserRole, User>;
     _capabilities: Association<UserRole, Capability>;
   };
+}
+
+export function findAllUserRolesWithCapabilties(transaction?: Transaction) {
+  return UserRole.findAll({
+    include: [
+      {
+        association: UserRole.associations._capabilities,
+      },
+    ],
+    transaction,
+  });
 }

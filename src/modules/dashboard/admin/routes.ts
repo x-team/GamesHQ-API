@@ -15,6 +15,7 @@ import {
   openOrCloseCurrentTowerRoute,
   addEnemyToFloorRoute,
 } from './adminRoutes/towerAdminRoutes';
+import { getUserRoleRoute } from './adminRoutes/userRoleAdminRoutes';
 import {
   getWeaponsRoute,
   getWeaponByIdRoute,
@@ -44,6 +45,8 @@ export const adminRoutes: ServerRoute[] = [
   endCurrentTowerGameRoute,
   openOrCloseCurrentTowerRoute,
   addEnemyToFloorRoute,
+  //userRole
+  getUserRoleRoute,
   //weapon
   getWeaponsRoute,
   getWeaponByIdRoute,
