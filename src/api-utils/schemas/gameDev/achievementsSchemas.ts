@@ -33,6 +33,7 @@ export const postAchievementResponseSchema = Joi.object({
 
 export const postAchievementProgressRequestSchema = Joi.object({
   progress: Joi.number().optional(),
+  _user: Joi.object().optional(),
 }).required();
 
 export const postAchievementProgressResponseSchema = Joi.object({
@@ -43,3 +44,7 @@ export const postAchievementProgressResponseSchema = Joi.object({
   createdAt: Joi.date().required(),
   updatedAt: Joi.date().required(),
 }).required();
+
+export const multipleAchievementProgressResponseSchema = Joi.array()
+  .items(postAchievementProgressRequestSchema)
+  .optional();
