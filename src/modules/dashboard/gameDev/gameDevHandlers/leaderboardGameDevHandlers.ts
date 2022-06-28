@@ -5,11 +5,13 @@ import { arrayToJSON } from '../../../../api-utils/utils';
 import type { GameType } from '../../../../models';
 import type { LeaderboardEntryCreationAttributes } from '../../../../models/LeaderboardEntry';
 import {
+  getLeaderboardById,
   getLeaderBoardsByGameType,
   getLeaderBoardByCreator,
   createOrUpdateLeaderBoard,
   deleteLeaderboardById,
 } from '../../../../models/LeaderboardEntry';
+import { getLeaderboardResultRank } from '../../../../models/LeaderboardResults';
 
 export const getLeaderboardHandler: Lifecycle.Method = async (request, h) => {
   if (request.params.leaderboardId) {
@@ -28,6 +30,23 @@ export const getLeaderboardHandler: Lifecycle.Method = async (request, h) => {
     const leaderboards = await getLeaderBoardsByGameType(request.params.gameTypeId);
     return h.response(arrayToJSON(leaderboards)).code(200);
   }
+};
+
+export const getLeaderboardResultsHandler: Lifecycle.Method = async (request, h) => {
+  const leaderboard = await getLeaderboardById(request.params.leaderboardId);
+
+  if (!leaderboard || !request.params.gameTypeId) {
+    throw Boom.notFound('Invalid leaderboard or gametypeId');
+  }
+
+  const leaderboardResult = await getLeaderboardResultRank(leaderboard);
+  const res = arrayToJSON(leaderboardResult);
+  console.log(
+    '🚀 ~ file: leaderboardGameDevHandlers.ts ~ line 45 ~ constgetLeaderboardResultsHandler:Lifecycle.Method= ~ res',
+    res
+  );
+
+  return h.response(res).code(200);
 };
 
 export const upsertLeaderboardHandler: Lifecycle.Method = async (request, h) => {
