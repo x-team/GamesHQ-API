@@ -57,7 +57,7 @@ export const getResultsFromLeaderboardRoute: ServerRoute = {
   method: 'GET',
   path: '/dashboard/game-dev/games/{gameTypeId}/leaderboards/{leaderboardId}/results',
   options: {
-    description: 'Fetch a game`s list of leaderboard: leaderboardRank',
+    description: 'Fetch a list of LeaderboardRank from a LeaderboardEntry',
     tags: ['api'],
     bind: {
       requiredCapabilities: [CAPABILITIES.GAMEDEV_ACTIONS],
