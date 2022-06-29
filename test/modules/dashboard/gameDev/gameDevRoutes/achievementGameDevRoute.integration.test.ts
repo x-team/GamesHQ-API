@@ -85,7 +85,7 @@ describe('gameDevRoutes', () => {
       expect(JSON.parse(rslt.payload)).to.deep.equal([]);
     });
 
-    it('should return 404 if the achievement does not exist', async () => {
+    it('should return 403 if the achievement does not exist', async () => {
       const user = await createTestUser();
 
       const session = await Session.create({
@@ -103,7 +103,7 @@ describe('gameDevRoutes', () => {
 
       const rslt = await testServer.inject(injectOptions);
 
-      expect(rslt.statusCode).to.equal(404);
+      expect(rslt.statusCode).to.equal(403);
     });
   });
 
