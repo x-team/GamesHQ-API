@@ -116,7 +116,7 @@ describe('gameDevRoutes', () => {
   });
 
   describe('getLeaderboardResultsRoute', async () => {
-    it.skip('should return 200 status code on GET /leaderboards/{id}/results', async () => {
+    it('should return 200 status code on GET /leaderboards/{id}/results', async () => {
       const session = await Session.create({
         token: uuid(),
         _userId: 1,
@@ -126,6 +126,7 @@ describe('gameDevRoutes', () => {
         name: 'LeaderBoard_' + uuid(),
         _gameTypeId: 1,
       });
+      const lbId = lb1.toJSON().id;
 
       const lbr1 = await LeaderboardResults.create({
         score: 10,
@@ -135,7 +136,7 @@ describe('gameDevRoutes', () => {
 
       const injectOptions = {
         method: 'GET',
-        url: '/dashboard/game-dev/games/1/leaderboards/1/results',
+        url: `/dashboard/game-dev/games/1/leaderboards/${lbId}/results`,
         headers: {
           'xtu-session-token': session.token,
         },
