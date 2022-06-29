@@ -1,25 +1,27 @@
 import { expect } from 'chai';
 import { RouteOptions } from '@hapi/hapi';
-import { getUserRoleRoute } from '../../../../../src/modules/dashboard/admin/adminRoutes/userRoleAdminRoutes';
-import { getUserRoleHanlder } from '../../../../../src/modules/dashboard/admin/adminHandlers/userRoleAdminHandlers';
+import { getAllUserRolesRoute } from '../../../../../src/modules/dashboard/admin/adminRoutes/userRoleAdminRoutes';
+import { getAllUserRolesHandler } from '../../../../../src/modules/dashboard/admin/adminHandlers/userRoleAdminHandlers';
 import { CAPABILITIES } from '../../../../../src/consts/model';
 import { getAuthUserMiddleware } from '../../../../../src/api-utils/midddleware';
-import { getUserRolesSchema } from '../../../../../src/api-utils/schemas/admin/userRoleSchemas';
+import { getAllUserRolesSchema } from '../../../../../src/api-utils/schemas/admin/userRoleSchemas';
 
 describe('userRoleAdminRoutes', () => {
-  describe('getUserRoleRoute', () => {
+  describe('getAllUserRolesRoute', () => {
     it('should be configured as expected', async () => {
-      expect(getUserRoleRoute.method).to.equal('GET');
-      expect(getUserRoleRoute.path).to.equal('/admin/userrole');
-      expect(getUserRoleRoute.options?.bind).to.deep.equal({
+      expect(getAllUserRolesRoute.method).to.equal('GET');
+      expect(getAllUserRolesRoute.path).to.equal('/admin/userrole');
+      expect(getAllUserRolesRoute.options?.bind).to.deep.equal({
         requiredCapabilities: [CAPABILITIES.USER_ROLE_READ, CAPABILITIES.USER_ROLE_WRITE],
       });
-      expect((getUserRoleRoute.options as RouteOptions).pre).to.deep.equal([getAuthUserMiddleware]);
-      expect((getUserRoleRoute.options as RouteOptions).validate?.payload).to.equal(undefined);
-      expect((getUserRoleRoute.options as RouteOptions).response?.schema).to.equal(
-        getUserRolesSchema
+      expect((getAllUserRolesRoute.options as RouteOptions).pre).to.deep.equal([
+        getAuthUserMiddleware,
+      ]);
+      expect((getAllUserRolesRoute.options as RouteOptions).validate?.payload).to.equal(undefined);
+      expect((getAllUserRolesRoute.options as RouteOptions).response?.schema).to.equal(
+        getAllUserRolesSchema
       );
-      expect(getUserRoleRoute.handler).to.equal(getUserRoleHanlder);
+      expect(getAllUserRolesRoute.handler).to.equal(getAllUserRolesHandler);
     });
   });
 });

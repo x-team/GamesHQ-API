@@ -1,9 +1,9 @@
 import { getAuthUserMiddleware } from '../../../../api-utils/midddleware';
-import { getUserRolesSchema } from '../../../../api-utils/schemas/admin/userRoleSchemas';
+import { getAllUserRolesSchema } from '../../../../api-utils/schemas/admin/userRoleSchemas';
 import { CAPABILITIES } from '../../../../consts/model';
-import { getUserRoleHanlder } from '../adminHandlers/userRoleAdminHandlers';
+import { getAllUserRolesHandler } from '../adminHandlers/userRoleAdminHandlers';
 
-export const getUserRoleRoute = {
+export const getAllUserRolesRoute = {
   method: 'GET',
   path: '/admin/userrole',
   options: {
@@ -14,8 +14,8 @@ export const getUserRoleRoute = {
     },
     pre: [getAuthUserMiddleware],
     response: {
-      schema: getUserRolesSchema,
+      schema: getAllUserRolesSchema,
     },
   },
-  handler: getUserRoleHanlder,
+  handler: getAllUserRolesHandler,
 };
