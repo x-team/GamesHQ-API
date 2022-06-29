@@ -76,20 +76,6 @@ const userRoleCapabilitiesMap: Record<string, string[]> = {
 module.exports = {
   async up({ context: { queryInterface } }: SequelizeContext) {
     return queryInterface.sequelize.transaction(async (transaction) => {
-      await queryInterface.bulkUpdate(
-        'UserRole',
-        { name: 'gamedev' },
-        { name: 'community team' },
-        { transaction }
-      );
-
-      await queryInterface.bulkUpdate(
-        'UserRole',
-        { name: 'super_admin' },
-        { name: 'super admin' },
-        { transaction }
-      );
-
       const userRoles = await queryInterface.sequelize.query('SELECT * from "UserRole"');
       const capabilities = await queryInterface.sequelize.query('SELECT * from "Capability"');
 
@@ -97,8 +83,6 @@ module.exports = {
         const userRoleCapabilities = userRoleCapabilitiesMap[role.name];
 
         for (const cabability of capabilities[0] as Capability[]) {
-          console.log(cabability);
-
           if (userRoleCapabilities?.includes(cabability.name)) {
             await queryInterface.insert(
               null,
