@@ -4,7 +4,7 @@ import { getAllUserRolesRoute } from '../../../../../src/modules/dashboard/admin
 import { getAllUserRolesHandler } from '../../../../../src/modules/dashboard/admin/adminHandlers/userRoleAdminHandlers';
 import { CAPABILITIES } from '../../../../../src/consts/model';
 import { getAuthUserMiddleware } from '../../../../../src/api-utils/midddleware';
-import { getAllUserRolesSchema } from '../../../../../src/api-utils/schemas/admin/userRoleSchemas';
+import { getAllUserRolesResponseSchema } from '../../../../../src/api-utils/schemas/admin/userRoleSchemas';
 
 describe('userRoleAdminRoutes', () => {
   describe('getAllUserRolesRoute', () => {
@@ -19,7 +19,7 @@ describe('userRoleAdminRoutes', () => {
       ]);
       expect((getAllUserRolesRoute.options as RouteOptions).validate?.payload).to.equal(undefined);
       expect((getAllUserRolesRoute.options as RouteOptions).response?.schema).to.equal(
-        getAllUserRolesSchema
+        getAllUserRolesResponseSchema
       );
       expect(getAllUserRolesRoute.handler).to.equal(getAllUserRolesHandler);
     });

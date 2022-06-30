@@ -1,7 +1,14 @@
 import { getAuthUserMiddleware } from '../../../../api-utils/midddleware';
-import { getAllUserRolesSchema } from '../../../../api-utils/schemas/admin/userRoleSchemas';
+import {
+  getAllUserRolesResponseSchema,
+  upsertUserRoleRequestSchema,
+  upsertUserRoleResponseSchema,
+} from '../../../../api-utils/schemas/admin/userRoleSchemas';
 import { CAPABILITIES } from '../../../../consts/model';
-import { getAllUserRolesHandler } from '../adminHandlers/userRoleAdminHandlers';
+import {
+  getAllUserRolesHandler,
+  upsertUserRolesHandler,
+} from '../adminHandlers/userRoleAdminHandlers';
 
 export const getAllUserRolesRoute = {
   method: 'GET',
@@ -14,8 +21,28 @@ export const getAllUserRolesRoute = {
     },
     pre: [getAuthUserMiddleware],
     response: {
-      schema: getAllUserRolesSchema,
+      schema: getAllUserRolesResponseSchema,
     },
   },
   handler: getAllUserRolesHandler,
+};
+
+export const upsertUserRolesRoute = {
+  method: 'POST',
+  path: '/admin/userrole',
+  options: {
+    description: 'upsert user role',
+    tags: ['api'],
+    bind: {
+      requiredCapabilities: [CAPABILITIES.USER_ROLE_WRITE],
+    },
+    pre: [getAuthUserMiddleware],
+    validate: {
+      payload: upsertUserRoleRequestSchema,
+    },
+    response: {
+      schema: upsertUserRoleResponseSchema,
+    },
+  },
+  handler: upsertUserRolesHandler,
 };

@@ -1,6 +1,7 @@
 import type { ServerRoute } from '@hapi/hapi';
 
 import { getCurrentArenaGameStateRoute } from './adminRoutes/arenaAdminRoutes';
+import { getAllCapabilitiesRoute } from './adminRoutes/capabilityAdminRoutes';
 import {
   getEnemyRoute,
   getEnemiesRoute,
@@ -45,6 +46,8 @@ export const adminRoutes: ServerRoute[] = [
   endCurrentTowerGameRoute,
   openOrCloseCurrentTowerRoute,
   addEnemyToFloorRoute,
+  // capability
+  getAllCapabilitiesRoute,
   //userRole
   getAllUserRolesRoute,
   //weapon

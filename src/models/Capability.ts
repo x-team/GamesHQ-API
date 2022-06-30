@@ -9,11 +9,9 @@ import {
   PrimaryKey,
 } from 'sequelize-typescript';
 
-import { CAPABILITIES } from '../consts/model';
-
 import { UserRole, UserRoleCapability } from '.';
 
-interface CapabilityAttributes {
+export interface CapabilityAttributes {
   id: number;
   name: string;
 }
@@ -26,7 +24,7 @@ export class Capability extends Model<CapabilityAttributes> {
 
   @Unique
   @Column(DataType.TEXT)
-  declare name: CAPABILITIES;
+  declare name: string;
 
   @BelongsToMany(() => UserRole, {
     through: () => UserRoleCapability,
@@ -39,3 +37,7 @@ export class Capability extends Model<CapabilityAttributes> {
     _userRoles: Association<Capability, UserRole>;
   };
 }
+
+export const findAllCapabilties = async () => {
+  return await Capability.findAll();
+};
