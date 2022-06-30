@@ -205,8 +205,12 @@ export function getLeaderboardResultRank(
         association: LeaderboardResults.associations._user,
         attributes: ['displayName', 'email'],
       },
+      {
+        association: LeaderboardResults.associations._leaderboardResultsMeta,
+        attributes: ['value', 'attribute'],
+      },
     ],
-    attributes: ['id', 'score', '_user.email'],
+    attributes: ['id', 'score', '_user.email', '_leaderboardResultsMeta.value'],
     order: mapScoreStrategyOptions[_leaderboardEntry.scoreStrategy].orderBy,
     transaction,
   });
