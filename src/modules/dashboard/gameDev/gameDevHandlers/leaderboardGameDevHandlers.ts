@@ -35,8 +35,8 @@ export const getLeaderboardHandler: Lifecycle.Method = async (request, h) => {
 export const getLeaderboardResultsHandler: Lifecycle.Method = async (request, h) => {
   const leaderboard = await getLeaderboardById(request.params.leaderboardId);
 
-  if (!leaderboard || !request.params.gameTypeId) {
-    throw Boom.notFound('Invalid leaderboard or gametypeId');
+  if (!leaderboard) {
+    throw Boom.notFound('leaderboard not found');
   }
 
   const leaderboardResult = await getLeaderboardResultRank(leaderboard);

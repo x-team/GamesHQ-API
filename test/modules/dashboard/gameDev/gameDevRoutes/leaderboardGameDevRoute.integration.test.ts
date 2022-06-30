@@ -170,7 +170,7 @@ describe('gameDevRoutes', () => {
       expect(rslt.statusCode).to.equal(404);
       expect(rslt.result).to.deep.equal({
         error: 'Not Found',
-        message: 'Invalid leaderboard or gametypeId',
+        message: 'leaderboard not found',
         statusCode: 404,
       });
     });
