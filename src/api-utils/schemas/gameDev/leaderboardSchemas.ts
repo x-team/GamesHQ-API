@@ -21,9 +21,11 @@ export const getUserLeaderboardResultScoreResponseSchema = Joi.object({
 
 export const getUserLeaderboardResultScorePageSchema = Joi.object({
   id: Joi.number().required(),
-  _user: Joi.object().required(),
+  _user: Joi.object({
+    email: Joi.string().required(),
+  }).optional(),
   score: Joi.number().required(),
-}).required();
+}).optional();
 
 export const postLeaderboardResultScoreResquestSchema = Joi.object({
   id: Joi.number().optional(),
