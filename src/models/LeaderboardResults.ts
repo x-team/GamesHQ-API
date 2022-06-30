@@ -194,6 +194,28 @@ function shouldUpsert(
 
 export function getLeaderboardResultRank(
   _leaderboardEntry: LeaderboardEntry,
+  limit = 10,
+  transaction?: Transaction
+) {
+  return LeaderboardResults.findAll({
+    where: {
+      _leaderboardEntryId: _leaderboardEntry.id,
+    },
+    include: [
+      {
+        association: LeaderboardResults.associations._user,
+        attributes: ['displayName', 'email'],
+      },
+    ],
+    attributes: ['score'],
+    order: mapScoreStrategyOptions[_leaderboardEntry.scoreStrategy].orderBy,
+    limit,
+    transaction,
+  });
+}
+
+export function getLeaderboardResultRankWithMeta(
+  _leaderboardEntry: LeaderboardEntry,
   transaction?: Transaction
 ) {
   return LeaderboardResults.findAll({

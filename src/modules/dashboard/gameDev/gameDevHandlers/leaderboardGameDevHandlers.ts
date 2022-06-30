@@ -11,7 +11,7 @@ import {
   createOrUpdateLeaderBoard,
   deleteLeaderboardById,
 } from '../../../../models/LeaderboardEntry';
-import { getLeaderboardResultRank } from '../../../../models/LeaderboardResults';
+import { getLeaderboardResultRankWithMeta } from '../../../../models/LeaderboardResults';
 
 export const getLeaderboardHandler: Lifecycle.Method = async (request, h) => {
   if (request.params.leaderboardId) {
@@ -39,7 +39,7 @@ export const getLeaderboardResultsHandler: Lifecycle.Method = async (request, h)
     throw Boom.notFound('leaderboard not found');
   }
 
-  const leaderboardResult = await getLeaderboardResultRank(leaderboard);
+  const leaderboardResult = await getLeaderboardResultRankWithMeta(leaderboard);
   const res = arrayToJSON(leaderboardResult);
 
   return h.response(res).code(200);
