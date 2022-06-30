@@ -38,10 +38,13 @@ export const getLeaderboardResultsHandler: Lifecycle.Method = async (request, h)
   if (!leaderboard) {
     throw Boom.notFound('leaderboard not found');
   }
-  const MAX_RES_SIZE = 100;
 
-  const leaderboardResult = await getLeaderboardResultRank(leaderboard, MAX_RES_SIZE);
+  const leaderboardResult = await getLeaderboardResultRank(leaderboard);
   const res = arrayToJSON(leaderboardResult);
+  console.log(
+    '🚀 ~ file: leaderboardGameDevHandlers.ts ~ line 44 ~ constgetLeaderboardResultsHandler:Lifecycle.Method= ~ res',
+    res
+  );
 
   return h.response(res).code(200);
 };

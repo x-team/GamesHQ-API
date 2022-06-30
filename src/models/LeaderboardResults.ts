@@ -194,7 +194,6 @@ function shouldUpsert(
 
 export function getLeaderboardResultRank(
   _leaderboardEntry: LeaderboardEntry,
-  limit = 10,
   transaction?: Transaction
 ) {
   return LeaderboardResults.findAll({
@@ -209,7 +208,6 @@ export function getLeaderboardResultRank(
     ],
     attributes: ['id', 'score', '_user.email'],
     order: mapScoreStrategyOptions[_leaderboardEntry.scoreStrategy].orderBy,
-    limit,
     transaction,
   });
 }

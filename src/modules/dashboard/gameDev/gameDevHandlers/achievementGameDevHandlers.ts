@@ -41,11 +41,7 @@ export const getAchievementProgressHandler: Lifecycle.Method = async (request, h
   if (!achievement) {
     throw Boom.notFound('achievement not found');
   }
-  const MAX_RES_SIZE = 100;
-  const achievementUnlockedList = await getAchievementUnlockedFromAchievement(
-    achievement,
-    MAX_RES_SIZE
-  );
+  const achievementUnlockedList = await getAchievementUnlockedFromAchievement(achievement);
 
   const achievementUnlockedListRes = arrayToJSON(achievementUnlockedList);
 

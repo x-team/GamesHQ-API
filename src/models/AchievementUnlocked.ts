@@ -101,7 +101,6 @@ export async function createOrUpdateAchievementUnlocked(
 
 export function getAchievementUnlockedFromAchievement(
   achievement: Achievement,
-  limit = 10,
   transaction?: Transaction
 ) {
   return AchievementUnlocked.findAll({
@@ -111,11 +110,10 @@ export function getAchievementUnlockedFromAchievement(
     include: [
       {
         association: AchievementUnlocked.associations._user,
-        attributes: ['displayName', 'email'],
+        attributes: ['email'],
       },
     ],
     attributes: ['progress', '_user.email'],
-    limit,
     transaction,
   });
 }
