@@ -41,10 +41,6 @@ export const getLeaderboardResultsHandler: Lifecycle.Method = async (request, h)
 
   const leaderboardResult = await getLeaderboardResultRank(leaderboard);
   const res = arrayToJSON(leaderboardResult);
-  console.log(
-    '🚀 ~ file: leaderboardGameDevHandlers.ts ~ line 44 ~ constgetLeaderboardResultsHandler:Lifecycle.Method= ~ res',
-    res
-  );
 
   return h.response(res).code(200);
 };
