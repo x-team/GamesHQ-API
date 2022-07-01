@@ -5,6 +5,8 @@ import { Op } from 'sequelize';
 import {
   findAllUserRolesWithCapabilties,
   createOrUpdateUserRole,
+  findUserRoleByName,
+  deleteUserRole,
   UserRole,
 } from '../../src/models/UserRole';
 
@@ -148,6 +150,41 @@ describe('UserRole', () => {
           ],
         },
       });
+    });
+  });
+
+  describe('deleteUserRole', () => {
+    it('should delete a user Role', async () => {
+      const name = 'CREATING_NEW_ROLE';
+      const created = await UserRole.create({ id: 1234124, name });
+      const rslt = await deleteUserRole(created.id);
+
+      const inDB = await UserRole.findOne({ where: { name } });
+
+      expect(rslt).to.equal(1);
+      expect(inDB).to.be.null;
+    });
+
+    it('should return 0 if capability does not exist', async () => {
+      const rslt = await deleteUserRole(52342343);
+      expect(rslt).to.equal(0);
+    });
+  });
+
+  describe('findUserRoleByName', () => {
+    it('should find a user role by name', async () => {
+      const name = 'super_admin';
+      const rslt = await findUserRoleByName(name);
+
+      expect(rslt?.toJSON()).to.deep.equal({
+        id: 4,
+        name: 'super_admin',
+      });
+    });
+
+    it('should return null if no user role is found by name', async () => {
+      const rslt = await findUserRoleByName('no user role exists');
+      expect(rslt).to.be.null;
     });
   });
 });

@@ -8,7 +8,6 @@ import {
   Unique,
   PrimaryKey,
   BelongsToMany,
-  AutoIncrement,
 } from 'sequelize-typescript';
 
 import { withTransaction } from '../db';
@@ -36,7 +35,6 @@ export interface UserRoleCreationAttributes {
 })
 export class UserRole extends Model<UserRoleAttributes, UserRoleCreationAttributes> {
   @PrimaryKey
-  @AutoIncrement
   @Column(DataType.INTEGER)
   declare id: number;
 
@@ -113,10 +111,25 @@ export async function createOrUpdateUserRole(
               _capabilityId: c.id,
             } || [])
         ),
-        { transaction }
+        {
+          include: [
+            {
+              association: UserRoleCapability.associations._capability,
+            },
+          ],
+          transaction,
+        }
       );
     }
 
     return userRole;
   });
+}
+
+export async function findUserRoleByName(name: string) {
+  return UserRole.findOne({ where: { name } });
+}
+
+export async function deleteUserRole(id: number) {
+  return UserRole.destroy({ where: { id } });
 }

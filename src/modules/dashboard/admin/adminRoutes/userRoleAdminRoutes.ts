@@ -1,4 +1,5 @@
 import { getAuthUserMiddleware } from '../../../../api-utils/midddleware';
+import { genericSchema } from '../../../../api-utils/schemas';
 import {
   getAllUserRolesResponseSchema,
   upsertUserRoleRequestSchema,
@@ -8,6 +9,7 @@ import { CAPABILITIES } from '../../../../consts/model';
 import {
   getAllUserRolesHandler,
   upsertUserRolesHandler,
+  deleteUserRoleHandler,
 } from '../adminHandlers/userRoleAdminHandlers';
 
 export const getAllUserRolesRoute = {
@@ -45,4 +47,21 @@ export const upsertUserRolesRoute = {
     },
   },
   handler: upsertUserRolesHandler,
+};
+
+export const deleteUserRolesRoute = {
+  method: 'DELETE',
+  path: '/admin/userrole/{userRoleId}',
+  options: {
+    description: 'delete user role',
+    tags: ['api'],
+    bind: {
+      requiredCapabilities: [CAPABILITIES.USER_ROLE_WRITE],
+    },
+    pre: [getAuthUserMiddleware],
+    response: {
+      schema: genericSchema,
+    },
+  },
+  handler: deleteUserRoleHandler,
 };
