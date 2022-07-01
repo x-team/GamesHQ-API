@@ -4,8 +4,9 @@ import {
   getAchievementsRoute,
   upsertAchievementsRoute,
   deleteAchievementsRoute,
+  getAchievementsProgressRoute,
 } from '../../../../../src/modules/dashboard/gameDev/gameDevRoutes/achievementGameDevRoutes';
-import { Achievement, Session } from '../../../../../src/models';
+import { Achievement, AchievementUnlocked, Session } from '../../../../../src/models';
 import { v4 as uuid } from 'uuid';
 import { createTestUser, getCustomTestServer } from '../../../../test-utils';
 
@@ -17,7 +18,94 @@ describe('gameDevRoutes', () => {
     getAchievementsRoute,
     upsertAchievementsRoute,
     deleteAchievementsRoute,
+    getAchievementsProgressRoute,
   ]);
+
+  describe('getAchievementsProgressRoute', async () => {
+    it('should return 200 status code on GET /achievements/progress', async () => {
+      const session = await Session.create({
+        token: uuid(),
+        _userId: 1,
+      });
+
+      await Achievement.create({
+        description: 'new_my_achievement_1',
+        isEnabled: true,
+        targetValue: 200,
+        _gameTypeId: 1,
+      });
+
+      const achievementUnlockedInDB_1 = await AchievementUnlocked.create({
+        progress: 10,
+        _achievementId: 1,
+        _userId: 1,
+        isUnlocked: true,
+      });
+
+      const injectOptions = {
+        method: 'GET',
+        url: '/dashboard/game-dev/games/1/achievements/1/progress',
+        headers: {
+          'xtu-session-token': session.token,
+        },
+      };
+
+      const rslt = await testServer.inject(injectOptions);
+
+      expect(rslt.statusCode).to.equal(200);
+      const body = JSON.parse(rslt.payload)[0] as AchievementUnlocked;
+      expect(body.progress === achievementUnlockedInDB_1.progress);
+      expect(body._achievementId === achievementUnlockedInDB_1._achievementId);
+    });
+
+    it('should return 200 status code on GET /achievements/progress with empty response', async () => {
+      const session = await Session.create({
+        token: uuid(),
+        _userId: 1,
+      });
+
+      await Achievement.create({
+        description: 'new_my_achievement_1',
+        isEnabled: true,
+        targetValue: 200,
+        _gameTypeId: 1,
+      });
+
+      const injectOptions = {
+        method: 'GET',
+        url: '/dashboard/game-dev/games/1/achievements/1/progress',
+        headers: {
+          'xtu-session-token': session.token,
+        },
+      };
+
+      const rslt = await testServer.inject(injectOptions);
+
+      expect(rslt.statusCode).to.equal(200);
+      expect(JSON.parse(rslt.payload)).to.deep.equal([]);
+    });
+
+    it('should return 403 if the achievement does not exist', async () => {
+      const user = await createTestUser();
+
+      const session = await Session.create({
+        token: uuid(),
+        _userId: user.id,
+      });
+
+      const injectOptions = {
+        method: 'GET',
+        url: '/dashboard/game-dev/games/1/achievements/29/progress',
+        headers: {
+          'xtu-session-token': session.token,
+        },
+      };
+
+      const rslt = await testServer.inject(injectOptions);
+
+      expect(rslt.statusCode).to.equal(403);
+    });
+  });
 
   describe('getAchievementsRoute', async () => {
     it('should return 200 status code on GET /achievements', async () => {

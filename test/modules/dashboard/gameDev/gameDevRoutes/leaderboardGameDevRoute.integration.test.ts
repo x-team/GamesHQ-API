@@ -4,8 +4,9 @@ import {
   getLeaderboardByIdRoute,
   upsertLeaderboardRoute,
   deleteLeaderboardRoute,
+  getResultsFromLeaderboardRoute,
 } from '../../../../../src/modules/dashboard/gameDev/gameDevRoutes/leaderboardGameDevRoutes';
-import { LeaderboardEntry, Session } from '../../../../../src/models';
+import { LeaderboardEntry, LeaderboardResults, Session } from '../../../../../src/models';
 import { v4 as uuid } from 'uuid';
 import { getCustomTestServer } from '../../../../test-utils';
 
@@ -17,6 +18,7 @@ describe('gameDevRoutes', () => {
     getLeaderboardByIdRoute,
     upsertLeaderboardRoute,
     deleteLeaderboardRoute,
+    getResultsFromLeaderboardRoute,
   ]);
 
   describe('getLeaderboardRoute', async () => {
@@ -99,6 +101,65 @@ describe('gameDevRoutes', () => {
       const injectOptions = {
         method: 'GET',
         url: `/dashboard/game-dev/games/1/leaderboards/1234`,
+        headers: {
+          'xtu-session-token': session.token,
+        },
+      };
+
+      const rslt = await testServer.inject(injectOptions);
+
+      expect(rslt.statusCode).to.equal(404);
+      expect(rslt.result).to.deep.equal({
+        error: 'Not Found',
+        message: 'leaderboard not found',
+        statusCode: 404,
+      });
+    });
+  });
+
+  describe('getLeaderboardResultsRoute', async () => {
+    it('should return 200 status code on GET /leaderboards/{id}/results', async () => {
+      const session = await Session.create({
+        token: uuid(),
+        _userId: 1,
+      });
+
+      const lb1 = await LeaderboardEntry.create({
+        name: 'LeaderBoard_' + uuid(),
+        _gameTypeId: 1,
+      });
+
+      const lbr1 = await LeaderboardResults.create({
+        score: 10,
+        _leaderboardEntryId: 1,
+        _userId: 1,
+      });
+
+      const injectOptions = {
+        method: 'GET',
+        url: `/dashboard/game-dev/games/1/leaderboards/${lb1.id}/results`,
+        headers: {
+          'xtu-session-token': session.token,
+        },
+      };
+
+      const rslt = await testServer.inject(injectOptions);
+      const resultJson = JSON.parse(rslt.payload);
+
+      expect(rslt.statusCode).to.equal(200);
+      expect(resultJson[0].score).to.equal(lbr1.score);
+      expect(resultJson[0].id).to.equal(lbr1.id);
+    });
+
+    it('should return 404 status code on GET /leaderboards/{id}/results when leaderboard does not exist', async () => {
+      const session = await Session.create({
+        token: uuid(),
+        _userId: 1,
+      });
+
+      const injectOptions = {
+        method: 'GET',
+        url: `/dashboard/game-dev/games/1/leaderboards/1234/results`,
         headers: {
           'xtu-session-token': session.token,
         },
