@@ -242,5 +242,9 @@ describe('userRoleAdminRoutes', () => {
         message: 'Only authorized users can access here',
       });
     });
+
+    after(async () => {
+      await Capability.destroy({ where: { name: 'NEW_CAPABILITY' } });
+    });
   });
 });
