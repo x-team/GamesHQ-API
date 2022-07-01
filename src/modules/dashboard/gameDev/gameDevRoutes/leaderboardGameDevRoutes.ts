@@ -7,6 +7,7 @@ import {
 import { gamedevGenericSchema } from '../../../../api-utils/schemas/gameDev/gameTypeSchema';
 import {
   leaderboardSchema,
+  multipleLeaderboardResultScoreSchema,
   multipleLeaderboardSchema,
   postLeaderboardSchema,
 } from '../../../../api-utils/schemas/gameDev/leaderboardSchemas';
@@ -15,6 +16,7 @@ import {
   getLeaderboardHandler,
   upsertLeaderboardHandler,
   deleteLeaderboardHandler,
+  getLeaderboardResultsHandler,
 } from '../gameDevHandlers/leaderboardGameDevHandlers';
 
 export const getLeaderboardsRoute: ServerRoute = {
@@ -55,6 +57,26 @@ export const getLeaderboardByIdRoute: ServerRoute = {
     },
   },
   handler: getLeaderboardHandler,
+};
+
+export const getResultsFromLeaderboardRoute: ServerRoute = {
+  method: 'GET',
+  path: '/dashboard/game-dev/games/{gameTypeId}/leaderboards/{leaderboardId}/results',
+  options: {
+    description: 'Fetch a list of LeaderboardRank from a LeaderboardEntry',
+    tags: ['api'],
+    bind: {
+      requiredCapabilities: [
+        CAPABILITIES.MY_GAME_LEADERBOARD_READ,
+        CAPABILITIES.MY_GAME_LEADERBOARD_WRITE,
+      ],
+    },
+    pre: [getAuthUserMiddleware, validateGameAuthMiddleware],
+    response: {
+      schema: multipleLeaderboardResultScoreSchema,
+    },
+  },
+  handler: getLeaderboardResultsHandler,
 };
 
 export const deleteLeaderboardRoute: ServerRoute = {

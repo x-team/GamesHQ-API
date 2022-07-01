@@ -1,4 +1,4 @@
-import type { Association } from 'sequelize';
+import type { Association, Transaction } from 'sequelize';
 import {
   Table,
   Column,
@@ -27,6 +27,9 @@ interface AchievementUnlockedAttributes {
 }
 export interface AchievementUnlockedCreationAttributes {
   progress?: number;
+  _achievementId: number;
+  _userId: number;
+  isUnlocked: boolean;
 }
 
 @Table
@@ -94,4 +97,23 @@ export async function createOrUpdateAchievementUnlocked(
   achievementUnlockedData: AchievementUnlockedUnlockedEditorData
 ) {
   return await AchievementUnlocked.upsert({ ...achievementUnlockedData });
+}
+
+export function getAchievementUnlockedFromAchievement(
+  achievement: Achievement,
+  transaction?: Transaction
+) {
+  return AchievementUnlocked.findAll({
+    where: {
+      _achievementId: achievement.id,
+    },
+    include: [
+      {
+        association: AchievementUnlocked.associations._user,
+        attributes: ['email'],
+      },
+    ],
+    attributes: ['progress', '_user.email'],
+    transaction,
+  });
 }
