@@ -38,7 +38,7 @@ describe('userRoleAdminRoutes', () => {
       expect(payload[1].name).to.equal('gamedev');
       expect(payload[1]._capabilities.length).to.equal(6);
       expect(payload[2].name).to.equal('super_admin');
-      expect(payload[2]._capabilities.length).to.equal(26);
+      expect(payload[2]._capabilities.length).to.equal(28);
       expect(payload[3].name).to.equal('user');
       expect(payload[3]._capabilities.length).to.equal(0);
     });

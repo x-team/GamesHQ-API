@@ -7,6 +7,7 @@ import {
   BelongsToMany,
   Unique,
   PrimaryKey,
+  AutoIncrement,
 } from 'sequelize-typescript';
 
 import { UserRole, UserRoleCapability } from '.';
@@ -15,10 +16,14 @@ export interface CapabilityAttributes {
   id: number;
   name: string;
 }
+
+export interface CapabilityCreateAttributes {
+  name: string;
+}
 @Table
-export class Capability extends Model<CapabilityAttributes> {
+export class Capability extends Model<CapabilityAttributes, CapabilityCreateAttributes> {
   @PrimaryKey
-  @Unique
+  @AutoIncrement
   @Column(DataType.INTEGER)
   declare id: number;
 
@@ -40,4 +45,12 @@ export class Capability extends Model<CapabilityAttributes> {
 
 export const findAllCapabilties = async () => {
   return await Capability.findAll();
+};
+
+export const createCapability = async (data: CapabilityCreateAttributes) => {
+  return await Capability.create(data);
+};
+
+export const deleteCapability = async (id: number) => {
+  return await Capability.destroy({ where: { id } });
 };

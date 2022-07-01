@@ -214,4 +214,6 @@ const superAdminCapabilities = [
   'TOWER_ACTION',
   'TOWER_EVENT',
   'GAMESHQ_COMMAND',
+  'CAPABILITY_READ',
+  'CAPABILITY_WRITE',
 ];
