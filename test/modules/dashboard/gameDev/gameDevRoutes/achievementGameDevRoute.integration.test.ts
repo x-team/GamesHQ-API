@@ -87,7 +87,7 @@ describe('gameDevRoutes', () => {
     });
 
     it('should return 403 if the achievement does not exist', async () => {
-      const user = await createTestUser();
+      const user = await createTestUser({ _roleId: USER_ROLE_LEVEL.GAME_DEV });
 
       const session = await Session.create({
         token: uuid(),

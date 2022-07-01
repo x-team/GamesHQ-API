@@ -66,7 +66,10 @@ export const getResultsFromLeaderboardRoute: ServerRoute = {
     description: 'Fetch a list of LeaderboardRank from a LeaderboardEntry',
     tags: ['api'],
     bind: {
-      requiredCapabilities: [CAPABILITIES.GAMEDEV_ACTIONS],
+      requiredCapabilities: [
+        CAPABILITIES.MY_GAME_LEADERBOARD_READ,
+        CAPABILITIES.MY_GAME_LEADERBOARD_WRITE,
+      ],
     },
     pre: [getAuthUserMiddleware, validateGameAuthMiddleware],
     response: {

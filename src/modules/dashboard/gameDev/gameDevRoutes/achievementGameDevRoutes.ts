@@ -68,7 +68,10 @@ export const getAchievementsProgressRoute: ServerRoute = {
     description: `Get game's achievements progress records`,
     tags: ['api'],
     bind: {
-      requiredCapabilities: [CAPABILITIES.GAMEDEV_ACTIONS],
+      requiredCapabilities: [
+        CAPABILITIES.MY_GAME_ACHIEVEMENT_READ,
+        CAPABILITIES.MY_GAME_ACHIEVEMENT_WRITE,
+      ],
     },
     pre: [getAuthUserMiddleware, validateGameAuthMiddleware],
     response: {
