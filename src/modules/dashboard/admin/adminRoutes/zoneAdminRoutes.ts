@@ -1,5 +1,5 @@
-import { CAPABILITIES } from '../../../../api-utils/interfaceAndTypes';
 import { getAuthUserMiddleware } from '../../../../api-utils/midddleware';
+import { CAPABILITIES } from '../../../../consts/model';
 import {
   getZoneHandler,
   getZonesHandler,
@@ -14,7 +14,7 @@ export const getZoneRoute = {
     description: 'Get specific zone by id',
     tags: ['api'],
     bind: {
-      requiredCapabilities: [CAPABILITIES.ADMIN_ACTIONS],
+      requiredCapabilities: [CAPABILITIES.ZONE_READ, CAPABILITIES.ZONE_WRITE],
     },
     pre: [getAuthUserMiddleware],
   },
@@ -28,7 +28,7 @@ export const deleteZoneRoute = {
     description: 'Delete a zone.',
     tags: ['api'],
     bind: {
-      requiredCapabilities: [CAPABILITIES.ADMIN_ACTIONS],
+      requiredCapabilities: [CAPABILITIES.ZONE_WRITE],
     },
     pre: [getAuthUserMiddleware],
   },
@@ -42,7 +42,7 @@ export const getZonesRoute = {
     description: 'Get all zones',
     tags: ['api'],
     bind: {
-      requiredCapabilities: [CAPABILITIES.ADMIN_ACTIONS],
+      requiredCapabilities: [CAPABILITIES.ZONE_READ, CAPABILITIES.ZONE_WRITE],
     },
     pre: [getAuthUserMiddleware],
   },
@@ -56,7 +56,7 @@ export const upsertZoneRoute = {
     description: 'Add or update a zone',
     tags: ['api'],
     bind: {
-      requiredCapabilities: [CAPABILITIES.ADMIN_ACTIONS],
+      requiredCapabilities: [CAPABILITIES.ZONE_WRITE],
     },
     pre: [getAuthUserMiddleware],
   },

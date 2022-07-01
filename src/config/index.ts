@@ -3,14 +3,16 @@ import dotenv from 'dotenv';
 export { prettifyConfig } from './sqlPrettifyConfig';
 import { version } from '../../package.json';
 
-if (getConfig('NODE_ENV') !== 'production') {
+if (getConfig('NODE_ENV') === 'test') {
+  dotenv.config({ path: '.env.test' });
+} else if (getConfig('NODE_ENV') !== 'production') {
   dotenv.config({ path: '.env.dev' });
 }
 interface NameToType {
   // PROCESS
   ENV: 'production' | 'staging' | 'development' | 'test';
   SEED_MODE: 'noseed' | 'seed';
-  NODE_ENV: 'production' | 'development';
+  NODE_ENV: 'production' | 'test' | 'development';
   // DATABASE
   DB_USERNAME: string;
   DB_PASSWORD: string;

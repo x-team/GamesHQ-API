@@ -1,5 +1,5 @@
-import { CAPABILITIES } from '../../../../api-utils/interfaceAndTypes';
 import { getAuthUserMiddleware } from '../../../../api-utils/midddleware';
+import { CAPABILITIES } from '../../../../consts/model';
 import {
   getEnemyHandler,
   getEnemiesHandler,
@@ -14,7 +14,7 @@ export const getEnemyRoute = {
     description: 'Get information on a specific enemy',
     tags: ['api'],
     bind: {
-      requiredCapabilities: [CAPABILITIES.ADMIN_ACTIONS],
+      requiredCapabilities: [CAPABILITIES.ENEMY_READ, CAPABILITIES.ENEMY_WRITE],
     },
     pre: [getAuthUserMiddleware],
   },
@@ -28,7 +28,7 @@ export const deleteEnemyRoute = {
     description: 'Delete an enemy.',
     tags: ['api'],
     bind: {
-      requiredCapabilities: [CAPABILITIES.ADMIN_ACTIONS],
+      requiredCapabilities: [CAPABILITIES.ENEMY_WRITE],
     },
     pre: [getAuthUserMiddleware],
   },
@@ -42,7 +42,7 @@ export const getEnemiesRoute = {
     description: 'Get all enemies',
     tags: ['api'],
     bind: {
-      requiredCapabilities: [CAPABILITIES.ADMIN_ACTIONS],
+      requiredCapabilities: [CAPABILITIES.ENEMY_READ, CAPABILITIES.ENEMY_WRITE],
     },
     pre: [getAuthUserMiddleware],
   },
@@ -56,7 +56,7 @@ export const upsertEnemyRoute = {
     description: 'Add or update enemy',
     tags: ['api'],
     bind: {
-      requiredCapabilities: [CAPABILITIES.ADMIN_ACTIONS],
+      requiredCapabilities: [CAPABILITIES.ENEMY_WRITE],
     },
     pre: [getAuthUserMiddleware],
   },

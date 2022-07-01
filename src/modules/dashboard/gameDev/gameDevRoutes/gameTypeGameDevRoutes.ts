@@ -1,6 +1,5 @@
 import type { ServerRoute } from '@hapi/hapi';
 
-import { CAPABILITIES } from '../../../../api-utils/interfaceAndTypes';
 import {
   getAuthUserMiddleware,
   validateGameAuthMiddleware,
@@ -11,6 +10,7 @@ import {
   sigleGameItemSchema,
   upsertGameTypeSchema,
 } from '../../../../api-utils/schemas/gameDev/gameTypeSchema';
+import { CAPABILITIES } from '../../../../consts/model';
 import {
   deleteGameTypeHandler,
   getGameTypeHandler,
@@ -25,7 +25,7 @@ export const getGameTypesRoute: ServerRoute = {
     description: 'Get all games',
     tags: ['api'],
     bind: {
-      requiredCapabilities: [CAPABILITIES.GAMEDEV_ACTIONS],
+      requiredCapabilities: [CAPABILITIES.MY_GAME_READ, CAPABILITIES.MY_GAME_WRITE],
     },
     pre: [getAuthUserMiddleware, validateGameAuthMiddleware],
     response: {
@@ -42,7 +42,7 @@ export const getGameTypeByIdRoute: ServerRoute = {
     description: 'Get specific game by id',
     tags: ['api'],
     bind: {
-      requiredCapabilities: [CAPABILITIES.GAMEDEV_ACTIONS],
+      requiredCapabilities: [CAPABILITIES.MY_GAME_READ, CAPABILITIES.MY_GAME_WRITE],
     },
     pre: [getAuthUserMiddleware, validateGameAuthMiddleware],
     response: {
@@ -59,7 +59,7 @@ export const upsertGameTypeRoute: ServerRoute = {
     description: 'Add or update a game',
     tags: ['api'],
     bind: {
-      requiredCapabilities: [CAPABILITIES.GAMEDEV_ACTIONS],
+      requiredCapabilities: [CAPABILITIES.MY_GAME_WRITE],
     },
     pre: [getAuthUserMiddleware, validateGameAuthMiddleware],
     validate: {
@@ -79,7 +79,7 @@ export const deleteGameTypeRoute: ServerRoute = {
     description: 'Delete a game.',
     tags: ['api'],
     bind: {
-      requiredCapabilities: [CAPABILITIES.GAMEDEV_ACTIONS],
+      requiredCapabilities: [CAPABILITIES.MY_GAME_WRITE],
     },
     pre: [getAuthUserMiddleware, validateGameAuthMiddleware],
     response: {

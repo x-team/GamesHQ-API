@@ -1,9 +1,18 @@
 import type { Association } from 'sequelize';
-import { Table, Column, Model, DataType, HasMany, Unique, PrimaryKey } from 'sequelize-typescript';
+import {
+  Table,
+  Column,
+  Model,
+  DataType,
+  HasMany,
+  Unique,
+  PrimaryKey,
+  BelongsToMany,
+} from 'sequelize-typescript';
 
 import { USER_ROLE_LEVEL, USER_ROLE_NAME } from '../consts/model';
 
-import { User } from './';
+import { User, Capability, UserRoleCapability } from './';
 
 interface UserRoleAttributes {
   id: USER_ROLE_LEVEL;
@@ -39,7 +48,15 @@ export class UserRole
   @HasMany(() => User, '_roleId')
   declare _users?: User[];
 
+  @BelongsToMany(() => Capability, {
+    through: () => UserRoleCapability,
+    foreignKey: '_userRoleId',
+    otherKey: '_capabilityId',
+  })
+  declare _capabilities?: Capability[];
+
   static associations: {
     _users: Association<UserRole, User>;
+    _capabilities: Association<UserRole, Capability>;
   };
 }

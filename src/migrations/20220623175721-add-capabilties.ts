@@ -1,15 +1,10 @@
-export enum USER_ROLE_NAME {
-  USER = 'user',
-  GAME_DEV = 'gamedev',
-  ADMIN = 'admin',
-  SUPER_ADMIN = 'super_admin',
-}
+import type { QueryInterface, Sequelize } from 'sequelize';
 
-export enum USER_ROLE_LEVEL {
-  USER = 1,
-  GAME_DEV,
-  ADMIN,
-  SUPER_ADMIN,
+interface SequelizeContext {
+  context: {
+    queryInterface: QueryInterface;
+    Sequelize: Sequelize;
+  };
 }
 
 export enum CAPABILITIES {
@@ -38,3 +33,29 @@ export enum CAPABILITIES {
   TOWER_EVENT = 'TOWER_EVENT',
   GAMESHQ_COMMAND = 'GAMESHQ_COMMAND',
 }
+
+const capabilites = Object.keys(CAPABILITIES).map((capability) => {
+  return {
+    name: capability,
+  };
+});
+
+module.exports = {
+  async up({ context: { queryInterface } }: SequelizeContext) {
+    return queryInterface.sequelize.transaction(async (transaction) => {
+      await queryInterface.bulkInsert('Capability', capabilites, { transaction });
+    });
+  },
+
+  async down({ context: { queryInterface } }: SequelizeContext) {
+    return queryInterface.sequelize.transaction(async (transaction) => {
+      await queryInterface.bulkDelete(
+        'Capability',
+        {},
+        {
+          transaction,
+        }
+      );
+    });
+  },
+};

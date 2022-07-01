@@ -109,6 +109,7 @@ async function resetDB() {
   const TRUNCATE_BLACKLIST = [
     'sequelize',
     'ArenaZone',
+    'Capability',
     'GameType',
     'AvailableAction',
     'Enemy',
@@ -129,6 +130,7 @@ async function resetDB() {
     'Team',
     'Trait',
     'User',
+    'UserRoleCapability',
     'UserRole',
   ];
   const keys = Object.keys(getAllModels()).filter((key) => !TRUNCATE_BLACKLIST.includes(key));

@@ -9,6 +9,7 @@ import {
 import { Achievement, AchievementUnlocked, Session } from '../../../../../src/models';
 import { v4 as uuid } from 'uuid';
 import { createTestUser, getCustomTestServer } from '../../../../test-utils';
+import { USER_ROLE_LEVEL } from '../../../../../src/consts/model';
 
 describe('gameDevRoutes', () => {
   const testServer = getCustomTestServer();
@@ -86,7 +87,7 @@ describe('gameDevRoutes', () => {
     });
 
     it('should return 403 if the achievement does not exist', async () => {
-      const user = await createTestUser();
+      const user = await createTestUser({ _roleId: USER_ROLE_LEVEL.GAME_DEV });
 
       const session = await Session.create({
         token: uuid(),
@@ -174,7 +175,7 @@ describe('gameDevRoutes', () => {
     });
 
     it('should return error if user does not own gametype', async () => {
-      const user = await createTestUser();
+      const user = await createTestUser({ _roleId: USER_ROLE_LEVEL.GAME_DEV });
 
       const session = await Session.create({
         token: uuid(),
@@ -257,7 +258,7 @@ describe('gameDevRoutes', () => {
     });
 
     it('should return error if user does not own gametype', async () => {
-      const user = await createTestUser();
+      const user = await createTestUser({ _roleId: USER_ROLE_LEVEL.GAME_DEV });
 
       const session = await Session.create({
         token: uuid(),
@@ -435,7 +436,7 @@ describe('gameDevRoutes', () => {
     });
 
     it('should return error if creating achievement without user permission', async () => {
-      const user = await createTestUser();
+      const user = await createTestUser({ _roleId: USER_ROLE_LEVEL.GAME_DEV });
 
       const session = await Session.create({
         token: uuid(),
@@ -528,7 +529,7 @@ describe('gameDevRoutes', () => {
     });
 
     it('should return 403 status code on DELETE /achievements/{id} when user does not own game', async () => {
-      const user = await createTestUser();
+      const user = await createTestUser({ _roleId: USER_ROLE_LEVEL.GAME_DEV });
 
       const session = await Session.create({
         token: uuid(),

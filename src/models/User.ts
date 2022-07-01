@@ -157,13 +157,29 @@ export class User extends Model<UserAttributes, UserCreationAttributes> implemen
     return Boolean(this._role && this._role.name === USER_ROLE_NAME.SUPER_ADMIN);
   }
 
-  isCommunityTeam(): boolean {
-    return Boolean(this._role && this._role.name === USER_ROLE_NAME.COMMUNITY_TEAM);
+  isGameDev(): boolean {
+    return Boolean(this._role && this._role.name === USER_ROLE_NAME.GAME_DEV);
   }
 }
 
 export function findUserById(id: number, transaction?: Transaction) {
   return User.findByPk(id, { transaction });
+}
+
+export function findUserWithRoleAndCapabilities(id: number, transaction?: Transaction) {
+  return User.findByPk(id, {
+    include: [
+      {
+        association: User.associations._role,
+        include: [
+          {
+            association: UserRole.associations._capabilities,
+          },
+        ],
+      },
+    ],
+    transaction,
+  });
 }
 
 export async function getUserByEmail(email: string): Promise<User | null> {

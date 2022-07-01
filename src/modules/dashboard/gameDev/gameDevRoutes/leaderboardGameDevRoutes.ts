@@ -1,6 +1,5 @@
 import type { ServerRoute } from '@hapi/hapi';
 
-import { CAPABILITIES } from '../../../../api-utils/interfaceAndTypes';
 import {
   getAuthUserMiddleware,
   validateGameAuthMiddleware,
@@ -12,6 +11,7 @@ import {
   multipleLeaderboardSchema,
   postLeaderboardSchema,
 } from '../../../../api-utils/schemas/gameDev/leaderboardSchemas';
+import { CAPABILITIES } from '../../../../consts/model';
 import {
   getLeaderboardHandler,
   upsertLeaderboardHandler,
@@ -26,7 +26,10 @@ export const getLeaderboardsRoute: ServerRoute = {
     description: 'Fetch game`s leaderboardEntries',
     tags: ['api'],
     bind: {
-      requiredCapabilities: [CAPABILITIES.GAMEDEV_ACTIONS],
+      requiredCapabilities: [
+        CAPABILITIES.MY_GAME_LEADERBOARD_READ,
+        CAPABILITIES.MY_GAME_LEADERBOARD_WRITE,
+      ],
     },
     pre: [getAuthUserMiddleware, validateGameAuthMiddleware],
     response: {
@@ -43,7 +46,10 @@ export const getLeaderboardByIdRoute: ServerRoute = {
     description: 'Fetch game`s leaderboardEntry',
     tags: ['api'],
     bind: {
-      requiredCapabilities: [CAPABILITIES.GAMEDEV_ACTIONS],
+      requiredCapabilities: [
+        CAPABILITIES.MY_GAME_LEADERBOARD_READ,
+        CAPABILITIES.MY_GAME_LEADERBOARD_WRITE,
+      ],
     },
     pre: [getAuthUserMiddleware, validateGameAuthMiddleware],
     response: {
@@ -60,7 +66,10 @@ export const getResultsFromLeaderboardRoute: ServerRoute = {
     description: 'Fetch a list of LeaderboardRank from a LeaderboardEntry',
     tags: ['api'],
     bind: {
-      requiredCapabilities: [CAPABILITIES.GAMEDEV_ACTIONS],
+      requiredCapabilities: [
+        CAPABILITIES.MY_GAME_LEADERBOARD_READ,
+        CAPABILITIES.MY_GAME_LEADERBOARD_WRITE,
+      ],
     },
     pre: [getAuthUserMiddleware, validateGameAuthMiddleware],
     response: {
@@ -77,7 +86,7 @@ export const deleteLeaderboardRoute: ServerRoute = {
     description: 'Delete game`s leaderboardEntry',
     tags: ['api'],
     bind: {
-      requiredCapabilities: [CAPABILITIES.GAMEDEV_ACTIONS],
+      requiredCapabilities: [CAPABILITIES.MY_GAME_LEADERBOARD_WRITE],
     },
     pre: [getAuthUserMiddleware, validateGameAuthMiddleware],
     response: {
@@ -94,7 +103,7 @@ export const upsertLeaderboardRoute: ServerRoute = {
     description: 'Add or update a game`s leaderboardEntry',
     tags: ['api'],
     bind: {
-      requiredCapabilities: [CAPABILITIES.GAMEDEV_ACTIONS],
+      requiredCapabilities: [CAPABILITIES.MY_GAME_LEADERBOARD_WRITE],
     },
     pre: [getAuthUserMiddleware, validateGameAuthMiddleware],
     validate: {

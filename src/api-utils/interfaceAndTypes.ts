@@ -1,13 +1,6 @@
 export interface CustomRequestThis {
-  requiredCapabilities: Array<number>;
+  requiredCapabilities: Array<string>;
 }
-
-export enum CAPABILITIES {
-  USER_ACTIONS = 1,
-  GAMEDEV_ACTIONS,
-  ADMIN_ACTIONS,
-}
-
 export interface GoogleAuthCredentials {
   provider: 'google';
   query: any;

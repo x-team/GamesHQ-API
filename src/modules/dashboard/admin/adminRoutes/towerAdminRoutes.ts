@@ -1,5 +1,5 @@
-import { CAPABILITIES } from '../../../../api-utils/interfaceAndTypes';
 import { getAuthUserMiddleware } from '../../../../api-utils/midddleware';
+import { CAPABILITIES } from '../../../../consts/model';
 import {
   getTowerGameStatusHandler,
   newTowerGameHandler,
@@ -15,7 +15,7 @@ export const getTowerGameStatusRoute = {
     description: 'Get status of current tower game',
     tags: ['api'],
     bind: {
-      requiredCapabilities: [CAPABILITIES.ADMIN_ACTIONS],
+      requiredCapabilities: [CAPABILITIES.THE_TOWER_READ, CAPABILITIES.THE_TOWER_WRITE],
     },
     pre: [getAuthUserMiddleware],
   },
@@ -29,7 +29,7 @@ export const newTowerGameRoute = {
     description: 'Create new tower game.',
     tags: ['api'],
     bind: {
-      requiredCapabilities: [CAPABILITIES.ADMIN_ACTIONS],
+      requiredCapabilities: [CAPABILITIES.THE_TOWER_WRITE],
     },
     pre: [getAuthUserMiddleware],
   },
@@ -43,7 +43,7 @@ export const endCurrentTowerGameRoute = {
     description: 'End current tower game.',
     tags: ['api'],
     bind: {
-      requiredCapabilities: [CAPABILITIES.ADMIN_ACTIONS],
+      requiredCapabilities: [CAPABILITIES.THE_TOWER_WRITE],
     },
     pre: [getAuthUserMiddleware],
   },
@@ -57,7 +57,7 @@ export const openOrCloseCurrentTowerRoute = {
     description: 'Open or close current tower game based on POST payload data.',
     tags: ['api'],
     bind: {
-      requiredCapabilities: [CAPABILITIES.ADMIN_ACTIONS],
+      requiredCapabilities: [CAPABILITIES.THE_TOWER_WRITE],
     },
     pre: [getAuthUserMiddleware],
   },
@@ -71,7 +71,7 @@ export const addEnemyToFloorRoute = {
     description: 'Add ',
     tags: ['api'],
     bind: {
-      requiredCapabilities: [CAPABILITIES.ADMIN_ACTIONS],
+      requiredCapabilities: [CAPABILITIES.THE_TOWER_WRITE],
     },
     pre: [getAuthUserMiddleware],
   },
