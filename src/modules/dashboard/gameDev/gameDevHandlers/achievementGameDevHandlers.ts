@@ -3,8 +3,10 @@ import type { Lifecycle } from '@hapi/hapi';
 
 import { arrayToJSON } from '../../../../api-utils/utils';
 import type { GameType } from '../../../../models';
+import { getAchievementUnlockedFromAchievement } from '../../../../models/AchievementUnlocked';
 import type { AchievementEditorData } from '../../../../models/Achievements';
 import {
+  findAchievementById,
   findAllAchievementsByGameType,
   getAchievementByCreator,
   createOrUpdateAchievement,
@@ -28,6 +30,22 @@ export const getAchievementsHandler: Lifecycle.Method = async (request, h) => {
     const achievements = await findAllAchievementsByGameType(request.params.gameTypeId);
     return h.response(arrayToJSON(achievements)).code(200);
   }
+};
+
+export const getAchievementProgressHandler: Lifecycle.Method = async (request, h) => {
+  if (!request.params.achievementId) {
+    throw Boom.notFound('Invalid achievementId');
+  }
+  const achievement = await findAchievementById(request.params.achievementId);
+
+  if (!achievement) {
+    throw Boom.notFound('achievement not found');
+  }
+  const achievementUnlockedList = await getAchievementUnlockedFromAchievement(achievement);
+
+  const achievementUnlockedListRes = arrayToJSON(achievementUnlockedList);
+
+  return h.response(achievementUnlockedListRes).code(200);
 };
 
 export const upsertAchievementHandler: Lifecycle.Method = async (request, h) => {

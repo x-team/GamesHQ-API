@@ -7,6 +7,7 @@ import {
 import {
   getAchievementByIdResponseSchema,
   getAchievementsResponseSchema,
+  multipleAchievementProgressResponseSchema,
   postAchievementRequestSchema,
   postAchievementResponseSchema,
 } from '../../../../api-utils/schemas/gameDev/achievementsSchemas';
@@ -16,6 +17,7 @@ import {
   getAchievementsHandler,
   upsertAchievementHandler,
   deleteAchievementHandler,
+  getAchievementProgressHandler,
 } from '../gameDevHandlers/achievementGameDevHandlers';
 
 //Achievements
@@ -57,6 +59,23 @@ export const getAchievementsByIdRoute: ServerRoute = {
     },
   },
   handler: getAchievementsHandler,
+};
+
+export const getAchievementsProgressRoute: ServerRoute = {
+  method: 'GET',
+  path: '/dashboard/game-dev/games/{gameTypeId}/achievements/{achievementId}/progress',
+  options: {
+    description: `Get game's achievements progress records`,
+    tags: ['api'],
+    bind: {
+      requiredCapabilities: [CAPABILITIES.GAMEDEV_ACTIONS],
+    },
+    pre: [getAuthUserMiddleware, validateGameAuthMiddleware],
+    response: {
+      schema: multipleAchievementProgressResponseSchema,
+    },
+  },
+  handler: getAchievementProgressHandler,
 };
 
 export const upsertAchievementsRoute: ServerRoute = {
