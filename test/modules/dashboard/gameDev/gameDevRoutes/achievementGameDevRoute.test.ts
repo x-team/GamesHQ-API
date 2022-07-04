@@ -6,12 +6,14 @@ import {
   upsertAchievementsRoute,
   deleteAchievementsRoute,
   postAchievementProgressRoute,
+  deleteAchievementProgressRoute,
 } from '../../../../../src/modules/dashboard/gameDev/gameDevRoutes/achievementGameDevRoutes';
 import {
   getAchievementsHandler,
   upsertAchievementHandler,
   deleteAchievementHandler,
   updateAchievementProgressHandler,
+  deleteAchievementProgressHandler,
 } from '../../../../../src/modules/dashboard/gameDev/gameDevHandlers/achievementGameDevHandlers';
 import {
   getAchievementsResponseSchema,
@@ -145,6 +147,29 @@ describe('achievementGameDevRoutes', () => {
         postAchievementProgressResponseSchema
       );
       expect(postAchievementProgressRoute.handler).to.equal(updateAchievementProgressHandler);
+    });
+  });
+
+  describe('deleteAchievementProgressRoute', () => {
+    it('should be configured as expected', async () => {
+      expect(deleteAchievementProgressRoute.method).to.equal('DELETE');
+      expect(deleteAchievementProgressRoute.path).to.equal(
+        '/dashboard/game-dev/games/{gameTypeId}/achievements/{achievementId}/progress/{userId}'
+      );
+      expect(deleteAchievementProgressRoute.options?.bind).to.deep.equal({
+        requiredCapabilities: [CAPABILITIES.MY_GAME_ACHIEVEMENT_WRITE],
+      });
+      expect((deleteAchievementProgressRoute.options as RouteOptions).pre).to.deep.equal([
+        getAuthUserMiddleware,
+        validateGameAuthMiddleware,
+      ]);
+      expect((deleteAchievementProgressRoute.options as RouteOptions).validate?.payload).to.equal(
+        undefined
+      );
+      expect((deleteAchievementProgressRoute.options as RouteOptions).response?.schema).to.equal(
+        gamedevGenericSchema
+      );
+      expect(deleteAchievementProgressRoute.handler).to.equal(deleteAchievementProgressHandler);
     });
   });
 });

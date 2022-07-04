@@ -2,6 +2,7 @@ import { expect } from 'chai';
 import {
   findAchievementUnlocked,
   createOrUpdateAchievementUnlocked,
+  deleteAchievementUnlocked,
   AchievementUnlocked,
 } from '../../src/models/AchievementUnlocked';
 import { Achievement } from '../../src/models/Achievements';
@@ -94,6 +95,36 @@ describe('AchievementUnlocked', () => {
     it('should return null if Achievement Unlocked not found', async () => {
       const rslt = await findAchievementUnlocked(112321312, 12321);
       expect(rslt).to.be.null;
+    });
+  });
+
+  describe('deleteAchievementUnlocked', () => {
+    it('should delete Achievement Unlocked', async () => {
+      const a = await Achievement.create({
+        description: 'my_desc',
+        targetValue: 100,
+        isEnabled: true,
+        _gameTypeId: 1,
+      });
+
+      await AchievementUnlocked.create({
+        _userId: 1,
+        _achievementId: a.id,
+        progress: 10,
+        isUnlocked: true,
+      });
+
+      const rslt = await deleteAchievementUnlocked(1, a.id);
+      const auInDb = await AchievementUnlocked.findOne({
+        where: { _userId: 1, _achievementId: a.id },
+      });
+      expect(rslt).to.equal(1);
+      expect(auInDb).to.be.null;
+    });
+
+    it('should return 0 if Achievement Unlocked not found', async () => {
+      const rslt = await deleteAchievementUnlocked(112321312, 12321);
+      expect(rslt).to.equal(0);
     });
   });
 });

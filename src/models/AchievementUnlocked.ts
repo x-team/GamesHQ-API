@@ -103,6 +103,15 @@ export async function findAchievementUnlocked(_userId: number, _achievementId: n
   return await AchievementUnlocked.findOne({ where: { _userId, _achievementId } });
 }
 
+export function deleteAchievementUnlocked(_userId: number, _achievementId: number) {
+  return AchievementUnlocked.destroy({
+    where: {
+      _userId,
+      _achievementId,
+    },
+  });
+}
+
 export function getAchievementUnlockedFromAchievement(
   achievement: Achievement,
   transaction?: Transaction

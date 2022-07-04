@@ -8,6 +8,7 @@ import {
   getAchievementUnlockedFromAchievement,
   createOrUpdateAchievementUnlocked,
   findAchievementUnlocked,
+  deleteAchievementUnlocked,
 } from '../../../../models/AchievementUnlocked';
 import type { AchievementEditorData } from '../../../../models/Achievements';
 import {
@@ -35,6 +36,29 @@ export const getAchievementsHandler: Lifecycle.Method = async (request, h) => {
     const achievements = await findAllAchievementsByGameType(request.params.gameTypeId);
     return h.response(arrayToJSON(achievements)).code(200);
   }
+};
+
+export const upsertAchievementHandler: Lifecycle.Method = async (request, h) => {
+  const payload = request.payload as AchievementEditorData;
+  const game = request.pre.game as GameType;
+
+  if (payload.id && game && !game._achievements?.map((a) => a.id).includes(payload.id)) {
+    throw Boom.forbidden(`achievement does not belong to gametypeId ${request.params.gameTypeId}`);
+  }
+
+  const [rslt] = await createOrUpdateAchievement({ ...payload }, request.params.gameTypeId);
+
+  return h.response(rslt?.toJSON()).code(200);
+};
+
+export const deleteAchievementHandler: Lifecycle.Method = async (request, h) => {
+  const rslt = await deleteAchievementById(request.params.achievementId);
+
+  if (!rslt) {
+    throw Boom.notFound('achievement not found');
+  }
+
+  return h.response({ success: true }).code(200);
 };
 
 export const getAchievementProgressHandler: Lifecycle.Method = async (request, h) => {
@@ -74,24 +98,11 @@ export const updateAchievementProgressHandler: Lifecycle.Method = async (request
   return h.response(rslt.toJSON()).code(200);
 };
 
-export const upsertAchievementHandler: Lifecycle.Method = async (request, h) => {
-  const payload = request.payload as AchievementEditorData;
-  const game = request.pre.game as GameType;
-
-  if (payload.id && game && !game._achievements?.map((a) => a.id).includes(payload.id)) {
-    throw Boom.forbidden(`achievement does not belong to gametypeId ${request.params.gameTypeId}`);
-  }
-
-  const [rslt] = await createOrUpdateAchievement({ ...payload }, request.params.gameTypeId);
-
-  return h.response(rslt?.toJSON()).code(200);
-};
-
-export const deleteAchievementHandler: Lifecycle.Method = async (request, h) => {
-  const rslt = await deleteAchievementById(request.params.achievementId);
+export const deleteAchievementProgressHandler: Lifecycle.Method = async (request, h) => {
+  const rslt = await deleteAchievementUnlocked(request.params.achievementId, request.params.userId);
 
   if (!rslt) {
-    throw Boom.notFound('achievement not found');
+    throw Boom.notFound('achievement progress not found');
   }
 
   return h.response({ success: true }).code(200);
