@@ -2,6 +2,11 @@ import type { ServerRoute } from '@hapi/hapi';
 
 import { getCurrentArenaGameStateRoute } from './adminRoutes/arenaAdminRoutes';
 import {
+  getAllCapabilitiesRoute,
+  createCapabilityRoute,
+  deleteCapabilityRoute,
+} from './adminRoutes/capabilityAdminRoutes';
+import {
   getEnemyRoute,
   getEnemiesRoute,
   deleteEnemyRoute,
@@ -15,6 +20,11 @@ import {
   openOrCloseCurrentTowerRoute,
   addEnemyToFloorRoute,
 } from './adminRoutes/towerAdminRoutes';
+import {
+  getAllUserRolesRoute,
+  upsertUserRolesRoute,
+  deleteUserRolesRoute,
+} from './adminRoutes/userRoleAdminRoutes';
 import {
   getWeaponsRoute,
   getWeaponByIdRoute,
@@ -44,6 +54,14 @@ export const adminRoutes: ServerRoute[] = [
   endCurrentTowerGameRoute,
   openOrCloseCurrentTowerRoute,
   addEnemyToFloorRoute,
+  // capability
+  getAllCapabilitiesRoute,
+  createCapabilityRoute,
+  deleteCapabilityRoute,
+  //userRole
+  getAllUserRolesRoute,
+  upsertUserRolesRoute,
+  deleteUserRolesRoute,
   //weapon
   getWeaponsRoute,
   getWeaponByIdRoute,

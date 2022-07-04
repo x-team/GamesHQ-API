@@ -42,7 +42,7 @@ export class UserRoleCapability extends Model<
     onUpdate: 'CASCADE',
     onDelete: 'CASCADE',
   })
-  declare _userRole?: UserRole;
+  declare _userRole: UserRole;
 
   @ForeignKey(() => Capability)
   @Column(DataType.INTEGER)
@@ -53,7 +53,7 @@ export class UserRoleCapability extends Model<
     onUpdate: 'CASCADE',
     onDelete: 'CASCADE',
   })
-  declare _capability?: Capability;
+  declare _capability: Capability;
 
   static associations: {
     _userRole: Association<UserRoleCapability, UserRole>;

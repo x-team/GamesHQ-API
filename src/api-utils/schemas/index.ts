@@ -1,5 +1,5 @@
 import Boom from '@hapi/boom';
-import type Joi from 'joi';
+import Joi from 'joi';
 
 import { isProd, logger } from '../../config';
 
@@ -16,3 +16,5 @@ const checkForWebhookErrors = (validationResult: Joi.ValidationResult, payload: 
     throw Boom.boomify(validationResult.error, { statusCode: 400, data: { payload } });
   }
 };
+
+export const genericSchema = Joi.object({ success: Joi.boolean().required() }).required();

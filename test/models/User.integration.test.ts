@@ -73,7 +73,7 @@ describe('User', () => {
       const user = await findUserWithRoleAndCapabilities(testUser.id);
 
       expect(user?._role?.name).to.be.equal(USER_ROLE_NAME.SUPER_ADMIN);
-      expect(user?._role?._capabilities?.length).to.equal(24);
+      expect(user?._role?._capabilities?.length).to.equal(28);
       for (const capability of user?._role?._capabilities || []) {
         expect([
           'MY_GAME_READ',
@@ -100,6 +100,10 @@ describe('User', () => {
           'TOWER_ACTION',
           'TOWER_EVENT',
           'GAMESHQ_COMMAND',
+          'USER_ROLE_READ',
+          'USER_ROLE_WRITE',
+          'CAPABILITY_READ',
+          'CAPABILITY_WRITE',
         ]).include(capability.name);
       }
     });
