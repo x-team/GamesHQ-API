@@ -3,7 +3,12 @@ import type { Lifecycle } from '@hapi/hapi';
 
 import { arrayToJSON } from '../../../../api-utils/utils';
 import type { GameType } from '../../../../models';
-import { getAchievementUnlockedFromAchievement } from '../../../../models/AchievementUnlocked';
+import type { AchievementUnlockedUnlockedEditorData } from '../../../../models/AchievementUnlocked';
+import {
+  getAchievementUnlockedFromAchievement,
+  createOrUpdateAchievementUnlocked,
+  findAchievementUnlocked,
+} from '../../../../models/AchievementUnlocked';
 import type { AchievementEditorData } from '../../../../models/Achievements';
 import {
   findAchievementById,
@@ -46,6 +51,27 @@ export const getAchievementProgressHandler: Lifecycle.Method = async (request, h
   const achievementUnlockedListRes = arrayToJSON(achievementUnlockedList);
 
   return h.response(achievementUnlockedListRes).code(200);
+};
+
+export const updateAchievementProgressHandler: Lifecycle.Method = async (request, h) => {
+  const payload = request.payload as AchievementUnlockedUnlockedEditorData;
+  const acheivementUnlocked = await findAchievementUnlocked(
+    payload._userId,
+    request.params.achievementId
+  );
+
+  if (!acheivementUnlocked) {
+    throw Boom.notFound('achievement progress not found');
+  }
+
+  const [rslt] = await createOrUpdateAchievementUnlocked({
+    _achievementId: request.params.achievementId,
+    _userId: acheivementUnlocked._userId,
+    progress: payload.progress,
+    isUnlocked: payload.isUnlocked,
+  });
+
+  return h.response(rslt.toJSON()).code(200);
 };
 
 export const upsertAchievementHandler: Lifecycle.Method = async (request, h) => {

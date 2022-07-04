@@ -10,6 +10,8 @@ import {
   multipleAchievementProgressResponseSchema,
   postAchievementRequestSchema,
   postAchievementResponseSchema,
+  postAchievementProgressResponseSchema,
+  updateAchievementProgressRequestSchema,
 } from '../../../../api-utils/schemas/gameDev/achievementsSchemas';
 import { gamedevGenericSchema } from '../../../../api-utils/schemas/gameDev/gameTypeSchema';
 import { CAPABILITIES } from '../../../../consts/model';
@@ -18,6 +20,7 @@ import {
   upsertAchievementHandler,
   deleteAchievementHandler,
   getAchievementProgressHandler,
+  updateAchievementProgressHandler,
 } from '../gameDevHandlers/achievementGameDevHandlers';
 
 //Achievements
@@ -79,6 +82,26 @@ export const getAchievementsProgressRoute: ServerRoute = {
     },
   },
   handler: getAchievementProgressHandler,
+};
+
+export const postAchievementProgressRoute: ServerRoute = {
+  method: 'POST',
+  path: '/dashboard/game-dev/games/{gameTypeId}/achievements/{achievementId}/progress',
+  options: {
+    description: 'Update user achievement progress',
+    tags: ['api'],
+    bind: {
+      requiredCapabilities: [CAPABILITIES.MY_GAME_ACHIEVEMENT_WRITE],
+    },
+    pre: [getAuthUserMiddleware, validateGameAuthMiddleware],
+    validate: {
+      payload: updateAchievementProgressRequestSchema,
+    },
+    response: {
+      schema: postAchievementProgressResponseSchema,
+    },
+  },
+  handler: updateAchievementProgressHandler,
 };
 
 export const upsertAchievementsRoute: ServerRoute = {

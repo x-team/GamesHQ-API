@@ -6,6 +6,7 @@ import {
   getAchievementsProgressRoute,
   upsertAchievementsRoute,
   deleteAchievementsRoute,
+  postAchievementProgressRoute,
 } from './gameDevRoutes/achievementGameDevRoutes';
 import {
   getGameTypeByIdRoute,
@@ -26,6 +27,7 @@ export const gameDevRoutes: ServerRoute[] = [
   getAchievementsByIdRoute,
   getAchievementsRoute,
   getAchievementsProgressRoute,
+  postAchievementProgressRoute,
   upsertAchievementsRoute,
   deleteAchievementsRoute,
   //GameTypes

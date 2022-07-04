@@ -42,6 +42,12 @@ export const getAchievementProgressRequestSchema = Joi.object({
   }).optional(),
 }).optional();
 
+export const updateAchievementProgressRequestSchema = Joi.object({
+  _userId: Joi.number().required(),
+  isUnlocked: Joi.boolean().required(),
+  progress: Joi.number().required(),
+}).required();
+
 export const postAchievementProgressResponseSchema = Joi.object({
   _achievementId: Joi.number().required(),
   _userId: Joi.number().required(),
