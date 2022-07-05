@@ -19,6 +19,15 @@ export const getUserLeaderboardResultScoreResponseSchema = Joi.object({
   score: Joi.number().required(),
 }).required();
 
+export const getLeaderboardResultScorePageSchema = Joi.object({
+  id: Joi.number().required(),
+  _user: Joi.object({
+    email: Joi.string().required(),
+  }).optional(),
+  score: Joi.number().required(),
+  _leaderboardResultsMeta: Joi.array().items(Joi.object()).optional(),
+}).optional();
+
 export const postLeaderboardResultScoreResquestSchema = Joi.object({
   id: Joi.number().optional(),
   score: Joi.number().required(),
@@ -58,3 +67,6 @@ export const leaderboardSchema = Joi.object({
 }).optional();
 
 export const multipleLeaderboardSchema = Joi.array().items(leaderboardSchema).optional();
+export const multipleLeaderboardResultScoreSchema = Joi.array()
+  .items(getLeaderboardResultScorePageSchema)
+  .optional();

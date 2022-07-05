@@ -47,7 +47,7 @@ interface TeamCreationAttributes {
     if (
       isScopeRole(scope, USER_ROLE_NAME.SUPER_ADMIN) ||
       isScopeRole(scope, USER_ROLE_NAME.ADMIN) ||
-      isScopeRole(scope, USER_ROLE_NAME.COMMUNITY_TEAM)
+      isScopeRole(scope, USER_ROLE_NAME.GAME_DEV)
     ) {
       return {};
     }

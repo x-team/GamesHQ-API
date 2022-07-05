@@ -9,6 +9,7 @@ export { ArenaRound } from './ArenaRound';
 export { ArenaRoundAction } from './ArenaRoundAction';
 export { ArenaZone } from './ArenaZone';
 export { AvailableAction } from './AvailableAction';
+export { Capability } from './Capability';
 export { Enemy } from './Enemy';
 export { EnemyPattern } from './EnemyPattern';
 export { EnemyTrait } from './EnemyTrait';
@@ -42,4 +43,5 @@ export { TowerStatistics } from './TowerStatistics';
 export { Trait } from './Trait';
 export { User } from './User';
 export { UserRole } from './UserRole';
+export { UserRoleCapability } from './UserRoleCapability';
 // PLEASE keep this file alphabetically ordered
