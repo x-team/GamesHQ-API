@@ -36,12 +36,16 @@ export const openOrCloseCurrentTowerHandler: Lifecycle.Method = async (_request,
   return h.response({ success: true }).code(200);
 };
 
+type IAddEnemiesPayload = {
+  enemyIds: number[];
+};
+
 export const addEnemyToFloorHandler: Lifecycle.Method = async (_request, h) => {
   const floorId = parseInt(_request.params.floorId);
   const { payload } = _request;
-  const { enemies } = payload as { enemies: number[] };
+  const { enemyIds } = payload as IAddEnemiesPayload;
 
-  await addEnemies(floorId, enemies);
+  await addEnemies(floorId, enemyIds);
 
   return h.response({ success: true }).code(200);
 };

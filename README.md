@@ -1,6 +1,6 @@
 <h1 align="center">
   <br>
-  <a href="http://www.amitmerchant.com/electron-markdownify"><img src="https://i.imgur.com/njuVb1g.png" alt="Markdownify" width="200"></a>
+  <img src="https://i.imgur.com/njuVb1g.png" alt="Markdownify" width="200">
   <br>
   Games API
   <br>
@@ -8,7 +8,7 @@
 
 ## What is it?
 
-An API to handle most of the things related to XTeam Games. With this API a game dev can publish their game within the XTeam Universe (XTU). They can also manage things like CRUD leaderboards, CRUD achievements, and CRUD Items. Monitor game's usage data, and authenticate with the same user across all XTU platforms.
+An API to handle most of the things related to XTeam Games. The main idea is to have a communication bridge between new games developed by the XTeam community (and game jam winners) and the XTeam Universe. So we can have a cohesive universe around the same user sessions, achievements, experiences, etc. With this API a game dev can publish their game within the [XTeam Universe](https://xtu.x-team.com/) (XTU). They can also manage things like CRUD leaderboards, CRUD achievements, and CRUD Items. Monitor game's usage data, and authenticate with the same user across all XTU platforms.
 
 The Admin Panel (Frontend APP) is connected to this API allowing XTeam admins to run games on Slack (like The Tower and The Arena) and the rest of the things a regular game dev can do.
 
