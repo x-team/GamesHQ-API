@@ -18,6 +18,7 @@ import type { LeaderboardResultsCreationAttributes } from '../../../../models/Le
 import {
   getLeaderboardResultRankWithMeta,
   updateLeaderBoardResult,
+  deleteLeaderboardResult,
 } from '../../../../models/LeaderboardResults';
 
 export const getLeaderboardHandler: Lifecycle.Method = async (request, h) => {
@@ -97,6 +98,18 @@ export const updateLeaderboardResultsHandler: Lifecycle.Method = async (request,
   }
 
   return h.response(leaderboardRslt.toJSON()).code(200);
+};
+
+export const deleteLeaderboardResultHandler: Lifecycle.Method = async (request, h) => {
+  await validateLeaderboard(request.params.leaderboardId, request.params.gameTypeId);
+
+  const rslt = await deleteLeaderboardResult(request.params.id, request.params.leaderboardId);
+
+  if (!rslt) {
+    throw Boom.notFound('leaderboard result progress not found');
+  }
+
+  return h.response({ success: true }).code(200);
 };
 
 const validateLeaderboard = async (

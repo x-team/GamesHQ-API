@@ -22,6 +22,7 @@ import {
   upsertLeaderboardRoute,
   getResultsFromLeaderboardRoute,
   updateLeaderboardResultRoute,
+  deleteLeaderboardResultRoute,
 } from './gameDevRoutes/leaderboardGameDevRoutes';
 
 export const gameDevRoutes: ServerRoute[] = [
@@ -47,4 +48,5 @@ export const gameDevRoutes: ServerRoute[] = [
   //leaderboard results
   getResultsFromLeaderboardRoute,
   updateLeaderboardResultRoute,
+  deleteLeaderboardResultRoute,
 ];

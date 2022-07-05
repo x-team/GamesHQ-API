@@ -20,6 +20,7 @@ import {
   deleteLeaderboardHandler,
   getLeaderboardResultsHandler,
   updateLeaderboardResultsHandler,
+  deleteLeaderboardResultHandler,
 } from '../gameDevHandlers/leaderboardGameDevHandlers';
 
 export const getLeaderboardsRoute: ServerRoute = {
@@ -139,19 +140,19 @@ export const updateLeaderboardResultRoute: ServerRoute = {
   handler: updateLeaderboardResultsHandler,
 };
 
-// export const deleteAchievementProgressRoute: ServerRoute = {
-//   method: 'DELETE',
-//   path: '/dashboard/game-dev/games/{gameTypeId}/achievements/{achievementId}/progress/{userId}',
-//   options: {
-//     description: 'Delete user achievement progress',
-//     tags: ['api'],
-//     bind: {
-//       requiredCapabilities: [CAPABILITIES.MY_GAME_ACHIEVEMENT_WRITE],
-//     },
-//     pre: [getAuthUserMiddleware, validateGameAuthMiddleware],
-//     response: {
-//       schema: gamedevGenericSchema,
-//     },
-//   },
-//   handler: deleteAchievementProgressHandler,
-// };
+export const deleteLeaderboardResultRoute: ServerRoute = {
+  method: 'DELETE',
+  path: '/dashboard/game-dev/games/{gameTypeId}/leaderboards/{leaderboardId}/results/{id}',
+  options: {
+    description: 'Delete leader board result',
+    tags: ['api'],
+    bind: {
+      requiredCapabilities: [CAPABILITIES.MY_GAME_LEADERBOARD_WRITE],
+    },
+    pre: [getAuthUserMiddleware, validateGameAuthMiddleware],
+    response: {
+      schema: gamedevGenericSchema,
+    },
+  },
+  handler: deleteLeaderboardResultHandler,
+};

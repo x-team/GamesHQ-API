@@ -6,6 +6,7 @@ import {
   deleteLeaderboardRoute,
   getResultsFromLeaderboardRoute,
   updateLeaderboardResultRoute,
+  deleteLeaderboardResultRoute,
 } from '../../../../../src/modules/dashboard/gameDev/gameDevRoutes/leaderboardGameDevRoutes';
 import { LeaderboardEntry, LeaderboardResults, Session } from '../../../../../src/models';
 import { v4 as uuid } from 'uuid';
@@ -21,6 +22,7 @@ describe('gameDevRoutes', () => {
     deleteLeaderboardRoute,
     getResultsFromLeaderboardRoute,
     updateLeaderboardResultRoute,
+    deleteLeaderboardResultRoute,
   ]);
 
   describe('getLeaderboardRoute', async () => {
@@ -498,6 +500,105 @@ describe('gameDevRoutes', () => {
       expect(rslt.result).to.deep.equal({
         error: 'Not Found',
         message: 'leaderboard result not found',
+        statusCode: 404,
+      });
+    });
+  });
+
+  describe('deleteLeaderboardResultRoute', async () => {
+    it('should return 200 status code on DELETE /leaderboards/{leaderboardId}/results/{id}', async () => {
+      const session = await Session.create({
+        token: uuid(),
+        _userId: 1,
+      });
+
+      const lb1 = await LeaderboardEntry.create({
+        name: 'LeaderBoard_' + uuid(),
+        _gameTypeId: 1,
+      });
+
+      const lbr1 = await LeaderboardResults.create({
+        score: 10,
+        _leaderboardEntryId: lb1.id,
+        _userId: 1,
+      });
+
+      const injectOptions = {
+        method: 'DELETE',
+        url: `/dashboard/game-dev/games/1/leaderboards/${lb1.id}/results/${lbr1.id}`,
+        headers: {
+          'xtu-session-token': session.token,
+        },
+      };
+      const rslt = await testServer.inject(injectOptions);
+
+      const deletedLeaderboard = await LeaderboardResults.findByPk(lbr1.id);
+
+      expect(rslt.statusCode).to.equal(200);
+      expect(JSON.parse(rslt.payload)).to.deep.equal({
+        success: true,
+      });
+      expect(deletedLeaderboard).to.be.null;
+    });
+
+    it('should return error if leaderboard does not belong to game', async () => {
+      const session = await Session.create({
+        token: uuid(),
+        _userId: 1,
+      });
+
+      const lb1 = await LeaderboardEntry.create({
+        name: 'LeaderBoard_' + uuid(),
+        _gameTypeId: 2,
+      });
+
+      const lbr1 = await LeaderboardResults.create({
+        score: 10,
+        _leaderboardEntryId: lb1.id,
+        _userId: 1,
+      });
+
+      const injectOptions = {
+        method: 'DELETE',
+        url: `/dashboard/game-dev/games/1/leaderboards/${lb1.id}/results/${lbr1.id}`,
+        headers: {
+          'xtu-session-token': session.token,
+        },
+      };
+      const rslt = await testServer.inject(injectOptions);
+
+      expect(rslt.statusCode).to.equal(403);
+      expect(rslt.result).to.deep.equal({
+        error: 'Forbidden',
+        message: 'leaderboard does not belong to that game',
+        statusCode: 403,
+      });
+    });
+
+    it('should return error if leaderboard result not found', async () => {
+      const session = await Session.create({
+        token: uuid(),
+        _userId: 1,
+      });
+
+      const lb1 = await LeaderboardEntry.create({
+        name: 'LeaderBoard_' + uuid(),
+        _gameTypeId: 1,
+      });
+
+      const injectOptions = {
+        method: 'DELETE',
+        url: `/dashboard/game-dev/games/1/leaderboards/${lb1.id}/results/123213`,
+        headers: {
+          'xtu-session-token': session.token,
+        },
+      };
+      const rslt = await testServer.inject(injectOptions);
+
+      expect(rslt.statusCode).to.equal(404);
+      expect(rslt.result).to.deep.equal({
+        error: 'Not Found',
+        message: 'leaderboard result progress not found',
         statusCode: 404,
       });
     });

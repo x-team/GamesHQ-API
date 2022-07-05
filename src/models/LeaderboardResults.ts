@@ -323,3 +323,12 @@ function getUserLeaderboardResultWithScoreStrategy(
     transaction,
   });
 }
+
+export function deleteLeaderboardResult(id: number, leaderboardId: number) {
+  return LeaderboardResults.destroy({
+    where: {
+      id,
+      _leaderboardEntryId: leaderboardId,
+    },
+  });
+}

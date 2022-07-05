@@ -6,12 +6,14 @@ import {
   upsertLeaderboardRoute,
   deleteLeaderboardRoute,
   updateLeaderboardResultRoute,
+  deleteLeaderboardResultRoute,
 } from '../../../../../src/modules/dashboard/gameDev/gameDevRoutes/leaderboardGameDevRoutes';
 import {
   getLeaderboardHandler,
   upsertLeaderboardHandler,
   deleteLeaderboardHandler,
   updateLeaderboardResultsHandler,
+  deleteLeaderboardResultHandler,
 } from '../../../../../src/modules/dashboard/gameDev/gameDevHandlers/leaderboardGameDevHandlers';
 import {
   multipleLeaderboardSchema,
@@ -144,6 +146,29 @@ describe('leaderboardGameDevRoutes', () => {
         updateLeaderboardResultResponseSchema
       );
       expect(updateLeaderboardResultRoute.handler).to.equal(updateLeaderboardResultsHandler);
+    });
+  });
+
+  describe('deleteLeaderboardResultRoute', () => {
+    it('should be configured as expected', async () => {
+      expect(deleteLeaderboardResultRoute.method).to.equal('DELETE');
+      expect(deleteLeaderboardResultRoute.path).to.equal(
+        '/dashboard/game-dev/games/{gameTypeId}/leaderboards/{leaderboardId}/results/{id}'
+      );
+      expect(deleteLeaderboardResultRoute.options?.bind).to.deep.equal({
+        requiredCapabilities: [CAPABILITIES.MY_GAME_LEADERBOARD_WRITE],
+      });
+      expect((deleteLeaderboardResultRoute.options as RouteOptions).pre).to.deep.equal([
+        getAuthUserMiddleware,
+        validateGameAuthMiddleware,
+      ]);
+      expect((deleteLeaderboardResultRoute.options as RouteOptions).validate?.payload).to.equal(
+        undefined
+      );
+      expect((deleteLeaderboardResultRoute.options as RouteOptions).response?.schema).to.equal(
+        gamedevGenericSchema
+      );
+      expect(deleteLeaderboardResultRoute.handler).to.equal(deleteLeaderboardResultHandler);
     });
   });
 });
