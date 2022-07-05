@@ -9,7 +9,6 @@ import Boom from '@hapi/boom';
 import Joi from 'joi';
 import { User } from '../src/models';
 import { USER_ROLE_LEVEL } from '../src/consts/model';
-
 declare module 'mocha' {
   interface Suite {
     gameshqDontClearDBAfterEach?: boolean;
@@ -89,7 +88,6 @@ before(async function () {
   if (!isIntegration(this)) {
     return;
   }
-
   await initDb();
   // await sequelize.sync({ match: /_test$/, logging: false });
 
@@ -111,6 +109,7 @@ async function resetDB() {
   const TRUNCATE_BLACKLIST = [
     'sequelize',
     'ArenaZone',
+    'Capability',
     'GameType',
     'AvailableAction',
     'Enemy',
@@ -131,6 +130,7 @@ async function resetDB() {
     'Team',
     'Trait',
     'User',
+    'UserRoleCapability',
     'UserRole',
   ];
   const keys = Object.keys(getAllModels()).filter((key) => !TRUNCATE_BLACKLIST.includes(key));

@@ -67,7 +67,7 @@ export function adminAction(userRequesting: User): boolean {
   return !!(
     userRequesting.isSuperAdmin() ||
     userRequesting.isAdmin() ||
-    userRequesting.isCommunityTeam()
+    userRequesting.isGameDev()
   );
 }
 

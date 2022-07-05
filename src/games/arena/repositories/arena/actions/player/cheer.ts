@@ -1,4 +1,4 @@
-import { User } from '../../../../../../models';
+import type { User } from '../../../../../../models';
 import {
   findPlayerById,
   findPlayerByUser,
@@ -10,17 +10,15 @@ import {
   setPlayerRoundAction,
 } from '../../../../../../models/ArenaRoundAction';
 import { findActiveArenaZones } from '../../../../../../models/ArenaZone';
-import { GameResponse, getGameResponse } from '../../../../../utils';
+import type { GameResponse } from '../../../../../utils';
+import { getGameResponse } from '../../../../../utils';
 import { ARENA_ACTIONS } from '../../../../consts';
 import {
   generateArenaActionsBlockKit,
   generateArenaTargetPickerBlock,
 } from '../../../../generators/gameplay';
-import {
-  PlayerActionsDeadOrAlive,
-  playerActionsParams,
-  withArenaTransaction,
-} from '../../../../utils';
+import type { PlayerActionsDeadOrAlive } from '../../../../utils';
+import { playerActionsParams, withArenaTransaction } from '../../../../utils';
 import { arenaCommandReply } from '../../replies';
 
 export async function cheer(userRequesting: User) {

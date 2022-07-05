@@ -1,4 +1,5 @@
-import { DataTypes, QueryInterface, Sequelize } from 'sequelize';
+import type { QueryInterface, Sequelize } from 'sequelize';
+import { DataTypes } from 'sequelize';
 
 interface SequelizeContext {
   context: {

@@ -1,12 +1,13 @@
-import { actionReply } from '.';
 import { logger } from '../../../config';
 import { getUserBySlackId } from '../../../models/User';
-import { SlackDialogSubmissionPayload, TowerFormData } from '../../model/SlackDialogObject';
+import type { SlackDialogSubmissionPayload, TowerFormData } from '../../model/SlackDialogObject';
 import { getGameError } from '../../utils';
 import { TOWER_SECONDARY_SLACK_ACTIONS } from '../consts';
 import { TowerEngine } from '../repositories/tower/engine';
 import { TowerRepository } from '../repositories/tower/tower';
 import { theTowerNotifyEphemeral } from '../utils';
+
+import { actionReply } from '.';
 
 const theTower = new TowerRepository(TowerEngine.getInstance());
 
@@ -51,19 +52,20 @@ export const handleTowerAction = async (payload: SlackDialogSubmissionPayload) =
       //     }
       //   });
       break;
-    case TOWER_SECONDARY_SLACK_ACTIONS.UPDATE_TOWER_ID:
-      theTower
-        .updateTowerBasicInfoForm(userRequesting, values as TowerFormData)
-        .then(async (response) => {
-          if (response?.type === 'error') {
-            await theTowerNotifyEphemeral(
-              response.text ?? 'Something went wrong',
-              userRequesting.slackId!,
-              userRequesting.slackId!
-            );
-          }
-        });
+    case TOWER_SECONDARY_SLACK_ACTIONS.UPDATE_TOWER_ID: {
+      const response = await theTower.updateTowerBasicInfoForm(
+        userRequesting,
+        values as TowerFormData
+      );
+      if (response?.type === 'error') {
+        await theTowerNotifyEphemeral(
+          response.text ?? 'Something went wrong',
+          userRequesting.slackId!,
+          userRequesting.slackId!
+        );
+      }
       break;
+    }
     default:
       logger.error(actionReply.somethingWentWrong);
       break;

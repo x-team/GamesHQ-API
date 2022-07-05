@@ -1,5 +1,6 @@
 import { capitalize } from 'lodash';
-import {
+
+import type {
   Enemy,
   Game,
   Item,
@@ -8,7 +9,7 @@ import {
   TowerRaider,
   TowerStatistics,
 } from '../../../../models';
-import { TOWER_ACTIONS_TYPE } from '../../../../models/TowerRoundAction';
+import type { TOWER_ACTIONS_TYPE } from '../../../../models/TowerRoundAction';
 import {
   APPROVE_SIGN,
   FREE_AGENT_EMOJI,

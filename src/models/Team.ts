@@ -17,6 +17,7 @@ import {
 
 import { USER_ROLE_NAME } from '../consts/model';
 import { isScopeRole } from '../utils/permissions';
+
 import { Organization } from './Organization';
 
 interface TeamAttributes {
@@ -46,7 +47,7 @@ interface TeamCreationAttributes {
     if (
       isScopeRole(scope, USER_ROLE_NAME.SUPER_ADMIN) ||
       isScopeRole(scope, USER_ROLE_NAME.ADMIN) ||
-      isScopeRole(scope, USER_ROLE_NAME.COMMUNITY_TEAM)
+      isScopeRole(scope, USER_ROLE_NAME.GAME_DEV)
     ) {
       return {};
     }

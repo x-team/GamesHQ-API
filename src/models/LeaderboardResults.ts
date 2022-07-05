@@ -214,6 +214,30 @@ export function getLeaderboardResultRank(
   });
 }
 
+export function getLeaderboardResultRankWithMeta(
+  _leaderboardEntry: LeaderboardEntry,
+  transaction?: Transaction
+) {
+  return LeaderboardResults.findAll({
+    where: {
+      _leaderboardEntryId: _leaderboardEntry.id,
+    },
+    include: [
+      {
+        association: LeaderboardResults.associations._user,
+        attributes: ['displayName', 'email'],
+      },
+      {
+        association: LeaderboardResults.associations._leaderboardResultsMeta,
+        attributes: ['value', 'attribute'],
+      },
+    ],
+    attributes: ['id', 'score', '_user.email', '_leaderboardResultsMeta.value'],
+    order: mapScoreStrategyOptions[_leaderboardEntry.scoreStrategy].orderBy,
+    transaction,
+  });
+}
+
 export function getUserLeaderboardResult(
   _userId: number,
   _leaderboardEntryId: number,

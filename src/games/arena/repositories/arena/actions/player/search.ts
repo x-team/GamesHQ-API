@@ -1,15 +1,13 @@
-import { User } from '../../../../../../models';
+import type { User } from '../../../../../../models';
 import { findSinglePlayerPerformance } from '../../../../../../models/ArenaPlayerPerformance';
 import { setPlayerRoundAction } from '../../../../../../models/ArenaRoundAction';
 import { findActiveArenaZones } from '../../../../../../models/ArenaZone';
-import { GameResponse, getGameResponse } from '../../../../../utils';
+import type { GameResponse } from '../../../../../utils';
+import { getGameResponse } from '../../../../../utils';
 import { ARENA_ACTIONS } from '../../../../consts';
 import { generateArenaActionsBlockKit } from '../../../../generators/gameplay';
-import {
-  PlayerActionsDeadOrAlive,
-  playerActionsParams,
-  withArenaTransaction,
-} from '../../../../utils';
+import type { PlayerActionsDeadOrAlive } from '../../../../utils';
+import { playerActionsParams, withArenaTransaction } from '../../../../utils';
 import { arenaCommandReply } from '../../replies';
 
 export async function searchForWeapons(userRequesting: User) {

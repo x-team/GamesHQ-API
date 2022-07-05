@@ -13,11 +13,15 @@ import {
   PrimaryKey,
 } from 'sequelize-typescript';
 
-import { TowerFloorEnemy, TowerFloorBattlefield, Perk, PerkInventory } from '.';
-import { Ability, AbilityProperty, AbilityPropertyKeys } from '../games/classes/GameAbilities';
-import { ONE, TRAIT, ZERO } from '../games/consts/global';
+import type { AbilityPropertyKeys } from '../games/classes/GameAbilities';
+import { Ability, AbilityProperty } from '../games/classes/GameAbilities';
+import type { TRAIT } from '../games/consts/global';
+import { ONE, ZERO } from '../games/consts/global';
 import { INITIATIVE_DECREASE, INITIATIVE_INCREASE } from '../games/tower/consts';
+
 import { Enemy } from './Enemy';
+
+import { TowerFloorEnemy, TowerFloorBattlefield, Perk, PerkInventory } from '.';
 
 interface TowerFloorBattlefieldEnemyAttributes {
   id: number;

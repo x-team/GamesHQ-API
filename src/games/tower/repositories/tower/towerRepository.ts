@@ -1,6 +1,7 @@
 import { startTowerGame } from '../../../../models/TowerGame';
 import { findAdmin } from '../../../../models/User';
 import { withTowerTransaction } from '../../utils';
+
 import { endGame, openOrCloseTowerGates } from './actions/admin/create-or-finish-game';
 
 export interface ICreateTowerGameData {

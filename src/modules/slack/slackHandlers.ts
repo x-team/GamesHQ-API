@@ -5,9 +5,9 @@ import { random } from 'lodash';
 import { SLACK_COMMAND_LOCAL_PREFIX, SLACK_COMMAND_STAGING_PREFIX } from '../../consts/api';
 import { handleArenaAction, handleViewSubmissionAction } from '../../games/arena/actions';
 import { HUNDRED, ZERO } from '../../games/consts/global';
-import { SlackChallengesPayload } from '../../games/model/SlackChallengePayload';
-import { SlackChatUnfurlUrl } from '../../games/model/SlackChatUnfurlPayload';
-import { SlackEventsPayload } from '../../games/model/SlackEventPayload';
+import type { SlackChallengesPayload } from '../../games/model/SlackChallengePayload';
+import type { SlackChatUnfurlUrl } from '../../games/model/SlackChatUnfurlPayload';
+import type { SlackEventsPayload } from '../../games/model/SlackEventPayload';
 import type { SlackSlashCommandPayload } from '../../games/model/SlackSlashCommandPayload';
 import { handleTowerBlockAction } from '../../games/tower/actions';
 import { handleTowerAction } from '../../games/tower/actions/towerAction';
@@ -64,7 +64,6 @@ export const towerSlackActionHandler: Lifecycle.Method = async (request, _h) => 
   try {
     switch (slackActionPayload.type) {
       case 'shortcut':
-      // return handleTowerShortcut(slackActionPayload as SlackShortcutPayload);
       case 'view_submission':
         return handleTowerAction(slackActionPayload);
       case 'block_actions':

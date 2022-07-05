@@ -1,5 +1,5 @@
 import { createOrUpdateArenaZone, deleteZoneById } from '../../../../models/ArenaZone';
-import { ARENA_ZONE_RING } from '../../../arena/consts';
+import type { ARENA_ZONE_RING } from '../../../arena/consts';
 import { withZoneTransaction } from '../../../arena/utils';
 
 export interface IZoneEditorData {

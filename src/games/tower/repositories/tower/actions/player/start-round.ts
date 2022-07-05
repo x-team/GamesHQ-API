@@ -1,4 +1,4 @@
-import { User } from '../../../../../../models';
+import type { User } from '../../../../../../models';
 import { findTowerFloorById } from '../../../../../../models/TowerFloor';
 import {
   createBattlefield,
@@ -14,20 +14,21 @@ import { startRound } from '../../../../../../models/TowerRound';
 import { findAllActionsByRound } from '../../../../../../models/TowerRoundAction';
 import { updateTowerAsCompleted } from '../../../../../../models/TowerStatistics';
 import { ONE, TWO, ZERO } from '../../../../../consts/global';
-import { SlackBlockKitLayoutElement } from '../../../../../model/SlackBlockKit';
-import { GameResponse, getGameResponse } from '../../../../../utils';
+import type { SlackBlockKitLayoutElement } from '../../../../../model/SlackBlockKit';
+import type { GameResponse } from '../../../../../utils';
+import { getGameResponse } from '../../../../../utils';
 import { MAX_RAIDER_HEALTH, TOWER_HEALTHKITS } from '../../../../consts';
 import {
   generateReEnterTowerQuestionSection,
   generateTowerActionsBlockKit,
   generateTowerPerkPickerSection,
 } from '../../../../generators/gameplay';
+import type { TowerRaiderInteraction } from '../../../../utils';
 import {
   publishTowerPublicMessage,
   raiderActionsAlive,
   theTowerNotifyEphemeral,
   theTowerNotifyInPrivate,
-  TowerRaiderInteraction,
   withTowerTransaction,
 } from '../../../../utils';
 import { leaveTower } from '../../../../utils/leave-tower';

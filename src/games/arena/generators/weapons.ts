@@ -1,6 +1,6 @@
-import { Item } from '../../../models';
+import type { Item } from '../../../models';
 import { generateRarityColorEmoji } from '../../helpers';
-import {
+import type {
   SlackBlockKitCompositionOption,
   SlackBlockKitLayoutElement,
 } from '../../model/SlackBlockKit';

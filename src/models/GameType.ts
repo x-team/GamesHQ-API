@@ -73,20 +73,20 @@ export class GameType
   declare _leaderboards?: LeaderboardEntry[];
 
   @HasMany(() => Achievement, '_gameTypeId')
-  declare _acheivements?: Achievement[];
+  declare _achievements?: Achievement[];
 
   static associations: {
     _createdBy: Association<GameType, User>;
     _leaderboards: Association<GameType, LeaderboardEntry>;
-    _acheivements: Association<GameType, Achievement>;
+    _achievements: Association<GameType, Achievement>;
   };
 }
 
 export interface IGameEditorData {
   id?: number;
-  name: GAME_TYPE | string;
   clientSecret?: string;
   signingSecret?: string;
+  name: GAME_TYPE | string;
   _createdById: number;
 }
 
@@ -97,7 +97,7 @@ export function findGameTypeByClientSecret(clientSecret: string, transaction?: T
 export function findGameTypeById(id: number, transaction?: Transaction) {
   return GameType.findByPk(id, {
     transaction,
-    include: [GameType.associations._leaderboards, GameType.associations._acheivements],
+    include: [GameType.associations._leaderboards, GameType.associations._achievements],
   });
 }
 
@@ -118,19 +118,13 @@ export async function createOrUpdateGameType(
   gameTypeData: IGameEditorData,
   transaction?: Transaction
 ) {
-  const { id, name, clientSecret, signingSecret, _createdById } = gameTypeData;
+  const { clientSecret, signingSecret } = gameTypeData;
 
   const valuesToUpdate: GameTypeCreationAttributes = {
-    id,
-    name,
+    ...gameTypeData,
     clientSecret: clientSecret || (await generateSecret()),
     signingSecret: signingSecret || (await generateSecret()),
-    _createdById: _createdById,
   };
-
-  if (!id) {
-    delete valuesToUpdate.id;
-  }
 
   return GameType.upsert(valuesToUpdate, { transaction });
 }

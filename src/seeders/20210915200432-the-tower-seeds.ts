@@ -1,4 +1,5 @@
-import { QueryInterface, QueryTypes, Sequelize, Transaction } from 'sequelize';
+import type { QueryInterface, Sequelize, Transaction } from 'sequelize';
+import { QueryTypes } from 'sequelize';
 
 enum GAME_TYPE {
   TOWER = 'The Tower',

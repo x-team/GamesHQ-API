@@ -1,5 +1,6 @@
 import { isEmpty } from 'lodash';
-import { User } from '../../../../../../models';
+
+import type { User } from '../../../../../../models';
 import { findActiveArenaGame } from '../../../../../../models/ArenaGame';
 import {
   addArenaPlayers,

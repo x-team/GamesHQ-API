@@ -37,8 +37,13 @@ import {
   randomSkinColor,
   zoneStatus,
 } from '../../../helpers';
-import { ARENA_HEALTHKITS, ChangeLocationParams } from '../../consts';
-import { ARENA_ACTIONS, ARENA_PLAYER_PERFORMANCE, MAX_PLAYER_HEALTH } from '../../consts';
+import type { ChangeLocationParams } from '../../consts';
+import {
+  ARENA_HEALTHKITS,
+  ARENA_ACTIONS,
+  ARENA_PLAYER_PERFORMANCE,
+  MAX_PLAYER_HEALTH,
+} from '../../consts';
 import { arenaNotifyEphemeral, arenaRoundActionMessageBuilder } from '../../utils';
 import { playerStatus } from '../../utils/playerStatus';
 

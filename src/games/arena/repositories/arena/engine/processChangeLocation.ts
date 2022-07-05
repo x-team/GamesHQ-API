@@ -1,5 +1,6 @@
 import type { Transaction } from 'sequelize';
-import { ArenaRoundAction } from '../../../../../models';
+
+import type { ArenaRoundAction } from '../../../../../models';
 import { findArenaZoneById } from '../../../../../models/ArenaZone';
 
 export async function processChangeLocation(actions: ArenaRoundAction[], transaction: Transaction) {

@@ -1,5 +1,5 @@
-import { ARENA_ACTIONS_TYPE } from '../../../models/ArenaRoundAction';
-import { TOWER_ACTIONS_TYPE } from '../../../models/TowerRoundAction';
+import type { ARENA_ACTIONS_TYPE } from '../../../models/ArenaRoundAction';
+import type { TOWER_ACTIONS_TYPE } from '../../../models/TowerRoundAction';
 import { ARENA_ACTIONS, ARENA_ACTION_MAPPING } from '../../arena/consts';
 import { GAME_ACTION_MAPPING, GAME_TYPE, SHARED_ACTIONS } from '../../consts/global';
 import { TOWER_ACTIONS, TOWER_ACTION_MAPPING } from '../../tower/consts';

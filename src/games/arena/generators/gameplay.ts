@@ -1,8 +1,8 @@
-import { ArenaPlayer, ArenaZone } from '../../../models';
+import type { ArenaPlayer, ArenaZone } from '../../../models';
 import { BOSS_HOUSE_EMOJI } from '../../consts/emojis';
 import { ZERO } from '../../consts/global';
 import { basicHealthDisplayInParentheses, generateTeamEmoji } from '../../helpers';
-import { SlackBlockKitLayoutElement } from '../../model/SlackBlockKit';
+import type { SlackBlockKitLayoutElement } from '../../model/SlackBlockKit';
 import { generateEndGameConfirmationBlockKit } from '../../utils/generators/games';
 import {
   blockKitAction,

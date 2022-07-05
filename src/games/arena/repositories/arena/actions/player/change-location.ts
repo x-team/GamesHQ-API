@@ -1,18 +1,16 @@
-import { User } from '../../../../../../models';
+import type { User } from '../../../../../../models';
 import { findSinglePlayerPerformance } from '../../../../../../models/ArenaPlayerPerformance';
 import {
   findPlayerRoundAction,
   setPlayerRoundAction,
 } from '../../../../../../models/ArenaRoundAction';
 import { findActiveArenaZones, findArenaZoneById } from '../../../../../../models/ArenaZone';
-import { GameResponse, getGameError, getGameResponse } from '../../../../../utils';
+import type { GameResponse } from '../../../../../utils';
+import { getGameError, getGameResponse } from '../../../../../utils';
 import { ARENA_ACTIONS } from '../../../../consts';
 import { generateArenaActionsBlockKit } from '../../../../generators/gameplay';
-import {
-  PlayerActionsDeadOrAlive,
-  playerActionsParams,
-  withArenaTransaction,
-} from '../../../../utils';
+import type { PlayerActionsDeadOrAlive } from '../../../../utils';
+import { playerActionsParams, withArenaTransaction } from '../../../../utils';
 import { arenaCommandReply } from '../../replies';
 
 export async function changeLocation(userRequesting: User, arenaZoneId: number) {

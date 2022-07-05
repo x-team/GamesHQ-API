@@ -1,4 +1,4 @@
-import { Association, Transaction } from 'sequelize';
+import type { Association, Transaction } from 'sequelize';
 import {
   Table,
   Column,
@@ -14,6 +14,7 @@ import {
 } from 'sequelize-typescript';
 
 import { ZERO } from '../games/consts/global';
+
 import { User, Achievement } from './';
 
 interface AchievementUnlockedAttributes {
@@ -24,13 +25,11 @@ interface AchievementUnlockedAttributes {
   _userId: number;
   _achievementId: number;
 }
-interface AchievementUnlockedCreationAttributes {
-  isUnlocked: boolean;
-  progress: number;
-  createdAt: Date;
-  updatedAt: Date;
-  _userId: number;
+export interface AchievementUnlockedCreationAttributes {
+  progress?: number;
   _achievementId: number;
+  _userId: number;
+  isUnlocked: boolean;
 }
 
 @Table
@@ -87,83 +86,34 @@ export class AchievementUnlocked
     _achievement: Association<AchievementUnlocked, Achievement>;
   };
 }
-interface AchievementUnlockedId {
+interface AchievementUnlockedUnlockedEditorData {
   _userId: number;
   _achievementId: number;
-}
-
-interface AchievementUnlockedUnlockedEditorData {
-  id: AchievementUnlockedId;
   isUnlocked: boolean;
   progress: number;
-  createdAt: Date;
-}
-
-export function findAchievementUnlockedById(
-  { _userId, _achievementId }: AchievementUnlockedId,
-  transaction?: Transaction
-) {
-  return AchievementUnlocked.findOne({ where: { _userId, _achievementId }, transaction });
-}
-
-export function findAllAchievementUnlockedsByUser(userId: number, transaction?: Transaction) {
-  return AchievementUnlocked.findAll({ where: { _userId: userId }, transaction });
-}
-
-export function findAllAchievementUnlockedsByAchievement(
-  achievementId: number,
-  transaction?: Transaction
-) {
-  return AchievementUnlocked.findAll({ where: { _achievementId: achievementId }, transaction });
-}
-
-interface PatchAchievementUnlocked {
-  id: AchievementUnlockedId;
-  isUnlocked: boolean;
-}
-
-export async function patchAchievementUnlocked(
-  patchAchievementUnlocked: PatchAchievementUnlocked,
-  transaction?: Transaction
-) {
-  const {
-    id: { _achievementId, _userId },
-    isUnlocked,
-  } = patchAchievementUnlocked;
-  return AchievementUnlocked.update(
-    { isUnlocked },
-    { where: { _achievementId, _userId }, transaction }
-  );
 }
 
 export async function createOrUpdateAchievementUnlocked(
-  achievementUnlockedData: AchievementUnlockedUnlockedEditorData,
-  transaction?: Transaction
+  achievementUnlockedData: AchievementUnlockedUnlockedEditorData
 ) {
-  const {
-    id: { _achievementId, _userId },
-    isUnlocked,
-    progress,
-    createdAt,
-  } = achievementUnlockedData;
-  const valuesToUpdate: AchievementUnlockedCreationAttributes = {
-    _achievementId,
-    _userId,
-    isUnlocked,
-    progress,
-    createdAt: createdAt ?? new Date(),
-    updatedAt: new Date(),
-  };
-
-  return AchievementUnlocked.upsert(valuesToUpdate, { transaction });
+  return await AchievementUnlocked.upsert({ ...achievementUnlockedData });
 }
 
-export function deleteAchievementUnlockedById(
-  { _userId, _achievementId }: AchievementUnlockedId,
+export function getAchievementUnlockedFromAchievement(
+  achievement: Achievement,
   transaction?: Transaction
 ) {
-  return AchievementUnlocked.destroy({
-    where: { _userId, _achievementId },
+  return AchievementUnlocked.findAll({
+    where: {
+      _achievementId: achievement.id,
+    },
+    include: [
+      {
+        association: AchievementUnlocked.associations._user,
+        attributes: ['email'],
+      },
+    ],
+    attributes: ['progress', '_user.email'],
     transaction,
   });
 }

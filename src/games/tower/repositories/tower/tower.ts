@@ -1,7 +1,8 @@
-import { User } from '../../../../models';
-import { TowerFormData } from '../../../model/SlackDialogObject';
-import { GameResponse } from '../../../utils';
-import { TOWER_FLOOR_HIDING } from '../../consts';
+import type { User } from '../../../../models';
+import type { TowerFormData } from '../../../model/SlackDialogObject';
+import type { GameResponse } from '../../../utils';
+import type { TOWER_FLOOR_HIDING } from '../../consts';
+
 import {
   askEndGame,
   cancelEndGame,
