@@ -3,7 +3,10 @@ import type { Lifecycle } from '@hapi/hapi';
 
 import { arrayToJSON } from '../../../../api-utils/utils';
 import type { GameType } from '../../../../models';
-import type { LeaderboardEntryCreationAttributes } from '../../../../models/LeaderboardEntry';
+import type {
+  LeaderboardEntryCreationAttributes,
+  LeaderboardEntry,
+} from '../../../../models/LeaderboardEntry';
 import {
   getLeaderboardById,
   getLeaderBoardsByGameType,
@@ -11,7 +14,11 @@ import {
   createOrUpdateLeaderBoard,
   deleteLeaderboardById,
 } from '../../../../models/LeaderboardEntry';
-import { getLeaderboardResultRankWithMeta } from '../../../../models/LeaderboardResults';
+import type { LeaderboardResultsCreationAttributes } from '../../../../models/LeaderboardResults';
+import {
+  getLeaderboardResultRankWithMeta,
+  updateLeaderBoardResult,
+} from '../../../../models/LeaderboardResults';
 
 export const getLeaderboardHandler: Lifecycle.Method = async (request, h) => {
   if (request.params.leaderboardId) {
@@ -30,19 +37,6 @@ export const getLeaderboardHandler: Lifecycle.Method = async (request, h) => {
     const leaderboards = await getLeaderBoardsByGameType(request.params.gameTypeId);
     return h.response(arrayToJSON(leaderboards)).code(200);
   }
-};
-
-export const getLeaderboardResultsHandler: Lifecycle.Method = async (request, h) => {
-  const leaderboard = await getLeaderboardById(request.params.leaderboardId);
-
-  if (!leaderboard) {
-    throw Boom.notFound('leaderboard not found');
-  }
-
-  const leaderboardResult = await getLeaderboardResultRankWithMeta(leaderboard);
-  const res = arrayToJSON(leaderboardResult);
-
-  return h.response(res).code(200);
 };
 
 export const upsertLeaderboardHandler: Lifecycle.Method = async (request, h) => {
@@ -72,4 +66,48 @@ export const deleteLeaderboardHandler: Lifecycle.Method = async (request, h) => 
   }
 
   return h.response({ success: true }).code(200);
+};
+
+export const getLeaderboardResultsHandler: Lifecycle.Method = async (request, h) => {
+  const leaderboard = await getLeaderboardById(request.params.leaderboardId);
+
+  if (!leaderboard) {
+    throw Boom.notFound('leaderboard not found');
+  }
+
+  const leaderboardResult = await getLeaderboardResultRankWithMeta(leaderboard);
+  const res = arrayToJSON(leaderboardResult);
+
+  return h.response(res).code(200);
+};
+
+export const updateLeaderboardResultsHandler: Lifecycle.Method = async (request, h) => {
+  const payload = request.payload as LeaderboardResultsCreationAttributes & { id: number };
+
+  await validateLeaderboard(request.params.leaderboardId, request.params.gameTypeId);
+
+  const leaderboardRslt = await updateLeaderBoardResult({
+    ...payload,
+    _leaderboardEntryId: request.params.leaderboardId,
+    _userId: payload._userId,
+  });
+
+  if (!leaderboardRslt) {
+    throw Boom.notFound('leaderboard result not found');
+  }
+
+  return h.response(leaderboardRslt.toJSON()).code(200);
+};
+
+const validateLeaderboard = async (
+  leaderboardEntryId: number,
+  gameTypeId: number
+): Promise<LeaderboardEntry> => {
+  const leaderboard = await getLeaderboardById(leaderboardEntryId);
+
+  if (leaderboard?._gameTypeId != gameTypeId) {
+    throw Boom.forbidden('leaderboard does not belong to that game');
+  }
+
+  return leaderboard;
 };

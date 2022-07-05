@@ -18,9 +18,10 @@ import {
 import {
   getLeaderboardByIdRoute,
   getLeaderboardsRoute,
-  getResultsFromLeaderboardRoute,
   deleteLeaderboardRoute,
   upsertLeaderboardRoute,
+  getResultsFromLeaderboardRoute,
+  updateLeaderboardResultRoute,
 } from './gameDevRoutes/leaderboardGameDevRoutes';
 
 export const gameDevRoutes: ServerRoute[] = [
@@ -40,8 +41,10 @@ export const gameDevRoutes: ServerRoute[] = [
   upsertGameTypeRoute,
   //leaderboards
   getLeaderboardByIdRoute,
-  getResultsFromLeaderboardRoute,
   getLeaderboardsRoute,
   upsertLeaderboardRoute,
   deleteLeaderboardRoute,
+  //leaderboard results
+  getResultsFromLeaderboardRoute,
+  updateLeaderboardResultRoute,
 ];

@@ -5,16 +5,20 @@ import {
   getLeaderboardByIdRoute,
   upsertLeaderboardRoute,
   deleteLeaderboardRoute,
+  updateLeaderboardResultRoute,
 } from '../../../../../src/modules/dashboard/gameDev/gameDevRoutes/leaderboardGameDevRoutes';
 import {
   getLeaderboardHandler,
   upsertLeaderboardHandler,
   deleteLeaderboardHandler,
+  updateLeaderboardResultsHandler,
 } from '../../../../../src/modules/dashboard/gameDev/gameDevHandlers/leaderboardGameDevHandlers';
 import {
   multipleLeaderboardSchema,
   leaderboardSchema,
   postLeaderboardSchema,
+  updateLeaderboardResultRequestSchema,
+  updateLeaderboardResultResponseSchema,
 } from '../../../../../src/api-utils/schemas/gameDev/leaderboardSchemas';
 import { CAPABILITIES } from '../../../../../src/consts/model';
 import {
@@ -117,6 +121,29 @@ describe('leaderboardGameDevRoutes', () => {
         gamedevGenericSchema
       );
       expect(deleteLeaderboardRoute.handler).to.equal(deleteLeaderboardHandler);
+    });
+  });
+
+  describe('updateLeaderboardResultRoute', () => {
+    it('should be configured as expected', async () => {
+      expect(updateLeaderboardResultRoute.method).to.equal('POST');
+      expect(updateLeaderboardResultRoute.path).to.equal(
+        '/dashboard/game-dev/games/{gameTypeId}/leaderboards/{leaderboardId}/results'
+      );
+      expect(updateLeaderboardResultRoute.options?.bind).to.deep.equal({
+        requiredCapabilities: [CAPABILITIES.MY_GAME_LEADERBOARD_WRITE],
+      });
+      expect((updateLeaderboardResultRoute.options as RouteOptions).pre).to.deep.equal([
+        getAuthUserMiddleware,
+        validateGameAuthMiddleware,
+      ]);
+      expect((updateLeaderboardResultRoute.options as RouteOptions).validate?.payload).to.equal(
+        updateLeaderboardResultRequestSchema
+      );
+      expect((updateLeaderboardResultRoute.options as RouteOptions).response?.schema).to.equal(
+        updateLeaderboardResultResponseSchema
+      );
+      expect(updateLeaderboardResultRoute.handler).to.equal(updateLeaderboardResultsHandler);
     });
   });
 });

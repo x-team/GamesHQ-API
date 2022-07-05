@@ -180,6 +180,42 @@ export function createOrUpdateLeaderBoardResult(data: LeaderboardResultsCreation
   });
 }
 
+export function updateLeaderBoardResult(
+  data: LeaderboardResultsCreationAttributes & { id: number }
+) {
+  return withTransaction(async (transaction) => {
+    const [, rslt] = await LeaderboardResults.update(
+      {
+        score: data.score,
+      },
+      {
+        where: {
+          id: data.id,
+        },
+        transaction,
+        returning: true,
+      }
+    );
+
+    if (rslt.length && data?._leaderboardResultsMeta) {
+      for (const meta of data._leaderboardResultsMeta) {
+        await LeaderboardResultsMeta.upsert(
+          {
+            ...meta,
+            _leaderboardResultsId: data.id,
+          },
+          {
+            transaction,
+            conflictFields: ['attribute', '_leaderboardResultsId'],
+          }
+        );
+      }
+    }
+
+    return rslt[0];
+  });
+}
+
 function shouldUpsert(
   data: LeaderboardResultsCreationAttributes,
   lbrInDb: LeaderboardResults | null
