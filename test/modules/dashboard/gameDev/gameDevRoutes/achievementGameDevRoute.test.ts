@@ -5,17 +5,23 @@ import {
   getAchievementsByIdRoute,
   upsertAchievementsRoute,
   deleteAchievementsRoute,
+  postAchievementProgressRoute,
+  deleteAchievementProgressRoute,
 } from '../../../../../src/modules/dashboard/gameDev/gameDevRoutes/achievementGameDevRoutes';
 import {
   getAchievementsHandler,
   upsertAchievementHandler,
   deleteAchievementHandler,
+  updateAchievementProgressHandler,
+  deleteAchievementProgressHandler,
 } from '../../../../../src/modules/dashboard/gameDev/gameDevHandlers/achievementGameDevHandlers';
 import {
   getAchievementsResponseSchema,
   getAchievementByIdResponseSchema,
   postAchievementRequestSchema,
   postAchievementResponseSchema,
+  postAchievementProgressResponseSchema,
+  updateAchievementProgressRequestSchema,
 } from '../../../../../src/api-utils/schemas/gameDev/achievementsSchemas';
 import { CAPABILITIES } from '../../../../../src/consts/model';
 import {
@@ -118,6 +124,52 @@ describe('achievementGameDevRoutes', () => {
         gamedevGenericSchema
       );
       expect(deleteAchievementsRoute.handler).to.equal(deleteAchievementHandler);
+    });
+  });
+
+  describe('postAchievementProgressRoute', () => {
+    it('should be configured as expected', async () => {
+      expect(postAchievementProgressRoute.method).to.equal('POST');
+      expect(postAchievementProgressRoute.path).to.equal(
+        '/dashboard/game-dev/games/{gameTypeId}/achievements/{achievementId}/progress'
+      );
+      expect(postAchievementProgressRoute.options?.bind).to.deep.equal({
+        requiredCapabilities: [CAPABILITIES.MY_GAME_ACHIEVEMENT_WRITE],
+      });
+      expect((postAchievementProgressRoute.options as RouteOptions).pre).to.deep.equal([
+        getAuthUserMiddleware,
+        validateGameAuthMiddleware,
+      ]);
+      expect((postAchievementProgressRoute.options as RouteOptions).validate?.payload).to.equal(
+        updateAchievementProgressRequestSchema
+      );
+      expect((postAchievementProgressRoute.options as RouteOptions).response?.schema).to.equal(
+        postAchievementProgressResponseSchema
+      );
+      expect(postAchievementProgressRoute.handler).to.equal(updateAchievementProgressHandler);
+    });
+  });
+
+  describe('deleteAchievementProgressRoute', () => {
+    it('should be configured as expected', async () => {
+      expect(deleteAchievementProgressRoute.method).to.equal('DELETE');
+      expect(deleteAchievementProgressRoute.path).to.equal(
+        '/dashboard/game-dev/games/{gameTypeId}/achievements/{achievementId}/progress/{userId}'
+      );
+      expect(deleteAchievementProgressRoute.options?.bind).to.deep.equal({
+        requiredCapabilities: [CAPABILITIES.MY_GAME_ACHIEVEMENT_WRITE],
+      });
+      expect((deleteAchievementProgressRoute.options as RouteOptions).pre).to.deep.equal([
+        getAuthUserMiddleware,
+        validateGameAuthMiddleware,
+      ]);
+      expect((deleteAchievementProgressRoute.options as RouteOptions).validate?.payload).to.equal(
+        undefined
+      );
+      expect((deleteAchievementProgressRoute.options as RouteOptions).response?.schema).to.equal(
+        gamedevGenericSchema
+      );
+      expect(deleteAchievementProgressRoute.handler).to.equal(deleteAchievementProgressHandler);
     });
   });
 });

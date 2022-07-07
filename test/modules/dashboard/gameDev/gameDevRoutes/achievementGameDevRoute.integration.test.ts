@@ -5,6 +5,8 @@ import {
   upsertAchievementsRoute,
   deleteAchievementsRoute,
   getAchievementsProgressRoute,
+  postAchievementProgressRoute,
+  deleteAchievementProgressRoute,
 } from '../../../../../src/modules/dashboard/gameDev/gameDevRoutes/achievementGameDevRoutes';
 import { Achievement, AchievementUnlocked, Session } from '../../../../../src/models';
 import { v4 as uuid } from 'uuid';
@@ -20,6 +22,8 @@ describe('gameDevRoutes', () => {
     upsertAchievementsRoute,
     deleteAchievementsRoute,
     getAchievementsProgressRoute,
+    postAchievementProgressRoute,
+    deleteAchievementProgressRoute,
   ]);
 
   describe('getAchievementsProgressRoute', async () => {
@@ -553,6 +557,289 @@ describe('gameDevRoutes', () => {
         statusCode: 403,
         message: 'User is not the owner of the game',
         error: 'Forbidden',
+      });
+    });
+  });
+
+  describe('postAchievementProgressRoute', async () => {
+    it('should return 200 status code on POST /achievements/{id}/progress when updating achievement progress', async () => {
+      const session = await Session.create({
+        token: uuid(),
+        _userId: 1,
+      });
+
+      const a = await Achievement.create({
+        description: 'new_my_achievement_1',
+        isEnabled: true,
+        targetValue: 200,
+        _gameTypeId: 1,
+      });
+
+      const au = await AchievementUnlocked.create({
+        progress: 10,
+        _achievementId: a.id,
+        _userId: 1,
+        isUnlocked: true,
+      });
+
+      const postPayload = {
+        _userId: au._userId,
+        isUnlocked: false,
+        progress: 100,
+      };
+
+      const injectOptions = {
+        method: 'POST',
+        url: `/dashboard/game-dev/games/1/achievements/${a.id}/progress`,
+        headers: {
+          'xtu-session-token': session.token,
+        },
+        payload: postPayload,
+      };
+
+      const rslt = await testServer.inject(injectOptions);
+      const achievementIDb = await AchievementUnlocked.findOne({
+        where: { _achievementId: a.id, _userId: 1 },
+      });
+      const resp = JSON.parse(rslt.payload);
+
+      expect(rslt.statusCode).to.equal(200);
+      expect(resp.id).to.equal(achievementIDb?.id);
+      expect(resp.isUnlocked).to.equal(achievementIDb?.isUnlocked);
+      expect(resp.progress).to.equal(achievementIDb?.progress);
+      expect(resp._userId).to.equal(1);
+      expect(resp._achievementId).to.equal(a.id);
+      expect(isNaN(Date.parse(resp.createdAt))).to.be.false;
+      expect(isNaN(Date.parse(resp.updatedAt))).to.be.false;
+    });
+
+    it('should return error if achievements does not belong to user', async () => {
+      const session = await Session.create({
+        token: uuid(),
+        _userId: 1,
+      });
+
+      const a = await Achievement.create({
+        description: 'new_my_achievement_1',
+        isEnabled: true,
+        targetValue: 200,
+        _gameTypeId: 1,
+      });
+
+      const postPayload = {
+        _userId: 1232131,
+        isUnlocked: false,
+        progress: 100,
+      };
+
+      const injectOptions = {
+        method: 'POST',
+        url: `/dashboard/game-dev/games/1/achievements/${a.id}/progress`,
+        headers: {
+          'xtu-session-token': session.token,
+        },
+        payload: postPayload,
+      };
+
+      const rslt = await testServer.inject(injectOptions);
+      expect(rslt.statusCode).to.equal(404);
+      expect(rslt.result).to.deep.equal({
+        statusCode: 404,
+        error: 'Not Found',
+        message: 'achievement progress not found',
+      });
+    });
+
+    it('should return error if calling POST /achievements with invalid payload', async () => {
+      const session = await Session.create({
+        token: uuid(),
+        _userId: 1,
+      });
+
+      const a = await Achievement.create({
+        description: 'new_my_achievement_1',
+        isEnabled: true,
+        targetValue: 200,
+        _gameTypeId: 1,
+      });
+
+      const au = await AchievementUnlocked.create({
+        progress: 10,
+        _achievementId: a.id,
+        _userId: 1,
+        isUnlocked: true,
+      });
+
+      const postPayload = {
+        _userIdasd: au._userId,
+        // isUnlocked: false,
+        progress: 100,
+      };
+
+      const injectOptions = {
+        method: 'POST',
+        url: `/dashboard/game-dev/games/1/achievements/${a.id}/progress`,
+        headers: {
+          'xtu-session-token': session.token,
+        },
+        payload: postPayload,
+      };
+
+      const rslt = await testServer.inject(injectOptions);
+      expect(rslt.statusCode).to.equal(400);
+      expect(rslt.result).to.deep.equal({
+        statusCode: 400,
+        error: 'Bad Request',
+        message: 'Invalid request payload input',
+      });
+    });
+
+    it('should return error if creating achievement without user permission', async () => {
+      const user = await createTestUser({ _roleId: USER_ROLE_LEVEL.GAME_DEV });
+      const session = await Session.create({
+        token: uuid(),
+        _userId: user.id,
+      });
+
+      const a = await Achievement.create({
+        description: 'new_my_achievement_1',
+        isEnabled: true,
+        targetValue: 200,
+        _gameTypeId: 1,
+      });
+
+      const au = await AchievementUnlocked.create({
+        progress: 10,
+        _achievementId: a.id,
+        _userId: 1,
+        isUnlocked: true,
+      });
+
+      const postPayload = {
+        _userId: au._userId,
+        isUnlocked: false,
+        progress: 100,
+      };
+
+      const injectOptions = {
+        method: 'POST',
+        url: `/dashboard/game-dev/games/1/achievements/${a.id}/progress`,
+        headers: {
+          'xtu-session-token': session.token,
+        },
+        payload: postPayload,
+      };
+
+      const rslt = await testServer.inject(injectOptions);
+
+      expect(rslt.statusCode).to.equal(403);
+      expect(rslt.result).to.deep.equal({
+        statusCode: 403,
+        error: 'Forbidden',
+        message: 'User is not the owner of the game',
+      });
+    });
+  });
+
+  describe('deleteAchievementProgressRoute', async () => {
+    it('should return 200 status code on DELETE /achievements/{id}/progress/{userId} when deleting achievement progress', async () => {
+      const session = await Session.create({
+        token: uuid(),
+        _userId: 1,
+      });
+
+      const a = await Achievement.create({
+        description: 'new_my_achievement_1',
+        isEnabled: true,
+        targetValue: 200,
+        _gameTypeId: 1,
+      });
+
+      await AchievementUnlocked.create({
+        progress: 10,
+        _achievementId: a.id,
+        _userId: 1,
+        isUnlocked: true,
+      });
+
+      const injectOptions = {
+        method: 'DELETE',
+        url: `/dashboard/game-dev/games/1/achievements/${a.id}/progress/1`,
+        headers: {
+          'xtu-session-token': session.token,
+        },
+      };
+
+      const rslt = await testServer.inject(injectOptions);
+      const achievementIDb = await AchievementUnlocked.findOne({
+        where: { _achievementId: a.id, _userId: 1 },
+      });
+
+      expect(achievementIDb).to.be.null;
+      expect(rslt.result).to.deep.equal({
+        success: true,
+      });
+    });
+
+    it('should return error if achievements does not belong to user', async () => {
+      const session = await Session.create({
+        token: uuid(),
+        _userId: 1,
+      });
+
+      const a = await Achievement.create({
+        description: 'new_my_achievement_1',
+        isEnabled: true,
+        targetValue: 200,
+        _gameTypeId: 1,
+      });
+
+      const injectOptions = {
+        method: 'DELETE',
+        url: `/dashboard/game-dev/games/1/achievements/${a.id}/progress/1`,
+        headers: {
+          'xtu-session-token': session.token,
+        },
+      };
+
+      const rslt = await testServer.inject(injectOptions);
+      expect(rslt.statusCode).to.equal(404);
+      expect(rslt.result).to.deep.equal({
+        statusCode: 404,
+        error: 'Not Found',
+        message: 'achievement progress not found',
+      });
+    });
+
+    it('should return error if creating achievement without user permission', async () => {
+      const user = await createTestUser({ _roleId: USER_ROLE_LEVEL.GAME_DEV });
+      const session = await Session.create({
+        token: uuid(),
+        _userId: user.id,
+      });
+
+      const a = await Achievement.create({
+        description: 'new_my_achievement_1',
+        isEnabled: true,
+        targetValue: 200,
+        _gameTypeId: 1,
+      });
+
+      const injectOptions = {
+        method: 'DELETE',
+        url: `/dashboard/game-dev/games/1/achievements/${a.id}/progress/${user.id}`,
+        headers: {
+          'xtu-session-token': session.token,
+        },
+      };
+
+      const rslt = await testServer.inject(injectOptions);
+
+      expect(rslt.statusCode).to.equal(403);
+      expect(rslt.result).to.deep.equal({
+        statusCode: 403,
+        error: 'Forbidden',
+        message: 'User is not the owner of the game',
       });
     });
   });

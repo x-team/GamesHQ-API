@@ -6,6 +6,8 @@ import {
   getAchievementsProgressRoute,
   upsertAchievementsRoute,
   deleteAchievementsRoute,
+  postAchievementProgressRoute,
+  deleteAchievementProgressRoute,
 } from './gameDevRoutes/achievementGameDevRoutes';
 import {
   getGameTypeByIdRoute,
@@ -16,18 +18,23 @@ import {
 import {
   getLeaderboardByIdRoute,
   getLeaderboardsRoute,
-  getResultsFromLeaderboardRoute,
   deleteLeaderboardRoute,
   upsertLeaderboardRoute,
+  getResultsFromLeaderboardRoute,
+  updateLeaderboardResultRoute,
+  deleteLeaderboardResultRoute,
 } from './gameDevRoutes/leaderboardGameDevRoutes';
 
 export const gameDevRoutes: ServerRoute[] = [
   //achievements
   getAchievementsByIdRoute,
   getAchievementsRoute,
-  getAchievementsProgressRoute,
   upsertAchievementsRoute,
   deleteAchievementsRoute,
+  //acheivements unlocked progress
+  getAchievementsProgressRoute,
+  postAchievementProgressRoute,
+  deleteAchievementProgressRoute,
   //GameTypes
   getGameTypeByIdRoute,
   getGameTypesRoute,
@@ -35,8 +42,11 @@ export const gameDevRoutes: ServerRoute[] = [
   upsertGameTypeRoute,
   //leaderboards
   getLeaderboardByIdRoute,
-  getResultsFromLeaderboardRoute,
   getLeaderboardsRoute,
   upsertLeaderboardRoute,
   deleteLeaderboardRoute,
+  //leaderboard results
+  getResultsFromLeaderboardRoute,
+  updateLeaderboardResultRoute,
+  deleteLeaderboardResultRoute,
 ];

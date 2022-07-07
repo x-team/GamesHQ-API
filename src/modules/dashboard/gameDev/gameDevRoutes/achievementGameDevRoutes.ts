@@ -10,6 +10,8 @@ import {
   multipleAchievementProgressResponseSchema,
   postAchievementRequestSchema,
   postAchievementResponseSchema,
+  postAchievementProgressResponseSchema,
+  updateAchievementProgressRequestSchema,
 } from '../../../../api-utils/schemas/gameDev/achievementsSchemas';
 import { gamedevGenericSchema } from '../../../../api-utils/schemas/gameDev/gameTypeSchema';
 import { CAPABILITIES } from '../../../../consts/model';
@@ -18,6 +20,8 @@ import {
   upsertAchievementHandler,
   deleteAchievementHandler,
   getAchievementProgressHandler,
+  updateAchievementProgressHandler,
+  deleteAchievementProgressHandler,
 } from '../gameDevHandlers/achievementGameDevHandlers';
 
 //Achievements
@@ -61,26 +65,6 @@ export const getAchievementsByIdRoute: ServerRoute = {
   handler: getAchievementsHandler,
 };
 
-export const getAchievementsProgressRoute: ServerRoute = {
-  method: 'GET',
-  path: '/dashboard/game-dev/games/{gameTypeId}/achievements/{achievementId}/progress',
-  options: {
-    description: `Get game's achievements progress records`,
-    tags: ['api'],
-    bind: {
-      requiredCapabilities: [
-        CAPABILITIES.MY_GAME_ACHIEVEMENT_READ,
-        CAPABILITIES.MY_GAME_ACHIEVEMENT_WRITE,
-      ],
-    },
-    pre: [getAuthUserMiddleware, validateGameAuthMiddleware],
-    response: {
-      schema: multipleAchievementProgressResponseSchema,
-    },
-  },
-  handler: getAchievementProgressHandler,
-};
-
 export const upsertAchievementsRoute: ServerRoute = {
   method: 'POST',
   path: '/dashboard/game-dev/games/{gameTypeId}/achievements',
@@ -116,4 +100,61 @@ export const deleteAchievementsRoute: ServerRoute = {
     },
   },
   handler: deleteAchievementHandler,
+};
+
+export const getAchievementsProgressRoute: ServerRoute = {
+  method: 'GET',
+  path: '/dashboard/game-dev/games/{gameTypeId}/achievements/{achievementId}/progress',
+  options: {
+    description: `Get game's achievements progress records`,
+    tags: ['api'],
+    bind: {
+      requiredCapabilities: [
+        CAPABILITIES.MY_GAME_ACHIEVEMENT_READ,
+        CAPABILITIES.MY_GAME_ACHIEVEMENT_WRITE,
+      ],
+    },
+    pre: [getAuthUserMiddleware, validateGameAuthMiddleware],
+    response: {
+      schema: multipleAchievementProgressResponseSchema,
+    },
+  },
+  handler: getAchievementProgressHandler,
+};
+
+export const postAchievementProgressRoute: ServerRoute = {
+  method: 'POST',
+  path: '/dashboard/game-dev/games/{gameTypeId}/achievements/{achievementId}/progress',
+  options: {
+    description: 'Update user achievement progress',
+    tags: ['api'],
+    bind: {
+      requiredCapabilities: [CAPABILITIES.MY_GAME_ACHIEVEMENT_WRITE],
+    },
+    pre: [getAuthUserMiddleware, validateGameAuthMiddleware],
+    validate: {
+      payload: updateAchievementProgressRequestSchema,
+    },
+    response: {
+      schema: postAchievementProgressResponseSchema,
+    },
+  },
+  handler: updateAchievementProgressHandler,
+};
+
+export const deleteAchievementProgressRoute: ServerRoute = {
+  method: 'DELETE',
+  path: '/dashboard/game-dev/games/{gameTypeId}/achievements/{achievementId}/progress/{userId}',
+  options: {
+    description: 'Delete user achievement progress',
+    tags: ['api'],
+    bind: {
+      requiredCapabilities: [CAPABILITIES.MY_GAME_ACHIEVEMENT_WRITE],
+    },
+    pre: [getAuthUserMiddleware, validateGameAuthMiddleware],
+    response: {
+      schema: gamedevGenericSchema,
+    },
+  },
+  handler: deleteAchievementProgressHandler,
 };
