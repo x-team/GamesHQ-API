@@ -11,6 +11,7 @@ import {
   PrimaryKey,
   AutoIncrement,
   HasOne,
+  HasMany,
 } from 'sequelize-typescript';
 
 import { GAME_TYPE } from '../games/consts/global';
@@ -19,7 +20,7 @@ import { GameError } from '../games/utils/GameError';
 
 import { findGameTypeByName } from './GameType';
 
-import { User, ArenaGame, GameType, TowerGame, TowerFloor, TowerFloorEnemy } from './';
+import { ArenaPlayer, User, ArenaGame, GameType, TowerGame, TowerFloor, TowerFloorEnemy } from './';
 
 function includeArrayByGameType(gameTypeName: string) {
   return gameTypeName === GAME_TYPE.ARENA
@@ -126,11 +127,15 @@ export class Game extends Model<GameAttributes, GameCreationAttributes> implemen
   @HasOne(() => TowerGame)
   declare _tower?: TowerGame;
 
+  @HasMany(() => ArenaPlayer, '_gameId')
+  declare _arenaPlayers?: ArenaPlayer[];
+
   static associations: {
     _arena: Association<Game, ArenaGame>;
     _tower: Association<Game, TowerGame>;
     _createdBy: Association<Game, User>;
     _gameType: Association<Game, GameType>;
+    _arenaPlayers: Association<Game, ArenaPlayer>;
   };
 
   async endGame(transaction?: Transaction) {
