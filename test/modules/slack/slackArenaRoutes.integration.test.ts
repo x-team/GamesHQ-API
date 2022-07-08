@@ -14,19 +14,21 @@ describe('slackArenaRoute', () => {
   testServer.route([slackCommandRoute]);
 
   describe('slackCommandRoute', () => {
-    const stubbedPublishArenaMessage = sinon.stub(arenaUtils, 'publishArenaMessage').resolves();
-    const stubbedNotifyEphemeral = sinon.stub(utils, 'notifyEphemeral').resolves();
+    let stubbedPublishArenaMessage: any;
+    let stubbedNotifyEphemeral: any;
+
     it('should be configured as expected', async () => {
+      stubbedPublishArenaMessage = sinon.stub(arenaUtils, 'publishArenaMessage').resolves();
+      stubbedNotifyEphemeral = sinon.stub(utils, 'notifyEphemeral').resolves();
+
       await startArenaGame();
       await startRound(1);
       await new Promise((resolve) => setTimeout(resolve, 1000));
       await startRound(2);
-      await new Promise((resolve) => setTimeout(resolve, 1000));
-      await startRound(3);
     });
 
     async function startArenaGame() {
-      const user = await User.findByPk(3);
+      const user = await User.findByPk(1);
 
       const jsonPayload: { [key: string]: string } = {
         command: ARENA_SLACK_COMMANDS.NEW_GAME,
