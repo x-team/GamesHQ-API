@@ -10,6 +10,8 @@ import {
   multipleLeaderboardResultScoreSchema,
   multipleLeaderboardSchema,
   postLeaderboardSchema,
+  updateLeaderboardResultRequestSchema,
+  updateLeaderboardResultResponseSchema,
 } from '../../../../api-utils/schemas/gameDev/leaderboardSchemas';
 import { CAPABILITIES } from '../../../../consts/model';
 import {
@@ -17,6 +19,8 @@ import {
   upsertLeaderboardHandler,
   deleteLeaderboardHandler,
   getLeaderboardResultsHandler,
+  updateLeaderboardResultsHandler,
+  deleteLeaderboardResultHandler,
 } from '../gameDevHandlers/leaderboardGameDevHandlers';
 
 export const getLeaderboardsRoute: ServerRoute = {
@@ -59,26 +63,6 @@ export const getLeaderboardByIdRoute: ServerRoute = {
   handler: getLeaderboardHandler,
 };
 
-export const getResultsFromLeaderboardRoute: ServerRoute = {
-  method: 'GET',
-  path: '/dashboard/game-dev/games/{gameTypeId}/leaderboards/{leaderboardId}/results',
-  options: {
-    description: 'Fetch a list of LeaderboardRank from a LeaderboardEntry',
-    tags: ['api'],
-    bind: {
-      requiredCapabilities: [
-        CAPABILITIES.MY_GAME_LEADERBOARD_READ,
-        CAPABILITIES.MY_GAME_LEADERBOARD_WRITE,
-      ],
-    },
-    pre: [getAuthUserMiddleware, validateGameAuthMiddleware],
-    response: {
-      schema: multipleLeaderboardResultScoreSchema,
-    },
-  },
-  handler: getLeaderboardResultsHandler,
-};
-
 export const deleteLeaderboardRoute: ServerRoute = {
   method: 'DELETE',
   path: '/dashboard/game-dev/games/{gameTypeId}/leaderboards/{leaderboardId}',
@@ -114,4 +98,61 @@ export const upsertLeaderboardRoute: ServerRoute = {
     },
   },
   handler: upsertLeaderboardHandler,
+};
+
+export const getResultsFromLeaderboardRoute: ServerRoute = {
+  method: 'GET',
+  path: '/dashboard/game-dev/games/{gameTypeId}/leaderboards/{leaderboardId}/results',
+  options: {
+    description: 'Fetch a list of LeaderboardRank from a LeaderboardEntry',
+    tags: ['api'],
+    bind: {
+      requiredCapabilities: [
+        CAPABILITIES.MY_GAME_LEADERBOARD_READ,
+        CAPABILITIES.MY_GAME_LEADERBOARD_WRITE,
+      ],
+    },
+    pre: [getAuthUserMiddleware, validateGameAuthMiddleware],
+    response: {
+      schema: multipleLeaderboardResultScoreSchema,
+    },
+  },
+  handler: getLeaderboardResultsHandler,
+};
+
+export const updateLeaderboardResultRoute: ServerRoute = {
+  method: 'POST',
+  path: '/dashboard/game-dev/games/{gameTypeId}/leaderboards/{leaderboardId}/results',
+  options: {
+    description: 'Update a LeaderboardRank from a LeaderboardEntry',
+    tags: ['api'],
+    bind: {
+      requiredCapabilities: [CAPABILITIES.MY_GAME_LEADERBOARD_WRITE],
+    },
+    pre: [getAuthUserMiddleware, validateGameAuthMiddleware],
+    validate: {
+      payload: updateLeaderboardResultRequestSchema,
+    },
+    response: {
+      schema: updateLeaderboardResultResponseSchema,
+    },
+  },
+  handler: updateLeaderboardResultsHandler,
+};
+
+export const deleteLeaderboardResultRoute: ServerRoute = {
+  method: 'DELETE',
+  path: '/dashboard/game-dev/games/{gameTypeId}/leaderboards/{leaderboardId}/results/{id}',
+  options: {
+    description: 'Delete leader board result',
+    tags: ['api'],
+    bind: {
+      requiredCapabilities: [CAPABILITIES.MY_GAME_LEADERBOARD_WRITE],
+    },
+    pre: [getAuthUserMiddleware, validateGameAuthMiddleware],
+    response: {
+      schema: gamedevGenericSchema,
+    },
+  },
+  handler: deleteLeaderboardResultHandler,
 };

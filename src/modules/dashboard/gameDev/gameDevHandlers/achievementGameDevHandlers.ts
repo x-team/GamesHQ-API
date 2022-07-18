@@ -3,7 +3,13 @@ import type { Lifecycle } from '@hapi/hapi';
 
 import { arrayToJSON } from '../../../../api-utils/utils';
 import type { GameType } from '../../../../models';
-import { getAchievementUnlockedFromAchievement } from '../../../../models/AchievementUnlocked';
+import type { AchievementUnlockedUnlockedEditorData } from '../../../../models/AchievementUnlocked';
+import {
+  getAchievementUnlockedFromAchievement,
+  createOrUpdateAchievementUnlocked,
+  findAchievementUnlocked,
+  deleteAchievementUnlocked,
+} from '../../../../models/AchievementUnlocked';
 import type { AchievementEditorData } from '../../../../models/Achievements';
 import {
   findAchievementById,
@@ -32,22 +38,6 @@ export const getAchievementsHandler: Lifecycle.Method = async (request, h) => {
   }
 };
 
-export const getAchievementProgressHandler: Lifecycle.Method = async (request, h) => {
-  if (!request.params.achievementId) {
-    throw Boom.notFound('Invalid achievementId');
-  }
-  const achievement = await findAchievementById(request.params.achievementId);
-
-  if (!achievement) {
-    throw Boom.notFound('achievement not found');
-  }
-  const achievementUnlockedList = await getAchievementUnlockedFromAchievement(achievement);
-
-  const achievementUnlockedListRes = arrayToJSON(achievementUnlockedList);
-
-  return h.response(achievementUnlockedListRes).code(200);
-};
-
 export const upsertAchievementHandler: Lifecycle.Method = async (request, h) => {
   const payload = request.payload as AchievementEditorData;
   const game = request.pre.game as GameType;
@@ -66,6 +56,53 @@ export const deleteAchievementHandler: Lifecycle.Method = async (request, h) => 
 
   if (!rslt) {
     throw Boom.notFound('achievement not found');
+  }
+
+  return h.response({ success: true }).code(200);
+};
+
+export const getAchievementProgressHandler: Lifecycle.Method = async (request, h) => {
+  if (!request.params.achievementId) {
+    throw Boom.notFound('Invalid achievementId');
+  }
+  const achievement = await findAchievementById(request.params.achievementId);
+
+  if (!achievement) {
+    throw Boom.notFound('achievement not found');
+  }
+  const achievementUnlockedList = await getAchievementUnlockedFromAchievement(achievement);
+
+  const achievementUnlockedListRes = arrayToJSON(achievementUnlockedList);
+
+  return h.response(achievementUnlockedListRes).code(200);
+};
+
+export const updateAchievementProgressHandler: Lifecycle.Method = async (request, h) => {
+  const payload = request.payload as AchievementUnlockedUnlockedEditorData;
+  const acheivementUnlocked = await findAchievementUnlocked(
+    payload._userId,
+    request.params.achievementId
+  );
+
+  if (!acheivementUnlocked) {
+    throw Boom.notFound('achievement progress not found');
+  }
+
+  const [rslt] = await createOrUpdateAchievementUnlocked({
+    _achievementId: request.params.achievementId,
+    _userId: acheivementUnlocked._userId,
+    progress: payload.progress,
+    isUnlocked: payload.isUnlocked,
+  });
+
+  return h.response(rslt.toJSON()).code(200);
+};
+
+export const deleteAchievementProgressHandler: Lifecycle.Method = async (request, h) => {
+  const rslt = await deleteAchievementUnlocked(request.params.achievementId, request.params.userId);
+
+  if (!rslt) {
+    throw Boom.notFound('achievement progress not found');
   }
 
   return h.response({ success: true }).code(200);

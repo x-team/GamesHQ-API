@@ -143,7 +143,7 @@ export async function getServerWithPlugins() {
     password: getConfig('GOOGLE_APPLICATION_CLIENT_RANDOM_PASSWORD'),
     clientId: getConfig('GOOGLE_APPLICATION_CLIENT_ID'),
     clientSecret: getConfig('GOOGLE_APPLICATION_CLIENT_SECRET'),
-    isSecure: isProd() ? true : false,
+    isSecure: false,
     // providerParams: {
     //   display: 'popup',
     // },
@@ -154,7 +154,7 @@ export async function getServerWithPlugins() {
     cookie: {
       name: 'XTU_GOOGLE',
       password: getConfig('COOKIE_PASSWORD'),
-      isSecure: isProd() ? true : false,
+      isSecure: false,
       path: '/',
       isSameSite: false,
     },

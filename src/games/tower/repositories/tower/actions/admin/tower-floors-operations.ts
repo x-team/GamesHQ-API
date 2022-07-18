@@ -9,6 +9,7 @@ import {
 import {
   addTowerFloorEnemies,
   addTowerFloorEnemy,
+  deleteTowerFloorEnemyByTowerFloor,
   findTowerFloorEnemyById,
 } from '../../../../../../models/TowerFloorEnemy';
 import { removeActionsByFloorBattlefieldEnemy } from '../../../../../../models/TowerRoundAction';
@@ -156,6 +157,7 @@ export async function addEnemiesToFloor(
     if (!towerFloor) {
       return getGameError(towerCommandReply.floorNumberNotValid());
     }
+    await deleteTowerFloorEnemyByTowerFloor(towerFloor.id, transaction);
     await addTowerFloorEnemies(towerFloor.id, enemyIds, transaction);
     return;
   });

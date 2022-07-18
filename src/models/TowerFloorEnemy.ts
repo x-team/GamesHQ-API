@@ -80,3 +80,13 @@ export async function addTowerFloorEnemies(
 export async function findTowerFloorEnemyById(id: number, transaction: Transaction) {
   return TowerFloorEnemy.findByPk(id, { transaction });
 }
+
+export async function deleteTowerFloorEnemyByTowerFloor(
+  towerFloorId: number,
+  transaction: Transaction
+) {
+  return TowerFloorEnemy.destroy({
+    where: { _towerFloorId: towerFloorId },
+    transaction,
+  });
+}

@@ -86,7 +86,7 @@ export class AchievementUnlocked
     _achievement: Association<AchievementUnlocked, Achievement>;
   };
 }
-interface AchievementUnlockedUnlockedEditorData {
+export interface AchievementUnlockedUnlockedEditorData {
   _userId: number;
   _achievementId: number;
   isUnlocked: boolean;
@@ -97,6 +97,19 @@ export async function createOrUpdateAchievementUnlocked(
   achievementUnlockedData: AchievementUnlockedUnlockedEditorData
 ) {
   return await AchievementUnlocked.upsert({ ...achievementUnlockedData });
+}
+
+export async function findAchievementUnlocked(_userId: number, _achievementId: number) {
+  return await AchievementUnlocked.findOne({ where: { _userId, _achievementId } });
+}
+
+export function deleteAchievementUnlocked(_userId: number, _achievementId: number) {
+  return AchievementUnlocked.destroy({
+    where: {
+      _userId,
+      _achievementId,
+    },
+  });
 }
 
 export function getAchievementUnlockedFromAchievement(
