@@ -6,6 +6,7 @@ import {
   endCurrentTowerGameHandler,
   openOrCloseCurrentTowerHandler,
   addEnemyToFloorHandler,
+  addTowerFloorHandler,
 } from '../adminHandlers/towerAdminHandlers';
 
 export const getTowerGameStatusRoute = {
@@ -76,4 +77,18 @@ export const addEnemyToFloorRoute = {
     pre: [getAuthUserMiddleware],
   },
   handler: addEnemyToFloorHandler,
+};
+
+export const addTowerFloorRoute = {
+  method: 'POST',
+  path: '/dashboard/admin/tower-games/{towerGameId}/floors',
+  options: {
+    description: 'Add tower floor',
+    tags: ['api'],
+    bind: {
+      requiredCapabilities: [CAPABILITIES.THE_TOWER_WRITE],
+    },
+    pre: [getAuthUserMiddleware],
+  },
+  handler: addTowerFloorHandler,
 };
