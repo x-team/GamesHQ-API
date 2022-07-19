@@ -20,6 +20,7 @@ import {
   openOrCloseCurrentTowerRoute,
   addEnemyToFloorRoute,
   addTowerFloorRoute,
+  removeTowerFloorRoute,
 } from './adminRoutes/towerAdminRoutes';
 import {
   getAllUserRolesRoute,
@@ -56,6 +57,7 @@ export const adminRoutes: ServerRoute[] = [
   openOrCloseCurrentTowerRoute,
   addEnemyToFloorRoute,
   addTowerFloorRoute,
+  removeTowerFloorRoute,
   // capability
   getAllCapabilitiesRoute,
   createCapabilityRoute,

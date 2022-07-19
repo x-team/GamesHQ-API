@@ -1,9 +1,9 @@
-import Boom from '@hapi/boom';
 import type { Lifecycle } from '@hapi/hapi';
 
 import {
   addEnemies,
   addTowerFloor,
+  removeTowerFloor,
 } from '../../../../games/tower/repositories/tower/floorRepository';
 import type { ICreateTowerGameData } from '../../../../games/tower/repositories/tower/towerRepository';
 import {
@@ -11,7 +11,7 @@ import {
   endCurrentTowerGame,
   openOrCloseTower,
 } from '../../../../games/tower/repositories/tower/towerRepository';
-import { findActiveTowerGame, TowerGame } from '../../../../models/TowerGame';
+import { findActiveTowerGame } from '../../../../models/TowerGame';
 
 export const getTowerGameStatusHandler: Lifecycle.Method = async (_request, h) => {
   const towerGame = await findActiveTowerGame();
@@ -63,18 +63,16 @@ export const addTowerFloorHandler: Lifecycle.Method = async (_request, h) => {
   const { payload } = _request;
   const { number } = payload as IAddFloorPayload;
 
-  const towerGame = await TowerGame.findByPk(towerGameId);
-
-  if (!towerGame) {
-    throw Boom.notFound('tower game not found');
-  }
-
-  if (number > towerGame.height + 1) {
-    // can either add a new floor or add a floor in the middle
-    throw Boom.badRequest(`max floor number allowed is ${towerGame.height + 1}`);
-  }
-
   const floor = await addTowerFloor(number, towerGameId);
 
   return h.response(floor.toJSON()).code(200);
+};
+
+export const removeTowerFloorHandler: Lifecycle.Method = async (_request, h) => {
+  const towerGameId = parseInt(_request.params.towerGameId);
+  const floorId = parseInt(_request.params.floorId);
+
+  await removeTowerFloor(floorId, towerGameId);
+
+  return h.response({ success: true }).code(200);
 };

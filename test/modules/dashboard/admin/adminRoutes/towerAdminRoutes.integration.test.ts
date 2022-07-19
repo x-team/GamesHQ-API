@@ -1,15 +1,17 @@
 import { expect } from 'chai';
-import { addTowerFloorRoute } from '../../../../../src/modules/dashboard/admin/adminRoutes/towerAdminRoutes';
+import {
+  addTowerFloorRoute,
+  removeTowerFloorRoute,
+} from '../../../../../src/modules/dashboard/admin/adminRoutes/towerAdminRoutes';
 import { Session } from '../../../../../src/models';
 import { v4 as uuid } from 'uuid';
-import { createTestUser, getCustomTestServer } from '../../../../test-utils';
+import { getCustomTestServer } from '../../../../test-utils';
 import { startTowerGame, TowerGame } from '../../../../../src/models/TowerGame';
-import { USER_ROLE_LEVEL } from '../../../../../src/consts/model';
 
-describe('gameDevRoutes', () => {
+describe('towerAdminRoutes', () => {
   const testServer = getCustomTestServer();
 
-  testServer.route([addTowerFloorRoute]);
+  testServer.route([addTowerFloorRoute, removeTowerFloorRoute]);
 
   describe('addTowerFloorRoute', async () => {
     it('should return 200 status code on POST /dashboard/admin/tower-games/{towerGameId}/floors', async () => {
@@ -63,8 +65,6 @@ describe('gameDevRoutes', () => {
       const rslt = await testServer.inject(injectOptions);
       const resp = JSON.parse(rslt.payload);
 
-      console.log(resp);
-
       expect(rslt.statusCode).to.equal(400);
       expect(resp).to.deep.equal({
         statusCode: 400,
@@ -95,13 +95,88 @@ describe('gameDevRoutes', () => {
       const rslt = await testServer.inject(injectOptions);
       const resp = JSON.parse(rslt.payload);
 
-      console.log(resp);
-
       expect(rslt.statusCode).to.equal(404);
       expect(resp).to.deep.equal({
         statusCode: 404,
         error: 'Not Found',
         message: 'tower game not found',
+      });
+    });
+  });
+
+  describe('removeTowerFloorRoute', async () => {
+    it('should return 200 status code on DELETE /dashboard/admin/tower-games/{towerGameId}/floors/{floorId}', async () => {
+      const towerGame = await createTowerGame();
+      const session = await Session.create({
+        token: uuid(),
+        _userId: 1,
+      });
+
+      const injectOptions = {
+        method: 'DELETE',
+        url: `/dashboard/admin/tower-games/${towerGame!.id}/floors/1`,
+        headers: {
+          'xtu-session-token': session.token,
+        },
+      };
+
+      const rslt = await testServer.inject(injectOptions);
+      const resp = JSON.parse(rslt.payload);
+
+      expect(rslt.statusCode).to.equal(200);
+      expect(resp).to.deep.equal({
+        success: true,
+      });
+    });
+
+    it('should return 404 status code on DELETE /dashboard/admin/tower-games/{towerGameId}/floors/{floorId} when floor does not exist', async () => {
+      const towerGame = await createTowerGame();
+      const session = await Session.create({
+        token: uuid(),
+        _userId: 1,
+      });
+
+      const injectOptions = {
+        method: 'DELETE',
+        url: `/dashboard/admin/tower-games/${towerGame!.id}/floors/123`,
+        headers: {
+          'xtu-session-token': session.token,
+        },
+      };
+
+      const rslt = await testServer.inject(injectOptions);
+      const resp = JSON.parse(rslt.payload);
+
+      expect(rslt.statusCode).to.equal(404);
+      expect(resp).to.deep.equal({
+        statusCode: 404,
+        error: 'Not Found',
+        message: 'tower floor not found',
+      });
+    });
+
+    it('should return 404 status code on DELETE /dashboard/admin/tower-games/{towerGameId}/floors/{floorId} when tower game does not exist', async () => {
+      const session = await Session.create({
+        token: uuid(),
+        _userId: 1,
+      });
+
+      const injectOptions = {
+        method: 'DELETE',
+        url: `/dashboard/admin/tower-games/123/floors/1`,
+        headers: {
+          'xtu-session-token': session.token,
+        },
+      };
+
+      const rslt = await testServer.inject(injectOptions);
+      const resp = JSON.parse(rslt.payload);
+
+      expect(rslt.statusCode).to.equal(404);
+      expect(resp).to.deep.equal({
+        statusCode: 404,
+        error: 'Not Found',
+        message: 'tower floor not found',
       });
     });
   });

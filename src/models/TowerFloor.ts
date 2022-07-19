@@ -113,6 +113,15 @@ export function findTowerFloorById(id: number, includeAll: boolean, transaction?
   });
 }
 
+export async function findTowerFloor(floorId: number, towerGameId: number) {
+  return TowerFloor.findOne({
+    where: {
+      id: floorId,
+      _towerGameId: towerGameId,
+    },
+  });
+}
+
 export async function addTowerFloors(towerGame: TowerGame, transaction?: Transaction) {
   for (let mutableIndex = 1; mutableIndex <= towerGame.height!; mutableIndex++) {
     await TowerFloor.create(
@@ -163,29 +172,37 @@ export async function addFloor(floorNumber: number, _towerGameId: number): Promi
   });
 }
 
-export async function removeTowerFloor(
-  towerFloor: number,
-  towerGame: TowerGame,
-  transaction: Transaction
-) {
-  const newFloorNumber = towerGame.height - 1;
-  await TowerGame.update(
-    {
-      height: newFloorNumber,
-    },
-    {
+export async function removeFloor(floorNumber: number, _towerGameId: number) {
+  return withTransaction(async (transaction: Transaction) => {
+    const rslt = await TowerFloor.destroy({
       where: {
-        id: towerGame.id,
+        _towerGameId,
+        number: floorNumber,
       },
       transaction,
-    }
-  );
+    });
 
-  await TowerFloor.destroy({
-    where: {
-      _towerGameId: towerGame.id,
-      number: towerFloor,
-    },
-    transaction,
+    if (rslt) {
+      await TowerGame.decrement('height', {
+        by: 1,
+        where: {
+          id: _towerGameId,
+        },
+        transaction,
+      });
+
+      await TowerFloor.decrement('number', {
+        by: 1,
+        where: {
+          [Op.and]: {
+            _towerGameId,
+            number: {
+              [Op.gt]: floorNumber,
+            },
+          },
+        },
+        transaction,
+      });
+    }
   });
 }

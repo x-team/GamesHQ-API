@@ -7,6 +7,7 @@ import {
   openOrCloseCurrentTowerRoute,
   addEnemyToFloorRoute,
   addTowerFloorRoute,
+  removeTowerFloorRoute,
 } from '../../../../../src/modules/dashboard/admin/adminRoutes/towerAdminRoutes';
 import {
   getTowerGameStatusHandler,
@@ -15,6 +16,7 @@ import {
   openOrCloseCurrentTowerHandler,
   addEnemyToFloorHandler,
   addTowerFloorHandler,
+  removeTowerFloorHandler,
 } from '../../../../../src/modules/dashboard/admin/adminHandlers/towerAdminHandlers';
 import { CAPABILITIES } from '../../../../../src/consts/model';
 import { getAuthUserMiddleware } from '../../../../../src/api-utils/midddleware';
@@ -22,6 +24,7 @@ import {
   addTowerRequestSchema,
   addTowerResponseSchema,
 } from '../../../../../src/api-utils/schemas/admin/towerSchemas';
+import { genericSchema } from '../../../../../src/api-utils/schemas';
 
 describe('towerAdminRoutes', () => {
   describe('getTowerGameStatusRoute', () => {
@@ -137,6 +140,26 @@ describe('towerAdminRoutes', () => {
         addTowerResponseSchema
       );
       expect(addTowerFloorRoute.handler).to.equal(addTowerFloorHandler);
+    });
+  });
+
+  describe('removeTowerFloorRoute', () => {
+    it('should be configured as expected', async () => {
+      expect(removeTowerFloorRoute.method).to.equal('DELETE');
+      expect(removeTowerFloorRoute.path).to.equal(
+        '/dashboard/admin/tower-games/{towerGameId}/floors/{floorId}'
+      );
+      expect(removeTowerFloorRoute.options?.bind).to.deep.equal({
+        requiredCapabilities: [CAPABILITIES.THE_TOWER_WRITE],
+      });
+      expect((removeTowerFloorRoute.options as RouteOptions).pre).to.deep.equal([
+        getAuthUserMiddleware,
+      ]);
+      expect((removeTowerFloorRoute.options as RouteOptions).validate?.payload).to.equal(undefined);
+      expect((removeTowerFloorRoute.options as RouteOptions).response?.schema).to.equal(
+        genericSchema
+      );
+      expect(removeTowerFloorRoute.handler).to.equal(removeTowerFloorHandler);
     });
   });
 });
