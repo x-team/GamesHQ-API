@@ -45,7 +45,7 @@ type IAddEnemiesPayload = {
 };
 
 type IAddFloorPayload = {
-  floorNumber: number;
+  number: number;
 };
 
 export const addEnemyToFloorHandler: Lifecycle.Method = async (_request, h) => {
@@ -61,7 +61,7 @@ export const addEnemyToFloorHandler: Lifecycle.Method = async (_request, h) => {
 export const addTowerFloorHandler: Lifecycle.Method = async (_request, h) => {
   const towerGameId = parseInt(_request.params.towerGameId);
   const { payload } = _request;
-  const { floorNumber } = payload as IAddFloorPayload;
+  const { number } = payload as IAddFloorPayload;
 
   const towerGame = await TowerGame.findByPk(towerGameId);
 
@@ -69,11 +69,12 @@ export const addTowerFloorHandler: Lifecycle.Method = async (_request, h) => {
     throw Boom.notFound('tower game not found');
   }
 
-  if (towerGame.height < floorNumber + 1) {
-    throw Boom.notFound(`max floorNumber allowed is ${floorNumber + 1}`);
+  if (number > towerGame.height + 1) {
+    // can either add a new floor or add a floor in the middle
+    throw Boom.badRequest(`max floor number allowed is ${towerGame.height + 1}`);
   }
 
-  const floor = await addTowerFloor(floorNumber, towerGameId);
+  const floor = await addTowerFloor(number, towerGameId);
 
   return h.response(floor.toJSON()).code(200);
 };

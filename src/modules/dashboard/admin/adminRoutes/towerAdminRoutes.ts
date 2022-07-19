@@ -1,4 +1,8 @@
 import { getAuthUserMiddleware } from '../../../../api-utils/midddleware';
+import {
+  addTowerRequestSchema,
+  addTowerResponseSchema,
+} from '../../../../api-utils/schemas/admin/towerSchemas';
 import { CAPABILITIES } from '../../../../consts/model';
 import {
   getTowerGameStatusHandler,
@@ -89,6 +93,12 @@ export const addTowerFloorRoute = {
       requiredCapabilities: [CAPABILITIES.THE_TOWER_WRITE],
     },
     pre: [getAuthUserMiddleware],
+    validate: {
+      payload: addTowerRequestSchema,
+    },
+    response: {
+      schema: addTowerResponseSchema,
+    },
   },
   handler: addTowerFloorHandler,
 };

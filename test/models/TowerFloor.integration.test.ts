@@ -2,7 +2,6 @@ import { expect } from 'chai';
 import { addFloor } from '../../src/models/TowerFloor';
 import { startTowerGame, TowerGame } from '../../src/models/TowerGame';
 import { v4 as uuid } from 'uuid';
-import { orderBy } from 'lodash';
 
 describe('TowerFloor', () => {
   describe('addFloor', async () => {
