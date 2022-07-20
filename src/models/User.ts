@@ -190,6 +190,24 @@ export async function getUserByEmail(email: string): Promise<User | null> {
   });
 }
 
+export async function getUserByEmailWithRoleAndCapabilities(email: string): Promise<User | null> {
+  return User.findOne({
+    where: {
+      email,
+    },
+    include: [
+      {
+        association: User.associations._role,
+        include: [
+          {
+            association: UserRole.associations._capabilities,
+          },
+        ],
+      },
+    ],
+  });
+}
+
 export async function getUserBySlackId(slackId: string): Promise<User | null> {
   return User.findOne({
     where: {

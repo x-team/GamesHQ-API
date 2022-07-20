@@ -1,6 +1,10 @@
 import type { Lifecycle } from '@hapi/hapi';
 
-import { addEnemies } from '../../../../games/tower/repositories/tower/floorRepository';
+import {
+  addEnemies,
+  addTowerFloor,
+  removeTowerFloor,
+} from '../../../../games/tower/repositories/tower/floorRepository';
 import type { ICreateTowerGameData } from '../../../../games/tower/repositories/tower/towerRepository';
 import {
   createTowerGame,
@@ -40,12 +44,35 @@ type IAddEnemiesPayload = {
   enemyIds: number[];
 };
 
+type IAddFloorPayload = {
+  number: number;
+};
+
 export const addEnemyToFloorHandler: Lifecycle.Method = async (_request, h) => {
   const floorId = parseInt(_request.params.floorId);
   const { payload } = _request;
   const { enemyIds } = payload as IAddEnemiesPayload;
 
   await addEnemies(floorId, enemyIds);
+
+  return h.response({ success: true }).code(200);
+};
+
+export const addTowerFloorHandler: Lifecycle.Method = async (_request, h) => {
+  const towerGameId = parseInt(_request.params.towerGameId);
+  const { payload } = _request;
+  const { number } = payload as IAddFloorPayload;
+
+  const floor = await addTowerFloor(number, towerGameId);
+
+  return h.response(floor.toJSON()).code(200);
+};
+
+export const removeTowerFloorHandler: Lifecycle.Method = async (_request, h) => {
+  const towerGameId = parseInt(_request.params.towerGameId);
+  const floorId = parseInt(_request.params.floorId);
+
+  await removeTowerFloor(floorId, towerGameId);
 
   return h.response({ success: true }).code(200);
 };

@@ -12,7 +12,11 @@ import {
   findSessionByUserEmail,
   updateSession,
 } from '../../models/Session';
-import { createUser, findUserById, getUserByEmail } from '../../models/User';
+import {
+  createUser,
+  findUserWithRoleAndCapabilities,
+  getUserByEmailWithRoleAndCapabilities,
+} from '../../models/User';
 import { createUserInFirebase } from '../../plugins/firebasePlugin';
 
 export const loginWithGoogle: Lifecycle.Method = async (req, h) => {
@@ -56,7 +60,7 @@ export const loginWithGoogle: Lifecycle.Method = async (req, h) => {
 
   req.cookieAuth.set({ id: googleProfile.id });
 
-  let mutableUserFound = await getUserByEmail(googleProfile.email);
+  let mutableUserFound = await getUserByEmailWithRoleAndCapabilities(googleProfile.email);
 
   if (!mutableUserFound) {
     const xteamOrganization = await findOrganizationByName('x-team');
@@ -119,7 +123,7 @@ export const checkAvailableSession: Lifecycle.Method = async (req, h) => {
       if (!updatedSession) {
         return Boom.notFound('Session not found');
       }
-      const user = await findUserById(updatedSession._userId);
+      const user = await findUserWithRoleAndCapabilities(updatedSession._userId);
       if (!user) {
         return Boom.notFound('User not found');
       }
@@ -136,6 +140,7 @@ export const checkAvailableSession: Lifecycle.Method = async (req, h) => {
           firebaseUserUid: user.firebaseUserUid,
           profilePictureUrl: user.profilePictureUrl,
           role: user._roleId,
+          capabilities: user._role?._capabilities?.map((c) => c.name),
           isAdmin:
             user._roleId === USER_ROLE_LEVEL.ADMIN || user._roleId === USER_ROLE_LEVEL.SUPER_ADMIN,
         },

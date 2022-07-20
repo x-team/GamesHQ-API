@@ -161,6 +161,10 @@ export async function findActiveTowerGame(transaction?: Transaction) {
   return findActiveGame(GAME_TYPE.TOWER, transaction);
 }
 
+export async function findTowerGameById(id: number, transaction?: Transaction) {
+  return TowerGame.findByPk(id, { transaction });
+}
+
 export async function findLastActiveTowerGame(transaction?: Transaction) {
   return findLastActiveGame(GAME_TYPE.TOWER, transaction);
 }
@@ -181,7 +185,7 @@ export async function startTowerGame(
     height?: number;
     isOpen: boolean;
   },
-  transaction: Transaction
+  transaction?: Transaction
 ) {
   const newGame = await startGame(GAME_TYPE.TOWER, name, _createdById, new Date(), transaction);
 
@@ -195,7 +199,7 @@ export async function startTowerGame(
 export async function createTowerGame(
   game: Game,
   { lunaPrize, coinPrize, height, isOpen }: TowerGameCreationAttributes,
-  transaction: Transaction
+  transaction?: Transaction
 ) {
   const newTowerGame = TowerGame.build({
     _gameId: game.id,
