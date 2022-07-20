@@ -17,6 +17,14 @@ const userSessionSchema = Joi.object({
   profilePictureUrl: Joi.string().allow(null).optional(),
   role: Joi.number().required(),
   isAdmin: Joi.boolean().required(),
+  capabilities: Joi.array()
+    .items(
+      Joi.object({
+        id: Joi.number().required(),
+        name: Joi.string().required(),
+      })
+    )
+    .required(),
 }).options({ stripUnknown: true });
 
 export const sessionSchema = Joi.object({
