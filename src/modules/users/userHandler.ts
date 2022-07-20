@@ -140,7 +140,7 @@ export const checkAvailableSession: Lifecycle.Method = async (req, h) => {
           firebaseUserUid: user.firebaseUserUid,
           profilePictureUrl: user.profilePictureUrl,
           role: user._roleId,
-          capabilities: user._role?._capabilities,
+          capabilities: user._role?._capabilities?.map((c) => c.name),
           isAdmin:
             user._roleId === USER_ROLE_LEVEL.ADMIN || user._roleId === USER_ROLE_LEVEL.SUPER_ADMIN,
         },
