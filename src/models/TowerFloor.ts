@@ -1,3 +1,4 @@
+import { Op } from 'sequelize';
 import type { Association, Transaction } from 'sequelize';
 import {
   Table,
@@ -11,6 +12,8 @@ import {
   PrimaryKey,
   AutoIncrement,
 } from 'sequelize-typescript';
+
+import { withTransaction } from '../db';
 
 import { TowerGame, TowerFloorBattlefield, TowerFloorEnemy } from '.';
 
@@ -110,7 +113,16 @@ export function findTowerFloorById(id: number, includeAll: boolean, transaction?
   });
 }
 
-export async function addTowerFloors(towerGame: TowerGame, transaction: Transaction) {
+export async function findTowerFloor(floorId: number, towerGameId: number) {
+  return TowerFloor.findOne({
+    where: {
+      id: floorId,
+      _towerGameId: towerGameId,
+    },
+  });
+}
+
+export async function addTowerFloors(towerGame: TowerGame, transaction?: Transaction) {
   for (let mutableIndex = 1; mutableIndex <= towerGame.height!; mutableIndex++) {
     await TowerFloor.create(
       {
@@ -120,4 +132,77 @@ export async function addTowerFloors(towerGame: TowerGame, transaction: Transact
       { transaction }
     );
   }
+}
+
+export async function addFloor(floorNumber: number, _towerGameId: number): Promise<TowerFloor> {
+  return withTransaction(async (transaction: Transaction) => {
+    await TowerGame.increment('height', {
+      by: 1,
+      where: {
+        id: _towerGameId,
+      },
+      transaction,
+    });
+
+    await TowerFloor.increment('number', {
+      by: 1,
+      where: {
+        [Op.and]: {
+          _towerGameId,
+          number: {
+            [Op.gte]: floorNumber,
+          },
+        },
+      },
+      transaction,
+    });
+
+    const floor = await TowerFloor.create(
+      {
+        _towerGameId,
+        number: floorNumber,
+      },
+      {
+        returning: true,
+        transaction,
+      }
+    );
+
+    return floor;
+  });
+}
+
+export async function removeFloor(floorNumber: number, _towerGameId: number) {
+  return withTransaction(async (transaction: Transaction) => {
+    const rslt = await TowerFloor.destroy({
+      where: {
+        _towerGameId,
+        number: floorNumber,
+      },
+      transaction,
+    });
+
+    if (rslt) {
+      await TowerGame.decrement('height', {
+        by: 1,
+        where: {
+          id: _towerGameId,
+        },
+        transaction,
+      });
+
+      await TowerFloor.decrement('number', {
+        by: 1,
+        where: {
+          [Op.and]: {
+            _towerGameId,
+            number: {
+              [Op.gt]: floorNumber,
+            },
+          },
+        },
+        transaction,
+      });
+    }
+  });
 }

@@ -239,7 +239,7 @@ export async function startGame(
   name: string,
   _createdById: number,
   startedAt: Date,
-  transaction: Transaction
+  transaction?: Transaction
 ) {
   if (!name || !name.trim()) {
     name = generateRandomNameForGame(gameTypeName);

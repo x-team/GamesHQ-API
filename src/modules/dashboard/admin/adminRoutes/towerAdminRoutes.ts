@@ -1,4 +1,9 @@
 import { getAuthUserMiddleware } from '../../../../api-utils/midddleware';
+import { genericSchema } from '../../../../api-utils/schemas';
+import {
+  addTowerRequestSchema,
+  addTowerResponseSchema,
+} from '../../../../api-utils/schemas/admin/towerSchemas';
 import { CAPABILITIES } from '../../../../consts/model';
 import {
   getTowerGameStatusHandler,
@@ -6,6 +11,8 @@ import {
   endCurrentTowerGameHandler,
   openOrCloseCurrentTowerHandler,
   addEnemyToFloorHandler,
+  addTowerFloorHandler,
+  removeTowerFloorHandler,
 } from '../adminHandlers/towerAdminHandlers';
 
 export const getTowerGameStatusRoute = {
@@ -76,4 +83,41 @@ export const addEnemyToFloorRoute = {
     pre: [getAuthUserMiddleware],
   },
   handler: addEnemyToFloorHandler,
+};
+
+export const addTowerFloorRoute = {
+  method: 'POST',
+  path: '/dashboard/admin/tower-games/{towerGameId}/floors',
+  options: {
+    description: 'Add tower floor',
+    tags: ['api'],
+    bind: {
+      requiredCapabilities: [CAPABILITIES.THE_TOWER_WRITE],
+    },
+    pre: [getAuthUserMiddleware],
+    validate: {
+      payload: addTowerRequestSchema,
+    },
+    response: {
+      schema: addTowerResponseSchema,
+    },
+  },
+  handler: addTowerFloorHandler,
+};
+
+export const removeTowerFloorRoute = {
+  method: 'DELETE',
+  path: '/dashboard/admin/tower-games/{towerGameId}/floors/{floorId}',
+  options: {
+    description: 'Remove tower floor',
+    tags: ['api'],
+    bind: {
+      requiredCapabilities: [CAPABILITIES.THE_TOWER_WRITE],
+    },
+    pre: [getAuthUserMiddleware],
+    response: {
+      schema: genericSchema,
+    },
+  },
+  handler: removeTowerFloorHandler,
 };

@@ -52,7 +52,7 @@ export class TowerFloorEnemy
   };
 }
 
-export async function addTowerFloorEnemy(floorId: number, enemy: Enemy, transaction: Transaction) {
+export async function addTowerFloorEnemy(floorId: number, enemy: Enemy, transaction?: Transaction) {
   return TowerFloorEnemy.create(
     {
       _towerFloorId: floorId,
