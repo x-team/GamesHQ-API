@@ -59,7 +59,12 @@ export async function playerActionsParams(
   if (!round) {
     return getGameError(arenaCommandReply.noActiveRound());
   }
-  const player = await findPlayerByUser(round._gameId, userRequesting.id, true, transaction);
+  const player = await findPlayerByUser(
+    round._arenaGame?._gameId!,
+    userRequesting.id,
+    true,
+    transaction
+  );
 
   if (!player) {
     return getGameError(arenaCommandReply.playerNotInTheGame());
@@ -109,12 +114,16 @@ export function topPlayerPerformance(
 }
 
 export async function processWinner(round: ArenaRound, transaction: Transaction) {
-  const playersAlive = await findLivingPlayersByGame(round._gameId, false, transaction);
+  const playersAlive = await findLivingPlayersByGame(
+    round._arenaGame?._gameId!,
+    false,
+    transaction
+  );
   if (playersAlive.length === ONE) {
     const [winner] = playersAlive;
     await publishArenaMessage(arenaCommandReply.playerWinsGame(winner._user?.slackId!));
   }
-  if (playersAlive.length > ONE && round._game?._arena?.teamBased) {
+  if (playersAlive.length > ONE && round._arenaGame?.teamBased) {
     const teamReference = playersAlive[ZERO]._teamId;
     const sameTeamPlayers = playersAlive.filter((p) => teamReference === p._teamId);
     if (sameTeamPlayers.length === playersAlive.length) {

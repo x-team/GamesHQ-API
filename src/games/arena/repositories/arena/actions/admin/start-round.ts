@@ -45,7 +45,11 @@ export async function startRoundCommand(userRequesting: User) {
     // 2. Movement: Players Location
     await arenaGameEngine.processChangeLocation(round._actions ?? [], transaction);
 
-    const playersAlive = await findLivingPlayersByGame(round._gameId, false, transaction);
+    const playersAlive = await findLivingPlayersByGame(
+      round._arenaGame?._gameId!,
+      false,
+      transaction
+    );
     const amountOfPlayersAlive = playersAlive.length;
 
     await publishArenaMessage(arenaCommandReply.channelTotalPlayersAlive(amountOfPlayersAlive));
@@ -57,12 +61,12 @@ export async function startRoundCommand(userRequesting: User) {
 
     const activeZonesForCurrentRound = await findActiveArenaZones(transaction);
 
-    if (round._game?._arena?.hasZoneDeactivation && activeZonesForCurrentRound.length > ONE) {
+    if (round._arenaGame?.hasZoneDeactivation && activeZonesForCurrentRound.length > ONE) {
       if ((roundsCompleted + ONE) % THREE === ZERO) {
         const zonesToDeactivate = await findRingSystemZonesToDeactivate(
           {
-            ringSystemAlgorithm: round._game?._arena?.ringSystemAlgorithm,
-            currentRingDeactivation: round._game?._arena?.currentRingDeactivation,
+            ringSystemAlgorithm: round._arenaGame?.ringSystemAlgorithm,
+            currentRingDeactivation: round._arenaGame?.currentRingDeactivation,
           },
           transaction
         );
@@ -71,7 +75,7 @@ export async function startRoundCommand(userRequesting: User) {
 
       if (roundsCompleted % THREE === ZERO) {
         await publishArenaMessage(arenaCommandReply.channelRunningRingSystem());
-        await ringDeactivationSystem(round._game._arena, transaction);
+        await ringDeactivationSystem(round._arenaGame, transaction);
       }
     }
 

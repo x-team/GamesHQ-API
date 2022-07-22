@@ -19,7 +19,7 @@ export async function processCheers(
     const player = action._player!;
     await setPlayerPerformanceAction(
       player.id,
-      round._gameId,
+      round._arenaGame?._gameId!,
       { field: ARENA_PLAYER_PERFORMANCE.CHEERS_GIVEN, value: ONE },
       transaction
     );
@@ -37,7 +37,7 @@ export async function processCheers(
       );
       const playerPerformance = await setPlayerPerformanceAction(
         targetPlayer?.id,
-        round._gameId,
+        round._arenaGame?._gameId!,
         { field: ARENA_PLAYER_PERFORMANCE.CHEERS_RECEIVED, value: ONE },
         transaction
       );
