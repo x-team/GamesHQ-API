@@ -103,6 +103,8 @@ export enum ARENA_SECONDARY_ACTIONS {
   DELETE_ZONE = 'delete-zone',
 }
 
+export const ARENA_DASHBOARD_COMMANDS = [ARENA_SLACK_COMMANDS.START_ROUND.toString()];
+
 export enum ARENA_HEALTHKITS {
   COMMON = 'arena health kit',
 }

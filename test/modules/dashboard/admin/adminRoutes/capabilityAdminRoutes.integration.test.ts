@@ -9,7 +9,7 @@ import { USER_ROLE_LEVEL } from '../../../../../src/consts/model';
 import { Capability, Session } from '../../../../../src/models';
 import { createTestUser, getCustomTestServer } from '../../../../test-utils';
 
-describe('userRoleAdminRoutes', () => {
+describe('capabilityRoleAdminRoutes', () => {
   const testServer = getCustomTestServer();
 
   testServer.route([getAllCapabilitiesRoute, createCapabilityRoute, deleteCapabilityRoute]);
