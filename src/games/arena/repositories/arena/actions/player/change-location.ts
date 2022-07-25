@@ -30,7 +30,7 @@ export async function changeLocation(userRequesting: User, arenaZoneId: number) 
     const roundAction = await findPlayerRoundAction(player.id, round.id, transaction);
     const playerPerformance = await findSinglePlayerPerformance(
       player.id,
-      round._gameId,
+      round._arenaGame?._gameId!,
       transaction
     );
     const hud = arenaCommandReply.playerHUD(player, zone, playerPerformance);
@@ -85,7 +85,7 @@ export async function bossChangeLocation(userRequesting: User) {
 
     const playerPerformance = await findSinglePlayerPerformance(
       player.id,
-      round._gameId,
+      round._arenaGame?._gameId!,
       transaction
     );
     const hud = arenaCommandReply.playerHUD(player, zone, playerPerformance);

@@ -48,7 +48,11 @@ export async function giveEveryoneWeapon(userRequesting: User, selectedWeapon: n
     if (!round) {
       return getGameError(arenaCommandReply.noActiveRound());
     }
-    const livingPlayers = await findLivingPlayersByGame(round._gameId, true, transaction);
+    const livingPlayers = await findLivingPlayersByGame(
+      round._arenaGame?._gameId!,
+      true,
+      transaction
+    );
     const weaponToGive = await findWeaponById(selectedWeapon, transaction);
     if (!weaponToGive) {
       return getGameError(arenaCommandReply.weaponNotFound());
@@ -69,7 +73,7 @@ export async function startNarrowWeaponsQuestion(userRequesting: User) {
     if (!round) {
       return getGameError(arenaCommandReply.noActiveRound());
     }
-    const game = round._game;
+    const game = round._arenaGame?._game;
     if (!game) {
       return getGameError(arenaCommandReply.noActiveGame());
     }

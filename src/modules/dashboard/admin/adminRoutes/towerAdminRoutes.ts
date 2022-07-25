@@ -1,8 +1,10 @@
 import { getAuthUserMiddleware } from '../../../../api-utils/midddleware';
 import { genericSchema } from '../../../../api-utils/schemas';
 import {
-  addTowerRequestSchema,
-  addTowerResponseSchema,
+  addTowerFloorRequestSchema,
+  addTowerFloorResponseSchema,
+  updateTowerRequestSchema,
+  updateTowerResponseSchema,
 } from '../../../../api-utils/schemas/admin/towerSchemas';
 import { CAPABILITIES } from '../../../../consts/model';
 import {
@@ -13,6 +15,7 @@ import {
   addEnemyToFloorHandler,
   addTowerFloorHandler,
   removeTowerFloorHandler,
+  updateTowerGameHandler,
 } from '../adminHandlers/towerAdminHandlers';
 
 export const getTowerGameStatusRoute = {
@@ -41,6 +44,26 @@ export const newTowerGameRoute = {
     pre: [getAuthUserMiddleware],
   },
   handler: newTowerGameHandler,
+};
+
+export const updateTowerGameRoute = {
+  method: 'POST',
+  path: '/dashboard/admin/tower-games/{towerGameId}',
+  options: {
+    description: 'Update tower game.',
+    tags: ['api'],
+    bind: {
+      requiredCapabilities: [CAPABILITIES.THE_TOWER_WRITE],
+    },
+    pre: [getAuthUserMiddleware],
+    validate: {
+      payload: updateTowerRequestSchema,
+    },
+    response: {
+      schema: updateTowerResponseSchema,
+    },
+  },
+  handler: updateTowerGameHandler,
 };
 
 export const endCurrentTowerGameRoute = {
@@ -96,10 +119,10 @@ export const addTowerFloorRoute = {
     },
     pre: [getAuthUserMiddleware],
     validate: {
-      payload: addTowerRequestSchema,
+      payload: addTowerFloorRequestSchema,
     },
     response: {
-      schema: addTowerResponseSchema,
+      schema: addTowerFloorResponseSchema,
     },
   },
   handler: addTowerFloorHandler,

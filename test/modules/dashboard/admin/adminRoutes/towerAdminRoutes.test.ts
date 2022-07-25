@@ -8,6 +8,7 @@ import {
   addEnemyToFloorRoute,
   addTowerFloorRoute,
   removeTowerFloorRoute,
+  updateTowerGameRoute,
 } from '../../../../../src/modules/dashboard/admin/adminRoutes/towerAdminRoutes';
 import {
   getTowerGameStatusHandler,
@@ -17,12 +18,15 @@ import {
   addEnemyToFloorHandler,
   addTowerFloorHandler,
   removeTowerFloorHandler,
+  updateTowerGameHandler,
 } from '../../../../../src/modules/dashboard/admin/adminHandlers/towerAdminHandlers';
 import { CAPABILITIES } from '../../../../../src/consts/model';
 import { getAuthUserMiddleware } from '../../../../../src/api-utils/midddleware';
 import {
-  addTowerRequestSchema,
-  addTowerResponseSchema,
+  addTowerFloorRequestSchema,
+  addTowerFloorResponseSchema,
+  updateTowerRequestSchema,
+  updateTowerResponseSchema,
 } from '../../../../../src/api-utils/schemas/admin/towerSchemas';
 import { genericSchema } from '../../../../../src/api-utils/schemas';
 
@@ -60,6 +64,26 @@ describe('towerAdminRoutes', () => {
       expect((newTowerGameRoute.options as RouteOptions).validate?.payload).to.equal(undefined);
       expect((newTowerGameRoute.options as RouteOptions).response?.schema).to.equal(undefined);
       expect(newTowerGameRoute.handler).to.equal(newTowerGameHandler);
+    });
+  });
+
+  describe('updateTowerGameRoute', () => {
+    it('should be configured as expected', async () => {
+      expect(updateTowerGameRoute.method).to.equal('POST');
+      expect(updateTowerGameRoute.path).to.equal('/dashboard/admin/tower-games/{towerGameId}');
+      expect(updateTowerGameRoute.options?.bind).to.deep.equal({
+        requiredCapabilities: [CAPABILITIES.THE_TOWER_WRITE],
+      });
+      expect((updateTowerGameRoute.options as RouteOptions).pre).to.deep.equal([
+        getAuthUserMiddleware,
+      ]);
+      expect((updateTowerGameRoute.options as RouteOptions).validate?.payload).to.equal(
+        updateTowerRequestSchema
+      );
+      expect((updateTowerGameRoute.options as RouteOptions).response?.schema).to.equal(
+        updateTowerResponseSchema
+      );
+      expect(updateTowerGameRoute.handler).to.equal(updateTowerGameHandler);
     });
   });
 
@@ -134,10 +158,10 @@ describe('towerAdminRoutes', () => {
         getAuthUserMiddleware,
       ]);
       expect((addTowerFloorRoute.options as RouteOptions).validate?.payload).to.equal(
-        addTowerRequestSchema
+        addTowerFloorRequestSchema
       );
       expect((addTowerFloorRoute.options as RouteOptions).response?.schema).to.equal(
-        addTowerResponseSchema
+        addTowerFloorResponseSchema
       );
       expect(addTowerFloorRoute.handler).to.equal(addTowerFloorHandler);
     });

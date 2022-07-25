@@ -77,7 +77,7 @@ export async function processHealOrRevive(
         }
         await setPlayerPerformanceAction(
           targetPlayerId!,
-          round._gameId,
+          round._arenaGame?._gameId!,
           {
             field: ARENA_PLAYER_PERFORMANCE.HEALED,
             value: healthKit?._healthkit?.healingPower ?? ZERO,

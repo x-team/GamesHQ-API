@@ -14,7 +14,7 @@ import {
 
 import { GAME_TYPE, ITEM_TYPE } from '../games/consts/global';
 
-import { Game, Item, User, ArenaPlayer, ArenaRoundAction } from './';
+import { ArenaGame, Game, Item, User, ArenaPlayer, ArenaRoundAction } from './';
 
 interface ArenaRoundAttributes {
   id: number;
@@ -105,12 +105,12 @@ export class ArenaRound
   @Column(DataType.DATE)
   declare endedAt: Date | null;
 
-  @ForeignKey(() => Game)
+  @ForeignKey(() => ArenaGame)
   @Column(DataType.INTEGER)
   declare _gameId: number;
 
-  @BelongsTo(() => Game, '_gameId')
-  declare _game?: Game;
+  @BelongsTo(() => ArenaGame, '_gameId')
+  declare _arenaGame?: ArenaGame;
 
   @ForeignKey(() => User)
   @Column(DataType.INTEGER)
@@ -123,7 +123,7 @@ export class ArenaRound
   declare _actions?: ArenaRoundAction[];
 
   static associations: {
-    _game: Association<ArenaRound, Game>; // TBD association with ArenaGame?
+    _arenaGame: Association<ArenaRound, ArenaGame>;
     _createdBy: Association<ArenaRound, User>;
     _actions: Association<ArenaRound, ArenaRoundAction>;
   };
@@ -147,16 +147,20 @@ export class ArenaRound
       include: [
         ArenaRound.associations._createdBy,
         {
-          association: ArenaRound.associations._game,
-          where: { isActive: true },
+          association: ArenaRound.associations._arenaGame,
           include: [
-            Game.associations._arena,
             {
-              association: Game.associations._gameType,
-              attributes: ['id', 'name'],
-              where: {
-                name: GAME_TYPE.ARENA,
-              },
+              association: ArenaGame.associations._game,
+              where: { isActive: true },
+              include: [
+                {
+                  association: Game.associations._gameType,
+                  attributes: ['id', 'name'],
+                  where: {
+                    name: GAME_TYPE.ARENA,
+                  },
+                },
+              ],
             },
           ],
         },
@@ -175,15 +179,20 @@ export function findActiveRound(includeAll: boolean, transaction?: Transaction) 
     include: [
       ArenaRound.associations._createdBy,
       {
-        association: ArenaRound.associations._game,
-        where: { isActive: true },
+        association: ArenaRound.associations._arenaGame,
         include: [
-          Game.associations._arena,
           {
-            association: Game.associations._gameType,
-            where: {
-              name: GAME_TYPE.ARENA,
-            },
+            association: ArenaGame.associations._game,
+            where: { isActive: true },
+            include: [
+              {
+                association: Game.associations._gameType,
+                attributes: ['id', 'name'],
+                // where: {
+                //   name: GAME_TYPE.ARENA,
+                // },
+              },
+            ],
           },
         ],
       },
@@ -205,7 +214,7 @@ export async function startRound(
   }
   return createArenaRound(
     {
-      _gameId,
+      _gameId: _gameId,
       _createdById: createdById,
       isEveryoneVisible,
       isActive: true,
@@ -218,7 +227,7 @@ export async function startRound(
 
 export async function createArenaRound(
   {
-    _gameId,
+    _gameId: _gameId,
     _createdById,
     isEveryoneVisible,
     startedAt,
@@ -229,7 +238,7 @@ export async function createArenaRound(
 ) {
   return ArenaRound.create(
     {
-      _gameId,
+      _gameId: _gameId,
       _createdById,
       isEveryoneVisible,
       startedAt,
@@ -244,16 +253,20 @@ export function countRoundsCompleted(transaction?: Transaction) {
   return ArenaRound.count({
     include: [
       {
-        association: ArenaRound.associations._game,
-        where: { isActive: true },
+        association: ArenaRound.associations._arenaGame,
         include: [
-          Game.associations._arena,
           {
-            association: Game.associations._gameType,
-            attributes: ['id', 'name'],
-            where: {
-              name: GAME_TYPE.ARENA,
-            },
+            association: ArenaGame.associations._game,
+            where: { isActive: true },
+            include: [
+              {
+                association: Game.associations._gameType,
+                attributes: ['id', 'name'],
+                where: {
+                  name: GAME_TYPE.ARENA,
+                },
+              },
+            ],
           },
         ],
       },

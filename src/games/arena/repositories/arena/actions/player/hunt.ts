@@ -37,7 +37,7 @@ export async function hunt(userRequesting: User) {
 
     const playerPerformance = await findSinglePlayerPerformance(
       player.id,
-      round._gameId,
+      round._arenaGame?._gameId!,
       transaction
     );
     const hud = arenaCommandReply.playerHUD(player, zone, playerPerformance);
@@ -48,7 +48,7 @@ export async function hunt(userRequesting: User) {
     const targetGroup = generateTargetGroup(
       player,
       zone._players ?? [],
-      !!round._game?._arena?.teamBased
+      !!round._arenaGame?.teamBased
     );
 
     if (targetGroup.length === 0) {
@@ -190,7 +190,7 @@ export async function chooseWeapon(userRequesting: User, selectedWeapon: number,
 
     const playerPerformance = await findSinglePlayerPerformance(
       player.id,
-      round._gameId,
+      round._arenaGame?._gameId!,
       transaction
     );
     const hud = arenaCommandReply.playerHUD(player, zone, playerPerformance);
@@ -203,7 +203,7 @@ export async function chooseWeapon(userRequesting: User, selectedWeapon: number,
     const targetGroup = generateTargetGroup(
       player,
       zone._players ?? [],
-      !!round._game?._arena?.teamBased
+      !!round._arenaGame?.teamBased
     );
 
     const visiblePlayers = weapon?.hasTrait(TRAIT.DETECT)
@@ -259,7 +259,7 @@ export async function chooseTarget(userRequesting: User, selectedTargetId: numbe
     }
 
     const targetPlayer = await findPlayerByUser(
-      round._gameId,
+      round._arenaGame?._gameId!,
       selectedTargetId,
       false,
       transaction
@@ -267,7 +267,7 @@ export async function chooseTarget(userRequesting: User, selectedTargetId: numbe
 
     const playerPerformance = await findSinglePlayerPerformance(
       player.id,
-      round._gameId,
+      round._arenaGame?._gameId!,
       transaction
     );
     const hud = arenaCommandReply.playerHUD(player, zone, playerPerformance);
