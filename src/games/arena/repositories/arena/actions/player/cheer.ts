@@ -34,7 +34,7 @@ export async function cheer(userRequesting: User) {
       return getGameResponse(actionBlockkit);
     }
 
-    const allPlayers = await findPlayersByGame(round._gameId, false, transaction);
+    const allPlayers = await findPlayersByGame(round._arenaGame?._gameId!, false, transaction);
     // You can't cheer yourself or dead players
     const filteredPlayers = allPlayers.filter((p) => p.id !== player.id && p.isAlive());
     const slackBlocks = generateArenaTargetPickerBlock(filteredPlayers, 'cheer');
@@ -57,12 +57,12 @@ export async function completeCheer(userRequesting: User, selectedTargetId: numb
 
     const playerPerformance = await findSinglePlayerPerformance(
       player.id,
-      round._gameId,
+      round._arenaGame?._gameId!,
       transaction
     );
     const hud = arenaCommandReply.playerHUD(player, zone, playerPerformance);
     const targetPlayer = await findPlayerByUser(
-      round._gameId,
+      round._arenaGame?._gameId!,
       selectedTargetId,
       false,
       transaction
@@ -111,13 +111,13 @@ export async function repeatLastCheer(userRequesting: User) {
 
     const playerPerformance = await findSinglePlayerPerformance(
       player.id,
-      round._gameId,
+      round._arenaGame?._gameId!,
       transaction
     );
     const hud = arenaCommandReply.playerHUD(player, zone, playerPerformance);
     const [lastCheerAction] = await findPlayerActionsByGame(
       player.id,
-      round._gameId,
+      round._arenaGame?._gameId!,
       ARENA_ACTIONS.CHEER,
       transaction
     );

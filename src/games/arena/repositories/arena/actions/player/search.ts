@@ -68,7 +68,7 @@ export async function searchForHealth(userRequesting: User) {
     if (playerHasHealthkit) {
       const playerPerformance = await findSinglePlayerPerformance(
         player.id,
-        round._gameId,
+        round._arenaGame?._gameId!,
         transaction
       );
       const hud = arenaCommandReply.playerHUD(player, zone, playerPerformance);

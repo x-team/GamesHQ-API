@@ -18,7 +18,7 @@ export async function processHunt(
 ) {
   let mutableVisiblePlayers: ArenaPlayer[];
   const isEveryoneVisible = round.isEveryoneVisible;
-  const allPlayers = await findPlayersByGame(round._gameId, false, transaction);
+  const allPlayers = await findPlayersByGame(round._arenaGame?._gameId!, false, transaction);
   if (isEveryoneVisible) {
     // Find all, ignoring visibility
     mutableVisiblePlayers = allPlayers;
@@ -35,7 +35,11 @@ export async function processHunt(
         }
       })
     );
-    mutableVisiblePlayers = await findVisiblePlayers(round._gameId, false, transaction);
+    mutableVisiblePlayers = await findVisiblePlayers(
+      round._arenaGame?._gameId!,
+      false,
+      transaction
+    );
   }
 
   const charactersActions: Array<ArenaRoundAction> = [...actions];
@@ -57,7 +61,7 @@ export async function processHunt(
         // Boss vs Player
         await bossHuntPlayers({
           player,
-          gameId: round._gameId,
+          gameId: round._arenaGame?._gameId!,
           selectedWeaponId: weaponId,
           targetPlayerId,
           isEveryoneVisible,
@@ -75,9 +79,9 @@ export async function processHunt(
         const huntablePlayers = weapon?.hasTrait(TRAIT.DETECT) ? allPlayers : mutableVisiblePlayers;
         await playerHuntPlayers({
           player,
-          gameId: round._gameId,
+          gameId: round._arenaGame?._gameId!,
           selectedWeaponId: weaponId,
-          isTeamBasedGame: !!round._game?._arena?.teamBased,
+          isTeamBasedGame: !!round._arenaGame?.teamBased,
           targetPlayerId,
           isEveryoneVisible,
           // targets could be dead or hide

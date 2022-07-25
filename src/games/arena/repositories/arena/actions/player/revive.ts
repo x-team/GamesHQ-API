@@ -33,7 +33,7 @@ export async function reviveSelf(userRequesting: User) {
 
     const playerPerformance = await findSinglePlayerPerformance(
       player.id,
-      round._gameId,
+      round._arenaGame?._gameId!,
       transaction
     );
     const hud = arenaCommandReply.playerHUD(player, zone, playerPerformance);
@@ -90,7 +90,7 @@ export async function completeRevive(userRequesting: User, selectedTargetId: num
     }
 
     const targetPlayer = await findPlayerByUser(
-      round._gameId,
+      round._arenaGame?._gameId!,
       selectedTargetId,
       false,
       transaction
@@ -98,7 +98,7 @@ export async function completeRevive(userRequesting: User, selectedTargetId: num
 
     const playerPerformance = await findSinglePlayerPerformance(
       player.id,
-      round._gameId,
+      round._arenaGame?._gameId!,
       transaction
     );
     const hud = arenaCommandReply.playerHUD(player, zone, playerPerformance);
@@ -184,7 +184,7 @@ export async function reviveOther(userRequesting: User) {
 
     const playerPerformance = await findSinglePlayerPerformance(
       player.id,
-      round._gameId,
+      round._arenaGame?._gameId!,
       transaction
     );
     const hud = arenaCommandReply.playerHUD(player, zone, playerPerformance);
@@ -198,7 +198,7 @@ export async function reviveOther(userRequesting: User) {
       return getGameResponse(actionBlockkit);
     }
 
-    const allPlayers = await findPlayersByGame(round._gameId, false, transaction);
+    const allPlayers = await findPlayersByGame(round._arenaGame?._gameId!, false, transaction);
     const playersToDropdown = allPlayers.filter(
       (p) =>
         p.id !== player.id &&

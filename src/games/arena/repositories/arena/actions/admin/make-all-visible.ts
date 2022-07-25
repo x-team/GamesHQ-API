@@ -18,7 +18,7 @@ export async function makeAllVisible(channelId: string, userRequesting: User) {
       return getGameError(arenaCommandReply.noActiveRound());
     }
     await round.makeEveryoneVisible(transaction);
-    await setAllPlayerVisibility(round._gameId, true, transaction);
+    await setAllPlayerVisibility(round._arenaGame?._gameId!, true, transaction);
     await publishArenaMessage(arenaCommandReply.channelAllVisible(), true);
     await notifyPlayersWhoWantedToHide(round.id, channelId);
     await removeActionFromRound(round.id, ARENA_ACTIONS.HIDE, transaction);

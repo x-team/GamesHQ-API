@@ -55,7 +55,7 @@ export async function listIdlePlayers(userRequesting: User) {
       return getGameError(arenaCommandReply.noActiveRound());
     }
     const actions = round._actions || [];
-    const idlePlayers = await getIdlePlayers(round._gameId, actions, transaction);
+    const idlePlayers = await getIdlePlayers(round._arenaGame?._gameId!, actions, transaction);
     return getGameResponse(arenaCommandReply.adminIdlePlayers(idlePlayers));
   });
 }

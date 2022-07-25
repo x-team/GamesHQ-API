@@ -42,7 +42,11 @@ export class ArenaEngine {
   }
 
   async assignZoneActionToIdlePlayers(round: ArenaRound, transaction: Transaction) {
-    const idlePlayers = await getIdlePlayers(round._gameId, round._actions || [], transaction);
+    const idlePlayers = await getIdlePlayers(
+      round._arenaGame?._gameId!,
+      round._actions || [],
+      transaction
+    );
     await Promise.all(
       idlePlayers.map(async (player) => {
         const zone = await findArenaZoneById(player._arenaZoneId!, transaction);
@@ -71,7 +75,7 @@ export class ArenaEngine {
     }
     if (!zone.isActive && zone.name !== 'Streaming Zone') {
       await this.processRingSystemPenalty(
-        round._game?._arena?.inactiveZonePenaltyPower ?? DEFAULT_INACTIVE_ZONE_PENALTY_POWER,
+        round._arenaGame?.inactiveZonePenaltyPower ?? DEFAULT_INACTIVE_ZONE_PENALTY_POWER,
         actions,
         transaction
       );

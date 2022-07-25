@@ -23,7 +23,7 @@ export async function actionsMenu(userRequesting: User) {
 
     const playerPerformance = await findSinglePlayerPerformance(
       player.id,
-      round._gameId,
+      round._arenaGame?._gameId!,
       transaction
     );
     const hud = arenaCommandReply.playerHUD(player, zone, playerPerformance);
@@ -47,7 +47,7 @@ export async function status(userRequesting: User) {
 
     const playerPerformance = await findSinglePlayerPerformance(
       player.id,
-      round._gameId,
+      round._arenaGame?._gameId!,
       transaction
     );
     const hud = arenaCommandReply.playerHUD(player, zone, playerPerformance);

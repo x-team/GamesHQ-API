@@ -204,7 +204,7 @@ export async function processSearchWeapons(
         );
         await setPlayerPerformanceAction(
           player.id,
-          round._gameId,
+          round._arenaGame?._gameId!,
           { field: ARENA_PLAYER_PERFORMANCE.WEAPONS_FOUND, value: 1 },
           transaction
         );

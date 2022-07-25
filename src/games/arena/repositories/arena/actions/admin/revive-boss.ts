@@ -32,7 +32,7 @@ export async function reviveBoss(commandText: string, userRequesting: User) {
     }
 
     const targetBossPlayer = await findPlayerByUser(
-      round._gameId,
+      round._arenaGame?._gameId!,
       targetUser.id,
       false,
       transaction
