@@ -16,6 +16,7 @@ import { getEmojisRoute } from './adminRoutes/generalAdminRoutes';
 import {
   getTowerGameStatusRoute,
   newTowerGameRoute,
+  updateTowerGameRoute,
   endCurrentTowerGameRoute,
   openOrCloseCurrentTowerRoute,
   addEnemyToFloorRoute,
@@ -53,6 +54,7 @@ export const adminRoutes: ServerRoute[] = [
   //tower
   getTowerGameStatusRoute,
   newTowerGameRoute,
+  updateTowerGameRoute,
   endCurrentTowerGameRoute,
   openOrCloseCurrentTowerRoute,
   addEnemyToFloorRoute,

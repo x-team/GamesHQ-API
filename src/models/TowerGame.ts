@@ -141,17 +141,19 @@ export class TowerGame
   }
 
   async updateTowerGame(
-    { lunaPrize, coinPrize }: Partial<TowerGameAttributes>,
+    { lunaPrize, coinPrize, isOpen }: Partial<TowerGameAttributes>,
     transaction: Transaction
   ) {
-    await this.update(
+    return this.update(
       {
         lunaPrize,
         coinPrize,
+        isOpen,
       },
-      { transaction }
+      {
+        transaction,
+      }
     );
-    return this.get({ plain: true });
   }
 }
 
@@ -162,7 +164,14 @@ export async function findActiveTowerGame(transaction?: Transaction) {
 }
 
 export async function findTowerGameById(id: number, transaction?: Transaction) {
-  return TowerGame.findByPk(id, { transaction });
+  return TowerGame.findByPk(id, {
+    include: [
+      {
+        association: TowerGame.associations._game,
+      },
+    ],
+    transaction,
+  });
 }
 
 export async function findLastActiveTowerGame(transaction?: Transaction) {

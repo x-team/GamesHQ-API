@@ -1,4 +1,5 @@
-import { startTowerGame } from '../../../../models/TowerGame';
+import { withTransaction } from '../../../../db';
+import { startTowerGame, findTowerGameById } from '../../../../models/TowerGame';
 import { findAdmin } from '../../../../models/User';
 import { withTowerTransaction } from '../../utils';
 
@@ -7,6 +8,14 @@ import { endGame, openOrCloseTowerGates } from './actions/admin/create-or-finish
 export interface ICreateTowerGameData {
   name: string;
   height: number;
+}
+
+export interface IUpdateTowerGameData {
+  name?: string;
+  isOpen?: false;
+  lunaPrize?: number;
+  coinPrize?: number;
+  towerGameId: number;
 }
 
 export const createTowerGame = async (data: ICreateTowerGameData) => {
@@ -19,6 +28,30 @@ export const createTowerGame = async (data: ICreateTowerGameData) => {
         lunaPrize: 0,
         coinPrize: 0,
         _createdById: 1,
+      },
+      transaction
+    );
+  });
+};
+
+export const updateTowerGame = async (data: IUpdateTowerGameData) => {
+  return withTransaction(async (transaction) => {
+    const towerGame = await findTowerGameById(data.towerGameId);
+
+    if (!towerGame) {
+      return;
+    }
+
+    await towerGame._game?.updateGame(
+      {
+        name: data.name || towerGame._game.name,
+      },
+      transaction
+    );
+
+    return towerGame.updateTowerGame(
+      {
+        ...data,
       },
       transaction
     );
