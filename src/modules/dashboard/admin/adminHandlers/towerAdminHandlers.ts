@@ -1,3 +1,4 @@
+import Boom from '@hapi/boom';
 import type { Lifecycle } from '@hapi/hapi';
 
 import {
@@ -5,11 +6,15 @@ import {
   addTowerFloor,
   removeTowerFloor,
 } from '../../../../games/tower/repositories/tower/floorRepository';
-import type { ICreateTowerGameData } from '../../../../games/tower/repositories/tower/towerRepository';
+import type {
+  ICreateTowerGameData,
+  IUpdateTowerGameData,
+} from '../../../../games/tower/repositories/tower/towerRepository';
 import {
   createTowerGame,
   endCurrentTowerGame,
   openOrCloseTower,
+  updateTowerGame,
 } from '../../../../games/tower/repositories/tower/towerRepository';
 import { findActiveTowerGame } from '../../../../models/TowerGame';
 
@@ -24,6 +29,29 @@ export const newTowerGameHandler: Lifecycle.Method = async (_request, h) => {
 
   await createTowerGame(towerCreationData);
   return h.response({ success: true }).code(200);
+};
+
+export const updateTowerGameHandler: Lifecycle.Method = async (_request, h) => {
+  const towerGameId = parseInt(_request.params.towerGameId);
+  const payload = _request.payload as IUpdateTowerGameData;
+
+  const towerUpdateData = {
+    ...payload,
+    towerGameId,
+  } as IUpdateTowerGameData;
+
+  const towerGame = await updateTowerGame(towerUpdateData);
+
+  if (!towerGame) {
+    throw Boom.notFound('no tower game found');
+  }
+
+  return h
+    .response({
+      name: towerGame._game?.name,
+      ...towerGame.toJSON(),
+    })
+    .code(200);
 };
 
 export const endCurrentTowerGameHandler: Lifecycle.Method = async (_request, h) => {
