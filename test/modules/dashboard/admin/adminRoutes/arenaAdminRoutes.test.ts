@@ -2,11 +2,11 @@ import { expect } from 'chai';
 import { RouteOptions } from '@hapi/hapi';
 import {
   getCurrentArenaGameStateRoute,
-  commandArenaRoute,
+  arenaCommandRoute,
 } from '../../../../../src/modules/dashboard/admin/adminRoutes/arenaAdminRoutes';
 import {
   getCurrentArenaGameState,
-  commandArenaHandler,
+  arenaCommandHandler,
 } from '../../../../../src/modules/dashboard/admin/adminHandlers/arenaAdminHandlers';
 import { CAPABILITIES } from '../../../../../src/consts/model';
 import { getAuthUserMiddleware } from '../../../../../src/api-utils/midddleware';
@@ -38,21 +38,21 @@ describe('arenaAdminRoutes', () => {
 
   describe('commandArenaRoute', () => {
     it('should be configured as expected', async () => {
-      expect(commandArenaRoute.method).to.equal('POST');
-      expect(commandArenaRoute.path).to.equal('/dashboard/admin/command/arena');
-      expect(commandArenaRoute.options?.bind).to.deep.equal({
+      expect(arenaCommandRoute.method).to.equal('POST');
+      expect(arenaCommandRoute.path).to.equal('/dashboard/admin/command/arena');
+      expect(arenaCommandRoute.options?.bind).to.deep.equal({
         requiredCapabilities: [CAPABILITIES.THE_ARENA_WRITE],
       });
-      expect((commandArenaRoute.options as RouteOptions).pre).to.deep.equal([
+      expect((arenaCommandRoute.options as RouteOptions).pre).to.deep.equal([
         getAuthUserMiddleware,
       ]);
-      expect((commandArenaRoute.options as RouteOptions).validate?.payload).to.equal(
+      expect((arenaCommandRoute.options as RouteOptions).validate?.payload).to.equal(
         commandArenaRequestSchema
       );
-      expect((commandArenaRoute.options as RouteOptions).response?.schema).to.equal(
+      expect((arenaCommandRoute.options as RouteOptions).response?.schema).to.equal(
         commandArenaResponseSchema
       );
-      expect(commandArenaRoute.handler).to.equal(commandArenaHandler);
+      expect(arenaCommandRoute.handler).to.equal(arenaCommandHandler);
     });
   });
 });

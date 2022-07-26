@@ -35,7 +35,7 @@ export const getCurrentArenaGameState: Lifecycle.Method = async (_request, h) =>
   return h.response({ arenaGame: activeGame }).code(200);
 };
 
-export const commandArenaHandler: Lifecycle.Method = async (_request, h) => {
+export const arenaCommandHandler: Lifecycle.Method = async (_request, h) => {
   const authUser = _request.pre.getAuthUser as User;
   const payload = _request.payload as ICommandArena;
 
@@ -59,9 +59,5 @@ export const commandArenaHandler: Lifecycle.Method = async (_request, h) => {
     return h.response({ success: true }).code(200);
   }
 
-  return h
-    .response({
-      message: rslt.text,
-    })
-    .code(200);
+  return h.response(rslt).code(200);
 };

@@ -1,10 +1,10 @@
 import { getAuthUserMiddleware } from '../../../../api-utils/midddleware';
 import {
   commandArenaRequestSchema,
-  commandArenaResponseSchema,
+  // commandArenaResponseSchema,
 } from '../../../../api-utils/schemas/admin/arenaSchemas';
 import { CAPABILITIES } from '../../../../consts/model';
-import { getCurrentArenaGameState, commandArenaHandler } from '../adminHandlers/arenaAdminHandlers';
+import { getCurrentArenaGameState, arenaCommandHandler } from '../adminHandlers/arenaAdminHandlers';
 
 export const getCurrentArenaGameStateRoute = {
   method: 'GET',
@@ -20,7 +20,7 @@ export const getCurrentArenaGameStateRoute = {
   handler: getCurrentArenaGameState,
 };
 
-export const commandArenaRoute = {
+export const arenaCommandRoute = {
   method: 'POST',
   path: '/dashboard/admin/arena/command',
   options: {
@@ -33,9 +33,9 @@ export const commandArenaRoute = {
     validate: {
       payload: commandArenaRequestSchema,
     },
-    response: {
-      schema: commandArenaResponseSchema,
-    },
+    // response: {
+    //   schema: commandArenaResponseSchema,
+    // },
   },
-  handler: commandArenaHandler,
+  handler: arenaCommandHandler,
 };
