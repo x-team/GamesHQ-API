@@ -1,6 +1,10 @@
 import type { ServerRoute } from '@hapi/hapi';
 
-import { getCurrentArenaGameStateRoute, arenaCommandRoute } from './adminRoutes/arenaAdminRoutes';
+import {
+  getCurrentArenaGameStateRoute,
+  arenaCommandRoute,
+  arenaActionRoute,
+} from './adminRoutes/arenaAdminRoutes';
 import {
   getAllCapabilitiesRoute,
   createCapabilityRoute,
@@ -45,6 +49,7 @@ export const adminRoutes: ServerRoute[] = [
   //arena
   getCurrentArenaGameStateRoute,
   arenaCommandRoute,
+  arenaActionRoute,
   //enemy
   getEnemyRoute,
   getEnemiesRoute,
