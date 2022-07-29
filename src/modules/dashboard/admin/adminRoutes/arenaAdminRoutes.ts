@@ -38,9 +38,6 @@ export const arenaCommandRoute = {
     validate: {
       payload: commandArenaRequestSchema,
     },
-    // response: {
-    //   schema: commandArenaResponseSchema,
-    // },
   },
   handler: arenaCommandHandler,
 };
@@ -58,9 +55,6 @@ export const arenaActionRoute = {
     validate: {
       payload: actionArenaRequestSchema,
     },
-    // response: {
-    //   schema: commandArenaResponseSchema,
-    // },
   },
   handler: arenaActionHandler,
 };

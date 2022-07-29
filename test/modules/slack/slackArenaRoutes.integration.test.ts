@@ -59,7 +59,7 @@ describe('slackArenaRoute', () => {
     async function startRound(roundNum: number) {
       const { rslt, payload } = await postSlackCommand(ARENA_SLACK_COMMANDS.START_ROUND);
       expect(rslt.statusCode).to.equal(200);
-      expect(payload.text).contains('Resolved last round and started a new one');
+      expect(payload.text).contains('Resolving last round to start a new one.');
 
       await new Promise((resolve) =>
         setTimeout(() => {

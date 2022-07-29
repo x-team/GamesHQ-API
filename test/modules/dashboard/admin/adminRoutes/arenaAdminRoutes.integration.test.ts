@@ -27,78 +27,44 @@ describe('arenaAdminRoutes', () => {
       sinon.reset();
     });
 
-    // it('should return 200 status code on POST /dashboard/admin/arena/command for new arena game', async () => {
-    //   const { rslt, payload } = await postArenaCommand(ARENA_SLACK_COMMANDS.NEW_GAME)
+    it('should return 200 status code on POST /dashboard/admin/arena/command for new arena game', async () => {
+      const { rslt, payload } = await postArenaCommand(ARENA_SLACK_COMMANDS.NEW_GAME);
 
-    //   await new Promise((resolve) =>
-    //     setTimeout(() => {
-    //       expect(rslt.statusCode).to.equal(200);
-    //       expect(payload.message).contains('*The Arena*\n Game "The Arena');
-    //       expect(payload.message).contains('" has been created.');
+      await new Promise((resolve) =>
+        setTimeout(() => {
+          expect(rslt.statusCode).to.equal(200);
+          expect(payload.text).contains('*The Arena*\n Game "The Arena');
+          expect(payload.text).contains('" has been created.');
 
-    //       resolve({});
-    //     }, 1000)
-    //   );
+          resolve({});
+        }, 1000)
+      );
+    });
 
-    // });
+    it('should return 200 status code on POST /dashboard/admin/arena/command for start round', async () => {
+      await postArenaCommand(ARENA_SLACK_COMMANDS.NEW_GAME);
+      const { rslt, payload } = await postArenaCommand(ARENA_SLACK_COMMANDS.START_ROUND);
 
-    // it('should return 200 status code on POST /dashboard/admin/arena/command for start round', async () => {
-    //   await postArenaCommand(ARENA_SLACK_COMMANDS.NEW_GAME)
-    //   const { rslt, payload } = await postArenaCommand(ARENA_SLACK_COMMANDS.START_ROUND)
+      await new Promise((resolve) =>
+        setTimeout(() => {
+          expect(rslt.statusCode).to.equal(200);
+          expect(payload.text).to.equal('Resolving last round to start a new one.');
 
-    //   await new Promise((resolve) =>
-    //     setTimeout(() => {
-    //       expect(rslt.statusCode).to.equal(200);
-    //       expect(payload).to.deep.equal({
-    //         message: 'Resolved last round and started a new one.',
-    //       });
+          resolve({});
+        }, 1000)
+      );
+    });
 
-    //       resolve({});
-    //     }, 1000)
-    //   );
-
-    // });
-
-    // it('should return 200 status code on POST /dashboard/admin/arena/command for list players', async () => {
-    //   await postArenaCommand(ARENA_SLACK_COMMANDS.NEW_GAME)
-    //   const { rslt, payload } = await postArenaCommand(ARENA_SLACK_COMMANDS.LIST_PLAYERS)
-
-    //   await new Promise((resolve) =>
-    //     setTimeout(() => {
-    //       expect(rslt.statusCode).to.equal(200);
-    //       expect(payload).to.deep.equal({
-    //         message: 'Players Info Displayed',
-    //       });
-
-    //       resolve({});
-    //     }, 1000)
-    //   );
-    // });
-
-    // it('should return 200 status code on POST /dashboard/admin/arena/command for give weapons to everyone', async () => {
-    //   await postArenaCommand(ARENA_SLACK_COMMANDS.NEW_GAME)
-    //   const { rslt, payload } = await postArenaCommand(ARENA_SLACK_COMMANDS.GIVE_EVERYONE_WEAPON)
-
-    //   await new Promise((resolve) =>
-    //     setTimeout(() => {
-    //       expect(rslt.statusCode).to.equal(200);
-    //       expect(payload).to.deep.equal({
-    //         message: 'Players Info Displayed',
-    //       });
-
-    //       resolve({});
-    //     }, 1000)
-    //   );
-    // });
-
-    it('should return 200 status code on POST /dashboard/admin/arena/command to restrict zones', async () => {
-      const { rslt, payload } = await postArenaCommand(ARENA_SLACK_COMMANDS.NARROW_ZONES);
+    it('should return 200 status code on POST /dashboard/admin/arena/command for list players', async () => {
+      await postArenaCommand(ARENA_SLACK_COMMANDS.NEW_GAME);
+      const { rslt, payload } = await postArenaCommand(ARENA_SLACK_COMMANDS.LIST_PLAYERS);
 
       await new Promise((resolve) =>
         setTimeout(() => {
           expect(rslt.statusCode).to.equal(200);
           expect(payload).to.deep.equal({
-            message: 'Players Info Displayed',
+            text: 'Players Info Displayed',
+            type: 'response',
           });
 
           resolve({});
