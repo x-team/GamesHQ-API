@@ -1,5 +1,6 @@
 import type { User } from '../../../../../../models';
 import { findActiveArenaGame, startArenaGame } from '../../../../../../models/ArenaGame';
+import { endActiveRound } from '../../../../../../models/ArenaRound';
 import { activateAllArenaZones } from '../../../../../../models/ArenaZone';
 import { enableAllItems } from '../../../../../../models/GameItemAvailability';
 import { GAME_TYPE } from '../../../../../consts/global';
@@ -69,6 +70,7 @@ export async function endGame(userRequesting: User) {
       return getGameError(arenaCommandReply.noActiveGame());
     }
     await enableAllItems(game._gameTypeId, transaction);
+    await endActiveRound(transaction);
     await game.endGame(transaction);
     await activateAllArenaZones(transaction);
     await publishArenaMessage(arenaCommandReply.channelEndGame(game), true);

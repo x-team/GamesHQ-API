@@ -1,13 +1,9 @@
-import { logger } from '../../../config';
 import type { User } from '../../../models';
-import { gameResponseToSlackHandler } from '../../../modules/slack/utils';
 import { getGameResponse } from '../../utils';
 import { ARENA_SLACK_COMMANDS } from '../consts';
 import { ArenaRepository } from '../repositories/arena/arena';
 import { ArenaEngine } from '../repositories/arena/engine';
-import { arenaCommandReply } from '../repositories/arena/replies';
 import { ZoneRepository } from '../repositories/zones/zone';
-import { arenaNotifyEphemeral } from '../utils';
 
 const arena = new ArenaRepository(ArenaEngine.getInstance());
 const zone = ZoneRepository.getInstance();
@@ -75,26 +71,7 @@ export function arenaSwitchCommand({
     case ARENA_SLACK_COMMANDS.NARROW_WEAPONS:
       return arena.startNarrowWeaponsQuestion(userRequesting);
     case ARENA_SLACK_COMMANDS.START_ROUND:
-      arena
-        .startRound(userRequesting)
-        .then(async (reply) => {
-          const slackResponseBody = gameResponseToSlackHandler(reply);
-          await arenaNotifyEphemeral(
-            slackResponseBody.text ?? 'Something went wrong',
-            userRequesting.slackId!,
-            userRequesting.slackId!
-          );
-        })
-        .catch(async (e) => {
-          logger.error('Error in Slack Command: The Arena');
-          logger.error(e);
-          await arenaNotifyEphemeral(
-            'Something went wrong',
-            userRequesting.slackId!,
-            userRequesting.slackId!
-          );
-        });
-      return getGameResponse(arenaCommandReply.adminFinishedRound());
+      return arena.startRound(userRequesting);
     // PLAYERS
     case ARENA_SLACK_COMMANDS.ACTIONS:
       return arena.actionsMenu(userRequesting);
