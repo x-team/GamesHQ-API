@@ -15,7 +15,6 @@ import { getAuthUserMiddleware } from '../../../../../src/api-utils/midddleware'
 import {
   actionArenaRequestSchema,
   commandArenaRequestSchema,
-  commandArenaResponseSchema,
 } from '../../../../../src/api-utils/schemas/admin/arenaSchemas';
 
 describe('arenaAdminRoutes', () => {
