@@ -46,7 +46,11 @@ const actionReply = {
   needToSelectZoneToDelete: `Please select a valid zone to delete`,
 };
 
-function arenaPlayerSwitchActions(action: string, args: number | number[], userRequesting: User) {
+export function arenaPlayerSwitchActions(
+  action: string,
+  args: number | number[],
+  userRequesting: User
+) {
   const singleArg = typeof args === 'number' ? args : args[0];
   const arrayArgs = typeof args === 'number' ? [args] : args;
   switch (action) {

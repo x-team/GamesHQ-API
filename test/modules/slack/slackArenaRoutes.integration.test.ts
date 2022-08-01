@@ -23,6 +23,8 @@ describe('slackArenaRoute', () => {
 
       await startArenaGame();
       await startRound(1);
+      await addArenaPlayer();
+
       // await startRound(2);
     });
 
@@ -40,10 +42,24 @@ describe('slackArenaRoute', () => {
       expect(payload.text).contains('" has been created.');
     }
 
+    async function addArenaPlayer() {
+      const slackpayload = {
+        text: 'UBZ9PC0SK U9E97MAAY',
+      };
+      const { rslt, payload } = await postSlackCommand(
+        ARENA_SLACK_COMMANDS.ADD_PLAYER,
+        slackpayload
+      );
+      expect(rslt.statusCode).to.equal(200);
+      expect(payload.text).to.be.equal(
+        'Added player(s) to The Arena game: "<@UBZ9PC0SK>", "<@U9E97MAAY>".'
+      );
+    }
+
     async function startRound(roundNum: number) {
       const { rslt, payload } = await postSlackCommand(ARENA_SLACK_COMMANDS.START_ROUND);
       expect(rslt.statusCode).to.equal(200);
-      expect(payload.text).contains('Resolved last round and started a new one');
+      expect(payload.text).contains('Resolving last round to start a new one.');
 
       await new Promise((resolve) =>
         setTimeout(() => {
@@ -112,7 +128,7 @@ describe('slackArenaRoute', () => {
     }
   });
 
-  async function postSlackCommand(command: string) {
+  async function postSlackCommand(command: string, payload?: { [key: string]: string }) {
     const user = await User.findByPk(1);
 
     const jsonPayload: { [key: string]: string } = {
@@ -126,6 +142,7 @@ describe('slackArenaRoute', () => {
       team_domain: '',
       channel_id: '',
       channel_name: '',
+      ...payload,
     };
 
     const postPayload = Object.keys(jsonPayload)
