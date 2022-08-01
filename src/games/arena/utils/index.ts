@@ -119,6 +119,7 @@ export async function processWinner(round: ArenaRound, transaction: Transaction)
     false,
     transaction
   );
+
   if (playersAlive.length === ONE) {
     const [winner] = playersAlive;
     await publishArenaMessage(arenaCommandReply.playerWinsGame(winner._user?.slackId!));
