@@ -188,9 +188,6 @@ export function findActiveRound(includeAll: boolean, transaction?: Transaction) 
               {
                 association: Game.associations._gameType,
                 attributes: ['id', 'name'],
-                // where: {
-                //   name: GAME_TYPE.ARENA,
-                // },
               },
             ],
           },
@@ -208,10 +205,7 @@ export async function startRound(
   isEveryoneVisible: boolean,
   transaction: Transaction
 ) {
-  const activeRound = await findActiveRound(false, transaction);
-  if (activeRound) {
-    await activeRound.endRound(transaction);
-  }
+  await endActiveRound(transaction);
   return createArenaRound(
     {
       _gameId: _gameId,
@@ -223,6 +217,12 @@ export async function startRound(
     },
     transaction
   );
+}
+export async function endActiveRound(transaction: Transaction) {
+  const activeRound = await findActiveRound(false, transaction);
+  if (activeRound) {
+    await activeRound.endRound(transaction);
+  }
 }
 
 export async function createArenaRound(
