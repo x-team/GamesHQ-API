@@ -54,8 +54,7 @@ export async function playerActionsParams(
   needsToBeAlive: boolean,
   transaction: Transaction
 ): Promise<GameResponse | PlayerActionsDeadOrAlive> {
-  const round = await findActiveRound(false, transaction);
-
+  const round = await findActiveRound(true, transaction);
   if (!round) {
     return getGameError(arenaCommandReply.noActiveRound());
   }

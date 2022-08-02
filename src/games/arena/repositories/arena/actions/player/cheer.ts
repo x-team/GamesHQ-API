@@ -117,11 +117,10 @@ export async function repeatLastCheer(userRequesting: User) {
     const hud = arenaCommandReply.playerHUD(player, zone, playerPerformance);
     const [lastCheerAction] = await findPlayerActionsByGame(
       player.id,
-      round._arenaGame?._gameId!,
+      round._gameId,
       ARENA_ACTIONS.CHEER,
       transaction
     );
-
     if (!lastCheerAction) {
       const actionBlockkit = generateArenaActionsBlockKit(
         player,
@@ -143,7 +142,6 @@ export async function repeatLastCheer(userRequesting: User) {
     }
 
     const targetPlayerSlackId = targetPlayer._user?.slackId!;
-
     if (!targetPlayer.isAlive()) {
       const actionBlockkit = generateArenaActionsBlockKit(
         player,
@@ -152,7 +150,6 @@ export async function repeatLastCheer(userRequesting: User) {
       );
       return getGameResponse(actionBlockkit);
     }
-
     await setPlayerRoundAction(
       player,
       round,
