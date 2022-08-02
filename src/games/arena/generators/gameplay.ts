@@ -27,7 +27,10 @@ export function generateArenaEndGameConfirmationBlockKit(
 }
 
 // PLAYER ////////////////////////////////////////////////////////////////////////////////////////////////
-export function generateSpectatorActionsBlockKit(isDead: boolean): SlackBlockKitLayoutElement[] {
+export function generateSpectatorActionsBlockKit(
+  isDead: boolean,
+  secondaryMessageText?: string
+): SlackBlockKitLayoutElement[] {
   const mainMessage = isDead
     ? "*YOU'RE DEAD. CHOOSE ACTIONS*"
     : '*CHOOSE A SPECTATOR ACTION FOR THIS ROUND*';
@@ -37,7 +40,12 @@ export function generateSpectatorActionsBlockKit(isDead: boolean): SlackBlockKit
     blockKitButton('Repeat Last Cheer', ARENA_SLACK_COMMANDS.REPEAT_LAST_CHEER),
   ]);
 
-  return [mainTitleContextLayout, personalActionsLayout];
+  const blockKitDividerSection = blockKitDivider();
+  const secondaryMessageSection = secondaryMessageText
+    ? [blockKitDividerSection, blockKitMrkdwnSection(secondaryMessageText), blockKitDividerSection]
+    : [blockKitDividerSection];
+
+  return [...secondaryMessageSection, mainTitleContextLayout, personalActionsLayout];
 }
 
 export function generateHunterActionsBlockKit(
@@ -108,7 +116,7 @@ export function generateArenaActionsBlockKit(
 ) {
   const playerIsDead = player.health <= ZERO;
   if (player.isSpectator || playerIsDead) {
-    return generateSpectatorActionsBlockKit(playerIsDead);
+    return generateSpectatorActionsBlockKit(playerIsDead, secondaryMessageText);
   }
 
   return generateHunterActionsBlockKit(primaryMessageText, secondaryMessageText, player.isBoss);
