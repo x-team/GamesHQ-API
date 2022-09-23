@@ -48,7 +48,7 @@ export const parseSlackActionPayloadMiddleware = {
 };
 export const parseSlackEventPayloadMiddleware = {
   method: parseSlackEventPayload,
-  assign: 'slackActionPayload',
+  assign: 'slackEventsPayload',
 };
 
 export const parseSlackSlashCommandPayloadMiddleware = {
