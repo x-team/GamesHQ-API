@@ -1,5 +1,3 @@
-import Querystring from 'querystring';
-
 import Boom from '@hapi/boom';
 import type { Lifecycle } from '@hapi/hapi';
 
@@ -14,10 +12,10 @@ export const parseSlackEventPayload: Lifecycle.Method = (request) => {
     throw Boom.internal('Payload is not a Buffer');
   }
 
-  const body = request.payload.toString('utf-8');
-  const { payload } = Querystring.parse(body);
+  const body = new URLSearchParams(request.payload.toString('utf-8'));
+  const payload = body.get('payload');
 
-  const parsed: SlackChallengesPayload | SlackEventsPayload = JSON.parse(payload as string);
+  const parsed: SlackChallengesPayload | SlackEventsPayload = JSON.parse(payload || '');
 
   const slackEventPayload = parsed.challenge
     ? slackChallengesPayloadSchema.validate(parsed, { stripUnknown: true })

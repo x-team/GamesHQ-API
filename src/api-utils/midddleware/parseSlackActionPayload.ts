@@ -1,4 +1,4 @@
-import Querystring from 'querystring';
+// import Querystring from 'querystring';
 
 import Boom from '@hapi/boom';
 import type { Lifecycle, Request } from '@hapi/hapi';
@@ -20,16 +20,15 @@ export function parseSlackActionPayload(request: Request): Lifecycle.Method {
     throw Boom.internal('Payload is not a Buffer');
   }
 
-  const body = request.payload.toString('utf-8');
-  const { payload } = Querystring.parse(body);
+  const body = new URLSearchParams(request.payload.toString('utf-8'));
+  const payload = body.get('payload');
 
   const parsed:
     | SlackActionsPayload
     | SlackDialogsPayload
     | SlackBlockKitPayload
     | SlackShortcutPayload
-    | SlackDialogSubmissionPayload = JSON.parse(payload as string);
-
+    | SlackDialogSubmissionPayload = JSON.parse(payload || '');
   let mutableSlackPayload;
   switch (parsed.type) {
     case 'message_action':
