@@ -21,17 +21,14 @@ export function parseSlackActionPayload(request: Request): Lifecycle.Method {
   }
 
   const body = new URLSearchParams(request.payload.toString('utf-8'));
-  console.log({ body });
-  const payload = {} as any;
-  body.forEach((value, name) => (payload[name] = value));
+  const payload = body.get('payload');
 
   const parsed:
     | SlackActionsPayload
     | SlackDialogsPayload
     | SlackBlockKitPayload
     | SlackShortcutPayload
-    | SlackDialogSubmissionPayload = payload;
-  console.log('HELLO 1');
+    | SlackDialogSubmissionPayload = JSON.parse(payload || '');
   let mutableSlackPayload;
   switch (parsed.type) {
     case 'message_action':
@@ -69,8 +66,6 @@ export function parseSlackActionPayload(request: Request): Lifecycle.Method {
             });
       break;
   }
-  console.log('HELLO 2', { mutableSlackPayload });
   checkForSlackErrors(mutableSlackPayload, parsed);
-  console.log('HELLO 3');
   return mutableSlackPayload.value;
 }

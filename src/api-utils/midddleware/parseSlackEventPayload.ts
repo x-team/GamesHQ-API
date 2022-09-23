@@ -13,10 +13,9 @@ export const parseSlackEventPayload: Lifecycle.Method = (request) => {
   }
 
   const body = new URLSearchParams(request.payload.toString('utf-8'));
-  const payload = {} as any;
-  body.forEach((value, name) => (payload[name] = value));
+  const payload = body.get('payload');
 
-  const parsed: SlackChallengesPayload | SlackEventsPayload = payload;
+  const parsed: SlackChallengesPayload | SlackEventsPayload = JSON.parse(payload || '');
 
   const slackEventPayload = parsed.challenge
     ? slackChallengesPayloadSchema.validate(parsed, { stripUnknown: true })
