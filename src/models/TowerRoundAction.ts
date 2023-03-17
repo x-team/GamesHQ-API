@@ -248,16 +248,29 @@ export async function findAllActionsByRound(roundId: number, transaction: Transa
   });
 }
 
+interface OptionalWhereParams {
+  _towerRaiderId?: number;
+  _towerFloorBattlefieldEnemyId?: number;
+  _towerRoundId: number;
+}
+
 export async function findRoundAction(
   { raiderId = null, enemyId = null, roundId }: RoundActionKey,
   transaction?: Transaction
 ) {
+  let mutableWhereQuery: OptionalWhereParams = {
+    _towerRoundId: roundId,
+  };
+  if (raiderId) {
+    mutableWhereQuery['_towerRaiderId'] = raiderId;
+  }
+
+  if (enemyId) {
+    mutableWhereQuery['_towerFloorBattlefieldEnemyId'] = enemyId;
+  }
+
   return TowerRoundAction.findOne({
-    where: {
-      _towerRaiderId: raiderId ?? undefined,
-      _towerFloorBattlefieldEnemyId: enemyId ?? undefined,
-      _towerRoundId: roundId ?? undefined,
-    },
+    where: mutableWhereQuery as WhereOptions<TowerRoundActionAttributes>,
     transaction,
   });
 }
