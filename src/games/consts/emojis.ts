@@ -29,6 +29,7 @@ export const SAD_PARROT = ':sad-parrot:';
 export const FREE_AGENT_EMOJI = ':arena-hunter:';
 export const ARMOR_INVENTORY_EMOJI = ':shield:';
 export const WEAPON_INVENTORY_EMOJI = ':blaster:';
+export const WATCHMAN_EMOJI = ':watchman:';
 
 // ARENA BOSS EMOJIS
 export const BOSS_EMOJI = ':arena-boss:';
