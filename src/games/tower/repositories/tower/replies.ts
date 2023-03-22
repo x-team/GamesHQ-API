@@ -12,7 +12,6 @@ import type {
 import type { TOWER_ACTIONS_TYPE } from '../../../../models/TowerRoundAction';
 import {
   APPROVE_SIGN,
-  FREE_AGENT_EMOJI,
   FULL_HEALTH_HEART_EMOJI,
   HEALTH_KIT_EMOJI,
   INFINITY_GIF_EMOJI,
@@ -20,6 +19,7 @@ import {
   NO_ENTRY_SIGN,
   PLAYER_HIDE_EMOJI,
   PLAYER_VISIBLE_EMOJI,
+  WATCHMAN_EMOJI,
 } from '../../../consts/emojis';
 import { SLACK_SPACE, TRAIT, ZERO } from '../../../consts/global';
 import {
@@ -61,9 +61,11 @@ function towerBasicScoreboard(towerStatistics: TowerStatistics[]) {
   return `${towerStatistics
     .map((raiderStats) => {
       return (
-        `<@${raiderStats._user?.slackId}>\t*=>*\t` +
-        `_${raiderStats.completed} *completed*_ ~ ` +
-        `_${raiderStats.attempts} *attempts*_`
+        ` ${WATCHMAN_EMOJI} <@${raiderStats._user?.slackId}> *[* ${raiderStats.lastHealth} ${FULL_HEALTH_HEART_EMOJI} *]*\t*=>*\t` +
+        `_*Reached to floor* ${raiderStats.lastFloorVisited}_  ` +
+        `_*~  ${raiderStats.perks} Perks*_\t` +
+        `_(${raiderStats.completed} *towers completed*)_`
+        // `_${raiderStats.attempts} *attempts*_`
       );
     })
     .join('\n')}`;
@@ -144,8 +146,7 @@ export const towerCommandReply = {
     `\n*The Tower: ${game.name} Stats*\n` +
     `\n${towerBasicScoreboard(gameStatistics)}\n` +
     `\n*Notation*\n` +
-    `> _house_emoji_ *|* _@raider_ *=>* _# of towers completed_ ~ _# of attempts_\n` +
-    `> ${FREE_AGENT_EMOJI} (Free Agent)`,
+    `> ${WATCHMAN_EMOJI} *|* _@raider_ *=>* _last floor visited_\t _(# of towers completed)_\n`,
   cancelEndGame: () =>
     `Ok, the tower is still open and active, nothing happened here, you can keep walking :cop:${randomSkinColor()}`,
   towerGatesInfo: (isOpen: boolean) => `The Tower Gates are ${isOpen ? '*open*' : '*closed*'}`,

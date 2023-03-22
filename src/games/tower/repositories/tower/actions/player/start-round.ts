@@ -12,7 +12,10 @@ import {
 import { addRaidersToTowerFloorBattlefield } from '../../../../../../models/TowerRaider';
 import { startRound } from '../../../../../../models/TowerRound';
 import { findAllActionsByRound } from '../../../../../../models/TowerRoundAction';
-import { updateTowerAsCompleted } from '../../../../../../models/TowerStatistics';
+import {
+  updateTowerAsCompleted,
+  updateTowerAttempts,
+} from '../../../../../../models/TowerStatistics';
 import { ONE, TWO, ZERO } from '../../../../../consts/global';
 import type { SlackBlockKitLayoutElement } from '../../../../../model/SlackBlockKit';
 import type { GameResponse } from '../../../../../utils';
@@ -72,6 +75,14 @@ export async function startRoundCommand(userRequesting: User) {
       await publishTowerPublicMessage(
         towerCommandReply.raiderLoseTower(raider._user?.slackId!, towerFloor.number)
       );
+      const lastFloorVisited = towerFloor.number;
+      await updateTowerAttempts(
+        towerFloor._towerGameId,
+        raider._user?.id ?? ZERO,
+        lastFloorVisited,
+        raider._perks ?? [],
+        transaction
+      );
       const blockKit = generateReEnterTowerQuestionSection(towerCommandReply.raiderMustEnter());
       await theTowerNotifyEphemeral('', raider._user?.slackId!, raider._user?.slackId!, blockKit);
       return getGameResponse('');
@@ -101,16 +112,18 @@ export async function startRoundCommand(userRequesting: User) {
       );
     } else {
       await round.endRound(transaction);
-
       if (towerFloor.number === towerFloor._towerGame?.height) {
         await theTowerNotifyInPrivate(
           `${towerCommandReply.raiderWinsTower(raider._user?.slackId!)}\n\n` +
             `${towerCommandReply.finalStats(raider)}`,
           raider._user?.slackId!
         );
+        const lastFloorVisited = towerFloor.number;
         await updateTowerAsCompleted(
           towerFloor._towerGameId,
           raider._user?.id ?? ZERO,
+          lastFloorVisited,
+          raider._perks ?? [],
           transaction
         );
         // TOWER PRIZE
