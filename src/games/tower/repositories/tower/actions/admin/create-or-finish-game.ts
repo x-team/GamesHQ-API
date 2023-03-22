@@ -3,6 +3,7 @@ import { Game } from '../../../../../../models';
 import { startTowerGame } from '../../../../../../models/TowerGame';
 import { findActiveRound } from '../../../../../../models/TowerRound';
 import { findTowerStatisticsByGame } from '../../../../../../models/TowerStatistics';
+import { ZERO } from '../../../../../consts/global';
 import type { GameResponse } from '../../../../../utils';
 import { adminAction, getGameError, getGameResponse } from '../../../../../utils';
 import { generateTowerEndGameConfirmationBlockKit } from '../../../../generators/gameplay';
@@ -145,7 +146,7 @@ export async function displayScoreboard(userRequesting: User) {
     if (!(activeTower instanceof Game)) {
       return activeTower as GameResponse;
     }
-    const stats = await findTowerStatisticsByGame(activeTower.id, transaction);
+    const stats = await findTowerStatisticsByGame(activeTower._tower?.id || ZERO, transaction);
     await publishTowerPublicMessage(towerCommandReply.adminDisplayScoreboard(activeTower, stats));
     return getGameResponse('Scoreboard displayed');
   });

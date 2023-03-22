@@ -3,6 +3,8 @@ import type { Transaction } from 'sequelize';
 
 import type { TowerRaider } from '../../../../../../models';
 import { perkImpactCalculator } from '../../../../../../models/Perk';
+import { findTowerFloorById } from '../../../../../../models/TowerFloor';
+import { updateLastHealth } from '../../../../../../models/TowerStatistics';
 import { ONE, TRAIT, ZERO } from '../../../../../consts/global';
 import { hasLuck } from '../../../../../utils';
 import type { HuntPlayerParams } from '../../../../consts';
@@ -88,12 +90,26 @@ export async function huntRaiders(
               await randomTargetRaider.useArmor(targetArmor, transaction);
             }
           }
-
+          const lastHealth = randomTargetRaider.health;
           await randomTargetRaider.damageAndHide(
             damageDealtDetails.newDamage ?? damageDealtDetails.originalDamage,
             isEveryoneVisible,
             transaction
           );
+
+          if (!randomTargetRaider.isAlive()) {
+            const towerFloor = await findTowerFloorById(
+              randomTargetRaider._currentTowerFloorBattlefield?._towerFloorId ?? ZERO,
+              true,
+              transaction
+            );
+            await updateLastHealth(
+              towerFloor?._towerGameId ?? ZERO,
+              randomTargetRaider._userId,
+              lastHealth,
+              transaction
+            );
+          }
 
           await randomTargetRaider.reloadFullInventory(transaction);
 

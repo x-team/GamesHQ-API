@@ -11,7 +11,7 @@ import {
 
 import { ONE, ZERO } from '../games/consts/global';
 
-import { User, TowerGame } from '.';
+import { User, TowerGame, Perk, PerkInventory } from '.';
 
 interface TowerStatisticsAttributes {
   attempts: number;
@@ -31,7 +31,7 @@ interface TowerStatisticsCreationAttributes {
   indexes: [
     {
       unique: true,
-      fields: ['_userId', '_gameId'],
+      fields: ['_userId', '_towerGameId'],
     },
   ],
 })
@@ -57,7 +57,7 @@ export class TowerStatistics
   declare _towerGameId: number;
 
   @BelongsTo(() => TowerGame, {
-    foreignKey: '_gameId',
+    foreignKey: '_towerGameId',
     onUpdate: 'CASCADE',
     onDelete: 'CASCADE',
   })
@@ -68,6 +68,15 @@ export class TowerStatistics
 
   @Column(DataType.INTEGER)
   declare completed: number;
+
+  @Column(DataType.INTEGER)
+  declare lastFloorVisited: number;
+
+  @Column(DataType.INTEGER)
+  declare lastHealth: number;
+
+  @Column(DataType.INTEGER)
+  declare perks: number;
 
   static associations: {
     _user: Association<TowerStatistics, User>;
@@ -109,9 +118,18 @@ export async function findOrCreateTowerStatistics(
   return towerStatistics.reload({ transaction });
 }
 
+function calculatePerkNumber(perks: Array<Perk & { PerkInventory: PerkInventory }>) {
+  return perks.reduce(
+    (totalPerks, { PerkInventory: { quantity } }) => totalPerks + (quantity ?? ZERO),
+    ZERO
+  );
+}
+
 export async function updateTowerAsCompleted(
   gameId: number,
   userId: number,
+  lastFloorVisited: number,
+  perks: Array<Perk & { PerkInventory: PerkInventory }>,
   transaction?: Transaction
 ) {
   const towerStats = await TowerStatistics.findOne({
@@ -122,7 +140,11 @@ export async function updateTowerAsCompleted(
     transaction,
   });
   if (towerStats) {
+    const perksNumber = calculatePerkNumber(perks);
     await towerStats.increment({ completed: 1 }, { transaction });
+    towerStats.lastFloorVisited = lastFloorVisited;
+    towerStats.perks = perksNumber;
+    await towerStats.save({ transaction });
   }
 }
 
@@ -132,6 +154,9 @@ export function findTowerStatisticsByGame(gameId: number, transaction: Transacti
       _towerGameId: gameId,
     },
     order: [
+      ['lastFloorVisited', 'DESC'],
+      ['lastHealth', 'DESC'],
+      ['perks', 'ASC'],
       ['completed', 'DESC'],
       ['attempts', 'ASC'],
     ],
@@ -147,6 +172,8 @@ export function findTowerStatisticsByGame(gameId: number, transaction: Transacti
 export async function updateTowerAttempts(
   gameId: number,
   userId: number,
+  lastFloorVisited: number,
+  perks: Array<Perk & { PerkInventory: PerkInventory }>,
   transaction?: Transaction
 ) {
   const towerStats = await TowerStatistics.findOne({
@@ -157,6 +184,31 @@ export async function updateTowerAttempts(
     transaction,
   });
   if (towerStats) {
+    const perksNumber = calculatePerkNumber(perks);
     await towerStats.increment({ attempts: 1 }, { transaction });
+    towerStats.lastFloorVisited = lastFloorVisited;
+    towerStats.perks = perksNumber;
+    await towerStats.save({ transaction });
+  }
+}
+
+export async function updateLastHealth(
+  gameId: number,
+  userId: number,
+  lastHealth: number,
+  transaction?: Transaction
+) {
+  const towerStats = await TowerStatistics.findOne({
+    where: {
+      _userId: userId,
+      _towerGameId: gameId,
+    },
+    transaction,
+  });
+  if (towerStats) {
+    console.log('============================================');
+    console.log('Here ', lastHealth);
+    towerStats.lastHealth = lastHealth;
+    await towerStats.save({ transaction });
   }
 }
