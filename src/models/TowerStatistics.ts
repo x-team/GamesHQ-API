@@ -11,7 +11,8 @@ import {
 
 import { ONE, ZERO } from '../games/consts/global';
 
-import { User, TowerGame, Perk, PerkInventory } from '.';
+import type { Perk, PerkInventory } from '.';
+import { User, TowerGame } from '.';
 
 interface TowerStatisticsAttributes {
   attempts: number;
