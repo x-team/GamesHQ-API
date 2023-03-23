@@ -77,11 +77,11 @@ type IAddFloorPayload = {
 };
 
 export const addEnemyToFloorHandler: Lifecycle.Method = async (_request, h) => {
-  const floorId = parseInt(_request.params.floorId);
+  const floorNumber = parseInt(_request.params.floorNumber);
   const { payload } = _request;
   const { enemyIds } = payload as IAddEnemiesPayload;
 
-  await addEnemies(floorId, enemyIds);
+  await addEnemies(floorNumber, enemyIds);
 
   return h.response({ success: true }).code(200);
 };

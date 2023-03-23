@@ -96,7 +96,7 @@ export const openOrCloseCurrentTowerRoute = {
 
 export const addEnemyToFloorRoute = {
   method: 'POST',
-  path: '/dashboard/admin/floors/{floorId}/addEnemies',
+  path: '/dashboard/admin/floors/{floorNumber}/addEnemies',
   options: {
     description: 'Add ',
     tags: ['api'],
