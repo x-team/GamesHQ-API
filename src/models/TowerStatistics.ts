@@ -142,7 +142,9 @@ export async function updateTowerAsCompleted(
   if (towerStats) {
     const perksNumber = calculatePerkNumber(perks);
     await towerStats.increment({ completed: 1 }, { transaction });
-    towerStats.lastFloorVisited = lastFloorVisited;
+    if (lastFloorVisited >= towerStats.lastFloorVisited) {
+      towerStats.lastFloorVisited = lastFloorVisited;
+    }
     towerStats.perks = perksNumber;
     await towerStats.save({ transaction });
   }
@@ -186,7 +188,9 @@ export async function updateTowerAttempts(
   if (towerStats) {
     const perksNumber = calculatePerkNumber(perks);
     await towerStats.increment({ attempts: 1 }, { transaction });
-    towerStats.lastFloorVisited = lastFloorVisited;
+    if (lastFloorVisited >= towerStats.lastFloorVisited) {
+      towerStats.lastFloorVisited = lastFloorVisited;
+    }
     towerStats.perks = perksNumber;
     await towerStats.save({ transaction });
   }
@@ -195,6 +199,7 @@ export async function updateTowerAttempts(
 export async function updateLastHealth(
   gameId: number,
   userId: number,
+  lastFloorVisited: number,
   lastHealth: number,
   transaction?: Transaction
 ) {
@@ -205,9 +210,7 @@ export async function updateLastHealth(
     },
     transaction,
   });
-  if (towerStats) {
-    console.log('============================================');
-    console.log('Here ', lastHealth);
+  if (towerStats && lastFloorVisited >= towerStats.lastFloorVisited) {
     towerStats.lastHealth = lastHealth;
     await towerStats.save({ transaction });
   }

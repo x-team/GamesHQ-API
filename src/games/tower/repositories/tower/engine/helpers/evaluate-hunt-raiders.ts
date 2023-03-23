@@ -106,6 +106,7 @@ export async function huntRaiders(
             await updateLastHealth(
               towerFloor?._towerGameId ?? ZERO,
               randomTargetRaider._userId,
+              towerFloor?.number ?? ZERO,
               lastHealth,
               transaction
             );
