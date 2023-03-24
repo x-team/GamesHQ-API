@@ -33,3 +33,10 @@ export function parseEscapedSlackId(slackUser: string) {
     return slackUser.replace('@', '');
   }
 }
+
+// We need to acknowledge the request to Slack within 3 seconds
+export function acknowledgeSlackResponse() {
+  process.nextTick(() => {
+    return {};
+  });
+}

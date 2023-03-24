@@ -13,6 +13,7 @@ import { handleTowerBlockAction } from '../../games/tower/actions';
 import { handleTowerAction } from '../../games/tower/actions/towerAction';
 import { theTowerUnfurlLink } from '../../games/tower/utils';
 import { blockKitCompositionImage } from '../../games/utils/generators/slack';
+import { acknowledgeSlackResponse } from '../../utils/slack';
 
 import { slackCommandSwitcher } from './utils';
 
@@ -25,6 +26,10 @@ export const testRouteHandler: Lifecycle.Method = async () => {
 };
 
 export const slackCommandHandler: Lifecycle.Method = async (request, _h) => {
+  // We need to respond to Slack within 3000ms or the action will fail.
+  // So we acknowledge the request and then handle the command asynchronously.
+  void acknowledgeSlackResponse();
+
   const slashCommandPayload: SlackSlashCommandPayload = request.pre.slashCommandPayload;
   slashCommandPayload.command = slashCommandPayload.command?.replace(
     SLACK_COMMAND_STAGING_PREFIX,
@@ -44,6 +49,10 @@ export const slackCommandHandler: Lifecycle.Method = async (request, _h) => {
 };
 
 export const arenaSlackActionHandler: Lifecycle.Method = async (request, _h) => {
+  // We need to respond to Slack within 3000ms or the action will fail.
+  // So we acknowledge the request and then handle the command asynchronously.
+  void acknowledgeSlackResponse();
+
   const slackActionPayload = request.pre.slackActionPayload;
 
   try {
@@ -60,6 +69,10 @@ export const arenaSlackActionHandler: Lifecycle.Method = async (request, _h) => 
 };
 
 export const towerSlackActionHandler: Lifecycle.Method = async (request, _h) => {
+  // We need to respond to Slack within 3000ms or the action will fail.
+  // So we acknowledge the request and then handle the command asynchronously.
+  void acknowledgeSlackResponse();
+
   const slackActionPayload = request.pre.slackActionPayload;
   try {
     switch (slackActionPayload.type) {
