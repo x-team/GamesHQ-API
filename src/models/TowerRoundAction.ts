@@ -258,7 +258,7 @@ export async function findRoundAction(
   { raiderId = null, enemyId = null, roundId }: RoundActionKey,
   transaction?: Transaction
 ) {
-  let mutableWhereQuery: OptionalWhereParams = {
+  const mutableWhereQuery: OptionalWhereParams = {
     _towerRoundId: roundId,
   };
   if (raiderId) {
