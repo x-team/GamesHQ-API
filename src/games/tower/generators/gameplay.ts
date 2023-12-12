@@ -68,7 +68,7 @@ export function generateTowerActionsBlockKit(
       undefined,
       'primary'
     ),
-    blockKitButton('Progress', TOWER_SLACK_COMMANDS.PROGRESS_BUTTON),
+    // blockKitButton('Progress', TOWER_SLACK_COMMANDS.PROGRESS_BUTTON),
   ];
   const actionsLayout = blockKitAction(actionButtons);
 
