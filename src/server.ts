@@ -4,6 +4,7 @@ import Cookie from '@hapi/cookie';
 import { Server } from '@hapi/hapi';
 import Inert from '@hapi/inert';
 import Vision from '@hapi/vision';
+import * as Sentry from '@sentry/node';
 import Handlebars from 'handlebars';
 import HapiSwagger from 'hapi-swagger';
 import Joi from 'joi';
@@ -13,6 +14,8 @@ import pkg from '../package.json';
 import { getConfig, isProd, logger } from './config';
 import { routes } from './routes';
 import { routeToLabel } from './utils/api';
+
+import './sentry.config';
 
 const getServer = () =>
   new Server({
@@ -183,5 +186,6 @@ export async function getServerWithPlugins() {
 
   await server.route(routes);
   // await server.method(methods);
+  await Sentry.setupHapiErrorHandler(server);
   return server;
 }
