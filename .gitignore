@@ -69,8 +69,6 @@ jspm_packages/
 .env
 .env.dev
 
-package-lock.json
-
 *.tsbuildinfo
 src/.version
 google_credentials_games_api.json
