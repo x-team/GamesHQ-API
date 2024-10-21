@@ -1,4 +1,4 @@
 #!/bin/sh
 . "$(dirname "$0")/_/husky.sh"
 
-./scripts/pre-commit.sh && $(npm bin)/pretty-quick --staged
+"$(pwd)/scripts/pre-commit.sh" && npx pretty-quick --staged
