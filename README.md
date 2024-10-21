@@ -25,7 +25,7 @@ The Admin Panel (Frontend APP) is connected to this API allowing XTeam admins to
   - [JIRA](#jira)
     - [Commits](#commits)
     - [Pull Requests](#pull-requests)
-- [Continous Integration](#continous-integration)
+- [Continuous Integration](#continuous-integration)
 - [Confluence Documentation](#confluence-documentation)
 
 ## 📦Tech Stack
@@ -273,7 +273,7 @@ XTG-123: Login
 
 You'll need at least 1 review from your teammates to merge the pull request.
 
-## 🪄Continous Integration
+## 🪄Continuous Integration
 
 This project is connected to an EC2 instance from AWS.
 

@@ -9,10 +9,8 @@ env:
 
 phases:
   install:
-    runtime-versions:
-      nodejs: 14
     commands:
-      - n 16
+      - n 18
       - npm update -g npm
       - curl -sL https://sentry.io/get-cli/ | bash
       - aws --version
