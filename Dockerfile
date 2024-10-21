@@ -1,4 +1,4 @@
-FROM node:16-alpine
+FROM node:18-alpine
 ENV AWS_CLI_VERSION 1.15.47
 WORKDIR /app
 
