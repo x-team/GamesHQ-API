@@ -117,4 +117,16 @@ describe("Game Abilities Class", () => {
       secondArmorSearchRate
     );
   });
+
+  it('should throw error if setting an invalid ability property', () => {
+    const ability = new Ability();
+    
+    expect(() => ability.set('invalidProp' as any, 10)).to.throw('Cannot find Ability\'s property: invalidProp');
+  });
+
+  it('should throw error if getting an invalid ability property', () => {
+    const ability = new Ability();
+
+    expect(() => ability.get('invalidProp' as any)).to.throw('Cannot find Ability\'s property: invalidProp');  
+  });
 });

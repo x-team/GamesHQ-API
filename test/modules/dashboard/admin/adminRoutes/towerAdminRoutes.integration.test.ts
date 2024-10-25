@@ -103,6 +103,30 @@ describe('towerAdminRoutes', () => {
         message: 'tower game not found',
       });
     });
+
+    it('should return 401 status code on POST /dashboard/admin/tower-games/{towerGameId}/floors if user is not authorized', async () => {
+      const towerGame = await createTowerGame();
+      const session = await Session.create({
+        token: uuid(),
+        _userId: 999, // user without admin role
+      });
+
+      const payload = {
+        number: 11,
+      };
+
+      const injectOptions = {
+        method: 'POST',
+        url: `/dashboard/admin/tower-games/${towerGame!.id}/floors`,
+        headers: {
+          'xtu-session-token': session.token,
+        },
+        payload,
+      };
+
+      const rslt = await testServer.inject(injectOptions);
+      expect(rslt.statusCode).to.equal(401);
+    });
   });
 
   describe('removeTowerFloorRoute', async () => {
