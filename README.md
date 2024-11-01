@@ -37,7 +37,7 @@ The Admin Panel (Frontend APP) is connected to this API allowing XTeam admins to
 - [TypeScript](https://www.typescriptlang.org/)
 - [Mocha](https://mochajs.org/) - [Chai](https://www.chaijs.com/) - [Sinon](https://sinonjs.org/)
 
-* [Swagger](https://swagger.io/)
+- [Swagger](https://swagger.io/)
 
 ## 🔎Requirements
 
@@ -198,7 +198,7 @@ GOOGLE_APPLICATION_CREDENTIALS=/some/path/to/google_credentials_games_api.json
 
 We are almost there with the setup.🥲 Now it's time to run the API
 
-First, make sure you're using our recommended version of Node and yarn by running these commands:
+First, make sure you're using our recommended version of Node and npm by running these commands:
 
 ```bash
 nvm use
