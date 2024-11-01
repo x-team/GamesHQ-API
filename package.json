@@ -50,6 +50,7 @@
     "@hapi/hapi": "20.2.2",
     "@hapi/inert": "6.0.5",
     "@hapi/vision": "6.1.0",
+    "@sentry/node": "8.34.0",
     "@slack/client": "5.0.2",
     "@types/catbox": "10.0.7",
     "@types/catbox-memory": "4.0.0",
