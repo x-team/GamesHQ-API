@@ -375,6 +375,41 @@ describe('LeaderboardResults', () => {
       expect(rslt![0].score).to.equal(11);
       expect(lbrInDB!.score).to.equal(11);
     });
+
+    it('should throw error if creating LeaderboardResult with invalid leaderboard id', async () => {
+      const leaderboardRslt: LeaderboardResultsCreationAttributes = {
+        _leaderboardEntryId: 999, // invalid id
+        _userId: 1, 
+        score: 10,
+      };
+
+      try {
+        await createOrUpdateLeaderBoardResult(leaderboardRslt);
+        throw new Error('should have thrown an error');
+      } catch (error: any) {
+        expect(error.name).to.equal('SequelizeForeignKeyConstraintError');  
+      }
+    });
+
+    it('should throw error if creating LeaderboardResult with invalid user id', async () => {
+      const lb1 = await LeaderboardEntry.create({
+        _gameTypeId: 1,
+        name: 'my_leaderboard_' + uuid(),
+      });
+
+      const leaderboardRslt: LeaderboardResultsCreationAttributes = {
+        _leaderboardEntryId: lb1.id,
+        _userId: 999, // invalid user id
+        score: 10,
+      };
+
+      try {
+        await createOrUpdateLeaderBoardResult(leaderboardRslt);
+        throw new Error('should have thrown an error');
+      } catch (error: any) {
+        expect(error.name).to.equal('SequelizeForeignKeyConstraintError');
+      }
+    });
   });
 
   describe('getLeaderboardResultRank', () => {

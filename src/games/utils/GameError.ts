@@ -1,34 +1,33 @@
-enum GAME_ERROR_TYPE {
+export enum GAME_ERROR_TYPE {
   NOT_FOUND = 'NOT_FOUND',
   ACTIVE_GAME = 'ACTIVE_GAME',
+  // ... other error types
 }
 
-interface GameErrorAttributes {
+export class GameError extends Error {
   type: GAME_ERROR_TYPE;
-  message: string;
-}
+  repository?: string;
 
-export class GameError extends Error implements GameErrorAttributes {
-  type: GAME_ERROR_TYPE;
-  message: string;
-  repository: string | undefined;
-
-  constructor({ type, message }: GameErrorAttributes) {
+  constructor({ type, message }: { type: GAME_ERROR_TYPE; message: string }) {
     super(message);
-    Object.setPrototypeOf(this, GameError.prototype);
     this.type = type;
-    this.message = message;
   }
 
-  static notFound(message: string) {
-    return new GameError({ type: GAME_ERROR_TYPE.NOT_FOUND, message });
+  static notFound(message: string): GameError {
+    return new GameError({
+      type: GAME_ERROR_TYPE.NOT_FOUND,
+      message,
+    });
   }
 
-  static activeGameRunning(message: string) {
-    return new GameError({ type: GAME_ERROR_TYPE.ACTIVE_GAME, message });
+  static activeGameRunning(message: string): GameError {
+    return new GameError({
+      type: GAME_ERROR_TYPE.ACTIVE_GAME,
+      message,
+    });
   }
 
-  public addRepository(repositoryName: string) {
+  addRepository(repositoryName: string) {
     this.repository = repositoryName;
   }
 }

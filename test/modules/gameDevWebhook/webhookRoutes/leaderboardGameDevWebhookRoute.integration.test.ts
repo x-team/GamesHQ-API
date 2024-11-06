@@ -270,6 +270,29 @@ describe('leaderboardGameDevWebhookRoute', () => {
       expect(payload.error).to.be.equal('Bad Request');
       expect(payload.message).to.be.equal('"score" is required');
     });
+
+    it('should return 400 status code on POST /leaderboards/score if score is missing', async () => {
+      const game = await GameType.findByPk(1);
+      const lb1 = await LeaderboardEntry.create({
+        _gameTypeId: 1,
+        name: 'my_leaderboard_' + uuid(),
+      });
+
+      const p = {
+        // missing score field
+        _leaderboardResultsMeta: [],
+      };
+
+      let injectOptions = await postLeaderboarsScoreInjectOptions(p, lb1.id, game!);
+
+      const rslt = await testServer.inject(injectOptions as any);
+      const payload = JSON.parse(rslt.payload);
+
+      expect(rslt.statusCode).to.equal(400);
+      expect(payload.statusCode).to.equal(400);
+      expect(payload.error).to.equal('Bad Request');
+      expect(payload.message).to.equal('"score" is required');
+    });
   });
 
   describe('getGameLeaderboardResultRoute', async () => {
@@ -444,3 +467,4 @@ function getLeaderboardResultsRankInjectOptions(
 
   return injectOptions;
 }
+
