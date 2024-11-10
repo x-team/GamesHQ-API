@@ -25,9 +25,9 @@ describe('webhookValidation middleware', () => {
       headers: {
         'xtu-request-timestamp': timestamp,
         'xtu-signature': 'valid-signature',
-        'xtu-client-secret': 'client-secret'
+        'xtu-client-secret': 'client-secret',
       },
-      payload: Buffer.from('{}')
+      payload: Buffer.from('{}'),
     };
 
     const result = await webhookValidation(request as any, {} as any);
@@ -36,14 +36,14 @@ describe('webhookValidation middleware', () => {
 
   it('should reject request with invalid timestamp', async () => {
     const oldTimestamp = Math.floor(Date.now() / 1000) - 300; // 5 minutes old
-    
+
     const request = {
       headers: {
         'xtu-request-timestamp': oldTimestamp,
         'xtu-signature': 'valid-signature',
-        'xtu-client-secret': 'client-secret'
+        'xtu-client-secret': 'client-secret',
       },
-      payload: Buffer.from('{}')
+      payload: Buffer.from('{}'),
     };
 
     try {
@@ -63,9 +63,9 @@ describe('webhookValidation middleware', () => {
       headers: {
         'xtu-request-timestamp': timestamp,
         'xtu-signature': 'valid-signature',
-        'xtu-client-secret': 'client-secret'
+        'xtu-client-secret': 'client-secret',
       },
-      payload: Buffer.from('{}')
+      payload: Buffer.from('{}'),
     };
 
     try {
@@ -80,7 +80,7 @@ describe('webhookValidation middleware', () => {
   it('should reject request with invalid payload format', async () => {
     const request = {
       headers: {},
-      payload: 'invalid-payload' // Not a buffer
+      payload: 'invalid-payload', // Not a buffer
     };
 
     try {
