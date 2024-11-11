@@ -46,10 +46,8 @@ describe('Helper functions', () => {
     });
   });
   describe('weaponStatus', () => {
-    const weapon = new ArenaItemInventory();
     it('should send the right weapon status message with no weapons', () => {
       const message = weaponStatus([]);
-      console.log(message);
       expect(message).to.equal(':blaster: *Inventory:* (no weapon)');
     });
   });
